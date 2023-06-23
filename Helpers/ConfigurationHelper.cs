@@ -724,7 +724,7 @@ namespace AzureNamingTool.Helpers
                 string data = (string)CacheHelper.GetCacheObject(programSetting);
                 if (String.IsNullOrEmpty(data))
                 {
-                    var response = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/aznamingtool/AzureNamingTool/main/programsettings.json");
+                    var response = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/programsettings.json");
                     var setting = JsonDocument.Parse(response);
                     result = setting.RootElement.GetProperty(programSetting).ToString();
                     CacheHelper.SetCacheObject(programSetting, result);
