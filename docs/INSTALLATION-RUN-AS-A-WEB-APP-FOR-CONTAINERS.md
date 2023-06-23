@@ -1,8 +1,8 @@
-[Overview](/ready/AzNamingTool/README.md) | [Installation](/ready/AzNamingTool/docs/INSTALLATION.md) | [Updating](/ready/AzNamingTool/docs/UPDATING.md) | [Using the API](/ready/AzNamingTool/docs/USINGTHEAPI.md) | [Release Notes](/ready/AzNamingTool/RELEASENOTES.md) | [Version History](/ready/AzNamingTool/docs/VERSIONHISTORY.md) | [FAQ](/ready/AzNamingTool/docs/FAQ.md) | [Contributors](/ready/AzNamingTool/docs/CONTRIBUTORS.md)
+[Overview](/README.md) | [Installation](/docs/INSTALLATION.md) | [Updating](/docs/UPDATING.md) | [Using the API](/docs/USINGTHEAPI.md) | [Release Notes](/RELEASENOTES.md) | [Version History](/docs/VERSIONHISTORY.md) | [FAQ](/docs/FAQ.md) | [Contributors](/docs/CONTRIBUTORS.md)
 
 # Run as a Web App for Containers (App Service running a container)
 
-* [Choosing an Installation Option](/ready/AzNamingTool/docs/INSTALLATION.md)
+* [Choosing an Installation Option](/docs/INSTALLATION.md)
 * [Overview]($overview)
 * [Steps](#steps)
 <br />
@@ -43,12 +43,12 @@ docker build -t azurenamingtool .
 10. Build and publish your image to the Azure Container Registry: [Microsoft Docs reference](https://docs.microsoft.com/azure/container-registry/container-registry-get-started-docker-cli?tabs=azure-cli)
 11. Create an Azure Files file share for persistent storage: [Microsoft Docs reference](https://docs.microsoft.com/azure/storage/files/storage-how-to-create-file-share?tabs=azure-portal)
   
-  ![FileShare](/ready/AzNamingTool/wwwroot/Screenshots/FileShare.png)
+  ![FileShare](/wwwroot/Screenshots/FileShare.png)
 
 12. Create an Azure App Service - Web App: [Microsoft Docs reference](https://docs.microsoft.com/azure/app-service/quickstart-custom-container?tabs=dotnet&pivots=container-linux)
 13. Mount the file share as local storage for the Azure App Service: [Microsoft Docs reference](https://docs.microsoft.com/azure/app-service/configure-connect-to-azure-storage?tabs=portal&pivots=container-linux)
   
-  ![MountStorage](/ready/AzNamingTool/wwwroot/Screenshots/MountStorage.png)
+  ![MountStorage](/wwwroot/Screenshots/MountStorage.png)
 
 14. Deploy the image from the Azure Container Registry to the Azure App Service: [Microsoft Docs reference](https://docs.microsoft.com/azure/app-service/deploy-ci-cd-custom-container?tabs=acr&pivots=container-linux)
 15. Access the site using your Azure App Service URL.

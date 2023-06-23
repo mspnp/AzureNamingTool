@@ -1,8 +1,8 @@
-[Overview](/ready/AzNamingTool/README.md) | [Installation](/ready/AzNamingTool/docs/INSTALLATION.md) | [Updating](/ready/AzNamingTool/docs/UPDATING.md) | [Using the API](/ready/AzNamingTool/docs/USINGTHEAPI.md) | [Release Notes](/ready/AzNamingTool/RELEASENOTES.md) | [Version History](/ready/AzNamingTool/docs/VERSIONHISTORY.md) | [FAQ](/ready/AzNamingTool/docs/FAQ.md) | [Contributors](/ready/AzNamingTool/docs/CONTRIBUTORS.md)
+[Overview](/README.md) | [Installation](/docs/INSTALLATION.md) | [Updating](/docs/UPDATING.md) | [Using the API](/docs/USINGTHEAPI.md) | [Release Notes](/RELEASENOTES.md) | [Version History](/docs/VERSIONHISTORY.md) | [FAQ](/docs/FAQ.md) | [Contributors](/docs/CONTRIBUTORS.md)
 
 # Run as an Azure Web App Using GitHub Action (App Service running a .NET application)
 
-* [Choosing an Installation Option](/ready/AzNamingTool/docs/INSTALLATION.md)
+* [Choosing an Installation Option](/docs/INSTALLATION.md)
 * [Overview]($overview)
 * [Steps](#steps)
 
@@ -32,11 +32,11 @@ At a high level, this is the installation process:<br />
 5. Click the green **<>Code** button
 6. Click the **.github/workflows** link.
 
-  ![Run as Azure Web App 1](/ready/AzNamingTool/wwwroot/Screenshots/RunAsWebApp1.png)
+  ![Run as Azure Web App 1](/wwwroot/Screenshots/RunAsWebApp1.png)
 
 7. Click the **.deploy-azure-naming-tool-to-azure-webapps-dotnet-core.yml** link.
 
-  ![Run as Azure Web App 2](/ready/AzNamingTool/wwwroot/Screenshots/RunAsWebApp2.png)
+  ![Run as Azure Web App 2](/wwwroot/Screenshots/RunAsWebApp2.png)
 
 8. Review the instructions for creating the required GitHub secrets.
 
@@ -56,7 +56,7 @@ For an automated deployment of a Web App, utilize the button below and fill in t
 2. For the **Publish** option, select **Code**.
 3. For the **Runtime stack**, select **.NET 6**.
 
-  ![Web App Basics](/ready/AzNamingTool/wwwroot/Screenshots/WebAppInstallation1.png)
+  ![Web App Basics](/wwwroot/Screenshots/WebAppInstallation1.png)
 
 4. Download the **Publish Profile** for use within the GitHub Action secret.
 
@@ -66,7 +66,7 @@ Get-AzWebApp -Name <webappname> | Get-AzWebAppPublishingProfile -OutputFile <fil
 
 ** OR **
 
-![Web App Details](/ready/AzNamingTool/wwwroot/Screenshots/WebAppInstallation2.png)
+![Web App Details](/wwwroot/Screenshots/WebAppInstallation2.png)
 <br /><br />
 ***
 ### 3. Enable Azure Web App Authentication
@@ -77,7 +77,7 @@ Get-AzWebApp -Name <webappname> | Get-AzWebAppPublishingProfile -OutputFile <fil
 4. Enter the desired **Name**. All other options can be left as default.
 5. Click **Add**.
 
-  ![Web App Authentication](/ready/AzNamingTool/wwwroot/Screenshots/WebAppAuthentication1.png)
+  ![Web App Authentication](/wwwroot/Screenshots/WebAppAuthentication1.png)
 
 <br /><br />
 ***
@@ -123,7 +123,7 @@ az ad sp create-for-rbac --name "[YOUR CREDENTIAL NAME - ENTER ANY VALUE]" --rol
 12. Enter **AZURE_CREDENTIALS** as the **Name**.
 13. Enter the **Azure Wwb App Credentials** JSON as the **Value**:
 
-  ![GitHub Secrets](/ready/AzNamingTool/wwwroot/Screenshots/GitHubActionInstallation1.png)
+  ![GitHub Secrets](/wwwroot/Screenshots/GitHubActionInstallation1.png)
 
 <br /><br />
 ***
@@ -135,6 +135,6 @@ az ad sp create-for-rbac --name "[YOUR CREDENTIAL NAME - ENTER ANY VALUE]" --rol
 4. Click **Run workflow**.
 5. Confirm the workflow completes successfully.
 
-  ![GitHub Workflow](/ready/AzNamingTool/wwwroot/Screenshots/GitHubActionInstallation2.png)
+  ![GitHub Workflow](/wwwroot/Screenshots/GitHubActionInstallation2.png)
 
 6. Access your Azure Web App to confirm the site is successfully deployed.

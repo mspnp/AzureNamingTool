@@ -412,7 +412,7 @@ namespace AzureNamingTool.Helpers
             string versiondata = null;
             try
             {
-                versiondata = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/microsoft/CloudAdoptionFramework/master/ready/AzNamingTool/configurationfileversions.json");
+                versiondata = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/microsoft/CloudAdoptionFramework/master/configurationfileversions.json");
             }
             catch (Exception ex)
             {
@@ -565,7 +565,7 @@ namespace AzureNamingTool.Helpers
         {
             try
             {
-                var response = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/microsoft/CloudAdoptionFramework/master/ready/AzNamingTool/AzureNamingTool.csproj");
+                var response = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/microsoft/CloudAdoptionFramework/master/AzureNamingTool.csproj");
                 XDocument xdoc = XDocument.Parse(response);
                 string result = xdoc
                     .Descendants("PropertyGroup")

@@ -1,4 +1,4 @@
-[Overview](/ready/AzNamingTool/README.md) | [Installation](/ready/AzNamingTool/docs/INSTALLATION.md) | [Updating](/ready/AzNamingTool/docs/UPDATING.md) | [Using the API](/ready/AzNamingTool/docs/USINGTHEAPI.md) | [Release Notes](/ready/AzNamingTool/RELEASENOTES.md) | [Version History](/ready/AzNamingTool/docs/VERSIONHISTORY.md) | [FAQ](/ready/AzNamingTool/docs/FAQ.md) | [Contributors](/ready/AzNamingTool/docs/CONTRIBUTORS.md)
+[Overview](/README.md) | [Installation](/docs/INSTALLATION.md) | [Updating](/docs/UPDATING.md) | [Using the API](/docs/USINGTHEAPI.md) | [Release Notes](/RELEASENOTES.md) | [Version History](/docs/VERSIONHISTORY.md) | [FAQ](/docs/FAQ.md) | [Contributors](/docs/CONTRIBUTORS.md)
 
 # Release Notes
 
@@ -33,4 +33,4 @@
 - Updated Bootstrap references to 5.3
 - Updated JS/CSS references to local file versions
 
-[RELEASE NOTES ARCHIVE](/ready/AzNamingTool/docs/RELEASENOTESARCHIVE.md)
+[RELEASE NOTES ARCHIVE](/docs/RELEASENOTESARCHIVE.md)

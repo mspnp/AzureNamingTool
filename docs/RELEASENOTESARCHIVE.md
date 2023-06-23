@@ -1,8 +1,8 @@
-[Overview](/ready/AzNamingTool/README.md) | [Installation](/ready/AzNamingTool/docs/INSTALLATION.md) | [Updating](/ready/AzNamingTool/docs/UPDATING.md) | [Using the API](/ready/AzNamingTool/docs/USINGTHEAPI.md) | [Release Notes](/ready/AzNamingTool/RELEASENOTES.md) | [Version History](/ready/AzNamingTool/docs/VERSIONHISTORY.md) | [FAQ](/ready/AzNamingTool/docs/FAQ.md) | [Contributors](/ready/AzNamingTool/docs/CONTRIBUTORS.md)
+[Overview](/README.md) | [Installation](/docs/INSTALLATION.md) | [Updating](/docs/UPDATING.md) | [Using the API](/docs/USINGTHEAPI.md) | [Release Notes](/RELEASENOTES.md) | [Version History](/docs/VERSIONHISTORY.md) | [FAQ](/docs/FAQ.md) | [Contributors](/docs/CONTRIBUTORS.md)
 
 # Azure Naming Tool v2 - Release Notes Archive
 
-- [Version 2.8.0 (Current)](/ready/AzNamingTool/RELEASENOTES.md)
+- [Version 2.8.0 (Current)](/RELEASENOTES.md)
 - [Version 2.7.0](#version-270)
 - [Version 2.6.0](#version-260)
 - [Version 2.5.0](#version-250)
@@ -64,7 +64,7 @@ To migrate existing GLOBALLY OPTIONAL components:
 - Expand the **Globally Optional Configuration** section.
 - Click **ADD** to add the component as OPTIONAL for all resource types.
 
-![Edit Component](/ready/AzNamingTool/wwwroot/Screenshots/EditComponent1.png)
+![Edit Component](/wwwroot/Screenshots/EditComponent1.png)
 
 ### Features
 - Added ability to set component as OPTIONAL/EXCLUDE for all resource types
