@@ -25,7 +25,7 @@ The Azure Naming Tool requires persistent storage for the configuration files wh
 7. Change the directory to the **AzNamingTool** folder. For example:
 
 ```cmd
-cd .\Downloads\CloudAdoptionFramework-master\CloudAdoptionFramework-master\ready\AzNamingTool
+cd .\Downloads\AzureNamingTool
 ```
 
 8. Run the following **Docker command** to build the image:

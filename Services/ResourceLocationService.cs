@@ -189,7 +189,7 @@ namespace AzureNamingTool.Services
                 ServiceResponse serviceResponse;
                 serviceResponse = await ResourceLocationService.GetItems();
                 List<ResourceLocation> locations = (List<ResourceLocation>)serviceResponse.ResponseObject;
-                string url = "https://raw.githubusercontent.com/microsoft/CloudAdoptionFramework/master/repository/resourcelocations.json";
+                string url = "https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/repository/resourcelocations.json";
 
                 string refreshdata = await GeneralHelper.DownloadString(url);
                 if (refreshdata != "")
