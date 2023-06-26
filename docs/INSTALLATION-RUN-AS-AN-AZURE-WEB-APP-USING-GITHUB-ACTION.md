@@ -10,7 +10,7 @@
 This process will allow you to deploy the Azure Naming Tool as a .NET application as an Azure Web App. This is the fastest deployment option and allows you to deploy and utilize your installation in minutes. The provided GitHub Action will deploy your repository code on every commit. This installation process provides the most secure, scalable solution for your installation.<br /><br />
 At a high level, this is the installation process:<br />
 
-1. [Fork the Cloud Adoption Framework Repository](#1-fork-the-cloud-adoption-framework-repository)<br /><br />
+1. [Fork the Azure Naming Tool Repository](#1-fork-the-azure-naming-tool-repository)<br /><br />
 2. [Create an Azure Web App](#2-create-an-azure-web-app)<br />
    The App Service can be created manually, or leverage the **Deploy to Azure** options below. <br /><br />
 3. [Enable Azure Web App Authentication](#3-enable-azure-web-app-authentication)<br />
@@ -24,9 +24,9 @@ At a high level, this is the installation process:<br />
 
 ## Steps
 
-### 1. Fork the Cloud Adoption Framework Repository
+### 1. Fork the Azure Naming Tool Repository
 1. Scroll up to the top-left corner of this page.
-2. Click on the **CloudAdoptionFramework** link to open the root of this repository.
+2. Click on the **AzureNamingTool** link to open the root of this repository.
 3. Click the **Fork** option in the top-right menu.
 4. Select your desired **Owner** and **Repository name** and click **Create fork**.
 5. Click the green **<>Code** button

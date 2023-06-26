@@ -13,7 +13,7 @@ The Azure Naming Tool requires persistent storage for the configuration files wh
 > For many of the steps, a sample process is provided, however, there are many ways to accomplish each step.<br /><br />
 ## Steps
 1. Scroll up to the top, left corner of this page.
-2. Click on the **CloudAdoptionFramework** link to open the root of this repository.
+2. Click on the **AzureNamingTool** link to open the root of this repository.
 3. Click the green **<>Code** button and select **Download ZIP**.
 4. Open your Downloads folder using File Explorer.
 5. Extract the contents of the ZIP archive.

@@ -9,7 +9,7 @@
 This process will allow you to deploy the Azure Naming Tool using Docker in your local environment.
 ## Steps
 1. Scroll up to the top, left corner of this page.
-2. Click on the **CloudAdoptionFramework** link to open the root of this repository.
+2. Click on the **AzureNamingTool** link to open the root of this repository.
 3. Click the green **<>Code** button and select **Download ZIP**.
 4. Open your Downloads folder using File Explorer.
 5. Extract the contents of the ZIP archive.
