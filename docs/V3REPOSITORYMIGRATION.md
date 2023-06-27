@@ -10,7 +10,7 @@ With the release of v3.0.0, the Azure Naming Tool will be moving to a new GitHub
 ## Instructions
 ### 1. [Backup](https://github.com/mspnp/AzureNamingTool/blob/main/docs/UPDATING.md#backup-settings) your current Azure Naming Tool installation
 ### 2. Backup code modifications/customizations
-### 3. Review the [Installation](https://github.com/mspnp/AzureNamingTool/blob/main/doc/INSTALLATION.md) process for your environment
+### 3. Review the [Installation](https://github.com/mspnp/AzureNamingTool/blob/main/docs/INSTALLATION.md) process for your environment
 <br /><br /><br />
 ## The Details
 ### Why are we doing this?
