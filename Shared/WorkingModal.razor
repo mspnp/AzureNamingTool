@@ -32,18 +32,15 @@
 </div>
 
 @code {
-
-    private bool disabled = true;
-
     [Parameter] public EventCallback<bool> OnClose { get; set; }
-    [Parameter] public string? message { get; set; }
+    [Parameter] public string message { get; set; } = String.Empty;
 
     private Task Cancel()
     {
         return OnClose.InvokeAsync(false);
     }
 
-    private async Task ModalSave()
+    private void ModalSave()
     {
     }
 }

@@ -298,35 +298,33 @@
 
 
 @code {
-
-    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
-    [Parameter] public ThemeInfo theme { get; set; }
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new();
+    [Parameter] public ThemeInfo theme { get; set; } = new();
     [CascadingParameter]
-    public IModalService Modal { get; set; }
+    public IModalService? Modal { get; set; }
 
-    [Parameter] public int id { get; set; }
-    [Parameter] public string title { get; set; }
-    [Parameter] public string message { get; set; }
-    [Parameter] public string type { get; set; }
-    [Parameter] public bool protectedName { get; set; }
-    [Parameter] public string? parentcomponent { get; set; }
-    [Parameter] public ServicesData servicesData { get; set; }
-
+    [Parameter] public int id { get; set; } = 0;
+    [Parameter] public string title { get; set; } = String.Empty;
+    [Parameter] public string message { get; set; } = String.Empty;
+    [Parameter] public string type { get; set; } = String.Empty;
+    [Parameter] public bool protectedName { get; set; } = false;
+    [Parameter] public string parentcomponent { get; set; } = String.Empty;
+    [Parameter] public ServicesData servicesData { get; set; } = new();
 
     private ServiceResponse serviceResponse = new();
-    private string? itemName;
-    private string? itemDisplayName;
-    private string? itemShortName;
-    private string? itemRegEx;
-    private string? itemMinLength;
-    private string? itemMaxLength;
-    private string? itemMinLengthOriginal;
-    private string? itemMaxLengthOriginal;
-    private List<ResourceComponent> resourceComponents;
-    private string? optional;
-    private string? exclude;
+    private string itemName = String.Empty;
+    private string itemDisplayName = String.Empty;
+    private string itemShortName = String.Empty;
+    private string itemRegEx = String.Empty;
+    private string itemMinLength = String.Empty;
+    private string itemMaxLength = String.Empty;
+    private string itemMinLengthOriginal = String.Empty;
+    private string itemMaxLengthOriginal = String.Empty;
+    private List<ResourceComponent> resourceComponents = new();
+    private string optional = String.Empty;
+    private string exclude = String.Empty;
     private bool ischecked = false;
-    private string? currentuser;
+    private string currentuser = String.Empty;
     private ResponseMessage responseMessage = new();
     private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
 
@@ -402,45 +400,34 @@
         {
             bool valid = false;
 
-            // Make sure the min/max length is valid
-            if (Convert.ToInt32(itemMaxLength) < Convert.ToInt32(itemMinLength))
+            if (type == "ResourceComponent")
             {
-                toastService.ShowError("The Maximum Length must equal/greater than the Minimum length!");
-            }
-            else
-            {
-                if (type == "ResourceComponent")
+                // Make sure the min/max length is valid
+                if (Convert.ToInt32(itemMaxLength) >= Convert.ToInt32(itemMinLength))
                 {
-                    if (itemName != null)
+                    if (!String.IsNullOrEmpty(itemName))
                     {
-                        if (itemName != "")
+                        valid = true;
+                        // Check if the user modified the min/max lengths and warn them to update their options
+                        if ((itemMinLength != itemMinLengthOriginal) || (itemMaxLength != itemMaxLengthOriginal))
                         {
-                            valid = true;
-                            // Check if the user modified the min/max lengths and warn them to update their options
-                            if ((itemMinLength != itemMinLengthOriginal) || (itemMaxLength != itemMaxLengthOriginal))
-                            {
-                                toastService.ShowInfo("You have modified the min/max length. You will need to verify the existing options meet the new length requirements!");
-                            }
-
-                            ResourceComponent resourceComponent = servicesData.ResourceComponents.Find(x => x.Id == id);
-
-                            // Update any references in the custom components configuration to be the new custom component type name
-                            var customcomponents = (List<CustomComponent>)servicesData.CustomComponents.FindAll(x => GeneralHelper.NormalizeName(x.ParentComponent, true) == GeneralHelper.NormalizeName(resourceComponent.Name, true));
-                            foreach (var customcomponent in customcomponents)
-                            {
-                                customcomponent.ParentComponent = GeneralHelper.NormalizeName(itemName, true);
-                                serviceResponse = await CustomComponentService.PostItem(customcomponent);
-                            }
-                            resourceComponent.Name = itemName;
-                            resourceComponent.DisplayName = itemName;
-                            resourceComponent.MinLength = itemMinLength;
-                            resourceComponent.MaxLength = itemMaxLength;
-                            serviceResponse = await ResourceComponentService.PostItem(resourceComponent);
+                            toastService.ShowInfo("You have modified the min/max length. You will need to verify the existing options meet the new length requirements!");
                         }
-                        else
+
+                        ResourceComponent resourceComponent = servicesData.ResourceComponents.Find(x => x.Id == id);
+
+                        // Update any references in the custom components configuration to be the new custom component type name
+                        var customcomponents = (List<CustomComponent>)servicesData.CustomComponents.FindAll(x => GeneralHelper.NormalizeName(x.ParentComponent, true) == GeneralHelper.NormalizeName(resourceComponent.Name, true));
+                        foreach (var customcomponent in customcomponents)
                         {
-                            toastService.ShowError("You must enter a name!");
+                            customcomponent.ParentComponent = GeneralHelper.NormalizeName(itemName, true);
+                            serviceResponse = await CustomComponentService.PostItem(customcomponent);
                         }
+                        resourceComponent.Name = itemName;
+                        resourceComponent.DisplayName = itemName;
+                        resourceComponent.MinLength = itemMinLength;
+                        resourceComponent.MaxLength = itemMaxLength;
+                        serviceResponse = await ResourceComponentService.PostItem(resourceComponent);
                     }
                     else
                     {
@@ -449,132 +436,135 @@
                 }
                 else
                 {
-                    if ((itemName != "") && (itemShortName != ""))
+                    toastService.ShowError("The Maximum Length must equal/greater than the Minimum length!");
+                }
+            }
+            else
+            {
+                if ((!String.IsNullOrEmpty(itemName)) && (!String.IsNullOrEmpty(itemShortName)))
+                {
+                    if (await ValidationHelper.ValidateShortName(type, itemShortName, this.parentcomponent))
                     {
-                        if (await ValidationHelper.ValidateShortName(type, itemShortName, this.parentcomponent))
+                        valid = true;
+                        switch (type)
                         {
-                            valid = true;
-                            switch (type)
-                            {
-                                case "ResourceEnvironment":
-                                    ResourceEnvironment resourceEnvironment = servicesData.ResourceEnvironments.Find(x => x.Id == id);
-                                    resourceEnvironment.Name = itemName;
-                                    resourceEnvironment.ShortName = itemShortName;
-                                    serviceResponse = await ResourceEnvironmentService.PostItem(resourceEnvironment);
-                                    break;
-                                case "ResourceLocation":
-                                    ResourceLocation resourceLocation = servicesData.ResourceLocations.Find(x => x.Id == id);
-                                    resourceLocation.ShortName = itemShortName;
-                                    serviceResponse = await ResourceLocationService.PostItem(resourceLocation);
-                                    break;
-                                case "ResourceOrg":
-                                    ResourceOrg resourceOrg = servicesData.ResourceOrgs.Find(x => x.Id == id);
-                                    resourceOrg.Name = itemName;
-                                    resourceOrg.ShortName = itemShortName;
-                                    serviceResponse = await ResourceOrgService.PostItem(resourceOrg);
-                                    break;
-                                case "ResourceProjAppSvc":
-                                    ResourceProjAppSvc resourceProjAppSvc = servicesData.ResourceProjAppSvcs.Find(x => x.Id == id);
-                                    resourceProjAppSvc.Name = itemName;
-                                    resourceProjAppSvc.ShortName = itemShortName;
-                                    serviceResponse = await ResourceProjAppSvcService.PostItem(resourceProjAppSvc);
-                                    break;
-                                case "ResourceType":
-                                    ResourceType resourceType = servicesData.ResourceTypes.Find(x => x.Id == id);
-                                    resourceType.ShortName = itemShortName;
-                                    resourceType.Optional = "";
-                                    resourceType.Exclude = "";
-                                    if (!String.IsNullOrEmpty(itemMinLength.ToString()))
+                            case "ResourceEnvironment":
+                                ResourceEnvironment resourceEnvironment = servicesData.ResourceEnvironments.Find(x => x.Id == id);
+                                resourceEnvironment.Name = itemName;
+                                resourceEnvironment.ShortName = itemShortName;
+                                serviceResponse = await ResourceEnvironmentService.PostItem(resourceEnvironment);
+                                break;
+                            case "ResourceLocation":
+                                ResourceLocation resourceLocation = servicesData.ResourceLocations.Find(x => x.Id == id);
+                                resourceLocation.ShortName = itemShortName;
+                                serviceResponse = await ResourceLocationService.PostItem(resourceLocation);
+                                break;
+                            case "ResourceOrg":
+                                ResourceOrg resourceOrg = servicesData.ResourceOrgs.Find(x => x.Id == id);
+                                resourceOrg.Name = itemName;
+                                resourceOrg.ShortName = itemShortName;
+                                serviceResponse = await ResourceOrgService.PostItem(resourceOrg);
+                                break;
+                            case "ResourceProjAppSvc":
+                                ResourceProjAppSvc resourceProjAppSvc = servicesData.ResourceProjAppSvcs.Find(x => x.Id == id);
+                                resourceProjAppSvc.Name = itemName;
+                                resourceProjAppSvc.ShortName = itemShortName;
+                                serviceResponse = await ResourceProjAppSvcService.PostItem(resourceProjAppSvc);
+                                break;
+                            case "ResourceType":
+                                ResourceType resourceType = servicesData.ResourceTypes.Find(x => x.Id == id);
+                                resourceType.ShortName = itemShortName;
+                                resourceType.Optional = "";
+                                resourceType.Exclude = "";
+                                if (!String.IsNullOrEmpty(itemMinLength.ToString()))
+                                {
+                                    if (ValidationHelper.CheckNumeric(itemMinLength.ToString()))
                                     {
-                                        if (ValidationHelper.CheckNumeric(itemMinLength.ToString()))
-                                        {
-                                            resourceType.LengthMin = itemMinLength.ToString();
-                                        }
+                                        resourceType.LengthMin = itemMinLength.ToString();
                                     }
-                                    if (!String.IsNullOrEmpty(itemMaxLength.ToString()))
+                                }
+                                if (!String.IsNullOrEmpty(itemMaxLength.ToString()))
+                                {
+                                    if (ValidationHelper.CheckNumeric(itemMaxLength.ToString()))
                                     {
-                                        if (ValidationHelper.CheckNumeric(itemMaxLength.ToString()))
-                                        {
-                                            resourceType.LengthMax = itemMaxLength.ToString();
-                                        }
+                                        resourceType.LengthMax = itemMaxLength.ToString();
                                     }
-                                    if (bool.Parse(ConfigurationHelper.GetAppSetting("DevMode")))
-                                    {
-                                        resourceType.Regx = itemRegEx;
-                                    }
+                                }
+                                if (bool.Parse(ConfigurationHelper.GetAppSetting("DevMode")))
+                                {
+                                    resourceType.Regx = itemRegEx;
+                                }
 
-                                    // Update the Optional and Exclude components
-                                    foreach (ResourceComponent resourceComponent in resourceComponents)
+                                // Update the Optional and Exclude components
+                                foreach (ResourceComponent resourceComponent in resourceComponents)
+                                {
+                                    if (resourceComponent.Name != "ResourceType")
                                     {
-                                        if (resourceComponent.Name != "ResourceType")
-                                        {
-                                            // Optional
-                                            ischecked = false;
-                                            ischecked = await JsRuntime.InvokeAsync<bool>("IsElementChecked", "optional-" + GeneralHelper.NormalizeName(resourceComponent.Name, true));
-                                            if (ischecked)
-                                            {
-                                                List<string> currentoptional = new List<string>(resourceType.Optional.Split(','));
-                                                if (!currentoptional.Contains(resourceComponent.Name))
-                                                {
-                                                    currentoptional.Add(GeneralHelper.NormalizeName(resourceComponent.Name, true));
-                                                    resourceType.Optional = String.Join(",", currentoptional.ToArray());
-                                                }
-                                            }
-                                        }
-
-                                        // Exclude
+                                        // Optional
                                         ischecked = false;
-                                        ischecked = await JsRuntime.InvokeAsync<bool>("IsElementChecked", "exclude-" + GeneralHelper.NormalizeName(resourceComponent.Name, true));
+                                        ischecked = await JsRuntime.InvokeAsync<bool>("IsElementChecked", "optional-" + GeneralHelper.NormalizeName(resourceComponent.Name, true));
                                         if (ischecked)
                                         {
-                                            List<string> currentexclude = new List<string>(resourceType.Exclude.Split(','));
-                                            if (!currentexclude.Contains(resourceComponent.Name))
+                                            List<string> currentoptional = new List<string>(resourceType.Optional.Split(','));
+                                            if (!currentoptional.Contains(resourceComponent.Name))
                                             {
-                                                currentexclude.Add(GeneralHelper.NormalizeName(resourceComponent.Name, true));
-                                                resourceType.Exclude = String.Join(",", currentexclude.ToArray());
+                                                currentoptional.Add(GeneralHelper.NormalizeName(resourceComponent.Name, true));
+                                                resourceType.Optional = String.Join(",", currentoptional.ToArray());
                                             }
                                         }
                                     }
-                                    serviceResponse = await ResourceTypeService.PostItem(resourceType);
-                                    break;
-                                case "ResourceUnitDept":
-                                    ResourceUnitDept resourceUnitDept = servicesData.ResourceUnitDepts.Find(x => x.Id == id);
-                                    resourceUnitDept.Name = itemName;
-                                    resourceUnitDept.ShortName = itemShortName;
-                                    serviceResponse = await ResourceUnitDeptService.PostItem(resourceUnitDept);
-                                    break;
-                                case "ResourceFunction":
-                                    ResourceFunction resourceFunction = servicesData.ResourceFunctions.Find(x => x.Id == id);
-                                    resourceFunction.Name = itemName;
-                                    resourceFunction.ShortName = itemShortName;
-                                    serviceResponse = await ResourceFunctionService.PostItem(resourceFunction);
-                                    break;
-                                case "CustomComponent":
-                                    CustomComponent customComponent = servicesData.CustomComponents.Find(x => x.Id == id);
-                                    customComponent.Name = itemName;
-                                    customComponent.ShortName = itemShortName;
-                                    customComponent.MinLength = itemMinLength;
-                                    customComponent.MaxLength = itemMaxLength;
-                                    serviceResponse = await CustomComponentService.PostItem(customComponent);
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            toastService.ShowError("You must enter a valid short name!");
+
+                                    // Exclude
+                                    ischecked = false;
+                                    ischecked = await JsRuntime.InvokeAsync<bool>("IsElementChecked", "exclude-" + GeneralHelper.NormalizeName(resourceComponent.Name, true));
+                                    if (ischecked)
+                                    {
+                                        List<string> currentexclude = new List<string>(resourceType.Exclude.Split(','));
+                                        if (!currentexclude.Contains(resourceComponent.Name))
+                                        {
+                                            currentexclude.Add(GeneralHelper.NormalizeName(resourceComponent.Name, true));
+                                            resourceType.Exclude = String.Join(",", currentexclude.ToArray());
+                                        }
+                                    }
+                                }
+                                serviceResponse = await ResourceTypeService.PostItem(resourceType);
+                                break;
+                            case "ResourceUnitDept":
+                                ResourceUnitDept resourceUnitDept = servicesData.ResourceUnitDepts.Find(x => x.Id == id);
+                                resourceUnitDept.Name = itemName;
+                                resourceUnitDept.ShortName = itemShortName;
+                                serviceResponse = await ResourceUnitDeptService.PostItem(resourceUnitDept);
+                                break;
+                            case "ResourceFunction":
+                                ResourceFunction resourceFunction = servicesData.ResourceFunctions.Find(x => x.Id == id);
+                                resourceFunction.Name = itemName;
+                                resourceFunction.ShortName = itemShortName;
+                                serviceResponse = await ResourceFunctionService.PostItem(resourceFunction);
+                                break;
+                            case "CustomComponent":
+                                CustomComponent customComponent = servicesData.CustomComponents.Find(x => x.Id == id);
+                                customComponent.Name = itemName;
+                                customComponent.ShortName = itemShortName;
+                                serviceResponse = await CustomComponentService.PostItem(customComponent);
+                                break;
                         }
                     }
                     else
                     {
-                        toastService.ShowError("You must enter a name and short name!");
+                        toastService.ShowError("You must enter a valid short name!");
                     }
                 }
+                else
+                {
+                    toastService.ShowError("You must enter a name and short name!");
+                }
             }
+
             if (valid)
             {
                 if (serviceResponse.Success)
                 {
-                    ModalInstance.CloseAsync();
+                    await ModalInstance.CloseAsync();
                     toastService.ShowSuccess(GeneralHelper.NormalizeName(type, false) + " updated!");
                     AdminLogService.PostItem(new AdminLogMessage() { Title = "SUCCESS", Message = "(" + GeneralHelper.NormalizeName(type, false) + ") " + itemName + " updated!", Source = currentuser });
                 }
@@ -593,95 +583,103 @@
 
     private async Task FormAction(string type, string action)
     {
-        bool confirm = false;
-        confirm = await JsRuntime.InvokeAsync<bool>("confirm", "This will update all resource types! Are you sure?");
-        if (confirm)
+        try
         {
-
-            responseMessage = new ResponseMessage();
-            var workingmodaloptions = new ModalOptions()
-                {
-                    HideCloseButton = true,
-                    UseCustomLayout = true
-                };
-
-            var workingmodal = Modal.Show<WorkingModal>("Working", workingmodaloptions);
-
-            try
+            bool confirm = false;
+            confirm = await JsRuntime.InvokeAsync<bool>("confirm", "This will update all resource types! Are you sure?");
+            if (confirm)
             {
-                ServiceResponse serviceResponse;
-                switch (type)
+
+                responseMessage = new ResponseMessage();
+                var workingmodaloptions = new ModalOptions()
+                    {
+                        HideCloseButton = true,
+                        UseCustomLayout = true
+                    };
+
+                var workingmodal = Modal.Show<WorkingModal>("Working", workingmodaloptions);
+
+                try
                 {
-                    case "ResourceComponent":
-                        ResourceComponent resourceComponent = servicesData.ResourceComponents.Find(x => x.Id == id);
-                        int componentid = (int)resourceComponent.Id;
-                        responseMessage.Message = resourceComponent.Name;
-                        List<string> currentvalues = new();
-                        switch (action)
-                        {
-                            case "optional-add":
-                                serviceResponse = await ResourceTypeService.UpdateTypeComponents("optional-add", componentid);
-                                if (serviceResponse.Success)
-                                {
-                                    responseMessage.Message += " ADDED as OPTIONAL!";
-                                }
-                                break;
-                            case "optional-remove":
-                                serviceResponse = await ResourceTypeService.UpdateTypeComponents("optional-remove", componentid);
-                                if (serviceResponse.Success)
-                                {
-                                    responseMessage.Message += " REMOVED from OPTIONAL!";
-                                }
-                                break;
-                            case "exclude-add":
-                                serviceResponse = await ResourceTypeService.UpdateTypeComponents("exclude-add", componentid);
-                                if (serviceResponse.Success)
-                                {
-                                    responseMessage.Message += " ADDED as EXCLUDE!";
-                                }
-                                break;
-                            case "exclude-remove":
-                                serviceResponse = await ResourceTypeService.UpdateTypeComponents("exclude-remove", componentid);
-                                if (serviceResponse.Success)
-                                {
-                                    responseMessage.Message += " REMOVED from EXCLUDE!";
-                                }
-                                break;
-                        }
-                        break;
+                    ServiceResponse serviceResponse;
+                    switch (type)
+                    {
+                        case "ResourceComponent":
+                            ResourceComponent resourceComponent = servicesData.ResourceComponents.Find(x => x.Id == id);
+                            int componentid = (int)resourceComponent.Id;
+                            responseMessage.Message = resourceComponent.Name;
+                            List<string> currentvalues = new();
+                            switch (action)
+                            {
+                                case "optional-add":
+                                    serviceResponse = await ResourceTypeService.UpdateTypeComponents("optional-add", componentid);
+                                    if (serviceResponse.Success)
+                                    {
+                                        responseMessage.Message += " ADDED as OPTIONAL!";
+                                    }
+                                    break;
+                                case "optional-remove":
+                                    serviceResponse = await ResourceTypeService.UpdateTypeComponents("optional-remove", componentid);
+                                    if (serviceResponse.Success)
+                                    {
+                                        responseMessage.Message += " REMOVED from OPTIONAL!";
+                                    }
+                                    break;
+                                case "exclude-add":
+                                    serviceResponse = await ResourceTypeService.UpdateTypeComponents("exclude-add", componentid);
+                                    if (serviceResponse.Success)
+                                    {
+                                        responseMessage.Message += " ADDED as EXCLUDE!";
+                                    }
+                                    break;
+                                case "exclude-remove":
+                                    serviceResponse = await ResourceTypeService.UpdateTypeComponents("exclude-remove", componentid);
+                                    if (serviceResponse.Success)
+                                    {
+                                        responseMessage.Message += " REMOVED from EXCLUDE!";
+                                    }
+                                    break;
+                            }
+                            break;
+                    }
+
+                    StateHasChanged();
+                }
+                catch (Exception ex)
+                {
+                    AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                    responseMessage.Type = MessageTypesEnum.ERROR;
+                    responseMessage.Message = "There was a problem with the request.";
                 }
 
-                StateHasChanged();
-            }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
-                responseMessage.Type = MessageTypesEnum.ERROR;
-                responseMessage.Message = "There was a problem with the request.";
-            }
+                workingmodal.Close();
 
-            workingmodal.Close();
-
-            if (responseMessage.Message != null)
-            {
-                responseMessage.Message = "(" + GeneralHelper.NormalizeName(type, false) + ") " + itemName + " " + responseMessage.Message;
-                switch (responseMessage.Type)
+                if (responseMessage.Message != null)
                 {
-                    case MessageTypesEnum.INFORMATION:
-                        toastService.ShowInfo(responseMessage.Message);
-                        break;
-                    case MessageTypesEnum.SUCCESS:
-                        toastService.ShowSuccess(responseMessage.Message);
-                        break;
-                    case MessageTypesEnum.WARNING:
-                        toastService.ShowWarning(responseMessage.Message);
-                        break;
-                    case MessageTypesEnum.ERROR:
-                        toastService.ShowError(responseMessage.Message);
-                        break;
+                    responseMessage.Message = "(" + GeneralHelper.NormalizeName(type, false) + ") " + itemName + " " + responseMessage.Message;
+                    switch (responseMessage.Type)
+                    {
+                        case MessageTypesEnum.INFORMATION:
+                            toastService.ShowInfo(responseMessage.Message);
+                            break;
+                        case MessageTypesEnum.SUCCESS:
+                            toastService.ShowSuccess(responseMessage.Message);
+                            break;
+                        case MessageTypesEnum.WARNING:
+                            toastService.ShowWarning(responseMessage.Message);
+                            break;
+                        case MessageTypesEnum.ERROR:
+                            toastService.ShowError(responseMessage.Message);
+                            break;
+                    }
+                    AdminLogService.PostItem(new AdminLogMessage() { Title = responseMessage.Type.ToString(), Message = responseMessage.Message, Source = currentuser });
                 }
-                AdminLogService.PostItem(new AdminLogMessage() { Title = responseMessage.Type.ToString(), Message = responseMessage.Message, Source = currentuser });
             }
+        }
+        catch (Exception ex)
+        {
+            AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            toastService.ShowError("There was an error with the action! " + ex.Message);
         }
     }
 

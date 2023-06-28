@@ -35,7 +35,6 @@ namespace AzureNamingTool.Controllers
             try
             {
                 ResourceNameResponse resourceNameRequestResponse = await ResourceNamingRequestService.RequestNameWithComponents(request);
-
                 if (resourceNameRequestResponse.Success)
                 {
                     return Ok(resourceNameRequestResponse);
@@ -74,6 +73,39 @@ namespace AzureNamingTool.Controllers
                 else
                 {
                     return BadRequest(resourceNameRequestResponse);
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // POST api/<ResourceNamingRequestsController>
+        /// <summary>
+        /// This function will validate the name for the specified resource type and delimiter.  
+        /// </summary>
+        /// <param name="validatedNameRequest">ValidatedNameRequest (json) - Validated Name Request data</param>
+        /// <returns>ValidatedNameResponse - Name validation response</returns>
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> ValidateName([FromBody] ValidatedNameRequest validatedNameRequest)
+        {
+            try
+            {
+                ServiceResponse serviceResponse = new();
+                // Get the current delimiter
+                serviceResponse = await ResourceDelimiterService.GetCurrentItem();
+                serviceResponse = await ResourceTypeService.ValidateResourceTypeName(validatedNameRequest);
+                if (serviceResponse.Success)
+                {
+                    ValidatedNameResponse validatedNameResponse = (ValidatedNameResponse)serviceResponse.ResponseObject;
+                    return Ok(validatedNameResponse);
+                }
+                else
+                {
+                    return BadRequest("There was a problem validating the name.");
                 }
             }
             catch (Exception ex)

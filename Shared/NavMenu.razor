@@ -9,7 +9,7 @@
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/"><img src="images/AzureNamingToolLogo-NoText.png" height="20px;" style="vertical-align:top;margin-top:2px;padding-right:10px;" alt="Azure Naming Tool" />Azure Naming Tool</a>
+        <a class="navbar-brand" href="/"><img src="images/AzureNamingToolLogo-NoText.png" height="20" style="vertical-align:top;margin-top:2px;padding-right:10px;" alt="Azure Naming Tool" />Azure Naming Tool</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -159,13 +159,9 @@
     private bool collapseNavMenu = true;
     private ServicesData servicesData = new();
     private bool admin;
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : String.Empty;
     private bool newsenabled = false;
     private bool connected = true;
-
-    protected override async Task OnInitializedAsync()
-    {
-    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -173,7 +169,7 @@
         admin = (bool)result.Value;
         if (firstRender)
         {
-            if (ConfigurationHelper.VerifyConnectivity())
+            if (await ConfigurationHelper.VerifyConnectivity())
             {
                 servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
                 try
@@ -216,9 +212,12 @@
 
     private async void NewsChanged(ChangeEventArgs e)
     {
-        newsenabled = (bool)e.Value;
-        await storage.SetAsync("newsenabled", newsenabled);
-        state.NewsEnabled = newsenabled;
-        StateHasChanged();
+        if (e.Value != null)
+        {
+            newsenabled = (bool)e.Value;
+            await storage.SetAsync("newsenabled", newsenabled);
+            state.NewsEnabled = newsenabled;
+            StateHasChanged();
+        }
     }
 }

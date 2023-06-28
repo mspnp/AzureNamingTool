@@ -2,7 +2,8 @@
 
 # Azure Naming Tool v2 - Release Notes Archive
 
-- [Version 2.8.0 (Current)](/RELEASENOTES.md)
+- [Version 3.0.0 (Current)](/RELEASENOTES.md)
+- [Version 2.8.0](#version-270)
 - [Version 2.7.0](#version-270)
 - [Version 2.6.0](#version-260)
 - [Version 2.5.0](#version-250)
@@ -14,6 +15,36 @@
 - [Version 2.1.0](#version-210)
 - [Version 2.0.0](#version-200)
 
+## Version 2.8.0
+### IMPORTANT NOTES
+- The Azure Naming Tool will moving to a new GitHub repo in the next version! This change will allow us more frequent updates, enhanced features, and the ability to request new features and report bugs. [**View the Azure Naming Tool V3 Migration Guide**](https://github.com/mspnp/AzureNamingTool/docs/V3REPOSITORYMIGRATION.md).
+- You can learn more about the new Identity Provider Integration in [**HERE**](https://soltisweb.com/blog/detail/2023-06-azurenamingtool-identityproviderintegrationdeepdive).
+
+### Features
+- Added Identity Settings to site (to identify users when authenticating using an Identity provider)
+- Added functionality to set Identity Header Name
+- Added functionality to assign user identity as Admin
+- Added logging for users accessing the site
+- Added logging for users updating configuration
+- Added logging for Name Generation
+- Updated Admin Page layout/styling
+- Added User name to header, when using Identity provider
+- Added functionality to configure min/max lengths for components
+- Added site setting to enable/disable resource type editing
+- Added functionality to configure min/max lengths for resource types
+- Updated site messaging
+- Updated default configuration data
+- Updated Installation documentation
+- Updated documentation structure/formatting
+
+### Bug fixes
+- Updated Resource Name Generation to include component details
+- Optimized code in several files
+- Updated Home page documentation
+- Updated Name Generation process to properly handle optional custom components
+- Updated Bootstrap references to 5.3
+- Updated JS/CSS references to local file versions
+- 
 ## Version 2.7.0
 ### Features
 - Added Free Form Text Field component

@@ -6,9 +6,8 @@
 <a class="twitter-timeline" data-height="400" data-theme="dark" href="https://twitter.com/AzureNamingTool?ref_src=twsrc%5Etfw">Tweets by AzureNamingTool</a>
 
 @code {
-
     [Inject]
-    public IJSRuntime JsRuntime { get; set; }
+    public IJSRuntime? JsRuntime { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

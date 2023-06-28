@@ -35,7 +35,7 @@
         <div class="mb-3">This page contains the inputs to customize the Azure Naming Tool configuration.</div>
         @if (admin)
         {
-            @if ((!ConfigurationHelper.VerifyConnectivity()) && (!connectivityalertshown))
+            @if ((!ConfigurationHelper.VerifyConnectivity().Result) && (!connectivityalertshown))
             {
                 <div>
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -51,7 +51,7 @@
                     </div>
                 </div>
             }
-            @if ((!versionalertshown) && (versionalert != ""))
+            @if ((!versionalertshown) && (!String.IsNullOrEmpty(versionalert)))
             {
                 <div>
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -1001,7 +1001,7 @@
                                                             </p>
                                                         </div>
                                                     </div>
-                                                    @if (ConfigurationHelper.VerifyConnectivity())
+                                                    @if (ConfigurationHelper.VerifyConnectivity().Result)
                                                     {
                                                         <div class="card  w-auto mb-3">
                                                             <div class="card card-header bg-default text-dark" style="font-weight:bold;">
@@ -1393,7 +1393,7 @@
                                                         <option value="">Select a resource type</option>
                                                         @foreach (var type in @ResourceTypeService.GetFilteredResourceTypes(servicesData.ResourceTypes, selectedResourceTypeCategory))
                                                         {
-                                                            @if (type.Property != "")
+                                                            @if (!String.IsNullOrEmpty(type.Property))
                                                             {
                                                                 <option value="@type.Id">@type.Resource - @type.Property (@type.ShortName)</option>
                                                             }
@@ -1437,7 +1437,7 @@
                                                                 if (!IsTypeVisible(item))
                                                                     continue;
                                                                 <tr class="@GeneralHelper.SetTextEnabledClass(item.Enabled)">
-                                                                    @if (item.Property != "")
+                                                                    @if (!String.IsNullOrEmpty(item.Property))
                                                                     {
                                                                         <td>@item.Resource - @item.Property<a id="@item.Id"></a></td>
                                                                     }
@@ -1530,7 +1530,7 @@
                                                             </p>
                                                         </div>
                                                     </div>
-                                                    @if (ConfigurationHelper.VerifyConnectivity())
+                                                    @if (ConfigurationHelper.VerifyConnectivity().Result)
                                                     {
                                                         <div class="card  w-auto mb-3">
                                                             <div class="card card-header bg-default text-dark" style="font-weight:bold;">
@@ -1774,13 +1774,19 @@
                                 </div>
                                 <div class="card card-body @theme.ThemeStyle">
                                     <p>
-                                        Click <strong>Export</strong> to export the current Global Configuration. This includes all component, settings, and Admin passwords/API keys.
+                                        Click <strong>Export</strong> to export the current Global Configuration. This includes all components, options, and tool settings.
                                     </p>
                                     <p>
                                         <button type="button" class="btn btn-primary" @onclick=@(e => FormAction("Global",0,"download")) title="Export">
                                             <span class="oi oi-data-transfer-download" aria-hidden="true"></span> Export
                                         </button>
-                                        <input title="Include Admin Configuration" class="form-check-input" type="checkbox" @bind="@includeAdmin" style="margin-top: 9px; margin-left:10px;"> Include Admin Configuration?
+                                        @if (currentuser == "GlobalAdmin")
+                                        {
+                                            <span>
+                                                <input title="Include Security/Identity Provider Settings" class="form-check-input" type="checkbox" @bind="@includeAdmin" style="margin-top: 9px; margin-left:10px;">
+                                                Include Security/Identity Provider Settings?
+                                            </span>
+                                        }
                                     </p>
                                 </div>
                             </div>
@@ -1856,63 +1862,60 @@
 
 @code {
     [Inject]
-    public IBlazorDownloadFileService BlazorDownloadFileService { get; set; }
+    public IBlazorDownloadFileService? BlazorDownloadFileService { get; set; }
     [CascadingParameter]
-    public IModalService Modal { get; set; }
+    public IModalService? Modal { get; set; }
     [CascadingParameter]
     protected ThemeInfo? theme { get; set; }
 
     private ServicesData servicesData = new();
     private bool dataLoaded = false;
-    private bool admin;
+    private bool admin = false;
     private bool connectivityalertshown = false;
-    private string? versionalert = "";
+    private string versionalert = String.Empty;
     private bool versionalertshown = false;
     private bool dismissalert = false;
-    private bool configurationalertshown = false;
     private bool configurationfilealertshown = false;
     private string appversion = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
 
-    public string filterData { get; set; }
+    public string filterData { get; set; } = String.Empty;
 
     private string[] protectedComponents = new string[] { "resourcetype", "resourcedelimiter" };
-    private List<string> categories = new List<string>();
-    private string? selectedResourceTypeCategory = "";
-    private string? newComponentConfig;
-    private string? newDelimiterConfig;
-    private string? newEnvironmentName;
-    private string? newEnvironmentShortName;
-    private string? newEnvironmentConfig;
-    private string? newLocationName;
-    private string? newLocationShortName;
-    private string? newLocationConfig;
-    private string? newOrgName;
-    private string? newOrgShortName;
-    private string? newOrgConfig;
-    private string? newProjAppSvcName;
-    private string? newProjAppSvcShortName;
-    private string? newProjAppSvcConfig;
-    private string? newTypeConfig;
-    private string? newUnitDeptName;
-    private string? newUnitDeptShortName;
-    private string? newUnitDeptConfig;
-    private string? newFunctionName;
-    private string? newFunctionShortName;
-    private string? newFunctionConfig;
-    private string? newCustomComponentConfig;
-    private string? newGlobalConfig;
+    private List<string> categories = new();
+    private string selectedResourceTypeCategory = String.Empty;
+    private string newComponentConfig = String.Empty;
+    private string newDelimiterConfig = String.Empty;
+    private string newEnvironmentName = String.Empty;
+    private string newEnvironmentShortName = String.Empty;
+    private string newEnvironmentConfig = String.Empty;
+    private string newLocationName = String.Empty;
+    private string newLocationShortName = String.Empty;
+    private string newLocationConfig = String.Empty;
+    private string newOrgName = String.Empty;
+    private string newOrgShortName = String.Empty;
+    private string newOrgConfig = String.Empty;
+    private string newProjAppSvcName = String.Empty;
+    private string newProjAppSvcShortName = String.Empty;
+    private string newProjAppSvcConfig = String.Empty;
+    private string newTypeConfig = String.Empty;
+    private string newUnitDeptName = String.Empty;
+    private string newUnitDeptShortName = String.Empty;
+    private string newUnitDeptConfig = String.Empty;
+    private string newFunctionName = String.Empty;
+    private string newFunctionShortName = String.Empty;
+    private string newFunctionConfig = String.Empty;
+    private string newCustomComponentConfig = String.Empty;
+    private string newGlobalConfig = String.Empty;
     private bool refreshtypeshortnames = false;
     private bool refreshlocationshortnames = false;
     private bool includeAdmin = false;
+    private string currentuser = String.Empty;
 
     private ResponseMessage message = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        currentuser = await IdentityHelper.GetCurrentUser(session);
         if (firstRender)
         {
             var result = await session.GetAsync<bool>("admin");
@@ -1921,9 +1924,7 @@
 
             // Get the list of categories
             categories = ResourceTypeService.GetTypeCategories(servicesData.ResourceTypes);
-
             dataLoaded = true;
-
 
             // Determine if the connectivity notification has been dismissed
             var resultConnectivityAlertShown = await session.GetAsync<bool>("connectivityalertshown");
@@ -1940,7 +1941,7 @@
                 if (!versionalertshown)
                 {
                     versionalert = ConfigurationHelper.GetVersionAlert().Result;
-                    if (versionalert == "")
+                    if (String.IsNullOrEmpty(versionalert))
                     {
                         versionalertshown = true;
                         await session.SetAsync("versionalert-" + appversion + "-shown", true);
@@ -1951,7 +1952,7 @@
                 configurationfilealertshown = resultConfigurationFileAlert.Success ? resultConfigurationFileAlert.Value : false;
 
                 // Check connectivity
-                if (ConfigurationHelper.VerifyConnectivity())
+                if (await ConfigurationHelper.VerifyConnectivity())
                 {
                     if (!configurationfilealertshown)
                     {
@@ -2364,7 +2365,7 @@
                                     {
                                         message.Type = MessageTypesEnum.SUCCESS;
                                         message.Message = "Resource Environments config update succeeded!";
-                                        newEnvironmentConfig = null;
+                                        newEnvironmentConfig = String.Empty;
                                     }
                                     else
                                     {
@@ -2479,7 +2480,7 @@
                                     {
                                         message.Type = MessageTypesEnum.SUCCESS;
                                         message.Message = "Functions configuration update succeeded!";
-                                        newFunctionConfig = null;
+                                        newFunctionConfig = String.Empty;
                                     }
                                     else
                                     {
@@ -2602,7 +2603,7 @@
                                     {
                                         message.Type = MessageTypesEnum.SUCCESS;
                                         message.Message = "Resource Locations config update succeeded!";
-                                        newLocationConfig = null;
+                                        newLocationConfig = String.Empty;
                                     }
                                     else
                                     {
@@ -2717,7 +2718,7 @@
                                     {
                                         message.Type = MessageTypesEnum.SUCCESS;
                                         message.Message = "Resource Orgs config update succeeded!";
-                                        newOrgConfig = null;
+                                        newOrgConfig = String.Empty;
                                     }
                                     else
                                     {
@@ -2832,7 +2833,7 @@
                                     {
                                         message.Type = MessageTypesEnum.SUCCESS;
                                         message.Message = "ProjAppSvcs configuration update succeeded!";
-                                        newProjAppSvcConfig = null;
+                                        newProjAppSvcConfig = String.Empty;
                                     }
                                     else
                                     {
@@ -2937,7 +2938,7 @@
                                     {
                                         message.Type = MessageTypesEnum.SUCCESS;
                                         message.Message = "Types configuration update succeeded!";
-                                        newTypeConfig = null;
+                                        newTypeConfig = String.Empty;
                                     }
                                     else
                                     {
@@ -3052,7 +3053,7 @@
                                     {
                                         message.Type = MessageTypesEnum.SUCCESS;
                                         message.Message = "Units/Depts configuration update succeeded!";
-                                        newFunctionConfig = null;
+                                        newFunctionConfig = String.Empty;
                                     }
                                     else
                                     {
@@ -3111,7 +3112,7 @@
                             }
                             break;
                         case "add":
-                            // Get the component in the list                           
+                            // Get the component in the list
                             ShowAddModal((int)id, "CustomComponent", "Add Custom Component", "<p>Add a Custom Component.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", parentcomponent);
                             break;
                         case "edit":
@@ -3259,7 +3260,7 @@
 
                                         message.Type = MessageTypesEnum.SUCCESS;
                                         message.Message = "Custom Components configuration update succeeded!";
-                                        newFunctionConfig = null;
+                                        newFunctionConfig = String.Empty;
                                     }
                                     else
                                     {
@@ -3303,7 +3304,7 @@
                             }
                             break;
                         case "update":
-                            if (newGlobalConfig != null)
+                            if (GeneralHelper.IsNotNull(newGlobalConfig))
                             {
                                 confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Global configuration and cannot be undone!\n\nAre you sure?");
                                 if (confirm)
@@ -3313,7 +3314,7 @@
                                     {
                                         message.Type = MessageTypesEnum.SUCCESS;
                                         message.Message = "Global config update succeeded!";
-                                        newGlobalConfig = null;
+                                        newGlobalConfig = String.Empty;
                                     }
                                     else
                                     {
@@ -3362,8 +3363,7 @@
             workingmodal.Close();
         }
 
-
-        if (message.Message != null)
+        if (!String.IsNullOrEmpty(message.Message))
         {
             message.Message = "(" + type + ") " + message.Message;
             switch (message.Type)
@@ -3542,12 +3542,12 @@
         }
     }
 
-    private async void ShowInstructionsModal()
+    private void ShowInstructionsModal()
     {
         try
         {
             var parameters = new ModalParameters();
-            parameters.Add(nameof(InformationModal.message), null);
+            parameters.Add(nameof(InformationModal.message), String.Empty);
             parameters.Add(nameof(InformationModal.title), "Configuration");
             parameters.Add(nameof(InformationModal.headerstyle), "bg-navcolor");
             parameters.Add(nameof(InformationModal.component), "toolconfigurationinstructions");
@@ -3579,7 +3579,7 @@
         await JsRuntime.InvokeVoidAsync("scrollIntoView", e.Value.ToString());
     }
 
-    private async Task OnInstructionsClick()
+    private void OnInstructionsClick()
     {
         NavigationManager.NavigateTo("/instructions");
     }

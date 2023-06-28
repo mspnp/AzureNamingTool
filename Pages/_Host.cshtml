@@ -15,7 +15,7 @@
     // Check if there is an HttpContext object
     if (this.HttpContext != null)
     {
-        if(this.HttpContext.Request.Headers != null)
+        if (this.HttpContext.Request.Headers != null)
         {
             // Get the Identity provider, if using Azure App Service Authentication
             if (this.HttpContext.Request.Headers.ContainsKey("X-MS-CLIENT-PRINCIPAL-IDP"))
@@ -158,5 +158,4 @@
     function expandMultiSelectParent(sender) {
         console.log("test!");
     }
-
 </script>

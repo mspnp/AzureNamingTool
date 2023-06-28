@@ -6,15 +6,15 @@ namespace AzureNamingTool.Models
     {
         public long Id { get; set; }
         [Required()]
-        public string Name { get; set; }
+        public string Name { get; set; } =  String.Empty;
         [Required()]
-        public string DisplayName { get; set; }
+        public string DisplayName { get; set; } =  String.Empty;
         [Required()]
         public bool Enabled { get; set; }
         public int SortOrder { get; set; } = 0;
         public bool IsCustom { get; set; } = false;
         public bool IsFreeText { get; set; } = false;
-        public string? MinLength { get; set; }
-        public string? MaxLength { get; set; }
+        public string MinLength { get; set; } = "1";
+        public string MaxLength { get; set; } = "10";
     }
 }

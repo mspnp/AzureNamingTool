@@ -7,7 +7,7 @@ namespace AzureNamingTool.Services
 {
     public class AdminLogService
     {
-        private static ServiceResponse serviceResponse = new();
+        private static readonly ServiceResponse serviceResponse = new();
 
         /// <summary>
         /// This function returns the Admin log. 
@@ -24,7 +24,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                await AdminLogService.PostItem(new AdminLogMessage { Title = "Error", Message = ex.Message });
+                AdminLogService.PostItem(new AdminLogMessage { Title = "Error", Message = ex.Message });
                 serviceResponse.Success = false;
                 serviceResponse.ResponseObject = ex;
             }
@@ -35,13 +35,12 @@ namespace AzureNamingTool.Services
         /// <summary>
         /// This function logs the Admin message.
         /// </summary>
-        public static async Task<ServiceResponse> PostItem(AdminLogMessage adminlogMessage)
+        public static async void PostItem(AdminLogMessage adminlogMessage)
         {
-            ServiceResponse serviceReponse = new();
             try
             {
                 // Log the created name
-                var items = await ConfigurationHelper.GetList<AdminLogMessage>();       
+                var items = await ConfigurationHelper.GetList<AdminLogMessage>();
                 if (items != null)
                 {
                     if (items.Count > 0)
@@ -53,14 +52,11 @@ namespace AzureNamingTool.Services
                 items.Add(adminlogMessage);
                 // Write items to file
                 await ConfigurationHelper.WriteList<AdminLogMessage>(items);
-                serviceReponse.Success = true;
             }
             catch (Exception)
             {
                 // No exception is logged due to this function being the function that would complete the action.
-                serviceReponse.Success = false;
             }
-            return serviceReponse;
         }
 
         /// <summary>
@@ -78,7 +74,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                await AdminLogService.PostItem(new AdminLogMessage { Title = "ERROR", Message = ex.Message });
+                AdminLogService.PostItem(new AdminLogMessage { Title = "ERROR", Message = ex.Message });
                 serviceResponse.Success = false;
             }
             return serviceReponse;

@@ -6,10 +6,10 @@ namespace AzureNamingTool.Models
     {
         public long Id { get; set; }
         [Required()]
-        public string Name { get; set; }
-        public string Delimiter { get; set; }
+        public string Name { get; set; } =  String.Empty;
+        public string Delimiter { get; set; } =  String.Empty;
         [Required()]
-        public bool Enabled { get; set; }
+        public bool Enabled { get; set; } = true;
         public int SortOrder { get; set; } = 0;
     }
 }

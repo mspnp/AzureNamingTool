@@ -69,7 +69,7 @@ namespace AzureNamingTool.Helpers
                 ObjectCache memoryCache = MemoryCache.Default;
                 var cacheKeys = memoryCache.Select(kvp => kvp.Key).ToList();
                 foreach (var key in cacheKeys.OrderBy(x => x))
-                {                    
+                {
                     data.Append("<p><strong>" + key + "</strong></p><div class=\"alert alert-secondary\" style=\"word-wrap:break-word;\">" + MemoryCache.Default[key].ToString() + "</div>");
                 }
             }
@@ -79,6 +79,23 @@ namespace AzureNamingTool.Helpers
                 data.Append("<p><strong>No data currently cached.</strong></p>");
             }
             return data.ToString();
+        }
+
+        public static void ClearAllCache()
+        {
+            try
+            {
+                ObjectCache memoryCache = MemoryCache.Default;
+                List<string> cacheKeys = memoryCache.Select(kvp => kvp.Key).ToList();
+                foreach (string cacheKey in cacheKeys)
+                {
+                    memoryCache.Remove(cacheKey);
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            }
         }
     }
 }

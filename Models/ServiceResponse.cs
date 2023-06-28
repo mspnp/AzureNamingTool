@@ -4,8 +4,8 @@ namespace AzureNamingTool.Models
 {
     public class ServiceResponse
     {
-        public bool Success { get; set; }
-        public dynamic ResponseObject { get; set; }
-        public string? ResponseMessage { get; set; }
+        public bool Success { get; set; } = false;
+        public dynamic? ResponseObject { get; set; } = null;
+        public string ResponseMessage { get; set; } =  String.Empty;
     }
 }

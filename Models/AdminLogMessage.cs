@@ -4,8 +4,8 @@
     {
         public long? Id { get; set; } = 0;
         public DateTime CreatedOn { get; set; } = DateTime.Now;
-        public string Title { get; set; }
-        public string Message { get; set; }
-        public string? Source { get; set; } = "System";
+        public string Title { get; set; } =  String.Empty;
+        public string Message { get; set; } =  String.Empty;
+        public string Source { get; set; } = "System";
     }
 }

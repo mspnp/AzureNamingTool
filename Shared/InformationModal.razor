@@ -73,15 +73,15 @@
 
     [Parameter]
     public EventCallback<bool> OnClose { get; set; }
-    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
-    [Parameter] public ThemeInfo theme { get; set; }
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new();
+    [Parameter] public ThemeInfo theme { get; set; } = new();
 
-    [Parameter] public string title { get; set; }
-    [Parameter] public string message { get; set; } = null;
-    [Parameter] public string headerstyle { get; set; }
-    [Parameter] public object component { get; set; } = null;
+    [Parameter] public string title { get; set; } = String.Empty;
+    [Parameter] public string message { get; set; } = String.Empty;
+    [Parameter] public string headerstyle { get; set; } = String.Empty;
+    [Parameter] public object component { get; set; } = new();
     [Parameter] public bool admin { get; set; } = false;
-    [Parameter] public string externalurl { get; set; }
+    [Parameter] public string externalurl { get; set; } = String.Empty;
 
 
     async Task Confirm() => await ModalInstance.CloseAsync();

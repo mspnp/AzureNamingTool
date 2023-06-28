@@ -1,6 +1,7 @@
 ﻿using AzureNamingTool.Helpers;
 using AzureNamingTool.Models;
 using Microsoft.AspNetCore.Components;
+using System;
 using System.ComponentModel.Design;
 using System.Linq;
 using System.Security.AccessControl;
@@ -201,9 +202,9 @@ namespace AzureNamingTool.Services
         {
             List<ResourceType> currenttypes = new();
             // Filter out resource types that should have name generation
-            if (filter != "")
+            if (!String.IsNullOrEmpty(filter))
             {
-                currenttypes = types.Where(x => x.Resource.ToLower().StartsWith(filter.ToLower() + "/") && x.Property.ToLower() != "display name" && x.ShortName != "").ToList();
+                currenttypes = types.Where(x => x.Resource.ToLower().StartsWith(filter.ToLower() + "/") && x.Property.ToLower() != "display name" && !String.IsNullOrEmpty(x.ShortName)).ToList();
             }
             else
             {
@@ -223,7 +224,7 @@ namespace AzureNamingTool.Services
                 string url = "https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/repository/resourcetypes.json";
 
                 string refreshdata = await GeneralHelper.DownloadString(url);
-                if (refreshdata != "")
+                if (!String.IsNullOrEmpty(refreshdata))
                 {
                     var newtypes = new List<ResourceType>();
                     var options = new JsonSerializerOptions
@@ -247,7 +248,7 @@ namespace AzureNamingTool.Services
                             newtype.Exclude = oldtype.Exclude;
                             newtype.Optional = oldtype.Optional;
                             newtype.Enabled = oldtype.Enabled;
-                            if ((!shortNameReset) || (oldtype.ShortName == ""))
+                            if ((!shortNameReset) || (String.IsNullOrEmpty(oldtype.ShortName)))
                             {
                                 newtype.ShortName = oldtype.ShortName;
                             }
@@ -343,6 +344,51 @@ namespace AzureNamingTool.Services
                     }
                 }
                 serviceResponse.Success = true;
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                serviceResponse.Success = false;
+                serviceResponse.ResponseObject = ex;
+            }
+            return serviceResponse;
+        }
+
+        public static async Task<ServiceResponse> ValidateResourceTypeName(ValidatedNameRequest validatedNameRequest)
+        {
+            try
+            {
+                ServiceResponse serviceResponse = new();
+                ResourceDelimiter? resourceDelimiter = new();
+                // Get the current delimiter
+                serviceResponse = await ResourceDelimiterService.GetCurrentItem();
+                if (serviceResponse.Success)
+                {
+                    resourceDelimiter = serviceResponse.ResponseObject as ResourceDelimiter;
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Delimiter value could not be set.";
+                    serviceResponse.Success = false;
+                    return serviceResponse;
+                }
+
+                // Get the specifed resource type
+                serviceResponse = await ResourceTypeService.GetItems(true); 
+                if (serviceResponse.Success)
+                {
+                    // Get the resource types
+                    List<ResourceType> resourceTypes = (List<ResourceType>)serviceResponse.ResponseObject;
+                    // Get the specified resoure type
+                    ResourceType resourceType = resourceTypes.FirstOrDefault(x => x.ShortName == validatedNameRequest.ResourceType);
+                    if(GeneralHelper.IsNotNull(resourceType))
+                    {
+                        // Create a validated name request
+                        ValidatedNameResponse validatedNameResponse= ValidationHelper.ValidateGeneratedName(resourceType, validatedNameRequest.Name, resourceDelimiter.Delimiter);
+                        serviceResponse.ResponseObject = validatedNameResponse;
+                        serviceResponse.Success = true;
+                    }
+                }
             }
             catch (Exception ex)
             {

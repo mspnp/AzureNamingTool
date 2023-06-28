@@ -6,7 +6,7 @@ namespace AzureNamingTool.Services
 {
     public class GeneratedNamesService
     {
-        private static ServiceResponse serviceResponse = new();
+        private static readonly ServiceResponse serviceResponse = new();
 
         /// <summary>
         /// This function gets the generated names log. 
@@ -24,7 +24,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                await AdminLogService.PostItem(new AdminLogMessage{ Title = "ERROR", Message = ex.Message });
+                AdminLogService.PostItem(new AdminLogMessage{ Title = "ERROR", Message = ex.Message });
                 serviceResponse.Success = false;
             }
             return serviceResponse;
@@ -52,13 +52,13 @@ namespace AzureNamingTool.Services
         /// <summary>
         ///  This function logs the generated name. 
         /// </summary>
-        /// <param name="lstGeneratedName">GeneratedName - Generated name and components.</param>
+        /// <param name="generatedName">GeneratedName - Generated name and components.</param>
         public static async Task<ServiceResponse> PostItem(GeneratedName generatedName)
         {
             ServiceResponse serviceReponse = new();
             try
             {
-                /// Get the previously generated names
+                // Get the previously generated names
                 var items = await ConfigurationHelper.GetList<GeneratedName>();
                 if ((items != null) && (items.Count > 0))
                 {
@@ -72,7 +72,7 @@ namespace AzureNamingTool.Services
                 items.Add(generatedName);
 
                 // Write items to file
-                ConfigurationHelper.WriteList<GeneratedName>(items);
+                await ConfigurationHelper.WriteList<GeneratedName>(items);
 
                 CacheHelper.InvalidateCacheObject("generatednames.json");
 
@@ -80,7 +80,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                await AdminLogService.PostItem(new AdminLogMessage { Title = "ERROR", Message = ex.Message });
+                AdminLogService.PostItem(new AdminLogMessage { Title = "ERROR", Message = ex.Message });
                 serviceReponse.Success = false;
             }
             return serviceReponse;
@@ -119,13 +119,13 @@ namespace AzureNamingTool.Services
             ServiceResponse serviceReponse = new();
             try
             {
-                List<GeneratedName> items = new List<GeneratedName>();
+                List<GeneratedName> items = new();
                 await ConfigurationHelper.WriteList<GeneratedName>(items);
                 serviceReponse.Success = true;
             }
             catch (Exception ex)
             {
-                await AdminLogService.PostItem(new AdminLogMessage { Title = "Error", Message = ex.Message });
+                AdminLogService.PostItem(new AdminLogMessage { Title = "Error", Message = ex.Message });
                 serviceResponse.Success = false;
             }
             return serviceReponse;

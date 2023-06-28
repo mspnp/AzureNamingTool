@@ -38,7 +38,7 @@ namespace AzureNamingTool.Services
                 var resourceType = request.ResourceType;
 
                 // Check static value
-                if (resourceType.StaticValues != "")
+                if (!String.IsNullOrEmpty(resourceType.StaticValues))
                 {
                     // Return the static value and message and stop generation.
                     response.ResourceName = resourceType.StaticValues;
@@ -84,11 +84,11 @@ namespace AzureNamingTool.Services
                             if (!ignoredelimeter)
                             {
                                 // Check if delimeter is an invalid character
-                                if (resourceType.InvalidCharacters != "")
+                                if (!String.IsNullOrEmpty(resourceType.InvalidCharacters))
                                 {
                                     if (!resourceType.InvalidCharacters.Contains(request.ResourceDelimiter.Delimiter))
                                     {
-                                        if (name != "")
+                                        if (!String.IsNullOrEmpty(name))
                                         {
                                             name += request.ResourceDelimiter.Delimiter;
                                         }
@@ -104,7 +104,7 @@ namespace AzureNamingTool.Services
                                 else
                                 {
                                     // Deliemeter is valid so add it
-                                    if (name != "")
+                                    if (!String.IsNullOrEmpty(name))
                                     {
                                         name += request.ResourceDelimiter.Delimiter;
                                     }
@@ -166,15 +166,24 @@ namespace AzureNamingTool.Services
 
                 // Validate the generated name for the resource type
                 // CALL VALIDATION FUNCTION
-                Tuple<bool, string, StringBuilder> namevalidation = ValidationHelper.ValidateGeneratedName(resourceType, name, request.ResourceDelimiter.Delimiter);
-
-                valid = (bool)namevalidation.Item1;
-                name = (string)namevalidation.Item2;
-                if ((StringBuilder)namevalidation.Item3 != null)
+                ValidatedNameRequest validatedNameRequest = new ValidatedNameRequest() { 
+                    ResourceType = resourceType.ShortName,
+                    Name = name
+                };
+                serviceResponse = await ResourceTypeService.ValidateResourceTypeName(validatedNameRequest);
+                if(serviceResponse.Success)
                 {
-                    sbMessage.Append((StringBuilder)namevalidation.Item3);
+                    ValidatedNameResponse validatedNameResponse = (ValidatedNameResponse)serviceResponse.ResponseObject;
+                    valid = validatedNameResponse.Valid;
+                    if (!String.IsNullOrEmpty(validatedNameResponse.Name))
+                    {
+                        name = validatedNameResponse.Name;
+                    }
+                    if (!String.IsNullOrEmpty(validatedNameResponse.Message))
+                    {
+                        sbMessage.Append(validatedNameResponse.Message);
+                    }
                 }
-
 
                 if (valid)
                 {
@@ -212,7 +221,7 @@ namespace AzureNamingTool.Services
         /// <returns>ResourceNameResponse - Response of name generation</returns>
         public static async Task<ResourceNameResponse> RequestName(ResourceNameRequest request)
         {
-            ResourceNameResponse response = new()
+            ResourceNameResponse resourceNameResponse = new()
             {
                 Success = false
             };
@@ -222,9 +231,23 @@ namespace AzureNamingTool.Services
                 bool valid = true;
                 bool ignoredelimeter = false;
                 List<string[]> lstComponents = new();
-                ServiceResponse serviceresponse = new();
+                ServiceResponse serviceResponse = new();
                 ResourceDelimiter resourceDelimiter = new();
-                ResourceType resourceType = null;
+                ResourceType? resourceType = null;
+
+                // Get the current delimiter
+                serviceResponse = await ResourceDelimiterService.GetCurrentItem();
+                if (serviceResponse.Success)
+                {
+                    resourceDelimiter = (ResourceDelimiter)serviceResponse.ResponseObject;
+                }
+                else
+                {
+                    valid = false;
+                    resourceNameResponse.Message = "Delimiter value could not be set.";
+                    resourceNameResponse.Success = false;
+                    return resourceNameResponse;
+                }
 
                 // Get the specified resource type
                 var resourceTypes = await ConfigurationHelper.GetList<ResourceType>();
@@ -232,18 +255,18 @@ namespace AzureNamingTool.Services
                 if (resourceTypesByShortName == null)
                 {
                     valid = false;
-                    response.Message = "ResourceType value is invalid.";
-                    response.Success = false;
-                    return response;
+                    resourceNameResponse.Message = "ResourceType value is invalid.";
+                    resourceNameResponse.Success = false;
+                    return resourceNameResponse;
                 }
                 else
                 {
                     if (resourceTypesByShortName.Count == 0)
                     {
                         valid = false;
-                        response.Message = "ResourceType value is invalid.";
-                        response.Success = false;
-                        return response;
+                        resourceNameResponse.Message = "ResourceType value is invalid.";
+                        resourceNameResponse.Success = false;
+                        return resourceNameResponse;
                     }
                     // Check if there are duplicates
                     if (resourceTypesByShortName.Count > 1)
@@ -256,17 +279,17 @@ namespace AzureNamingTool.Services
                             if (resourceType == null)
                             {
                                 valid = false;
-                                response.Message = "Resource Id value is invalid.";
-                                response.Success = false;
-                                return response;
+                                resourceNameResponse.Message = "Resource Id value is invalid.";
+                                resourceNameResponse.Success = false;
+                                return resourceNameResponse;
                             }
                         }
                         else
                         {
                             valid = false;
-                            response.Message = "Your configuration contains multiple resource types for the provided short name. You must supply the Resource Id value for the resource type in your request.(Example: resourceId: 14)";
-                            response.Success = false;
-                            return response;
+                            resourceNameResponse.Message = "Your configuration contains multiple resource types for the provided short name. You must supply the Resource Id value for the resource type in your request.(Example: resourceId: 14)";
+                            resourceNameResponse.Success = false;
+                            return resourceNameResponse;
                         }
                     }
                     else
@@ -276,28 +299,14 @@ namespace AzureNamingTool.Services
                     }
                 }
 
-                // Get the current delimiter
-                serviceresponse = await ResourceDelimiterService.GetCurrentItem();
-                if (serviceresponse.Success)
-                {
-                    resourceDelimiter = (ResourceDelimiter)serviceresponse.ResponseObject;
-                }
-                else
-                {
-                    valid = false;
-                    response.Message = "Delimiter value could not be set.";
-                    response.Success = false;
-                    return response;
-                }
-
                 // Check static value
-                if (resourceType.StaticValues != "")
+                if (!String.IsNullOrEmpty(resourceType.StaticValues))
                 {
                     // Return the static value and message and stop generation.
-                    response.ResourceName = resourceType.StaticValues;
-                    response.Message = "The requested Resource Type name is considered a static value with specific requirements. Please refer to https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules for additional information.";
-                    response.Success = true;
-                    return response;
+                    resourceNameResponse.ResourceName = resourceType.StaticValues;
+                    resourceNameResponse.Message = "The requested Resource Type name is considered a static value with specific requirements. Please refer to https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules for additional information.";
+                    resourceNameResponse.Success = true;
+                    return resourceNameResponse;
                 }
 
                 // Make sure the passed custom component names are normalized
@@ -313,8 +322,8 @@ namespace AzureNamingTool.Services
                 }
 
                 // Get the current components
-                serviceresponse = await ResourceComponentService.GetItems(false);
-                var currentResourceComponents = serviceresponse.ResponseObject;
+                serviceResponse = await ResourceComponentService.GetItems(false);
+                var currentResourceComponents = serviceResponse.ResponseObject;
 
                 string name = "";
 
@@ -335,7 +344,7 @@ namespace AzureNamingTool.Services
                             // Add property value to name, if exists
                             if (value != null)
                             {
-                                if (value != "")
+                                if (!String.IsNullOrEmpty(value))
                                 {
                                     // Validate that the value is a valid option for the component
                                     switch (component.Name.ToLower())
@@ -413,10 +422,10 @@ namespace AzureNamingTool.Services
                                     //var items = await ConfigurationHelper.GetList<ResourceComponent>();
 
                                     // Check if the delimeter is already ignored
-                                    if ((!ignoredelimeter) && (resourceDelimiter.Delimiter != ""))
+                                    if ((!ignoredelimeter) && (!String.IsNullOrEmpty(resourceDelimiter.Delimiter)))
                                     {
                                         // Check if delimeter is an invalid character
-                                        if (resourceType.InvalidCharacters != "")
+                                        if (!String.IsNullOrEmpty(resourceType.InvalidCharacters))
                                         {
                                             if (!resourceType.InvalidCharacters.Contains(resourceDelimiter.Delimiter))
                                             {
@@ -435,7 +444,7 @@ namespace AzureNamingTool.Services
                                         else
                                         {
                                             // Deliemeter is valid so add it
-                                            if (name != "")
+                                            if (!String.IsNullOrEmpty(name))
                                             {
                                                 name += resourceDelimiter.Delimiter;
                                             }
@@ -476,8 +485,8 @@ namespace AzureNamingTool.Services
                         if (!component.IsFreeText)
                         {
                             // Get the custom components data
-                            serviceresponse = await CustomComponentService.GetItems();
-                            var customcomponents = (List<CustomComponent>)serviceresponse.ResponseObject;
+                            serviceResponse = await CustomComponentService.GetItems();
+                            var customcomponents = (List<CustomComponent>)serviceResponse.ResponseObject;
                             // Make sure the custom component has values
                             if (customcomponents.Where(x => x.ParentComponent == normalizedcomponentname).Any())
                             {
@@ -513,7 +522,7 @@ namespace AzureNamingTool.Services
                                                 }
                                                 else
                                                 {
-                                                    if (name != "")
+                                                    if (!String.IsNullOrEmpty(name))
                                                     {
                                                         name += resourceDelimiter.Delimiter;
                                                     }
@@ -571,7 +580,7 @@ namespace AzureNamingTool.Services
                                         }
                                         else
                                         {
-                                            if (name != "")
+                                            if (!String.IsNullOrEmpty(name))
                                             {
                                                 name += resourceDelimiter.Delimiter;
                                             }
@@ -609,9 +618,9 @@ namespace AzureNamingTool.Services
                 // Check if the required component were supplied
                 if (!valid)
                 {
-                    response.ResourceName = "***RESOURCE NAME NOT GENERATED***";
-                    response.Message = "You must supply the required components. " + sbMessage.ToString();
-                    return response;
+                    resourceNameResponse.ResourceName = "***RESOURCE NAME NOT GENERATED***";
+                    resourceNameResponse.Message = "You must supply the required components. " + sbMessage.ToString();
+                    return resourceNameResponse;
                 }
 
                 // Check the Resource Instance value to ensure it's only nmumeric
@@ -629,14 +638,24 @@ namespace AzureNamingTool.Services
                 }
 
                 // Validate the generated name for the resource type
-                // CALL VALIDATION FUNCTION
-                Tuple<bool, string, StringBuilder> namevalidation = ValidationHelper.ValidateGeneratedName(resourceType, name, resourceDelimiter.Delimiter);
-
-                valid = (bool)namevalidation.Item1;
-                name = (string)namevalidation.Item2;
-                if ((StringBuilder)namevalidation.Item3 != null)
+                ValidatedNameRequest validatedName = new ValidatedNameRequest()
                 {
-                    sbMessage.Append((StringBuilder)namevalidation.Item3);
+                    ResourceType = resourceType.ShortName,
+                    Name = name
+                };
+                serviceResponse = await ResourceTypeService.ValidateResourceTypeName(validatedName);
+                if(serviceResponse.Success)
+                {
+                    ValidatedNameResponse validatedNameResponse = (ValidatedNameResponse)serviceResponse.ResponseObject;
+                    valid = validatedNameResponse.Valid;
+                    if (!String.IsNullOrEmpty(validatedNameResponse.Name))
+                    {
+                        name = validatedNameResponse.Name;
+                    }
+                    if (!String.IsNullOrEmpty(validatedNameResponse.Message))
+                    {
+                        sbMessage.Append(validatedNameResponse.Message);
+                    }
                 }
 
                 if (valid)
@@ -646,8 +665,8 @@ namespace AzureNamingTool.Services
                     if (!ConfigurationHelper.VerifyDuplicateNamesAllowed())
                     {
                         // Check if the name already exists
-                        serviceresponse = await GeneratedNamesService.GetItems();
-                        var names = (List<GeneratedName>)serviceresponse.ResponseObject;
+                        serviceResponse = await GeneratedNamesService.GetItems();
+                        var names = (List<GeneratedName>)serviceResponse.ResponseObject;
                         if (names.Where(x => x.ResourceName == name).Any())
                         {
                             nameallowed = false;
@@ -666,46 +685,46 @@ namespace AzureNamingTool.Services
                         ServiceResponse responseGenerateName = await GeneratedNamesService.PostItem(generatedName);
                         if (responseGenerateName.Success)
                         {
-                            response.Success = true;
-                            response.ResourceName = name.ToLower();
-                            response.Message = sbMessage.ToString();
-                            response.resourceNameDetails = generatedName;
+                            resourceNameResponse.Success = true;
+                            resourceNameResponse.ResourceName = name.ToLower();
+                            resourceNameResponse.Message = sbMessage.ToString();
+                            resourceNameResponse.ResourceNameDetails = generatedName;
 
                             // Check if the GenerationWebhook is configured
                             String webhook = ConfigurationHelper.GetAppSetting("GenerationWebhook", true);
                             if (!String.IsNullOrEmpty(webhook))
                             {
                                 // Asynchronously post to the webhook
-                                ConfigurationHelper.PostToGenerationWebhook(webhook, generatedName);
+                                await ConfigurationHelper.PostToGenerationWebhook(webhook, generatedName);
                             }
                         }
                         else
                         {
-                            response.Success = false;
-                            response.ResourceName = "***RESOURCE NAME NOT GENERATED***";
-                            response.Message = "There was an error generating the name. Please try again.";
+                            resourceNameResponse.Success = false;
+                            resourceNameResponse.ResourceName = "***RESOURCE NAME NOT GENERATED***";
+                            resourceNameResponse.Message = "There was an error generating the name. Please try again.";
                         }
                     }
                     else
                     {
-                        response.Success = false;
-                        response.ResourceName = "***RESOURCE NAME NOT GENERATED***";
-                        response.Message = "The name (" + name + ") you are trying to generate already exists. Please select different component options and try again.";
+                        resourceNameResponse.Success = false;
+                        resourceNameResponse.ResourceName = "***RESOURCE NAME NOT GENERATED***";
+                        resourceNameResponse.Message = "The name (" + name + ") you are trying to generate already exists. Please select different component options and try again.";
                     }
-                    return response;
+                    return resourceNameResponse;
                 }
                 else
                 {
-                    response.ResourceName = "***RESOURCE NAME NOT GENERATED***";
-                    response.Message = sbMessage.ToString();
-                    return response;
+                    resourceNameResponse.ResourceName = "***RESOURCE NAME NOT GENERATED***";
+                    resourceNameResponse.Message = sbMessage.ToString();
+                    return resourceNameResponse;
                 }
             }
             catch (Exception ex)
             {
                 AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
-                response.Message = ex.Message;
-                return response;
+                resourceNameResponse.Message = ex.Message;
+                return resourceNameResponse;
             }
         }
     }

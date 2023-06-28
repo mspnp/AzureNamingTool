@@ -13,7 +13,7 @@
 <div class="card @theme.ThemeStyle">
     <div class="card-body">
         <p>
-            <img src="images/AzureNamingToolLogo.png" height="160px;" alt="Azure Naming Tool" />
+            <img src="images/AzureNamingToolLogo.png" height="160" alt="Azure Naming Tool" />
         </p>
 
         <p class="alert alert-info">
@@ -59,11 +59,11 @@
     [CascadingParameter]
     protected ThemeInfo? theme { get; set; }
     [CascadingParameter]
-    public IModalService Modal { get; set; }
+    public IModalService? Modal { get; set; }
     private bool admin;
 
-    private string? appversion = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
-    private string? updateurl = "https://github.com/mspnp/AzureNamingTool/blob/main/UPDATING.md";
+    private string appversion = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+    private string updateurl = "https://github.com/mspnp/AzureNamingTool/blob/main/UPDATING.md";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -79,7 +79,7 @@
             {
                 if (admin)
                 {
-                    if (ConfigurationHelper.VerifyConnectivity())
+                    if (await ConfigurationHelper.VerifyConnectivity())
                     {
                         var latestversion = await ConfigurationHelper.GetToolVersion();
                         if (!notificationshown)
@@ -100,7 +100,7 @@
         }
     }
 
-    private async Task OnInstructionsClick()
+    private void OnInstructionsClick()
     {
         NavigationManager.NavigateTo("/instructions");
     }

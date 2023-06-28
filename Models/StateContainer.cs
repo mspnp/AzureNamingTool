@@ -5,7 +5,7 @@
         private bool? _verified;
         private bool? _admin;
         private bool? _password;
-        private string? _apptheme;
+        private string _apptheme =  String.Empty;
         private bool? _newsenabled;
         public bool _reloadnav;
         public bool? _configurationdatasynced;

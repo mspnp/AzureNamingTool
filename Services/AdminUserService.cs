@@ -5,7 +5,7 @@ namespace AzureNamingTool.Services
 {
     public class AdminUserService
     {
-        private static ServiceResponse serviceResponse = new();
+        private static readonly ServiceResponse serviceResponse = new();
 
         public static async Task<ServiceResponse> GetItems()
         {
@@ -64,7 +64,6 @@ namespace AzureNamingTool.Services
                     }
                 }
 
-                int position = 1;
                 items = items.OrderBy(x => x.Name).ToList();
 
                 // Determine new item id
@@ -97,8 +96,6 @@ namespace AzureNamingTool.Services
                     item.Id = 1;
                     items.Add(item);
                 }
-
-                position = 1;
 
                 // Write items to file
                 await ConfigurationHelper.WriteList<AdminUser>(items);

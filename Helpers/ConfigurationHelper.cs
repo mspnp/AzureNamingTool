@@ -31,7 +31,7 @@ namespace AzureNamingTool.Helpers
 
         public static string GetAppSetting(string key, bool decrypt = false)
         {
-            string value = null;
+            string value = String.Empty;
             try
             {
                 // Check if the data is cached
@@ -46,7 +46,7 @@ namespace AzureNamingTool.Helpers
                         value = config.GetType().GetProperty(key).GetValue(config, null).ToString();
 
                         // Verify the value is encrypted, and should be decrypted
-                        if ((decrypt) && (value != "") && (GeneralHelper.IsBase64Encoded(value)))
+                        if ((decrypt) && (!String.IsNullOrEmpty(value)) && (GeneralHelper.IsBase64Encoded(value)))
                         {
                             value = GeneralHelper.DecryptString(value, config.SALTKey);
                         }
@@ -79,7 +79,7 @@ namespace AzureNamingTool.Helpers
             return value;
         }
 
-        public static void SetAppSetting(string key, string value, bool encrypt = false)
+        public static async void SetAppSetting(string key, string value, bool encrypt = false)
         {
             try
             {
@@ -89,10 +89,10 @@ namespace AzureNamingTool.Helpers
                 {
                     value = GeneralHelper.EncryptString(value, config.SALTKey);
                 }
-                Type type = config.GetType();
+                Type? type = config.GetType();
                 System.Reflection.PropertyInfo propertyInfo = type.GetProperty(key);
                 propertyInfo.SetValue(config, value, null);
-                UpdateSettings(config);
+                await UpdateSettings(config);
                 // Save the original value to the cache
                 CacheHelper.SetCacheObject(key, valueoriginal);
             }
@@ -106,7 +106,7 @@ namespace AzureNamingTool.Helpers
         {
             try
             {
-                // Get all the files in teh repository folder
+                // Get all the files in the repository folder
                 DirectoryInfo repositoryDir = new("repository");
                 foreach (FileInfo file in repositoryDir.GetFiles())
                 {
@@ -123,7 +123,7 @@ namespace AzureNamingTool.Helpers
                 if (File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "settings/adminlog.json")) && !File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "settings/adminlogmessages.json")))
                 {
                     // Migrate the data
-                    FileSystemHelper.MigrateDataToFile("adminlog.json", "settings/", "adminlogmessages.json", "settings/", true);
+                    await FileSystemHelper.MigrateDataToFile("adminlog.json", "settings/", "adminlogmessages.json", "settings/", true);
                 }
 
                 // Sync cnfiguration data
@@ -139,14 +139,14 @@ namespace AzureNamingTool.Helpers
             }
         }
 
-        public static void VerifySecurity(StateContainer state)
+        public static async void VerifySecurity(StateContainer state)
         {
             try
             {
                 var config = GetConfigurationData();
                 if (!state.Verified)
                 {
-                    if (config.SALTKey == "")
+                    if (String.IsNullOrEmpty(config.SALTKey))
                     {
                         // Create a new SALT key 
                         const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -157,7 +157,7 @@ namespace AzureNamingTool.Helpers
                         config.SALTKey = salt.ToString();
                         config.APIKey = GeneralHelper.EncryptString(config.APIKey, salt.ToString());
 
-                        if (config.AdminPassword != "")
+                        if (!String.IsNullOrEmpty(config.AdminPassword))
                         {
                             config.AdminPassword = GeneralHelper.EncryptString(config.AdminPassword, config.SALTKey.ToString());
                             state.Password = true;
@@ -168,7 +168,7 @@ namespace AzureNamingTool.Helpers
                         }
                     }
 
-                    if (config.AdminPassword != "")
+                    if (!String.IsNullOrEmpty(config.AdminPassword))
                     {
                         state.Password = true;
                     }
@@ -176,7 +176,7 @@ namespace AzureNamingTool.Helpers
                     {
                         state.Password = false;
                     }
-                    UpdateSettings(config);
+                    await UpdateSettings(config);
 
                 }
                 state.SetVerified(true);
@@ -190,7 +190,7 @@ namespace AzureNamingTool.Helpers
             }
         }
 
-        public static bool VerifyConnectivity()
+        public static async Task<bool> VerifyConnectivity()
         {
             bool pingsuccessful = false;
             bool result = false;
@@ -227,17 +227,16 @@ namespace AzureNamingTool.Helpers
                         if (!pingsuccessful)
                         {
                             // Atempt to download a file
-                            var request = (HttpWebRequest)WebRequest.Create("https://github.com/mspnp/AzureNamingTool/blob/main/connectiontest.png");
-                            request.KeepAlive = false;
-                            request.Timeout = 1500;
-                            using var response = (HttpWebResponse)request.GetResponse();
+                            var client = new HttpClient(new HttpClientHandler() { UseDefaultCredentials = true });
+                            //using var response = await client.GetAsync("https://github.com/mspnp/AzureNamingTool/blob/main/connectiontest.png");
+                            using var response = await client.GetAsync("https://github.com/aznamingtool/AzureNamingTool/blob/main/connectiontest.png");                        
                             if (response.StatusCode == HttpStatusCode.OK)
                             {
                                 result = true;
                             }
                             else
                             {
-                                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = "Connectivity Check Failed:" + response.StatusDescription });
+                                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = "Connectivity Check Failed:" + response.ReasonPhrase });
                             }
                         }
                     }
@@ -269,7 +268,7 @@ namespace AzureNamingTool.Helpers
                 // Check if the data is cached
                 String data = (string)CacheHelper.GetCacheObject(typeof(T).Name);
                 // Load the data from the file system.
-                if ((data == null) || (data == ""))
+                if (String.IsNullOrEmpty(data))
                 {
                     data = typeof(T).Name switch
                     {
@@ -358,7 +357,7 @@ namespace AzureNamingTool.Helpers
                         break;
                 }
 
-                String data = String.Empty;
+                String data =  String.Empty;
                 data = typeof(T).Name switch
                 {
                     nameof(ResourceComponent) => await FileSystemHelper.ReadFile("resourcecomponents.json"),
@@ -386,7 +385,7 @@ namespace AzureNamingTool.Helpers
             }
         }
 
-        public static async void UpdateSettings(SiteConfiguration config)
+        public static async Task UpdateSettings(SiteConfiguration config)
         {
             // Clear the cache
             ObjectCache memoryCache = MemoryCache.Default;
@@ -409,10 +408,11 @@ namespace AzureNamingTool.Helpers
 
         public static async Task<string> GetOfficalConfigurationFileVersionData()
         {
-            string versiondata = null;
+            string versiondata = String.Empty;
             try
             {
-                versiondata = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/configurationfileversions.json");
+                //V3TESTversiondata = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/configurationfileversions.json");
+                versiondata = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/microsoft/CloudAdoptionFramework/master/ready/AzNamingTool/configurationfileversions.json");
             }
             catch (Exception ex)
             {
@@ -423,7 +423,7 @@ namespace AzureNamingTool.Helpers
 
         public static async Task<string> GetCurrentConfigFileVersionData()
         {
-            string versiondatajson = null;
+            string versiondatajson = String.Empty;
             try
             {
                 versiondatajson = await FileSystemHelper.ReadFile("configurationfileversions.json");
@@ -485,7 +485,7 @@ namespace AzureNamingTool.Helpers
 
         public static async Task UpdateConfigurationFileVersion(string fileName)
         {
-            if (VerifyConnectivity())
+            if (await VerifyConnectivity())
             {
                 try
                 {
@@ -528,9 +528,9 @@ namespace AzureNamingTool.Helpers
             bool result = false;
             try
             {
-                // Get all the files in teh repository folder
+                // Get all the files in the repository folder
                 DirectoryInfo repositoryDir = new("repository");
-                // Filter out teh appsettings.json to retain admin credentials
+                // Filter out the appsettings.json to retain admin credentials
                 foreach (FileInfo file in repositoryDir.GetFiles().Where(x => x.Name != "appsettings.json"))
                 {
                     // Copy the repository file to the settings folder
@@ -565,7 +565,8 @@ namespace AzureNamingTool.Helpers
         {
             try
             {
-                var response = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/AzureNamingTool.csproj");
+                //V3TESTvar response = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/AzureNamingTool.csproj");
+                var response = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/microsoft/CloudAdoptionFramework/master/ready/AzNamingTool/AzureNamingTool.csproj");
                 XDocument xdoc = XDocument.Parse(response);
                 string result = xdoc
                     .Descendants("PropertyGroup")
@@ -649,7 +650,7 @@ namespace AzureNamingTool.Helpers
                 List<string> dismissedalerts = new(GetAppSetting("DismissedAlerts").Split(','));
                 if (!dismissedalerts.Contains(appversion))
                 {
-                    if (string.Join(",", dismissedalerts) == "")
+                    if (String.IsNullOrEmpty(string.Join(",", dismissedalerts)))
                     {
                         dismissedalerts.Clear();
                     }
@@ -718,13 +719,14 @@ namespace AzureNamingTool.Helpers
         }
         public static async Task<string> GetProgramSetting(string programSetting)
         {
-            string result = String.Empty;
+            string result =  String.Empty;
             try
             {
                 string data = (string)CacheHelper.GetCacheObject(programSetting);
                 if (String.IsNullOrEmpty(data))
                 {
-                    var response = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/programsettings.json");
+                    //V3TESTvar response = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/programsettings.json");
+                    var response = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/aznamingtool/AzureNamingTool/main/programsettings.json");
                     var setting = JsonDocument.Parse(response);
                     result = setting.RootElement.GetProperty(programSetting).ToString();
                     CacheHelper.SetCacheObject(programSetting, result);
@@ -784,7 +786,7 @@ namespace AzureNamingTool.Helpers
                                     // Create a new component for any updates
                                     ResourceComponent newComponent = currentComponent;
                                     // Get the matching default component for the current component
-                                    ResourceComponent defaultcomponent = defaultComponents.Find(x => x.Name == currentComponent.Name);
+                                    ResourceComponent? defaultcomponent = defaultComponents.Find(x => x.Name == currentComponent.Name);
                                     // Check the data to see if it's been configured
                                     if (String.IsNullOrEmpty(currentComponent.MinLength))
                                     {
@@ -824,7 +826,7 @@ namespace AzureNamingTool.Helpers
             }
             catch (Exception ex)
             {
-                await AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
 
         }

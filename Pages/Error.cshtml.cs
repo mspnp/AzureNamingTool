@@ -8,7 +8,7 @@ namespace AzureNamingTool.Pages
     [IgnoreAntiforgeryToken]
     public class ErrorModel : PageModel
     {
-        public string? RequestId { get; set; }
+        public string RequestId { get; set; } = String.Empty;
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 

@@ -192,7 +192,7 @@ namespace AzureNamingTool.Services
                 string url = "https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/repository/resourcelocations.json";
 
                 string refreshdata = await GeneralHelper.DownloadString(url);
-                if (refreshdata != "")
+                if (!String.IsNullOrEmpty(refreshdata))
                 {
                     var newlocations = new List<ResourceLocation>();
                     var options = new JsonSerializerOptions
@@ -215,7 +215,7 @@ namespace AzureNamingTool.Services
                             ResourceLocation oldlocation = locations[i];
                             newlocation.Enabled = oldlocation.Enabled;
                             
-                            if ((!shortNameReset) || (oldlocation.ShortName == ""))
+                            if ((!shortNameReset) || (String.IsNullOrEmpty(oldlocation.ShortName)))
                             {
                                 newlocation.ShortName = oldlocation.ShortName;
                             }

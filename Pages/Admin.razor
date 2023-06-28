@@ -59,7 +59,7 @@
                             <div class="mb-3">
                                 <strong>Current version:</strong> @appversion
                             </div>
-                            @if (versionalert != "")
+                            @if (!String.IsNullOrEmpty(versionalert))
                             {
                                 <div class="alert alert-warning" role="alert">
                                     <div>
@@ -76,7 +76,7 @@
                     <div class="card mb-3">
                         <h5 class="card-header text-white bg-secondary text-white">
                             <a class="text-decoration-none text-white" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#security" role="button" aria-expanded="false" aria-controls="security">
-                                <h5><span class="oi oi-chevron-bottom" aria-hidden="true"></span> Security</h5>
+                                <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Security
                             </a>
                         </h5>
                         <div class="collapse show card card-body @theme.ThemeStyle" id="security">
@@ -143,7 +143,7 @@
                                     This section is used to configure the <strong>Identity Provider</strong> settings for the site if authentication is implemented. The Azure Naming Tool is designed to work with <strong><a href="https://learn.microsoft.com/en-us/azure/app-service/overview-authentication-authorization" target="_blank">Azure App Service Authentication</a></strong>, by default. If the Azure Naming Tool is configured to identify users, the site will track user activity. Users can also be designated as Admins using the <strong>Admin Users</strong> configuration.
                                 </p>
                                 <p>
-                                    You can learn more about the new Identity Provider Integration <a href=\"https://soltisweb.com/blog/detail/2023-06-azurenamingtool-identityproviderintegrationdeepdive\" target=\"_blank\"><strong>HERE</strong></a>.
+                                    You can learn more about the new Identity Provider Integration <a href="https://soltisweb.com/blog/detail/2023-06-azurenamingtool-identityproviderintegrationdeepdive" target="_blank"><strong>HERE</strong></a>.
                                 </p>
                                 @if (!String.IsNullOrEmpty(currentidentityprovider))
                                 {
@@ -393,17 +393,17 @@
 
 @code {
     [CascadingParameter]
-    protected ThemeInfo? theme { get; set; }
+    protected ThemeInfo theme { get; set; } = new();
     [CascadingParameter]
-    public IModalService Modal { get; set; }
+    public IModalService? Modal { get; set; }
     [CascadingParameter]
-    private IdentityProviderDetails? identityProviderDetails { get; set; }
+    private IdentityProviderDetails identityProviderDetails { get; set; } = new();
     private ServicesData servicesData = new();
-    private string? currentpassword;
-    private string? newpassword;
-    private string? currentapikey;
-    private string? currentidentityheadername;
-    private string? currentidentityprovider;
+    private string currentpassword =  String.Empty;
+    private string newpassword =  String.Empty;
+    private string currentapikey =  String.Empty;
+    private string currentidentityheadername =  String.Empty;
+    private string currentidentityprovider =  String.Empty;
     private ResponseMessage message = new();
     private bool admin;
     private bool versionalertshown = false;
@@ -413,21 +413,23 @@
     private bool duplicatenamesallowed = false;
     private bool connectivitycheckenabled = true;
     private bool resourcetypeeditingallowed = false;
-    private string currentgenerationwebhook = string.Empty;
-    private string versionalert = string.Empty;
-    private string? appversion = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+    private string currentgenerationwebhook =  String.Empty;
+    private string versionalert =  String.Empty;
+    private string appversion = String.Empty;
     private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
-    private string? currentuser;
-
-    protected override async void OnInitialized()
-    {
-    }
+    private string currentuser =  String.Empty;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         currentuser = await IdentityHelper.GetCurrentUser(session);
         if (firstRender)
         {
+            // Get the version
+            if(Assembly.GetEntryAssembly() != null)
+            {
+                appversion = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+            }
+
             servicesData = await ServicesHelper.LoadServicesData(servicesData, true);
             var result = await session.GetAsync<bool>("admin");
             admin = (bool)result.Value;
@@ -438,7 +440,7 @@
                 var resultVersionAlert = await session.GetAsync<bool>("versionalert-" + appversion + "-shown");
                 versionalertshown = resultVersionAlert.Success ? resultVersionAlert.Value : false;
                 versionalert = ConfigurationHelper.GetVersionAlert(true).Result;
-                if (versionalert != "")
+                if (!String.IsNullOrEmpty(versionalert))
                 {
                     showversionalert = true;
                 }
@@ -588,7 +590,7 @@
                 bool confirmGenerationWebhook = await JsRuntime.InvokeAsync<bool>("confirm", "This will update the current Generation Webhook. Are you sure?");
                 if (confirmGenerationWebhook)
                 {
-                    if (currentgenerationwebhook != "")
+                    if (!String.IsNullOrEmpty(currentgenerationwebhook))
                     {
                         if (!Uri.IsWellFormedUriString(currentgenerationwebhook, UriKind.Absolute))
                         {
@@ -605,12 +607,7 @@
                 }
                 break;
             case "clearcache":
-                ObjectCache memoryCache = MemoryCache.Default;
-                List<string> cacheKeys = memoryCache.Select(kvp => kvp.Key).ToList();
-                foreach (string cacheKey in cacheKeys)
-                {
-                    memoryCache.Remove(cacheKey);
-                }
+                CacheHelper.ClearAllCache();
                 message.Type = MessageTypesEnum.SUCCESS;
                 message.Header = "SUCCESS";
                 message.Message = "Cache cleared!";
@@ -726,7 +723,7 @@
         message.Type = MessageTypesEnum.INFORMATION;
         try
         {
-            if (e.Value != null)
+            if (GeneralHelper.IsNotNull(e.Value))
             {
                 switch (setting)
                 {
@@ -753,11 +750,14 @@
 
                         break;
                     case "resourcetypeeditingallowed":
-                        ConfigurationHelper.SetAppSetting("ResourceTypeEditingAllowed", e.Value.ToString());
-                        message.Message = "Resource Type Editing Allowed setting updated to " + e.Value.ToString().ToUpper() + "!";
-                        if ((bool)e.Value)
+                        if (GeneralHelper.IsNotNull(e.Value))
                         {
-                            await ShowInformationModal("bg-danger", "ATTENTION", "<p>Disabling this setting may result in name generation that will fail regex validation for the resource type.</p><p>Please use caution when editing Resource Type validation settings.");
+                            ConfigurationHelper.SetAppSetting("ResourceTypeEditingAllowed", e.Value?.ToString() ?? "");
+                            message.Message = "Resource Type Editing Allowed setting updated to " + e.Value?.ToString().ToUpper() ?? "" + "!";
+                            if ((bool)e.Value)
+                            {
+                                await ShowInformationModal("bg-danger", "ATTENTION", "<p>Disabling this setting may result in name generation that will fail regex validation for the resource type.</p><p>Please use caution when editing Resource Type validation settings.");
+                            }
                         }
                         break;
                 }
@@ -777,7 +777,7 @@
             message.Header = "ERROR";
         }
 
-        if (message.Message != null)
+        if (GeneralHelper.IsNotNull(message.Message))
         {
             switch (message.Type)
             {
@@ -833,12 +833,12 @@
         }
     }
 
-    private async void ShowInstructionsModal()
+    private void ShowInstructionsModal()
     {
         try
         {
             var parameters = new ModalParameters();
-            parameters.Add(nameof(InformationModal.message), null);
+            parameters.Add(nameof(InformationModal.message), String.Empty);
             parameters.Add(nameof(InformationModal.title), "Admin");
             parameters.Add(nameof(InformationModal.headerstyle), "bg-navcolor");
             parameters.Add(nameof(InformationModal.component), "adminconfigurationinstructions");

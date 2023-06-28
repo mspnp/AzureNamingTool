@@ -72,26 +72,25 @@
 
 
 @code {
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new();
+    [Parameter] public ThemeInfo theme { get; set; } = new();
 
-    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
-    [Parameter] public ThemeInfo theme { get; set; }
-
-    [Parameter] public int id { get; set; }
-    [Parameter] public string title { get; set; }
-    [Parameter] public string message { get; set; }
-    [Parameter] public string type { get; set; }
-    [Parameter] public string? parentcomponent { get; set; }
-    [Parameter] public ServicesData servicesData { get; set; }
+    [Parameter] public int id { get; set; } = 0;
+    [Parameter] public string title { get; set; } = String.Empty;
+    [Parameter] public string message { get; set; } = String.Empty;
+    [Parameter] public string type { get; set; } = String.Empty;
+    [Parameter] public string parentcomponent { get; set; } = String.Empty;
+    [Parameter] public ServicesData servicesData { get; set; } = new();
 
 
     private ServiceResponse serviceResponse = new();
-    private string? itemName;
-    private string? itemShortName;
+    private string itemName = String.Empty;
+    private string itemShortName = String.Empty;
     private string itemMinLength = "1";
     private string itemMaxLength = "10";
-    private string? componenttype;
+    private string componenttype = "standard";
     private bool isfreetext = false;
-    private string? currentuser;
+    private string currentuser = String.Empty;
 
     protected override async void OnInitialized()
     {
@@ -139,6 +138,10 @@
                         }
                     }
                 }
+                else
+                {
+                    toastService.ShowError("You must enter a component name!");
+                }
                 break;
             case "AdminUser":
                 if (!String.IsNullOrEmpty(itemName))
@@ -165,7 +168,7 @@
             default:
                 if ((itemName != null) && (itemShortName != null))
                 {
-                    if ((itemName != "") && (itemShortName != ""))
+                    if ((!String.IsNullOrEmpty(itemName)) && (!String.IsNullOrEmpty(itemShortName)))
                     {
                         if (await ValidationHelper.ValidateShortName(type, itemShortName, this.parentcomponent))
                         {
@@ -333,7 +336,7 @@
         {
             if (serviceResponse.Success)
             {
-                ModalInstance.CloseAsync();
+                await ModalInstance.CloseAsync();
                 toastService.ShowSuccess(type.Replace("Resource", "Resource ") + " added!");
                 AdminLogService.PostItem(new AdminLogMessage() { Title = "SUCCESS", Message = "(" + type + ") " + itemName + " added!", Source = currentuser });
             }

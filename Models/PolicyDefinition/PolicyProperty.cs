@@ -14,12 +14,12 @@ namespace AzureNamingTool.Models
             Description = description;
             Mode = mode;
         }
-        public string DisplayName { get; set; }
-        public String PolicyType { get; set; }
-        public String Mode { get; set; }
-        public String Description { get; set; }
+        public string DisplayName { get; set; } = String.Empty;
+        public String PolicyType { get; set; } = String.Empty;
+        public String Mode { get; set; } = String.Empty;
+        public String Description { get; set; } = String.Empty;
         public PropertyMetadata Metadata { get; set; } = new PropertyMetadata() { Version = "1.0.0", Category = "Azure" };
-        public String PolicyRule { get; set; }
+        public String PolicyRule { get; set; } = String.Empty;
 
         public override string ToString() { return "{"+ PolicyRule + "}"; }
     }

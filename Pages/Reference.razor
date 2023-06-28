@@ -56,7 +56,7 @@
                         <option value="">Select a resource type</option>
                         @foreach (var type in @ResourceTypeService.GetFilteredResourceTypes(servicesData.ResourceTypes, selectedResourceTypeCategory))
                         {
-                            @if (type.Property != "")
+                            @if (!String.IsNullOrEmpty(type.Property))
                             {
                                 <option value="@type.Id">@type.Resource - @type.Property (@type.ShortName)</option>
                             }
@@ -80,7 +80,7 @@
                                     <tbody>
                                         <tr class="bg-secondary">
                                             <td style="word-wrap:anywhere;overflow-wrap:anywhere;white-space: normal;">
-                                                @if (resourcetype.Property != "")
+                                                @if (!String.IsNullOrEmpty(resourcetype.Property))
                                                 {
                                                     <h5 class="text-white bg-secondary" style="word-wrap:anywhere;overflow-wrap:anywhere;white-space: normal;">@resourcetype.Resource - @resourcetype.Property                                                  </h5>
                                                 }
@@ -120,7 +120,7 @@
                                         </tr>
                                         <tr>
                                             <td>
-                                                @if (resourcetype.StaticValues == "")
+                                                @if (String.IsNullOrEmpty(resourcetype.StaticValues))
                                                 {
                                                     <table class="table @theme.ThemeStyle w-100">
                                                         <tbody>
@@ -245,7 +245,7 @@
                                                                     <strong>Naming Guidelines</strong>
                                                                 </td>
                                                             </tr>
-                                                            @if (@resourcetype.Optional != "")
+                                                            @if (!String.IsNullOrEmpty(@resourcetype.Optional))
                                                             {
                                                                 <tr>
                                                                     <td class="align-top w-25">
@@ -256,7 +256,7 @@
                                                                     </td>
                                                                 </tr>
                                                             }
-                                                            @if (@resourcetype.Exclude != "")
+                                                            @if (!String.IsNullOrEmpty(@resourcetype.Exclude))
                                                             {
                                                                 <tr>
                                                                     <td class="align-top w-25">
@@ -267,7 +267,7 @@
                                                                     </td>
                                                                 </tr>
                                                             }
-                                                            @if (@resourcetype.ShortName != "")
+                                                            @if (!String.IsNullOrEmpty(@resourcetype.ShortName))
                                                             {
                                                                 <tr>
                                                                     <td class="align-top w-25">
@@ -278,7 +278,7 @@
                                                                     </td>
                                                                 </tr>
                                                             }
-                                                            @if (@resourcetype.Scope != "")
+                                                            @if (!String.IsNullOrEmpty(@resourcetype.Scope))
                                                             {
                                                                 <tr>
                                                                     <td class="align-top w-25">
@@ -289,7 +289,7 @@
                                                                     </td>
                                                                 </tr>
                                                             }
-                                                            @if ((@resourcetype.LengthMin != "") && (@resourcetype.LengthMax != ""))
+                                                            @if ((!String.IsNullOrEmpty(@resourcetype.LengthMin)) && (!String.IsNullOrEmpty(@resourcetype.LengthMax)))
                                                             {
                                                                 <tr>
                                                                     <td class="align-top w-25">
@@ -300,7 +300,7 @@
                                                                     </td>
                                                                 </tr>
                                                             }
-                                                            @if (@resourcetype.ValidText != "")
+                                                            @if (!String.IsNullOrEmpty(@resourcetype.ValidText))
                                                             {
                                                                 <tr>
                                                                     <td class="align-top w-25">
@@ -311,7 +311,7 @@
                                                                     </td>
                                                                 </tr>
                                                             }
-                                                            @if (@resourcetype.InvalidCharacters != "")
+                                                @if (!String.IsNullOrEmpty(@resourcetype.InvalidCharacters))
                                                             {
                                                                 <tr>
                                                                     <td class="align-top w-25">
@@ -322,7 +322,7 @@
                                                                     </td>
                                                                 </tr>
                                                             }
-                                                            @if (@resourcetype.Regx != "")
+                                                            @if (!String.IsNullOrEmpty(@resourcetype.Regx))
                                                             {
                                                                 <tr>
                                                                     <td class="align-top w-25">
@@ -356,15 +356,15 @@
 
 @code {
     [CascadingParameter]
-    protected ThemeInfo? theme { get; set; }
+    protected ThemeInfo theme { get; set; } = new();
     [CascadingParameter]
-    public IModalService Modal { get; set; }
+    public IModalService? Modal { get; set; }
     private ServicesData servicesData = new();
-    private ResourceDelimiter? resourceDelimiter;
-    public string filterData { get; set; }
-    private string? selectedResourceTypeCategory = "";
+    private ResourceDelimiter? resourceDelimiter = new();
+    public string filterData { get; set; } = String.Empty;
+    private string selectedResourceTypeCategory = String.Empty;
     private string[] filteredscopes = new string[] { "resource group", "resource group & region", "region", "global", "subscription", "tenant" };
-    private List<string> categories = new List<string>();
+    private List<string> categories = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -399,7 +399,7 @@
     protected string GenerateName(ResourceType type, string shortName, string staticvalues)
     {
         var name = "";
-        if (staticvalues == "")
+        if (String.IsNullOrEmpty(staticvalues))
         {
             foreach (ResourceComponent resourceComponent in servicesData.ResourceComponents)
             {
@@ -469,7 +469,7 @@
             if (!match.Success)
             {
                 // Strip the delimiter in case that is causing the issue
-                if (resourceDelimiter.Delimiter != "")
+                if (!String.IsNullOrEmpty(resourceDelimiter.Delimiter))
                 {
                     name = name.Replace(resourceDelimiter.Delimiter, "");
                 }
@@ -493,7 +493,7 @@
         await JsRuntime.InvokeVoidAsync("scrollIntoView", e.Value.ToString());
     }
 
-    private async Task OnInstructionsClick()
+    private void OnInstructionsClick()
     {
         NavigationManager.NavigateTo("/instructions");
     }
@@ -510,12 +510,12 @@
         return visible;
     }
 
-    private async void ShowInstructionsModal()
+    private void ShowInstructionsModal()
     {
         try
         {
             var parameters = new ModalParameters();
-            parameters.Add(nameof(InformationModal.message), null);
+            parameters.Add(nameof(InformationModal.message), String.Empty);
             parameters.Add(nameof(InformationModal.title), "Reference");
             parameters.Add(nameof(InformationModal.headerstyle), "bg-navcolor");
             parameters.Add(nameof(InformationModal.component), "referenceinstructions");

@@ -84,7 +84,7 @@ namespace AzureNamingTool.Services
             {
                 foreach (var item in list)
                 {
-                    if (item.ShortName.Trim() != String.Empty)
+                    if (item.ShortName.Trim() !=  String.Empty)
                     {
                         var key = $"{item.ShortName}{delimiter}*";
                         if (!validations.Contains(key))
@@ -96,7 +96,7 @@ namespace AzureNamingTool.Services
             {
                 foreach (var item in list)
                 {
-                    if (item.ShortName.Trim() != String.Empty)
+                    if (item.ShortName.Trim() !=  String.Empty)
                     {
                         foreach (var validation in validations.Where(x => x.Count(p => p.ToString().Contains(delimiter)) == level - 1).ToList())
                         {

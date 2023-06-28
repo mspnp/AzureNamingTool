@@ -65,7 +65,7 @@
                                                     {
                                                         <input class="form-check-input" type="checkbox" value="@resourceType.Id" id="@("multitype_"+@resourceType.Id)" @onchange="eventArgs => { OnMultiTypesChange(resourceType.Id.ToString(), eventArgs.Value); }">
                                                     }
-                                                    @if (resourceType.Property != "")
+                                                    @if (!String.IsNullOrEmpty(resourceType.Property))
                                                     {
                                                         <label class="form-check-label" for="flexCheckDefault">
                                                             @resourceType.Resource - @resourceType.Property (@resourceType.ShortName)
@@ -95,16 +95,15 @@
 </div>
 
 @code {
-
-    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
-    [Parameter] public ThemeInfo theme { get; set; }
-    [Parameter] public string title { get; set; }
-    [Parameter] public string message { get; set; }
-    [Parameter] public List<string> multiselectedResourceTypes { get; set; }
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new();
+    [Parameter] public ThemeInfo theme { get; set; } = new();
+    [Parameter] public string title { get; set; } = String.Empty;
+    [Parameter] public string message { get; set; } = String.Empty;
+    [Parameter] public List<string> multiselectedResourceTypes { get; set; } = new();
 
     private ServicesData servicesData = new();
     private List<string> categories = new();
-    public string filterData { get; set; }
+    public string filterData { get; set; } = String.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -142,7 +141,7 @@
         }
     }
 
-    private async void OnMultiTypesChange(string aSelectedId, object aChecked)
+    private void OnMultiTypesChange(string aSelectedId, object aChecked)
     {
         if ((bool)aChecked)
         {

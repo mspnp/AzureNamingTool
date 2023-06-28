@@ -21,7 +21,7 @@ namespace AzureNamingTool.Controllers
     public class AdminController : ControllerBase
     {
         private ServiceResponse serviceResponse = new();
-        private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
+        private readonly SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
 
         // POST api/<AdminController>
         /// <summary>
@@ -45,13 +45,13 @@ namespace AzureNamingTool.Controllers
                     }
                     else
                     {
-                        return Ok("FAILURE - Incorrect Admin Password.");
+                        return Ok("FAILURE - Incorrect Global Admin Password.");
                     }
 
                 }
                 else
                 {
-                    return Ok("FAILURE - You must provide teh Admin Password.");
+                    return Ok("FAILURE - You must provide the Global Admin Password.");
                 }
             }
             catch (Exception ex)
@@ -83,13 +83,13 @@ namespace AzureNamingTool.Controllers
                     }
                     else
                     {
-                        return Ok("FAILURE - Incorrect Admin Password.");
+                        return Ok("FAILURE - Incorrect Global Admin Password.");
                     }
 
                 }
                 else
                 {
-                    return Ok("FAILURE - You must provide teh Admin Password.");
+                    return Ok("FAILURE - You must provide the Global Admin Password.");
                 }
             }
             catch (Exception ex)
@@ -121,13 +121,13 @@ namespace AzureNamingTool.Controllers
                     }
                     else
                     {
-                        return Ok("FAILURE - Incorrect Admin Password.");
+                        return Ok("FAILURE - Incorrect Global Admin Password.");
                     }
 
                 }
                 else
                 {
-                    return Ok("FAILURE - You must provide teh Admin Password.");
+                    return Ok("FAILURE - You must provide the Global Admin Password.");
                 }
             }
             catch (Exception ex)
@@ -251,7 +251,7 @@ namespace AzureNamingTool.Controllers
         /// <returns>dttring - Successful operation</returns>
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> ResetSiteConfiguration([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword)
+        public IActionResult ResetSiteConfiguration([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword)
         {
             try
             {

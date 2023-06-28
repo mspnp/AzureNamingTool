@@ -6,10 +6,10 @@ namespace AzureNamingTool.Models
     {
         public long Id { get; set; }
         [Required()]
-        public string ParentComponent { get; set; }
+        public string ParentComponent { get; set; } =  String.Empty;
         [Required()]
-        public string Name { get; set; }
-        private string _ShortName;
+        public string Name { get; set; } =  String.Empty;
+        private string _ShortName = String.Empty;
         [Required()]
         public string ShortName
         {

@@ -24,13 +24,13 @@ namespace AzureNamingTool.Models
 
         private static string GenerateConditions(IEnumerable<IGrouping<string, PolicyRule>> policyGroups, int level = 1, int startIndex = 0)
         {
-            String result = String.Empty;
+            String result =  String.Empty;
             var list = policyGroups.Where(x => x.Key.StartsWith($"{level},{startIndex}")).ToList();
             foreach (var levelConditions in list)
             {
                 var header = "{\"allOf\": [";
                 var mainCondition = GetMainCondition(levelConditions.ToList());
-                var insideConditions = String.Empty;
+                var insideConditions =  String.Empty;
                 var fullLength = levelConditions.FirstOrDefault().FullLength;
                 var startIndexes = policyGroups.Where(x => x.Key.StartsWith($"{level + 1}")).Select(x => Convert.ToInt32(x.Key.Split(',')[1])).Where(x => x == fullLength).Distinct().ToList();
                 foreach (var nextStartIndex in startIndexes)
@@ -45,7 +45,7 @@ namespace AzureNamingTool.Models
                 if (list.Last().Key != levelConditions.Key)
                     footer += ",";
 
-                result += header + mainCondition + (insideConditions == String.Empty ? String.Empty : "," + insideConditions) + footer;
+                result += header + mainCondition + (insideConditions ==  String.Empty ?  String.Empty : "," + insideConditions) + footer;
             }
 
             return result;

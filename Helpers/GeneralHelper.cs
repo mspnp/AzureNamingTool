@@ -1,5 +1,6 @@
 using AzureNamingTool.Models;
 using AzureNamingTool.Services;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -8,7 +9,7 @@ namespace AzureNamingTool.Helpers
     public class GeneralHelper
     {
         //Function to get the Property Value
-        public static object GetPropertyValue(object SourceData, string propName)
+        public static object? GetPropertyValue(object SourceData, string propName)
         {
             try
             {
@@ -111,6 +112,31 @@ namespace AzureNamingTool.Helpers
             {
                 return "disabled-text";
             }
+        }
+
+        public static bool IsNotNull([NotNullWhen(true)] object? obj) => obj != null;
+
+        public static string FormatResoureType(string type)
+        {
+            try
+            {
+                // trim any details out of the value
+                if (type.Contains("-"))
+                {
+                    type = type.Substring(0, type.IndexOf("-")).Trim();
+                }
+
+                // trim any details out of the value
+                if (type.Contains("("))
+                {
+                    type = type.Substring(0, type.IndexOf("(")).Trim();
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            }
+            return type;
         }
     }
 }

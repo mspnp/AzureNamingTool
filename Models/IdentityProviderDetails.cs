@@ -3,6 +3,6 @@
     public class IdentityProviderDetails
     {
         public string CurrentUser { get; set; } = "System";
-        public string? CurrentIdentityProvider { get; set; }
+        public string CurrentIdentityProvider { get; set; } =  String.Empty;
     }
 }

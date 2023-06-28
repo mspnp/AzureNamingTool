@@ -2,6 +2,7 @@
 using AzureNamingTool.Services;
 using System.Text.RegularExpressions;
 using System.Text;
+using System.Configuration;
 
 namespace AzureNamingTool.Helpers
 {
@@ -18,7 +19,7 @@ namespace AzureNamingTool.Helpers
             return isValidated;
         }
 
-        public static async Task<bool> ValidateShortName(string type, string value, string parentcomponent = null)
+        public static async Task<bool> ValidateShortName(string type, string value, string? parentcomponent = null)
         {
             bool valid = false;
             try
@@ -60,12 +61,14 @@ namespace AzureNamingTool.Helpers
             return valid;
         }
 
-        public static Tuple<bool, string, StringBuilder> ValidateGeneratedName(Models.ResourceType resourceType, string name, string delimiter)
+        public static ValidatedNameResponse ValidateGeneratedName(Models.ResourceType resourceType, string name, string delimiter)
         {
+            ValidatedNameResponse response = new();
             try
             {
                 bool valid = true;
                 StringBuilder sbMessage = new();
+
                 // Check regex
                 // Validate the name against the resource type regex
                 Regex regx = new(resourceType.Regx);
@@ -73,7 +76,7 @@ namespace AzureNamingTool.Helpers
                 if (!match.Success)
                 {
                     // Strip the delimiter in case that is causing the issue
-                    if (delimiter != "")
+                    if (!String.IsNullOrEmpty(delimiter))
                     {
                         // Strip the delimiter in case that is causing the issue
                         name = name.Replace(delimiter, "");
@@ -133,7 +136,7 @@ namespace AzureNamingTool.Helpers
                 }
 
                 // Check invalid characters
-                if (resourceType.InvalidCharacters != "")
+                if (!String.IsNullOrEmpty(resourceType.InvalidCharacters))
                 {
                     // Loop through each character
                     foreach (char c in resourceType.InvalidCharacters)
@@ -149,7 +152,7 @@ namespace AzureNamingTool.Helpers
                 }
 
                 // Check start character
-                if (resourceType.InvalidCharactersStart != "")
+                if (!String.IsNullOrEmpty(resourceType.InvalidCharactersStart))
                 {
                     // Loop through each character
                     foreach (char c in resourceType.InvalidCharactersStart)
@@ -165,7 +168,7 @@ namespace AzureNamingTool.Helpers
                 }
 
                 // Check start character
-                if (resourceType.InvalidCharactersEnd != "")
+                if (!String.IsNullOrEmpty(resourceType.InvalidCharactersEnd))
                 {
                     // Loop through each character
                     foreach (char c in resourceType.InvalidCharactersEnd)
@@ -181,7 +184,7 @@ namespace AzureNamingTool.Helpers
                 }
 
                 // Check consecutive character
-                if (resourceType.InvalidCharactersConsecutive != "")
+                if (!String.IsNullOrEmpty(resourceType.InvalidCharactersConsecutive))
                 {
                     // Loop through each character
                     foreach (char c in resourceType.InvalidCharactersConsecutive)
@@ -202,13 +205,21 @@ namespace AzureNamingTool.Helpers
                         }
                     }
                 }
-                return new Tuple<bool, string, StringBuilder>(valid, name, sbMessage);
+
+
+                response.Valid = valid;
+                response.Name = name;
+                response.Message = sbMessage.ToString();
             }
             catch (Exception ex)
             {
                 AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
-                return new Tuple<bool, string, StringBuilder>(false, name, new StringBuilder("There was a problem validating the name."));
+                response.Valid = false;
+                response.Name = name;
+                response.Message = "There was a problem validating the name.";
             }
+
+            return response;
         }
 
         public static bool CheckNumeric(string value)
