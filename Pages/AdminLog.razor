@@ -18,7 +18,7 @@
 @inject NavigationManager NavigationManager
 
 <PageTitle>Azure Naming Tool - Admin Log</PageTitle>
-<div class="card  @theme.ThemeStyle">
+<div class="card  @theme!.ThemeStyle">
     <div class="card-body">
         <div style="float:left;">
             <h1>
@@ -146,7 +146,7 @@
     private bool admin = false;
     private bool dataLoaded = false;
     List<AdminLogMessage> lstAdminLogMessages = new();
-    public string filterData { get; set; } =  String.Empty;
+    public string filterData { get; set; } = String.Empty;
     public DateTime startdate { get; set; } = DateTime.Today.AddDays(-30);
     public DateTime enddate { get; set; } = DateTime.Today;
 
@@ -162,7 +162,13 @@
             }
             ServiceResponse serviceResponse = new();
             serviceResponse = await AdminLogService.GetItems();
-            lstAdminLogMessages = (List<AdminLogMessage>)serviceResponse.ResponseObject;
+            if (serviceResponse.Success)
+            {
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                {
+                    lstAdminLogMessages = (List<AdminLogMessage>)serviceResponse.ResponseObject;
+                }
+            }
 
             dataLoaded = true;
             StateHasChanged();
@@ -192,7 +198,13 @@
             AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "Admin Log purged." });
             CacheHelper.InvalidateCacheObject("AdminLogMessage");
             serviceResponse = await AdminLogService.GetItems();
-            lstAdminLogMessages = (List<AdminLogMessage>)serviceResponse.ResponseObject;
+            if (serviceResponse.Success)
+            {
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                {
+                    lstAdminLogMessages = (List<AdminLogMessage>)serviceResponse.ResponseObject;
+                }
+            }
             dataLoaded = true;
             StateHasChanged();
         }
@@ -236,7 +248,7 @@
             parameters.Add(nameof(InformationModal.title), "Admin Log");
             parameters.Add(nameof(InformationModal.headerstyle), "bg-navcolor");
             parameters.Add(nameof(InformationModal.component), "adminloginstructions");
-            parameters.Add("theme", theme);
+            parameters.Add("theme", theme!);
 
             var options = new ModalOptions()
                 {
@@ -244,7 +256,10 @@
                     UseCustomLayout = true
                 };
 
-            var modal = Modal.Show<InformationModal>("Instructions", parameters, options);
+            if (GeneralHelper.IsNotNull(Modal))
+            {
+                var modal = Modal.Show<InformationModal>("Instructions", parameters, options);
+            }
         }
         catch (Exception ex)
         {

@@ -5,7 +5,7 @@
 @inject StateContainer state
 @inject ProtectedSessionStorage session
 
-<div class="card @theme.ThemeStyle">
+<div class="card @theme!.ThemeStyle">
     <div class="card-body">
         <h1>Instructions</h1>
         <div class="mb-3">This page provides instructions on how to configure and use the Azure Naming Tool.</div>
@@ -17,7 +17,7 @@
                         <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Admin Password
                     </a>
                 </h5>
-                <div class="card card-body collapse show @theme.ThemeStyle" id="adminpassword">
+                <div class="card card-body collapse show @theme!.ThemeStyle" id="adminpassword">
                     <AdminPasswordInstructions theme="@theme" admin="@admin" />
                 </div>
             </div>

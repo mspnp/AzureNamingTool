@@ -30,10 +30,19 @@
         {
             string headername = ConfigurationHelper.GetAppSetting("IdentityHeaderName", true);
             // Check if the IdentityHeaderName header is present
-            if (this.HttpContext.Request.Headers.ContainsKey(headername))
+            if(GeneralHelper.IsNotNull(this.HttpContext))
             {
-                // Set the current user
-                identityProviderDetails.CurrentUser = this.HttpContext.Request.Headers[headername];
+                if(GeneralHelper.IsNotNull(this.HttpContext.Request))
+                {
+                    if (GeneralHelper.IsNotNull(this.HttpContext.Request.Headers))
+                    {
+                        if (this.HttpContext.Request.Headers.ContainsKey(headername))
+                        {
+                            // Set the current user
+                            identityProviderDetails.CurrentUser = this.HttpContext.Request.Headers[headername];
+                        }
+                    }
+                }
             }
         }
     }

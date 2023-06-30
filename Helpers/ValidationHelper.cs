@@ -32,24 +32,33 @@ namespace AzureNamingTool.Helpers
                 serviceResponse = await ResourceComponentService.GetItems(true);
                 if (serviceResponse.Success)
                 {
-                    resourceComponents = (List<ResourceComponent>)serviceResponse.ResponseObject;
+                    if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                    {
+                        resourceComponents = (List<ResourceComponent>)serviceResponse.ResponseObject!;
 
-                    // Check if it's a custom component
-                    if (type == "CustomComponent")
-                    {
-                        resourceComponent = resourceComponents.Find(x => GeneralHelper.NormalizeName(x.Name, true) == GeneralHelper.NormalizeName(parentcomponent, true));
-                    }
-                    else
-                    {
-                        resourceComponent = resourceComponents.Find(x => x.Name == type);
-                    }
-
-                    if (resourceComponent != null)
-                    {
-                        // Check if the name mathces the length requirements for the component
-                        if ((value.Length >= (Convert.ToInt32(resourceComponent.MinLength)) && (value.Length <= Convert.ToInt32(resourceComponent.MaxLength))))
+                        if (GeneralHelper.IsNotNull(resourceComponents))
                         {
-                            valid = true;
+                            // Check if it's a custom component
+                            if (type == "CustomComponent")
+                            {
+                                if (GeneralHelper.IsNotNull(parentcomponent))
+                                {
+                                    resourceComponent = resourceComponents.Find(x => GeneralHelper.NormalizeName(x.Name, true) == GeneralHelper.NormalizeName(parentcomponent, true))!;
+                                }
+                            }
+                            else
+                            {
+                                resourceComponent = resourceComponents.Find(x => x.Name == type)!;
+                            }
+
+                            if (resourceComponent != null)
+                            {
+                                // Check if the name mathces the length requirements for the component
+                                if ((value.Length >= (Convert.ToInt32(resourceComponent.MinLength)) && (value.Length <= Convert.ToInt32(resourceComponent.MaxLength))))
+                                {
+                                    valid = true;
+                                }
+                            }
                         }
                     }
                 }

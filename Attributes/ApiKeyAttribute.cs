@@ -22,11 +22,7 @@ namespace AzureNamingTool.Attributes
 
             var config = ConfigurationHelper.GetConfigurationData();
 
-            //var appSettings = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
-
-            //var apiKey = appSettings.GetValue<string>(APIKEYNAME);
-
-            if (!GeneralHelper.DecryptString(config.APIKey, config.SALTKey).Equals(extractedApiKey))
+            if (!GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!).Equals(extractedApiKey))
             {
                 context.Result = new ContentResult()
                 {

@@ -111,7 +111,10 @@
         parameters.Add(nameof(InformationModal.message), message);
         parameters.Add(nameof(InformationModal.title), title);
         parameters.Add(nameof(InformationModal.headerstyle), headerstyle);
-        parameters.Add("theme", theme);
+        if (GeneralHelper.IsNotNull(theme))
+        {
+            parameters.Add("theme", theme);
+        }
 
         var options = new ModalOptions()
             {
@@ -119,12 +122,15 @@
                 UseCustomLayout = true
             };
 
-        var modal = Modal.Show<InformationModal>(title, parameters, options);
-        var result = await modal.Result;
-        await session.SetAsync("versionnotification", true);
-        if (!result.Cancelled)
+        if (GeneralHelper.IsNotNull(Modal))
         {
-            StateHasChanged();
+            var modal = Modal.Show<InformationModal>(title, parameters, options);
+            var result = await modal.Result;
+            await session.SetAsync("versionnotification", true);
+            if (!result.Cancelled)
+            {
+                StateHasChanged();
+            }
         }
     }
 }

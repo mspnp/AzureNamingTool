@@ -38,7 +38,7 @@ namespace AzureNamingTool.Controllers
             {
                 if (!String.IsNullOrEmpty(adminpassword))
                 {
-                    if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword, config.SALTKey))
+                    if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
                     {
                         serviceResponse = await AdminService.UpdatePassword(password);
                         return (serviceResponse.Success ? Ok("SUCCESS"): Ok("FAILURE - There was a problem updating the password."));
@@ -76,7 +76,7 @@ namespace AzureNamingTool.Controllers
             {
                 if (!String.IsNullOrEmpty(adminpassword))
                 {
-                    if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword, config.SALTKey))
+                    if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
                     {
                         serviceResponse = await AdminService.UpdateAPIKey(apikey);
                         return (serviceResponse.Success ? Ok("SUCCESS") : Ok("FAILURE - There was a problem updating the API Key."));
@@ -114,7 +114,7 @@ namespace AzureNamingTool.Controllers
             {
                 if (!String.IsNullOrEmpty(adminpassword))
                 {
-                    if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword, config.SALTKey))
+                    if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
                     {
                         serviceResponse = await AdminService.GenerateAPIKey();
                         return (serviceResponse.Success ? Ok("SUCCESS") : Ok("FAILURE - There was a problem generating the API Key."));

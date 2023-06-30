@@ -13,7 +13,7 @@ namespace AzureNamingTool.Helpers
         {
             try
             {
-                return SourceData.GetType().GetProperty(propName).GetValue(SourceData, null);
+                return SourceData!.GetType()!.GetProperty(propName)!.GetValue(SourceData, null);
             }
             catch (Exception ex)
             {

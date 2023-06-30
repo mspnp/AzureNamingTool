@@ -94,7 +94,7 @@
                                     <span class="input-group-text" id="addon-wrapping">
                                         <span class="oi oi-magnifying-glass" id="addon-wrapping"></span>
                                     </span>
-                                    <input @bind-value="@selectedResourceTypeCategory" @oninput="(EventArgs) => { OnCategoryChanged(EventArgs.Value.ToString());}" class="@GetControlStyle()" list="categorieslist" id="generatecategories" placeholder="Type to filter by category..." autocomplete="off">
+                                    <input @bind-value="@selectedResourceTypeCategory" @oninput="(EventArgs) => { OnCategoryChanged(EventArgs.Value!.ToString()!);}" class="@GetControlStyle()" list="categorieslist" id="generatecategories" placeholder="Type to filter by category..." autocomplete="off">
                                     <datalist id="categorieslist">
                                         @foreach (var category in @categories)
                                         {
@@ -185,17 +185,20 @@
                             <ul>
                                 @foreach (string id in multiselectedResourceTypes)
                                 {
-                                    ResourceType thistype = servicesData.ResourceTypes.Find(x => x.Id == Convert.ToInt32(id));
-                                    <li>
-                                        @if (!String.IsNullOrEmpty(thistype.Property))
-                                        {
-                                            <span>@thistype.Resource - @thistype.Property (@thistype.ShortName)</span>
-                                        }
-                                        else
-                                        {
-                                            <span>@thistype.Resource (@thistype.ShortName)</span>
-                                        }
-                                    </li>
+                                    ResourceType thistype = servicesData.ResourceTypes.Find(x => x.Id == Convert.ToInt32(id))!;
+                                    @if (GeneralHelper.IsNotNull(thistype))
+                                    {
+                                        <li>
+                                            @if (!String.IsNullOrEmpty(thistype.Property))
+                                            {
+                                                <span>@thistype.Resource - @thistype.Property (@thistype.ShortName)</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@thistype.Resource (@thistype.ShortName)</span>
+                                            }
+                                        </li>
+                                    }
                                 }
                             </ul>
                             <div class="m-3">
@@ -216,7 +219,7 @@
                         }
 
                         <div class="@componentsVisible" id="components">
-                            @foreach (ResourceComponent resourceComponent in servicesData.ResourceComponents)
+                            @foreach (ResourceComponent resourceComponent in servicesData.ResourceComponents!)
                             {
                                 if ((!selectedResourceTypeExclude.ToLower().Split(',').Contains(GeneralHelper.NormalizeName(resourceComponent.Name, true))) || (multiselectedResourceTypes.Count > 0))
                                 {
@@ -236,7 +239,7 @@
                                                                  Value="@selectedResourceEnvironment"
                                                                  ValueChanged="@((string value) => OnComponentChanged("re",value))">
                                                         <option value="">Select an environment</option>
-                                                        @foreach (var item in @servicesData.ResourceEnvironments)
+                                                        @foreach (var item in @servicesData.ResourceEnvironments!)
                                                         {
                                                             <option value="@item.ShortName">@item.Name (@item.ShortName)</option>
                                                         }
@@ -258,7 +261,7 @@
                                                                  Value="@selectedResourceFunction"
                                                                  ValueChanged="@((string value) => OnComponentChanged("rf",value))">
                                                         <option value="">Select a Function</option>
-                                                        @foreach (var item in @servicesData.ResourceFunctions)
+                                                        @foreach (var item in @servicesData.ResourceFunctions!)
                                                         {
                                                             <option value="@item.ShortName">@item.Name (@item.ShortName)</option>
                                                         }
@@ -296,7 +299,7 @@
                                                                  Value="@selectedResourceLocation"
                                                                  ValueChanged="@((string value) => OnComponentChanged("rl",value))">
                                                         <option value="">Select a location</option>
-                                                        @foreach (var item in @servicesData.ResourceLocations)
+                                                        @foreach (var item in @servicesData.ResourceLocations!)
                                                         {
                                                             <option value="@item.ShortName">@item.Name (@item.ShortName)</option>
                                                         }
@@ -318,7 +321,7 @@
                                                                  Value="@selectedResourceOrg"
                                                                  ValueChanged="@((string value) => OnComponentChanged("ro",value))">
                                                         <option value="">Select an org</option>
-                                                        @foreach (var item in @servicesData.ResourceOrgs)
+                                                        @foreach (var item in @servicesData.ResourceOrgs!)
                                                         {
                                                             <option value="@item.ShortName">@item.Name (@item.ShortName)</option>
                                                         }
@@ -340,7 +343,7 @@
                                                                  Value="@selectedResourceProjAppSvc"
                                                                  ValueChanged="@((string value) => OnComponentChanged("rpas",value))">
                                                         <option value="">Select a project/app/service</option>
-                                                        @foreach (var item in @servicesData.ResourceProjAppSvcs)
+                                                        @foreach (var item in @servicesData.ResourceProjAppSvcs!)
                                                         {
                                                             <option value="@item.ShortName">@item.Name (@item.ShortName)</option>
                                                         }
@@ -362,7 +365,7 @@
                                                                  Value="@selectedResourceUnitDept"
                                                                  ValueChanged="@((string value) => OnComponentChanged("rud",value))">
                                                         <option value="">Select a unit/dept</option>
-                                                        @foreach (var item in @servicesData.ResourceUnitDepts)
+                                                        @foreach (var item in @servicesData.ResourceUnitDepts!)
                                                         {
                                                             <option value="@item.ShortName">@item.Name (@item.ShortName)</option>
                                                         }
@@ -375,7 +378,7 @@
                                             {
                                                 @if (!resourceComponent.IsFreeText)
                                                 {
-                                                    @if (servicesData.CustomComponents.Where(x => x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)).Count() > 0)
+                                                    @if (servicesData.CustomComponents!.Where(x => x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)).Count() > 0)
                                                     {
                                                         <div class="card @theme.ThemeStyle mb-3">
                                                             <h5 class="card-header text-white bg-secondary">
@@ -388,7 +391,7 @@
                                                             <div class="card card-body @theme.ThemeStyle">
                                                                 <select title="@resourceComponent.DisplayName" class="@GetControlStyle()" value="@selectedCustomComponents[GeneralHelper.NormalizeName(resourceComponent.Name, true)]" @onchange='(e  => OnCustomComponentChanged(e, GeneralHelper.NormalizeName(resourceComponent.Name, true)))'>
                                                                     <option value="">Select a component</option>
-                                                                    @foreach (var item in @servicesData.CustomComponents.Where(x => x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)))
+                                                                    @foreach (var item in @servicesData.CustomComponents!.Where(x => x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)))
                                                                     {
                                                                         <option value="@item.ShortName">@item.Name (@item.ShortName)</option>
                                                                     }
@@ -507,7 +510,7 @@
     private string resourcetypesVisible = "collapse";
     private string optional = " (OPTIONAL)";
     private string[] filteredscopes = new string[] { "resource group", "resource group & region", "region", "global", "subscription", "tenant" };
-    private ResourceNameRequest? resourceNameRequest = new();
+    private ResourceNameRequest resourceNameRequest = new();
     private ResourceNameResponse resourceNameRequestResponse = new();
     private ResourceType? currentResourceType = null;
     private List<string> multiselectedResourceTypes = new();
@@ -526,7 +529,7 @@
         }
 
         var currentuservalue = await session.GetAsync<string>("currentuser");
-        currentuser = (string)currentuservalue.Value;
+        currentuser = (string)currentuservalue.Value!;
     }
 
     private async Task SetServicesData()
@@ -536,7 +539,7 @@
             servicesData = await ServicesHelper.LoadServicesData(servicesData, false);
             List<ResourceType> filteredtypes = new List<ResourceType>();
             // Filter out the types w/o the scope
-            foreach (ResourceType type in servicesData.ResourceTypes)
+            foreach (ResourceType type in servicesData.ResourceTypes!)
             {
                 filteredtypes.Add(type);
             }
@@ -544,7 +547,7 @@
 
             // Get the list of categories
             categories = ResourceTypeService.GetTypeCategories(servicesData.ResourceTypes);
-            resourceDelimiter = (ResourceDelimiter)servicesData.ResourceDelimiters[0];
+            resourceDelimiter = (ResourceDelimiter)servicesData.ResourceDelimiters![0];
             componentsVisible = "collapse show";
         }
         catch (Exception ex)
@@ -558,6 +561,10 @@
     {
         try
         {
+            if (!GeneralHelper.IsNotNull(servicesData))
+            {
+                await SetServicesData();
+            }
             StringBuilder sbNames = new();
             StringBuilder sbMessage = new();
             generatedName = "";
@@ -592,56 +599,14 @@
                 // Single type generation
                 StringBuilder sbName = new();
                 selectedResourceType = GeneralHelper.FormatResoureType(selectedResourceType);
-                resourceType = servicesData.ResourceTypes.Find(x => x.Resource == selectedResourceType);
-                resourceNameRequest.ResourceType = resourceType.ShortName;
-                resourceNameRequest.ResourceId = resourceType.Id;
-
-                resourceNameRequestResponse = await ResourceNamingRequestService.RequestName(resourceNameRequest);
-
-                // Prepare the response
-                sbNames.Append("<tr>");
-                if (!String.IsNullOrEmpty(resourceType.Property))
+                resourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType)!;
+                if (GeneralHelper.IsNotNull(resourceType))
                 {
-                    sbNames.Append("<td class=\"col-3\">" + @resourceType.Resource + " - " + @resourceType.Property + "</td>");
-                }
-                else
-                {
-                    sbNames.Append("<td class=\"col-3\">" + @resourceType.Resource + "</td>");
-                }
-                sbNames.Append("<td class=\"col-3\">" + resourceNameRequestResponse.ResourceName + "</td>");
-                sbNames.Append("<td class=\"col-3\">");
-                if (!String.IsNullOrEmpty(resourceNameRequestResponse.Message))
-                {
-                    sbNames.Append(resourceNameRequestResponse.Message);
-                }
-                sbNames.Append("</td>");
-                sbNames.Append("</tr>");
-
-                // Set the result container
-                if (resourceNameRequestResponse.Success)
-                {
-                    resultClass = "bg-success";
-                    resultHeader = "SUCCESS";
-                    componentsVisible = "collapse";
-                }
-                else
-                {
-                    resultClass = "bg-danger";
-                    resultHeader = "FAILURE";
-                    componentsVisible = "collapse show";
-                }
-            }
-            else
-            {
-                // Attempt to genrate name for each seelct types
-                resultClass = "bg-success";
-                foreach (string id in multiselectedResourceTypes)
-                {
-                    resourceType = servicesData.ResourceTypes.Find(x => x.Id == Convert.ToInt32(id));
                     resourceNameRequest.ResourceType = resourceType.ShortName;
                     resourceNameRequest.ResourceId = resourceType.Id;
                     resourceNameRequestResponse = await ResourceNamingRequestService.RequestName(resourceNameRequest);
 
+                    // Prepare the response
                     sbNames.Append("<tr>");
                     if (!String.IsNullOrEmpty(resourceType.Property))
                     {
@@ -660,11 +625,58 @@
                     sbNames.Append("</td>");
                     sbNames.Append("</tr>");
 
-                    // Set the  result container
-                    if (!resourceNameRequestResponse.Success)
+                    // Set the result container
+                    if (resourceNameRequestResponse.Success)
+                    {
+                        resultClass = "bg-success";
+                        resultHeader = "SUCCESS";
+                        componentsVisible = "collapse";
+                    }
+                    else
                     {
                         resultClass = "bg-danger";
                         resultHeader = "FAILURE";
+                        componentsVisible = "collapse show";
+                    }
+                }
+            }
+            else
+            {
+                // Attempt to genrate name for each seelct types
+                resultClass = "bg-success";
+                foreach (string id in multiselectedResourceTypes)
+                {
+                    resourceType = servicesData.ResourceTypes!.Find(x => x.Id == Convert.ToInt32(id))!;
+                    if (GeneralHelper.IsNotNull(resourceType))
+                    {
+                        resourceNameRequest.ResourceType = resourceType.ShortName;
+                        resourceNameRequest.ResourceId = resourceType.Id;
+                        resourceNameRequestResponse = await ResourceNamingRequestService.RequestName(resourceNameRequest);
+
+                        sbNames.Append("<tr>");
+                        if (!String.IsNullOrEmpty(resourceType.Property))
+                        {
+                            sbNames.Append("<td class=\"col-3\">" + @resourceType.Resource + " - " + @resourceType.Property + "</td>");
+                        }
+                        else
+                        {
+                            sbNames.Append("<td class=\"col-3\">" + @resourceType.Resource + "</td>");
+                        }
+                        sbNames.Append("<td class=\"col-3\">" + resourceNameRequestResponse.ResourceName + "</td>");
+                        sbNames.Append("<td class=\"col-3\">");
+                        if (!String.IsNullOrEmpty(resourceNameRequestResponse.Message))
+                        {
+                            sbNames.Append(resourceNameRequestResponse.Message);
+                        }
+                        sbNames.Append("</td>");
+                        sbNames.Append("</tr>");
+
+                        // Set the  result container
+                        if (!resourceNameRequestResponse.Success)
+                        {
+                            resultClass = "bg-danger";
+                            resultHeader = "FAILURE";
+                        }
                     }
                 }
 
@@ -710,6 +722,11 @@
     private async Task OpenMultiSelectModal(bool clearselection)
     {
         ResetForm(false);
+
+        if (!GeneralHelper.IsNotNull(servicesData))
+        {
+            await SetServicesData();
+        }
         var parameters = new ModalParameters();
         parameters.Add("theme", theme);
         parameters.Add("multiselectedResourceTypes", multiselectedResourceTypes);
@@ -718,24 +735,38 @@
                 HideCloseButton = false,
                 UseCustomLayout = true,
             };
-
-        var modal = Modal.Show<MultiTypeSelectModal>("Select Resource Types", parameters, options);
-        var result = await modal.Result;
-        if (result.Confirmed)
+        if (GeneralHelper.IsNotNull(Modal))
         {
-            multiselectedResourceTypes = result.Data as List<string>;
-            if (multiselectedResourceTypes.Count > 0)
+            var modal = Modal.Show<MultiTypeSelectModal>("Select Resource Types", parameters, options);
+            var result = await modal.Result;
+            if (GeneralHelper.IsNotNull(result))
             {
-                ResourceType currentmultiresourcertpe = servicesData.ResourceTypes.Find((t) => t.Id == Convert.ToInt32(multiselectedResourceTypes[0].ToString()));
-                if (GeneralHelper.IsNotNull(currentmultiresourcertpe))
+                if (result.Confirmed)
                 {
-                    OnTypeChanged(currentmultiresourcertpe.Resource);
+                    if (GeneralHelper.IsNotNull(result.Data))
+                    {
+                        multiselectedResourceTypes = result.Data as List<string>;
+                        if (GeneralHelper.IsNotNull(multiselectedResourceTypes))
+                        {
+                            if (GeneralHelper.IsNotNull(multiselectedResourceTypes))
+                            {
+                                if (multiselectedResourceTypes.Count > 0)
+                                {
+                                    ResourceType currentmultiresourcertpe = servicesData.ResourceTypes!.Find((t) => t.Id == Convert.ToInt32(multiselectedResourceTypes![0].ToString()))!;
+                                    if (GeneralHelper.IsNotNull(currentmultiresourcertpe))
+                                    {
+                                        OnTypeChanged(currentmultiresourcertpe.Resource);
+                                    }
+                                    componentsVisible = "";
+                                }
+                                else
+                                {
+                                    componentsVisible = "collapse";
+                                }
+                            }
+                        }
+                    }
                 }
-                componentsVisible = "";
-            }
-            else
-            {
-                componentsVisible = "collapse";
             }
         }
 
@@ -750,56 +781,57 @@
         componentsVisible = "collapse show";
     }
 
-    private void OnTypeChanged(string value)
+    private async void OnTypeChanged(string value)
     {
         try
         {
-            if (GeneralHelper.IsNotNull(servicesData))
+            if (!GeneralHelper.IsNotNull(servicesData))
             {
-                resourceNameRequestResponse = new();
-                // Assign the selected value to the Model
-                selectedResourceType = value;
+                await SetServicesData();
+            }
+            resourceNameRequestResponse = new();
+            // Assign the selected value to the Model
+            selectedResourceType = value;
 
-                if (!String.IsNullOrEmpty(selectedResourceType))
+            if (!String.IsNullOrEmpty(selectedResourceType))
+            {
+                selectedResourceType = GeneralHelper.FormatResoureType(selectedResourceType);
+
+                // Find the selected resoruce type
+                //currentResourceType = servicesData.ResourceTypes.Find((t) => t.Id == Convert.ToInt32(selectedResourceType));
+                currentResourceType = servicesData.ResourceTypes!.Find((t) => t.Resource == selectedResourceType);
+
+                if (GeneralHelper.IsNotNull(currentResourceType))
                 {
-                    selectedResourceType = GeneralHelper.FormatResoureType(selectedResourceType);
 
-                    // Find the selected resoruce type
-                    //currentResourceType = servicesData.ResourceTypes.Find((t) => t.Id == Convert.ToInt32(selectedResourceType));
-                    currentResourceType = servicesData.ResourceTypes.Find((t) => t.Resource == selectedResourceType);
+                    // Set the optional components
+                    selectedResourceTypeOptional = currentResourceType.Optional;
 
-                    if (GeneralHelper.IsNotNull(currentResourceType))
+                    // Set the excluded components
+                    selectedResourceTypeExclude = currentResourceType.Exclude;
+
+                    // Reset the selected items
+                    selectedResourceEnvironment = String.Empty;
+                    selectedResourceInstance = String.Empty;
+                    selectedResourceLocation = String.Empty;
+                    selectedResourceOrg = String.Empty;
+                    selectedResourceProjAppSvc = String.Empty;
+                    selectedResourceUnitDept = String.Empty;
+                    selectedResourceFunction = String.Empty;
+
+                    componentsVisible = "collapse show";
+
+                    // Check if all the components are optional for the resource type
+                    selectedCustomComponents.Clear();
+                    foreach (var component in servicesData.ResourceComponents!)
                     {
-
-                        // Set the optional components
-                        selectedResourceTypeOptional = currentResourceType.Optional;
-
-                        // Set the excluded components
-                        selectedResourceTypeExclude = currentResourceType.Exclude;
-
-                        // Reset the selected items
-                        selectedResourceEnvironment = String.Empty;
-                        selectedResourceInstance = String.Empty;
-                        selectedResourceLocation = String.Empty;
-                        selectedResourceOrg = String.Empty;
-                        selectedResourceProjAppSvc = String.Empty;
-                        selectedResourceUnitDept = String.Empty;
-                        selectedResourceFunction = String.Empty;
-
-                        componentsVisible = "collapse show";
-
-                        // Check if all the components are optional for the resource type
-                        selectedCustomComponents.Clear();
-                        foreach (var component in servicesData.ResourceComponents)
+                        if (component.IsCustom)
                         {
-                            if (component.IsCustom)
-                            {
-                                selectedCustomComponents.Add(GeneralHelper.NormalizeName(component.Name, true), String.Empty);
-                            }
+                            selectedCustomComponents.Add(GeneralHelper.NormalizeName(component.Name, true), String.Empty);
                         }
-
-                        ValidateForm();
                     }
+
+                    ValidateForm();
                 }
             }
         }
@@ -861,7 +893,7 @@
         {
             if (!String.IsNullOrEmpty(e.Value.ToString()))
             {
-                OnComponentChanged("cc", e.Value.ToString(), parentcomponent);
+                OnComponentChanged("cc", e.Value.ToString()!, parentcomponent);
             }
             else
             {
@@ -874,13 +906,17 @@
         }
     }
 
-    private void ValidateForm()
+    private async void ValidateForm()
     {
+        if (!GeneralHelper.IsNotNull(servicesData))
+        {
+            await SetServicesData();
+        }
         if ((selectedResourceType != null) || (multiselectedResourceTypes.Count > 0))
         {
             boolFormDisabled = false;
             string nomalizedcomponentname;
-            @foreach (ResourceComponent resourceComponent in servicesData.ResourceComponents)
+            @foreach (ResourceComponent resourceComponent in servicesData.ResourceComponents!)
             {
                 nomalizedcomponentname = GeneralHelper.NormalizeName(resourceComponent.Name, true);
                 // Check if the user is generating names for a single type or multiple types
@@ -942,7 +978,7 @@
                                     {
                                         if (!resourceComponent.IsFreeText)
                                         {
-                                            if (servicesData.CustomComponents.Where(x => x.ParentComponent == nomalizedcomponentname).Count() > 0)
+                                            if (servicesData.CustomComponents!.Where(x => x.ParentComponent == nomalizedcomponentname).Count() > 0)
                                             {
                                                 // Make sure each component has a value
                                                 if (String.IsNullOrEmpty(selectedCustomComponents[nomalizedcomponentname]))
@@ -1018,12 +1054,15 @@
                             {
                                 if (!resourceComponent.IsFreeText)
                                 {
-                                    if (servicesData.CustomComponents.Where(x => x.ParentComponent == nomalizedcomponentname).Count() > 0)
+                                    if (GeneralHelper.IsNotNull(servicesData.CustomComponents))
                                     {
-                                        // Make sure each component has a value
-                                        if (String.IsNullOrEmpty(selectedCustomComponents[nomalizedcomponentname]))
+                                        if (servicesData.CustomComponents.Where(x => x.ParentComponent == nomalizedcomponentname).Count() > 0)
                                         {
-                                            boolFormDisabled = true;
+                                            // Make sure each component has a value
+                                            if (String.IsNullOrEmpty(selectedCustomComponents[nomalizedcomponentname]))
+                                            {
+                                                boolFormDisabled = true;
+                                            }
                                         }
                                     }
                                 }

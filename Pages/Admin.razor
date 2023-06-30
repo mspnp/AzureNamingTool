@@ -41,7 +41,7 @@
                     </p>
                     <div class="form-group">
                         <label for="password" style="font-weight:bold">Global Admin Password</label>
-                        <input title="Password" class="form-control mb-3" type="password" @onchange="@((ui) => { SetFormValue("login",(string)ui.Value);})" />
+                        <input title="Password" class="form-control mb-3" type="password" @onchange="@((ui) => { SetFormValue("login",(string)ui.Value!);})" />
                     </div>
                 }
                 else
@@ -99,7 +99,7 @@
                                             <li>Be at least 8 characters</li>
                                         </ul>
                                         <div class="form-group">
-                                            <input title="New Password" id="newpassword" class="form-control  mb-3" type="password" @onchange="@((ui) => { SetFormValue("password",(string)ui.Value);})" />
+                                            <input title="New Password" id="newpassword" class="form-control  mb-3" type="password" @onchange="@((ui) => { SetFormValue("password",(string)ui.Value!);})" />
                                             <button title="Save Password" type="button" disabled="@disabled" class="btn btn-success" @onclick="@(e => AdminFormAction("password"))">Save</button>
                                         </div>
                                     </div>
@@ -115,7 +115,7 @@
                                             The current API key is displayed. Click <strong>Generate</strong> to generate a new random API Key, or update the text to the desired value.
                                         </p>
                                         <div class="form-group">
-                                            <input title="API Key" id="currentapikey" class="form-control mb-3" type="text" @onchange="@((ui) => { SetFormValue("apikey",(string)ui.Value);})" value="@currentapikey" />
+                                            <input title="API Key" id="currentapikey" class="form-control mb-3" type="text" @onchange="@((ui) => { SetFormValue("apikey",(string)ui.Value!);})" value="@currentapikey" />
                                             <button type="button" class="btn btn-success" @onclick="@(e => AdminFormAction("apikeysave"))" title="Save API Key">Save</button>
                                             <button type="button" class="btn btn-success" @onclick="@(e => AdminFormAction("apikeygenerate"))" title="Generate API Key">Generate</button>
                                         </div>
@@ -166,7 +166,7 @@
                                             This setting is used to identify site users when authenticating using an Identity provider. Authentication using an Identity provider will often inject headers into the request. The site will check for the specified header name and assign the value as the user's identity. This value will be used to log user activity.
                                         </p>
                                         <div class="form-group mb-3">
-                                            <input title="Identity Header Name" id="currentidentityheadername" class="form-control mb-3" type="text" @onchange="@((ui) => { SetFormValue("identityheadername",(string)ui.Value);})" value="@currentidentityheadername" />
+                                            <input title="Identity Header Name" id="currentidentityheadername" class="form-control mb-3" type="text" @onchange="@((ui) => { SetFormValue("identityheadername",(string)ui.Value!);})" value="@currentidentityheadername" />
                                             <button type="button" class="btn btn-success" @onclick="@(e => AdminFormAction("identityheadernamesave"))" title="Save Identity Header Name">Save</button>
                                         </div>
                                         <p class="alert alert-info" role="alert">
@@ -213,34 +213,44 @@
                                                 <span class="oi oi-plus" aria-hidden="true"></span> Add Admin User
                                             </button>
                                         </div>
-                                        @if (servicesData.AdminUsers.Count > 0)
+                                        @if (GeneralHelper.IsNotNull(servicesData.AdminUsers))
                                         {
-                                            <div class="table-responsive">
-                                                <table class="table @theme.ThemeStyle">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Name</th>
-                                                            <th>Actions</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach (var item in @servicesData.AdminUsers)
-                                                        {
+                                            @if (servicesData.AdminUsers.Count > 0)
+                                            {
+                                                <div class="table-responsive">
+                                                    <table class="table @theme.ThemeStyle">
+                                                        <thead>
                                                             <tr>
-                                                                <td>@item.Name</td>
-                                                                <td>
-                                                                    @if (GeneralHelper.NormalizeName(currentuser, true) != GeneralHelper.NormalizeName(@item.Name, true))
-                                                                    {
-                                                                        <button type="button" class="btn btn-danger" @onclick="@(e => AdminFormAction("adminuserdelete",item.Id))" title="Delete">
-                                                                            <span class="oi oi-x" aria-hidden="true"></span>
-                                                                        </button>
-                                                                    }
-                                                                </td>
+                                                                <th>Name</th>
+                                                                <th>Actions</th>
                                                             </tr>
-                                                        }
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                                        </thead>
+                                                        <tbody>
+                                                            @if (GeneralHelper.IsNotNull(servicesData.AdminUsers))
+                                                            {
+                                                                @foreach (var item in @servicesData.AdminUsers)
+                                                                {
+                                                                    <tr>
+                                                                        <td>@item.Name</td>
+                                                                        <td>
+                                                                            @if (GeneralHelper.NormalizeName(currentuser, true) != GeneralHelper.NormalizeName(@item.Name, true))
+                                                                            {
+                                                                                <button type="button" class="btn btn-danger" @onclick="@(e => AdminFormAction("adminuserdelete",item.Id))" title="Delete">
+                                                                                    <span class="oi oi-x" aria-hidden="true"></span>
+                                                                                </button>
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <p style="font-style:italic;">There currently no assigned admin users.</p>
+                                            }
                                         }
                                         else
                                         {
@@ -370,7 +380,7 @@
                                         </p>
                                     </div>
                                     <div class="mb-3">
-                                        <input title="Generation Webhook" id="currentgenerationwebhook" class="form-control" type="text" @onchange="@((ui) => { SetFormValue("generationwebhook",(string)ui.Value);})" value="@currentgenerationwebhook" />
+                                        <input title="Generation Webhook" id="currentgenerationwebhook" class="form-control" type="text" @onchange="@((ui) => { SetFormValue("generationwebhook",(string)ui.Value!);})" value="@currentgenerationwebhook" />
                                     </div>
                                     <div>
                                         <button type="button" class="btn btn-success w-auto" @onclick="@(e => AdminFormAction("generationwebhooksave"))" title="Save Generate Webhook">Save</button>
@@ -399,11 +409,11 @@
     [CascadingParameter]
     private IdentityProviderDetails identityProviderDetails { get; set; } = new();
     private ServicesData servicesData = new();
-    private string currentpassword =  String.Empty;
-    private string newpassword =  String.Empty;
-    private string currentapikey =  String.Empty;
-    private string currentidentityheadername =  String.Empty;
-    private string currentidentityprovider =  String.Empty;
+    private string currentpassword = String.Empty;
+    private string newpassword = String.Empty;
+    private string currentapikey = String.Empty;
+    private string currentidentityheadername = String.Empty;
+    private string currentidentityprovider = String.Empty;
     private ResponseMessage message = new();
     private bool admin;
     private bool versionalertshown = false;
@@ -413,11 +423,11 @@
     private bool duplicatenamesallowed = false;
     private bool connectivitycheckenabled = true;
     private bool resourcetypeeditingallowed = false;
-    private string currentgenerationwebhook =  String.Empty;
-    private string versionalert =  String.Empty;
+    private string currentgenerationwebhook = String.Empty;
+    private string versionalert = String.Empty;
     private string appversion = String.Empty;
     private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
-    private string currentuser =  String.Empty;
+    private string currentuser = String.Empty;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -425,9 +435,9 @@
         if (firstRender)
         {
             // Get the version
-            if(Assembly.GetEntryAssembly() != null)
+            if (Assembly.GetEntryAssembly() != null)
             {
-                appversion = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+                appversion = Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
             }
 
             servicesData = await ServicesHelper.LoadServicesData(servicesData, true);
@@ -435,7 +445,7 @@
             admin = (bool)result.Value;
             if (admin)
             {
-                currentapikey = GeneralHelper.DecryptString(config.APIKey, config.SALTKey);
+                currentapikey = GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!);
                 // Determine if the version notification has been dismissed
                 var resultVersionAlert = await session.GetAsync<bool>("versionalert-" + appversion + "-shown");
                 versionalertshown = resultVersionAlert.Success ? resultVersionAlert.Value : false;
@@ -478,13 +488,13 @@
         {
             case "login":
                 // Check the password
-                if (currentpassword == GeneralHelper.DecryptString(config.AdminPassword, config.SALTKey))
+                if (currentpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
                 {
                     state.SetAdmin(true);
                     await session.SetAsync("admin", true);
                     await session.SetAsync("currentuser", "GlobalAdmin");
                     // Load the current API Key
-                    currentapikey = GeneralHelper.DecryptString(config.APIKey, config.SALTKey);
+                    currentapikey = GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!);
                     message.Type = MessageTypesEnum.INFORMATION;
                     message.Header = "INFORMATION";
                     message.Message = "Global Admin logged in.";
@@ -754,7 +764,7 @@
                         {
                             ConfigurationHelper.SetAppSetting("ResourceTypeEditingAllowed", e.Value?.ToString() ?? "");
                             message.Message = "Resource Type Editing Allowed setting updated to " + e.Value?.ToString().ToUpper() ?? "" + "!";
-                            if ((bool)e.Value)
+                            if ((bool)e.Value!)
                             {
                                 await ShowInformationModal("bg-danger", "ATTENTION", "<p>Disabling this setting may result in name generation that will fail regex validation for the resource type.</p><p>Please use caution when editing Resource Type validation settings.");
                             }
@@ -825,11 +835,14 @@
                 UseCustomLayout = true
             };
 
-        var modal = Modal.Show<InformationModal>(title, parameters, options);
-        var result = await modal.Result;
-        if (!result.Cancelled)
+        if (GeneralHelper.IsNotNull(Modal))
         {
-            StateHasChanged();
+            var modal = Modal.Show<InformationModal>(title, parameters, options);
+            var result = await modal.Result;
+            if (!result.Cancelled)
+            {
+                StateHasChanged();
+            }
         }
     }
 
@@ -851,7 +864,10 @@
                     UseCustomLayout = true
                 };
 
-            var modal = Modal.Show<InformationModal>("Instructions", parameters, options);
+            if (GeneralHelper.IsNotNull(Modal))
+            {
+                var modal = Modal.Show<InformationModal>("Instructions", parameters, options);
+            }
         }
         catch (Exception ex)
         {
@@ -879,31 +895,34 @@
                 UseCustomLayout = true
             };
 
-        var modal = Modal.Show<AddModal>(title, parameters, options);
-        var result = await modal.Result;
-        if (!result.Cancelled)
+        if (GeneralHelper.IsNotNull(Modal))
         {
-            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
-            state.SetNavReload(true);
-            StateHasChanged();
+            var modal = Modal.Show<AddModal>(title, parameters, options);
+            var result = await modal.Result;
+            if (!result.Cancelled)
+            {
+                servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                state.SetNavReload(true);
+                StateHasChanged();
+            }
         }
     }
-    			private async void SubmitIssue(string type)
-			    {
-			        string issueURL = "";
-			        switch(type)
-			        {
-			            case "bug":
-			                issueURL = "https://github.com/mspnp/AzureNamingTool/issues/new?assignees=&labels=&projects=&template=bug_report.md&title=";
-			                break;
-			            case "feature":
-			                issueURL = "https://github.com/mspnp/AzureNamingTool/issues/new?assignees=&labels=&projects=&template=feature_request.md&title=";
-			                break;
-			
-			        }
-			        if (!String.IsNullOrEmpty(issueURL))
-			        {
-			            await JsRuntime.InvokeVoidAsync("open", issueURL, "_blank");
-			        }
+    private async void SubmitIssue(string type)
+    {
+        string issueURL = "";
+        switch (type)
+        {
+            case "bug":
+                issueURL = "https://github.com/mspnp/AzureNamingTool/issues/new?assignees=&labels=&projects=&template=bug_report.md&title=";
+                break;
+            case "feature":
+                issueURL = "https://github.com/mspnp/AzureNamingTool/issues/new?assignees=&labels=&projects=&template=feature_request.md&title=";
+                break;
+
+        }
+        if (!String.IsNullOrEmpty(issueURL))
+        {
+            await JsRuntime.InvokeVoidAsync("open", issueURL, "_blank");
+        }
     }
 }

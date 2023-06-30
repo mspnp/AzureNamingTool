@@ -207,8 +207,14 @@
     {
         ServiceResponse serviceResponse = new();
         serviceResponse = await GeneratedNamesService.GetItems();
-        lstNameRequests = (List<GeneratedName>)serviceResponse.ResponseObject;
-        dataLoaded = true;
+        if (serviceResponse.Success)
+        {
+            if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+            {
+                lstNameRequests = (List<GeneratedName>)serviceResponse.ResponseObject!;
+                dataLoaded = true;
+            }
+        }
         StateHasChanged();
     }
 
@@ -235,17 +241,30 @@
             serviceResponse = await GeneratedNamesService.GetItem(Convert.ToInt32(id));
             if (serviceResponse.Success)
             {
-                GeneratedName generatedname = (GeneratedName)serviceResponse.ResponseObject;
-                serviceResponse = await GeneratedNamesService.DeleteItem(Convert.ToInt32(generatedname.Id));
-                if (serviceResponse.Success)
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                 {
-                    message.Type = MessageTypesEnum.SUCCESS;
-                    message.Message = "Generated name deleted!";
-                    toastService.ShowSuccess(message.Message);
-                    AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "Generated Name (" + generatedname.ResourceName + ") deleted." });
-                    CacheHelper.InvalidateCacheObject("GeneratedName");
-                    await LoadData();
-                    state.SetNavReload(true);
+                    GeneratedName generatedname = (GeneratedName)serviceResponse.ResponseObject!;
+                    if (GeneralHelper.IsNotNull(generatedname))
+                    {
+                        serviceResponse = await GeneratedNamesService.DeleteItem(Convert.ToInt32(generatedname.Id));
+                        if (serviceResponse.Success)
+                        {
+                            message.Type = MessageTypesEnum.SUCCESS;
+                            message.Message = "Generated name deleted!";
+                            toastService.ShowSuccess(message.Message);
+                            AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "Generated Name (" + generatedname.ResourceName + ") deleted." });
+                            CacheHelper.InvalidateCacheObject("GeneratedName");
+                            await LoadData();
+                            state.SetNavReload(true);
+                        }
+                        else
+                        {
+                            message.Type = MessageTypesEnum.ERROR;
+                            message.Message = "Generated name deletion failed!";
+                            message.MessageDetails = serviceResponse.ResponseMessage;
+                            toastService.ShowError(message.Message);
+                        }
+                    }
                 }
                 else
                 {
@@ -262,7 +281,6 @@
                 message.MessageDetails = serviceResponse.ResponseMessage;
                 toastService.ShowError(message.Message);
             }
-
         }
     }
 
@@ -330,7 +348,10 @@
                     UseCustomLayout = true
                 };
 
-            var modal = Modal.Show<InformationModal>("Instructions", parameters, options);
+            if (GeneralHelper.IsNotNull(Modal))
+            {
+                var modal = Modal.Show<InformationModal>("Instructions", parameters, options);
+            }
         }
         catch (Exception ex)
         {

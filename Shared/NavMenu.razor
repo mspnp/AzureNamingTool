@@ -191,8 +191,7 @@
         }
         else
         {
-            //if ((admin != (bool)result.Value) || (servicesData == null) || (state._reloadnav))
-            if (servicesData == null || state._reloadnav)
+            if ((GeneralHelper.IsNotNull(servicesData)) || (state._reloadnav))
             {
                 servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
                 state.SetNavReload(false);

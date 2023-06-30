@@ -182,51 +182,60 @@ namespace AzureNamingTool.Controllers
                 serviceResponse = await ResourceComponentService.GetItems(true);
                 if (serviceResponse.Success)
                 {
-                    currentresourcecomponents = serviceResponse.ResponseObject;
-
-                    // Loop through the posted components
-                    foreach (ResourceComponent thisparentcomponent in config.ParentComponents)
+                    if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                     {
-                        // Check if the posted component exists in the current components
-                        if (!currentresourcecomponents.Exists(x => x.Name == thisparentcomponent.Name))
-                        {
-                            // Add the custom component
-                            ResourceComponent newcustomcomponent = new()
-                            {
-                                Name = thisparentcomponent.Name,
-                                DisplayName = thisparentcomponent.Name,
-                                IsCustom = true
-                            };
-                            serviceResponse = await ResourceComponentService.PostItem(newcustomcomponent);
+                        currentresourcecomponents = serviceResponse.ResponseObject!;
 
-                            if (serviceResponse.Success)
+                        // Loop through the posted components
+                        if (GeneralHelper.IsNotNull(config.ParentComponents))
+                        {
+                            foreach (ResourceComponent thisparentcomponent in config.ParentComponents)
                             {
-                                // Add the new custom component to the list
-                                currentresourcecomponents.Add(newcustomcomponent);
-                            }
-                            else
-                            {
-                                return BadRequest(serviceResponse.ResponseObject);
+                                // Check if the posted component exists in the current components
+                                if (!currentresourcecomponents.Exists(x => x.Name == thisparentcomponent.Name))
+                                {
+                                    // Add the custom component
+                                    ResourceComponent newcustomcomponent = new()
+                                    {
+                                        Name = thisparentcomponent.Name,
+                                        DisplayName = thisparentcomponent.Name,
+                                        IsCustom = true
+                                    };
+                                    serviceResponse = await ResourceComponentService.PostItem(newcustomcomponent);
+
+                                    if (serviceResponse.Success)
+                                    {
+                                        // Add the new custom component to the list
+                                        currentresourcecomponents.Add(newcustomcomponent);
+                                    }
+                                    else
+                                    {
+                                        return BadRequest(serviceResponse.ResponseObject);
+                                    }
+                                }
                             }
                         }
                     }
 
-                    if (config.CustomComponents.Count > 0)
+                    if (GeneralHelper.IsNotNull(config.CustomComponents))
                     {
-                        // Loop through custom components to make sure the parent exists
-                        foreach (CustomComponent thiscustomcomponent in config.CustomComponents)
+                        if (config.CustomComponents.Count > 0)
                         {
-                            if (currentresourcecomponents.Where(x => GeneralHelper.NormalizeName(x.Name, true) == thiscustomcomponent.ParentComponent).Any())
+                            // Loop through custom components to make sure the parent exists
+                            foreach (CustomComponent thiscustomcomponent in config.CustomComponents)
                             {
-                                newcustomcomponents.Add(thiscustomcomponent);
+                                if (currentresourcecomponents.Where(x => GeneralHelper.NormalizeName(x.Name, true) == thiscustomcomponent.ParentComponent).Any())
+                                {
+                                    newcustomcomponents.Add(thiscustomcomponent);
+                                }
                             }
-                        }
 
-                        // Update the custom component options
-                        serviceResponse = await CustomComponentService.PostConfig(newcustomcomponents);
-                        if (!serviceResponse.Success)
-                        {
-                            return BadRequest(serviceResponse.ResponseObject);
+                            // Update the custom component options
+                            serviceResponse = await CustomComponentService.PostConfig(newcustomcomponents);
+                            if (!serviceResponse.Success)
+                            {
+                                return BadRequest(serviceResponse.ResponseObject);
+                            }
                         }
                     }
 

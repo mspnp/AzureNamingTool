@@ -14,15 +14,18 @@ namespace AzureNamingTool.Services
             try
             {
                 var items = await ConfigurationHelper.GetList<ResourceComponent>();
-                if (!admin)
+                if (GeneralHelper.IsNotNull(items))
                 {
-                    serviceResponse.ResponseObject = items.Where(x => x.Enabled == true).OrderBy(y => y.SortOrder).ToList();
+                    if (!admin)
+                    {
+                        serviceResponse.ResponseObject = items.Where(x => x.Enabled == true).OrderBy(y => y.SortOrder).ToList();
+                    }
+                    else
+                    {
+                        serviceResponse.ResponseObject = items.OrderBy(y => y.SortOrder).OrderByDescending(y => y.Enabled).ToList();
+                    }
+                    serviceResponse.Success = true;
                 }
-                else
-                {
-                    serviceResponse.ResponseObject = items.OrderBy(y => y.SortOrder).OrderByDescending(y => y.Enabled).ToList();
-                }
-                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
@@ -38,10 +41,16 @@ namespace AzureNamingTool.Services
             try
             {
                 // Get list of items
-                var data = await ConfigurationHelper.GetList<ResourceComponent>();
-                var item = data.Find(x => x.Id == id);
-                serviceResponse.ResponseObject = item;
-                serviceResponse.Success = true;
+                var items = await ConfigurationHelper.GetList<ResourceComponent>();
+                if (GeneralHelper.IsNotNull(items))
+                {
+                    var item = items.Find(x => x.Id == id);
+                    if (GeneralHelper.IsNotNull(item))
+                    {
+                        serviceResponse.ResponseObject = item;
+                        serviceResponse.Success = true;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -58,73 +67,78 @@ namespace AzureNamingTool.Services
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<ResourceComponent>();
-
-                // Set the new id
-                if (item.Id == 0)
+                if (GeneralHelper.IsNotNull(items))
                 {
-                    item.Id = items.Count + 1;
-                }
-
-                int position = 1;
-                items = items.OrderBy(x => x.SortOrder).ToList();
-
-                if (item.SortOrder == 0)
-                {
-                    item.SortOrder = items.Count + 1;
-                }
-
-                // Determine new item id
-                if (items.Count > 0)
-                {
-                    // Check if the item already exists
-                    if (items.Exists(x => x.Id == item.Id))
+                    if (GeneralHelper.IsNotNull(items))
                     {
-                        // Remove the updated item from the list
-                        var existingitem = items.Find(x => x.Id == item.Id);
-                        if (existingitem != null)
+                        // Set the new id
+                        if (item.Id == 0)
                         {
-                            int index = items.IndexOf(existingitem);
-                            items.RemoveAt(index);
+                            item.Id = items.Count + 1;
                         }
-                    }
 
-                    // Reset the sort order of the list
-                    foreach (ResourceComponent thisitem in items.OrderBy(x => x.SortOrder).OrderByDescending(x => x.Enabled).ToList())
-                    {
-                        thisitem.SortOrder = position;
-                        position += 1;
-                    }
+                        int position = 1;
+                        items = items.OrderBy(x => x.SortOrder).ToList();
 
-                    // Check for the new sort order
-                    if (items.Exists(x => x.SortOrder == item.SortOrder))
-                    {
-                        // Insert the new item
-                        items.Insert(items.IndexOf(items.FirstOrDefault(x => x.SortOrder == item.SortOrder)), item);
-                    }
-                    else
-                    {
-                        // Put the item at the end
-                        items.Add(item);
+                        if (item.SortOrder == 0)
+                        {
+                            item.SortOrder = items.Count + 1;
+                        }
+
+                        // Determine new item id
+                        if (items.Count > 0)
+                        {
+                            // Check if the item already exists
+                            if (items.Exists(x => x.Id == item.Id))
+                            {
+                                // Remove the updated item from the list
+                                var existingitem = items.Find(x => x.Id == item.Id);
+                                if (existingitem != null)
+                                {
+                                    int index = items.IndexOf(existingitem);
+                                    items.RemoveAt(index);
+                                }
+                            }
+
+                            // Reset the sort order of the list
+                            foreach (ResourceComponent thisitem in items.OrderBy(x => x.SortOrder).OrderByDescending(x => x.Enabled).ToList())
+                            {
+                                thisitem.SortOrder = position;
+                                position += 1;
+                            }
+
+                            // Check for the new sort order
+                            if (items.Exists(x => x.SortOrder == item.SortOrder))
+                            {
+                                // Insert the new item
+                                items.Insert(items.IndexOf(items.FirstOrDefault(x => x.SortOrder == item.SortOrder)!), item);
+                            }
+                            else
+                            {
+                                // Put the item at the end
+                                items.Add(item);
+                            }
+                        }
+                        else
+                        {
+                            item.Id = 1;
+                            item.SortOrder = 1;
+                            items.Add(item);
+                        }
+
+                        position = 1;
+                        foreach (ResourceComponent thisitem in items.OrderBy(x => x.SortOrder).OrderByDescending(x => x.Enabled).ToList())
+                        {
+                            thisitem.SortOrder = position;
+                            thisitem.Id = position;
+                            position += 1;
+                        }
+
+                        // Write items to file
+                        await ConfigurationHelper.WriteList<ResourceComponent>(items);
+                        serviceResponse.Success = true;
                     }
                 }
-                else
-                {
-                    item.Id = 1;
-                    item.SortOrder = 1;
-                    items.Add(item);
-                }
-
-                position = 1;
-                foreach (ResourceComponent thisitem in items.OrderBy(x => x.SortOrder).OrderByDescending(x => x.Enabled).ToList())
-                {
-                    thisitem.SortOrder = position;
-                    thisitem.Id = position;
-                    position += 1;
-                }
-
-                // Write items to file
-                await ConfigurationHelper.WriteList<ResourceComponent>(items);
-                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
@@ -141,53 +155,65 @@ namespace AzureNamingTool.Services
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<ResourceComponent>();
-                // Get the specified item
-                var item = items.Find(x => x.Id == id);
-
-                // Delete any resource type settings for the component
-                List<string> currentvalues = new();
-                serviceResponse = await ResourceTypeService.GetItems();
-                List<Models.ResourceType> resourceTypes = (List<Models.ResourceType>)serviceResponse.ResponseObject;
-                foreach (Models.ResourceType currenttype in resourceTypes)
+                if (GeneralHelper.IsNotNull(items))
                 {
-                    currentvalues = new List<string>(currenttype.Optional.Split(','));
-                    if (currentvalues.Contains(GeneralHelper.NormalizeName(item.Name, false)))
+                    // Get the specified item
+                    var item = items.Find(x => x.Id == id);
+                    if (GeneralHelper.IsNotNull(item))
                     {
-                        currentvalues.Remove(GeneralHelper.NormalizeName(item.Name, false));
-                        currenttype.Optional = String.Join(",", currentvalues.ToArray());
+                        // Delete any resource type settings for the component
+                        List<string> currentvalues = new();
+                        serviceResponse = await ResourceTypeService.GetItems();
+                        if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                        {
+                            List<Models.ResourceType> resourceTypes = (List<Models.ResourceType>)serviceResponse.ResponseObject!;
+                            if (GeneralHelper.IsNotNull(resourceTypes))
+                            {
+                                foreach (Models.ResourceType currenttype in resourceTypes)
+                                {
+                                    currentvalues = new List<string>(currenttype.Optional.Split(','));
+                                    if (currentvalues.Contains(GeneralHelper.NormalizeName(item.Name, false)))
+                                    {
+                                        currentvalues.Remove(GeneralHelper.NormalizeName(item.Name, false));
+                                        currenttype.Optional = String.Join(",", currentvalues.ToArray());
+                                    }
+
+                                    currentvalues = new List<string>(currenttype.Exclude.Split(','));
+                                    if (currentvalues.Contains(GeneralHelper.NormalizeName(item.Name, false)))
+                                    {
+                                        currentvalues.Remove(GeneralHelper.NormalizeName(item.Name, false));
+                                        currenttype.Exclude = String.Join(",", currentvalues.ToArray());
+                                    }
+                                    await ResourceTypeService.PostItem(currenttype);
+                                }
+
+                                // Delete any custom components for this resource component
+                                var components = await ConfigurationHelper.GetList<CustomComponent>();
+                                if (GeneralHelper.IsNotNull(components))
+                                {
+                                    components.RemoveAll(x => x.ParentComponent == GeneralHelper.NormalizeName(item.Name, true));
+                                    await ConfigurationHelper.WriteList<CustomComponent>(components);
+
+                                    // Remove the item from the collection
+                                    items.Remove(item);
+
+                                    // Update all the sort order values to reflect the removal
+                                    int position = 1;
+                                    foreach (ResourceComponent thisitem in items.OrderBy(x => x.SortOrder).ToList())
+                                    {
+                                        thisitem.SortOrder = position;
+                                        thisitem.Id = position;
+                                        position += 1;
+                                    }
+
+                                    // Write items to file
+                                    await ConfigurationHelper.WriteList<ResourceComponent>(items);
+                                    serviceResponse.Success = true;
+                                }
+                            }
+                        }
                     }
-
-                    currentvalues = new List<string>(currenttype.Exclude.Split(','));
-                    if (currentvalues.Contains(GeneralHelper.NormalizeName(item.Name, false)))
-                    {
-                        currentvalues.Remove(GeneralHelper.NormalizeName(item.Name, false));
-                        currenttype.Exclude = String.Join(",", currentvalues.ToArray());
-                    }
-
-                    await ResourceTypeService.PostItem(currenttype);
                 }
-
-
-                // Delete any custom components for this resource component
-                var components = await ConfigurationHelper.GetList<CustomComponent>();
-                components.RemoveAll(x => x.ParentComponent == GeneralHelper.NormalizeName(item.Name, true));
-                await ConfigurationHelper.WriteList<CustomComponent>(components);
-
-                // Remove the item from the collection
-                items.Remove(item);
-
-                // Update all the sort order values to reflect the removal
-                int position = 1;
-                foreach (ResourceComponent thisitem in items.OrderBy(x => x.SortOrder).ToList())
-                {
-                    thisitem.SortOrder = position;
-                    thisitem.Id = position;
-                    position += 1;
-                }
-
-                // Write items to file
-                await ConfigurationHelper.WriteList<ResourceComponent>(items);
-                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {

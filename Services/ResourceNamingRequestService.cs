@@ -58,90 +58,92 @@ namespace AzureNamingTool.Services
                 StringBuilder sbMessage = new();
 
                 // Loop through each component
-                foreach (var component in currentResourceComponents)
+                if (GeneralHelper.IsNotNull(currentResourceComponents))
                 {
-                    string normalizedcomponentname = GeneralHelper.NormalizeName(component.Name, true);
-                    // Check if the component is excluded for the Resource Type
-                    if (!resourceType.Exclude.ToLower().Split(',').Contains(normalizedcomponentname))
+                    foreach (var component in currentResourceComponents!)
                     {
-                        // Attempt to retrieve value from JSON body
-                        var prop = GeneralHelper.GetPropertyValue(d, component.Name);
-                        string value = null;
-
-                        // Add property value to name, if exists
-                        if (prop != null)
+                        string normalizedcomponentname = GeneralHelper.NormalizeName(component.Name, true);
+                        // Check if the component is excluded for the Resource Type
+                        if (!resourceType.Exclude.ToLower().Split(',').Contains(normalizedcomponentname))
                         {
-                            if (component.Name == "ResourceInstance")
-                            {
-                                value = prop;
-                            }
-                            else
-                            {
-                                value = prop.GetType().GetProperty("ShortName").GetValue(prop, null).ToLower();
-                            }
+                            // Attempt to retrieve value from JSON body
+                            var prop = GeneralHelper.GetPropertyValue(d, component.Name);
+                            string value = String.Empty;
 
-                            // Check if the delimeter is already ignored
-                            if (!ignoredelimeter)
+                            // Add property value to name, if exists
+                            if (GeneralHelper.IsNotNull(prop))
                             {
-                                // Check if delimeter is an invalid character
-                                if (!String.IsNullOrEmpty(resourceType.InvalidCharacters))
+                                if (component.Name == "ResourceInstance")
                                 {
-                                    if (!resourceType.InvalidCharacters.Contains(request.ResourceDelimiter.Delimiter))
+                                    value = prop;
+                                }
+                                else
+                                {
+                                    value = prop.GetType().GetProperty("ShortName").GetValue(prop, null).ToLower();
+                                }
+
+                                // Check if the delimeter is already ignored
+                                if (!ignoredelimeter)
+                                {
+                                    // Check if delimeter is an invalid character
+                                    if (!String.IsNullOrEmpty(resourceType.InvalidCharacters))
                                     {
+                                        if (!resourceType.InvalidCharacters.Contains(request.ResourceDelimiter.Delimiter))
+                                        {
+                                            if (!String.IsNullOrEmpty(name))
+                                            {
+                                                name += request.ResourceDelimiter.Delimiter;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // Add message about delimeter not applied
+                                            sbMessage.Append("The specified delimiter is not allowed for this resource type and has been removed.");
+                                            sbMessage.Append(Environment.NewLine);
+                                            ignoredelimeter = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // Deliemeter is valid so add it
                                         if (!String.IsNullOrEmpty(name))
                                         {
                                             name += request.ResourceDelimiter.Delimiter;
                                         }
                                     }
-                                    else
-                                    {
-                                        // Add message about delimeter not applied
-                                        sbMessage.Append("The specified delimiter is not allowed for this resource type and has been removed.");
-                                        sbMessage.Append(Environment.NewLine);
-                                        ignoredelimeter = true;
-                                    }
+                                }
+
+                                name += value;
+
+                                // Add property to aray for indivudal component validation
+                                if (component.Name == "ResourceType")
+                                {
+                                    lstComponents.Add(new string[] { component.Name, prop.Resource + " (" + value + ")" });
                                 }
                                 else
                                 {
-                                    // Deliemeter is valid so add it
-                                    if (!String.IsNullOrEmpty(name))
+                                    if (component.Name == "ResourceInstance")
                                     {
-                                        name += request.ResourceDelimiter.Delimiter;
+                                        lstComponents.Add(new string[] { component.Name, prop });
+                                    }
+                                    else
+                                    {
+                                        lstComponents.Add(new string[] { component.Name, prop.Name + " (" + value + ")" });
                                     }
                                 }
-                            }
-
-                            name += value;
-
-                            // Add property to aray for indivudal component validation
-                            if (component.Name == "ResourceType")
-                            {
-                                lstComponents.Add(new string[] { component.Name, prop.Resource + " (" + value + ")" });
                             }
                             else
                             {
-                                if (component.Name == "ResourceInstance")
+                                // Check if the prop is optional
+                                if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
                                 {
-                                    lstComponents.Add(new string[] { component.Name, prop });
+                                    valid = false;
+                                    break;
                                 }
-                                else
-                                {
-                                    lstComponents.Add(new string[] { component.Name, prop.Name + " (" + value + ")" });
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // Check if the prop is optional
-                            if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
-                            {
-                                valid = false;
-                                break;
                             }
                         }
                     }
                 }
-
                 // Check if the required component were supplied
                 if (!valid)
                 {
@@ -153,9 +155,9 @@ namespace AzureNamingTool.Services
                 // Check the Resource Instance value to ensure it's only nmumeric
                 if (lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance") != null)
                 {
-                    if (lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance")[1] != null)
+                    if (lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance")![1] != null)
                     {
-                        if (!ValidationHelper.CheckNumeric(lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance")[1]))
+                        if (!ValidationHelper.CheckNumeric(lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance")![1]))
                         {
                             sbMessage.Append("Resource Instance must be a numeric value.");
                             sbMessage.Append(Environment.NewLine);
@@ -166,22 +168,26 @@ namespace AzureNamingTool.Services
 
                 // Validate the generated name for the resource type
                 // CALL VALIDATION FUNCTION
-                ValidatedNameRequest validatedNameRequest = new ValidatedNameRequest() { 
+                ValidatedNameRequest validatedNameRequest = new ValidatedNameRequest()
+                {
                     ResourceType = resourceType.ShortName,
                     Name = name
                 };
                 serviceResponse = await ResourceTypeService.ValidateResourceTypeName(validatedNameRequest);
-                if(serviceResponse.Success)
+                if (serviceResponse.Success)
                 {
-                    ValidatedNameResponse validatedNameResponse = (ValidatedNameResponse)serviceResponse.ResponseObject;
-                    valid = validatedNameResponse.Valid;
-                    if (!String.IsNullOrEmpty(validatedNameResponse.Name))
+                    if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                     {
-                        name = validatedNameResponse.Name;
-                    }
-                    if (!String.IsNullOrEmpty(validatedNameResponse.Message))
-                    {
-                        sbMessage.Append(validatedNameResponse.Message);
+                        ValidatedNameResponse validatedNameResponse = (ValidatedNameResponse)serviceResponse.ResponseObject!;
+                        valid = validatedNameResponse.Valid;
+                        if (!String.IsNullOrEmpty(validatedNameResponse.Name))
+                        {
+                            name = validatedNameResponse.Name;
+                        }
+                        if (!String.IsNullOrEmpty(validatedNameResponse.Message))
+                        {
+                            sbMessage.Append(validatedNameResponse.Message);
+                        }
                     }
                 }
 
@@ -233,13 +239,15 @@ namespace AzureNamingTool.Services
                 List<string[]> lstComponents = new();
                 ServiceResponse serviceResponse = new();
                 ResourceDelimiter resourceDelimiter = new();
-                ResourceType? resourceType = null;
+                ResourceType resourceType = new();
+                string name = "";
+                StringBuilder sbMessage = new();
 
                 // Get the current delimiter
                 serviceResponse = await ResourceDelimiterService.GetCurrentItem();
                 if (serviceResponse.Success)
                 {
-                    resourceDelimiter = (ResourceDelimiter)serviceResponse.ResponseObject;
+                    resourceDelimiter = (ResourceDelimiter)serviceResponse.ResponseObject!;
                 }
                 else
                 {
@@ -251,274 +259,356 @@ namespace AzureNamingTool.Services
 
                 // Get the specified resource type
                 var resourceTypes = await ConfigurationHelper.GetList<ResourceType>();
-                var resourceTypesByShortName = resourceTypes.FindAll(x => x.ShortName == request.ResourceType);
-                if (resourceTypesByShortName == null)
+                if (GeneralHelper.IsNotNull(resourceTypes))
                 {
-                    valid = false;
-                    resourceNameResponse.Message = "ResourceType value is invalid.";
-                    resourceNameResponse.Success = false;
-                    return resourceNameResponse;
-                }
-                else
-                {
-                    if (resourceTypesByShortName.Count == 0)
+                    var resourceTypesByShortName = resourceTypes.FindAll(x => x.ShortName == request.ResourceType);
+                    if (GeneralHelper.IsNotNull(resourceTypesByShortName))
                     {
                         valid = false;
                         resourceNameResponse.Message = "ResourceType value is invalid.";
                         resourceNameResponse.Success = false;
                         return resourceNameResponse;
                     }
-                    // Check if there are duplicates
-                    if (resourceTypesByShortName.Count > 1)
+                    else
                     {
-                        // Check that the request includes a resource name
-                        if (request.ResourceId != 0)
+                        if (resourceTypesByShortName.Count == 0)
                         {
-                            // Check if the resource value is valid
-                            resourceType = resourceTypesByShortName.Find(x => x.Id == request.ResourceId);
-                            if (resourceType == null)
+                            valid = false;
+                            resourceNameResponse.Message = "ResourceType value is invalid.";
+                            resourceNameResponse.Success = false;
+                            return resourceNameResponse;
+                        }
+                        // Check if there are duplicates
+                        if (resourceTypesByShortName.Count > 1)
+                        {
+                            // Check that the request includes a resource name
+                            if (request.ResourceId != 0)
+                            {
+                                // Check if the resource value is valid
+                                resourceType = resourceTypesByShortName.Find(x => x.Id == request.ResourceId)!;
+                                if (GeneralHelper.IsNotNull(resourceType))
+                                {
+                                    valid = false;
+                                    resourceNameResponse.Message = "Resource Id value is invalid.";
+                                    resourceNameResponse.Success = false;
+                                    return resourceNameResponse;
+                                }
+                            }
+                            else
                             {
                                 valid = false;
-                                resourceNameResponse.Message = "Resource Id value is invalid.";
+                                resourceNameResponse.Message = "Your configuration contains multiple resource types for the provided short name. You must supply the Resource Id value for the resource type in your request.(Example: resourceId: 14)";
                                 resourceNameResponse.Success = false;
                                 return resourceNameResponse;
                             }
                         }
                         else
                         {
-                            valid = false;
-                            resourceNameResponse.Message = "Your configuration contains multiple resource types for the provided short name. You must supply the Resource Id value for the resource type in your request.(Example: resourceId: 14)";
-                            resourceNameResponse.Success = false;
-                            return resourceNameResponse;
+                            // Set the resource type ot the first value
+                            resourceType = resourceTypesByShortName[0];
                         }
                     }
-                    else
+
+                    // Check static value
+                    if (!String.IsNullOrEmpty(resourceType.StaticValues))
                     {
-                        // Set the resource type ot the first value
-                        resourceType = resourceTypesByShortName[0];
+                        // Return the static value and message and stop generation.
+                        resourceNameResponse.ResourceName = resourceType.StaticValues;
+                        resourceNameResponse.Message = "The requested Resource Type name is considered a static value with specific requirements. Please refer to https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules for additional information.";
+                        resourceNameResponse.Success = true;
+                        return resourceNameResponse;
                     }
-                }
 
-                // Check static value
-                if (!String.IsNullOrEmpty(resourceType.StaticValues))
-                {
-                    // Return the static value and message and stop generation.
-                    resourceNameResponse.ResourceName = resourceType.StaticValues;
-                    resourceNameResponse.Message = "The requested Resource Type name is considered a static value with specific requirements. Please refer to https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/resource-name-rules for additional information.";
-                    resourceNameResponse.Success = true;
-                    return resourceNameResponse;
-                }
-
-                // Make sure the passed custom component names are normalized
-                if (request.CustomComponents != null)
-                {
-                    Dictionary<string, string> newComponents = new();
-                    foreach (var cc in request.CustomComponents)
+                    // Make sure the passed custom component names are normalized
+                    if (request.CustomComponents != null)
                     {
-                        string value = cc.Value;
-                        newComponents.Add(GeneralHelper.NormalizeName(cc.Key, true), value);
-                    }
-                    request.CustomComponents = newComponents;
-                }
-
-                // Get the current components
-                serviceResponse = await ResourceComponentService.GetItems(false);
-                var currentResourceComponents = serviceResponse.ResponseObject;
-
-                string name = "";
-
-                StringBuilder sbMessage = new();
-
-                // Loop through each component
-                foreach (var component in currentResourceComponents)
-                {
-                    string normalizedcomponentname = GeneralHelper.NormalizeName(component.Name, true);
-                    if (!component.IsCustom)
-                    {
-                        // Check if the component is excluded for the Resource Type
-                        if (!resourceType.Exclude.ToLower().Split(',').Contains(normalizedcomponentname))
+                        Dictionary<string, string> newComponents = new();
+                        foreach (var cc in request.CustomComponents)
                         {
-                            // Attempt to retrieve value from JSON body
-                            var value = GeneralHelper.GetPropertyValue(request, component.Name);
+                            string value = cc.Value;
+                            newComponents.Add(GeneralHelper.NormalizeName(cc.Key, true), value);
+                        }
+                        request.CustomComponents = newComponents;
+                    }
 
-                            // Add property value to name, if exists
-                            if (value != null)
+                    // Get the current components
+                    serviceResponse = await ResourceComponentService.GetItems(false);
+                    var currentResourceComponents = serviceResponse.ResponseObject;
+
+                    if (GeneralHelper.IsNotNull(currentResourceComponents))
+                    {
+                        // Loop through each component
+                        foreach (var component in currentResourceComponents!)
+                        {
+                            string normalizedcomponentname = GeneralHelper.NormalizeName(component.Name, true);
+                            if (!component.IsCustom)
                             {
-                                if (!String.IsNullOrEmpty(value))
+                                // Check if the component is excluded for the Resource Type
+                                if (!resourceType.Exclude.ToLower().Split(',').Contains(normalizedcomponentname))
                                 {
-                                    // Validate that the value is a valid option for the component
-                                    switch (component.Name.ToLower())
+                                    // Attempt to retrieve value from JSON body
+                                    var value = GeneralHelper.GetPropertyValue(request, component.Name);
+
+                                    // Add property value to name, if exists
+                                    if (value != null)
                                     {
-                                        case "resourcetype":
-                                            var types = await ConfigurationHelper.GetList<ResourceType>();
-                                            var type = types.Find(x => x.ShortName == value);
-                                            if (type == null)
-                                            {
-                                                valid = false;
-                                                sbMessage.Append("ResourceType value is invalid. ");
-                                            }
-                                            break;
-
-                                        case "resourceenvironment":
-                                            var environments = await ConfigurationHelper.GetList<ResourceEnvironment>();
-                                            var environment = environments.Find(x => x.ShortName == value);
-                                            if (environment == null)
-                                            {
-                                                valid = false;
-                                                sbMessage.Append("ResourceEnvironment value is invalid. ");
-                                            }
-                                            break;
-
-                                        case "resourcelocation":
-                                            var locations = await ConfigurationHelper.GetList<ResourceLocation>();
-                                            var location = locations.Find(x => x.ShortName == value);
-                                            if (location == null)
-                                            {
-                                                valid = false;
-                                                sbMessage.Append("ResourceLocation value is invalid. ");
-                                            }
-                                            break;
-
-                                        case "resourceorg":
-                                            var orgs = await ConfigurationHelper.GetList<ResourceOrg>();
-                                            var org = orgs.Find(x => x.ShortName == value);
-                                            if (org == null)
-                                            {
-                                                valid = false;
-                                                sbMessage.Append("Resource Type value is invalid. ");
-                                            }
-                                            break;
-
-                                        case "resourceprojappsvc":
-                                            var projappsvcs = await ConfigurationHelper.GetList<ResourceProjAppSvc>();
-                                            var projappsvc = projappsvcs.Find(x => x.ShortName == value);
-                                            if (projappsvc == null)
-                                            {
-                                                valid = false;
-                                                sbMessage.Append("ResourceProjAppSvc value is invalid. ");
-                                            }
-                                            break;
-
-                                        case "resourceunitdept":
-                                            var unitdepts = await ConfigurationHelper.GetList<ResourceUnitDept>();
-                                            var unitdept = unitdepts.Find(x => x.ShortName == value);
-                                            if (unitdept == null)
-                                            {
-                                                valid = false;
-                                                sbMessage.Append("ResourceUnitDept value is invalid. ");
-                                            }
-                                            break;
-
-                                        case "resourcefunction":
-                                            var functions = await ConfigurationHelper.GetList<ResourceFunction>();
-                                            var function = functions.Find(x => x.ShortName == value);
-                                            if (function == null)
-                                            {
-                                                valid = false;
-                                                sbMessage.Append("ResourceFunction value is invalid. ");
-                                            }
-                                            break;
-                                    }
-                                    //var items = await ConfigurationHelper.GetList<ResourceComponent>();
-
-                                    // Check if the delimeter is already ignored
-                                    if ((!ignoredelimeter) && (!String.IsNullOrEmpty(resourceDelimiter.Delimiter)))
-                                    {
-                                        // Check if delimeter is an invalid character
-                                        if (!String.IsNullOrEmpty(resourceType.InvalidCharacters))
+                                        if (!String.IsNullOrEmpty(value))
                                         {
-                                            if (!resourceType.InvalidCharacters.Contains(resourceDelimiter.Delimiter))
+                                            // Validate that the value is a valid option for the component
+                                            switch (component.Name.ToLower())
                                             {
-                                                if (name != "")
+                                                case "resourcetype":
+                                                    var types = await ConfigurationHelper.GetList<ResourceType>();
+                                                    if (GeneralHelper.IsNotNull(types))
+                                                    {
+                                                        var type = types.Find(x => x.ShortName == value);
+                                                        if (GeneralHelper.IsNotNull(type))
+                                                        {
+                                                            valid = false;
+                                                            sbMessage.Append("ResourceType value is invalid. ");
+                                                        }
+                                                    }
+                                                    break;
+                                                case "resourceenvironment":
+                                                    var environments = await ConfigurationHelper.GetList<ResourceEnvironment>();
+                                                    if (GeneralHelper.IsNotNull(environments))
+                                                    {
+                                                        var environment = environments.Find(x => x.ShortName == value);
+                                                        if (GeneralHelper.IsNotNull(environment))
+                                                        {
+                                                            valid = false;
+                                                            sbMessage.Append("ResourceEnvironment value is invalid. ");
+                                                        }
+                                                    }
+                                                    break;
+                                                case "resourcelocation":
+                                                    var locations = await ConfigurationHelper.GetList<ResourceLocation>();
+                                                    if (GeneralHelper.IsNotNull(locations))
+                                                    {
+                                                        var location = locations.Find(x => x.ShortName == value);
+                                                        if (GeneralHelper.IsNotNull(location))
+                                                        {
+                                                            valid = false;
+                                                            sbMessage.Append("ResourceLocation value is invalid. ");
+                                                        }
+                                                    }
+                                                    break;
+                                                case "resourceorg":
+                                                    var orgs = await ConfigurationHelper.GetList<ResourceOrg>();
+                                                    if (GeneralHelper.IsNotNull(orgs))
+                                                    {
+                                                        var org = orgs.Find(x => x.ShortName == value);
+                                                        if (GeneralHelper.IsNotNull(org))
+                                                        {
+                                                            valid = false;
+                                                            sbMessage.Append("Resource Type value is invalid. ");
+                                                        }
+                                                    }
+                                                    break;
+                                                case "resourceprojappsvc":
+                                                    var projappsvcs = await ConfigurationHelper.GetList<ResourceProjAppSvc>();
+                                                    if (GeneralHelper.IsNotNull(projappsvcs))
+                                                    {
+                                                        var projappsvc = projappsvcs.Find(x => x.ShortName == value);
+                                                        if (GeneralHelper.IsNotNull(projappsvc))
+                                                        {
+                                                            valid = false;
+                                                            sbMessage.Append("ResourceProjAppSvc value is invalid. ");
+                                                        }
+                                                    }
+                                                    break;
+                                                case "resourceunitdept":
+                                                    var unitdepts = await ConfigurationHelper.GetList<ResourceUnitDept>();
+                                                    if (GeneralHelper.IsNotNull(unitdepts))
+                                                    {
+                                                        var unitdept = unitdepts.Find(x => x.ShortName == value);
+                                                        if (GeneralHelper.IsNotNull(unitdept))
+                                                        {
+                                                            valid = false;
+                                                            sbMessage.Append("ResourceUnitDept value is invalid. ");
+                                                        }
+                                                    }
+                                                    break;
+                                                case "resourcefunction":
+                                                    var functions = await ConfigurationHelper.GetList<ResourceFunction>();
+                                                    if (GeneralHelper.IsNotNull(functions))
+                                                    {
+                                                        var function = functions.Find(x => x.ShortName == value);
+                                                        if (GeneralHelper.IsNotNull(function))
+                                                        {
+                                                            valid = false;
+                                                            sbMessage.Append("ResourceFunction value is invalid. ");
+                                                        }
+                                                    }
+                                                    break;
+                                            }
+                                            //var items = await ConfigurationHelper.GetList<ResourceComponent>();
+
+                                            // Check if the delimeter is already ignored
+                                            if ((!ignoredelimeter) && (!String.IsNullOrEmpty(resourceDelimiter.Delimiter)))
+                                            {
+                                                // Check if delimeter is an invalid character
+                                                if (!String.IsNullOrEmpty(resourceType.InvalidCharacters))
                                                 {
-                                                    name += resourceDelimiter.Delimiter;
+                                                    if (!resourceType.InvalidCharacters.Contains(resourceDelimiter.Delimiter))
+                                                    {
+                                                        if (name != "")
+                                                        {
+                                                            name += resourceDelimiter.Delimiter;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        // Add message about delimeter not applied
+                                                        sbMessage.Append("The specified delimiter is not allowed for this resource type and has been removed. ");
+                                                        ignoredelimeter = true;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    // Deliemeter is valid so add it
+                                                    if (!String.IsNullOrEmpty(name))
+                                                    {
+                                                        name += resourceDelimiter.Delimiter;
+                                                    }
                                                 }
                                             }
-                                            else
+
+                                            name += value;
+
+                                            // Add property to array for individual component validation
+                                            if (!resourceType.Exclude.ToLower().Split(',').Contains(normalizedcomponentname))
                                             {
-                                                // Add message about delimeter not applied
-                                                sbMessage.Append("The specified delimiter is not allowed for this resource type and has been removed. ");
-                                                ignoredelimeter = true;
+                                                lstComponents.Add(new string[] { component.Name, value });
                                             }
                                         }
                                         else
                                         {
-                                            // Deliemeter is valid so add it
-                                            if (!String.IsNullOrEmpty(name))
+                                            // Check if the prop is optional
+                                            if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
                                             {
-                                                name += resourceDelimiter.Delimiter;
+                                                valid = false;
+                                                sbMessage.Append(component.Name + " value was not provided. ");
                                             }
                                         }
                                     }
-
-                                    name += value;
-
-                                    // Add property to array for individual component validation
-                                    if (!resourceType.Exclude.ToLower().Split(',').Contains(normalizedcomponentname))
+                                    else
                                     {
-                                        lstComponents.Add(new string[] { component.Name, value });
-                                    }
-                                }
-                                else
-                                {
-                                    // Check if the prop is optional
-                                    if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
-                                    {
-                                        valid = false;
-                                        sbMessage.Append(component.Name + " value was not provided. ");
+                                        // Check if the prop is optional
+                                        if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
+                                        {
+                                            valid = false;
+                                            sbMessage.Append(component.Name + " value was not provided. ");
+                                        }
                                     }
                                 }
                             }
                             else
                             {
-                                // Check if the prop is optional
-                                if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
+                                if (!component.IsFreeText)
                                 {
-                                    valid = false;
-                                    sbMessage.Append(component.Name + " value was not provided. ");
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (!component.IsFreeText)
-                        {
-                            // Get the custom components data
-                            serviceResponse = await CustomComponentService.GetItems();
-                            var customcomponents = (List<CustomComponent>)serviceResponse.ResponseObject;
-                            // Make sure the custom component has values
-                            if (customcomponents.Where(x => x.ParentComponent == normalizedcomponentname).Any())
-                            {
-                                // Make sure the CustomComponents property was provided
-                                if (!resourceType.Exclude.ToLower().Split(',').Contains(normalizedcomponentname))
-                                {
-                                    // Add property value to name, if exists
-                                    if (request.CustomComponents != null)
+                                    // Get the custom components data
+                                    serviceResponse = await CustomComponentService.GetItems();
+                                    if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                                     {
-                                        // Check if the custom compoment value was provided in the request
-                                        if (request.CustomComponents.ContainsKey(normalizedcomponentname))
+                                        var customcomponents = (List<CustomComponent>)serviceResponse.ResponseObject!;
+                                        if (GeneralHelper.IsNotNull(customcomponents))
                                         {
-                                            // Get the value from the provided custom components
-                                            var componentvalue = request.CustomComponents[normalizedcomponentname];
-                                            if (componentvalue == null)
+                                            // Make sure the custom component has values
+                                            if (customcomponents.Where(x => x.ParentComponent == normalizedcomponentname).Any())
                                             {
-                                                // Check if the prop is optional
-                                                if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
+                                                // Make sure the CustomComponents property was provided
+                                                if (!resourceType.Exclude.ToLower().Split(',').Contains(normalizedcomponentname))
                                                 {
-                                                    valid = false;
-                                                    sbMessage.Append(component.Name + " value was not provided. ");
+                                                    // Add property value to name, if exists
+                                                    if (GeneralHelper.IsNotNull(request.CustomComponents))
+                                                    {
+                                                        // Check if the custom compoment value was provided in the request
+                                                        if (request.CustomComponents.ContainsKey(normalizedcomponentname))
+                                                        {
+                                                            // Get the value from the provided custom components
+                                                            var componentvalue = request.CustomComponents[normalizedcomponentname];
+                                                            if (GeneralHelper.IsNotNull(componentvalue))
+                                                            {
+                                                                // Check if the prop is optional
+                                                                if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
+                                                                {
+                                                                    valid = false;
+                                                                    sbMessage.Append(component.Name + " value was not provided. ");
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                // Check to make sure it is a valid custom component
+                                                                var customComponents = await ConfigurationHelper.GetList<CustomComponent>();
+                                                                if (GeneralHelper.IsNotNull(customComponents))
+                                                                {
+                                                                    var validcustomComponent = customComponents.Find(x => x.ParentComponent == normalizedcomponentname && x.ShortName == componentvalue);
+                                                                    if (GeneralHelper.IsNotNull(validcustomComponent))
+                                                                    {
+                                                                        valid = false;
+                                                                        sbMessage.Append(component.Name + " value is not a valid custom component short name. ");
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (!String.IsNullOrEmpty(name))
+                                                                        {
+                                                                            name += resourceDelimiter.Delimiter;
+                                                                        }
+
+                                                                        name += componentvalue;
+
+                                                                        // Add property to array for individual component validation
+                                                                        lstComponents.Add(new string[] { component.Name, componentvalue });
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            // Check if the prop is optional
+                                                            if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
+                                                            {
+                                                                valid = false;
+                                                                sbMessage.Append(component.Name + " value was not provided. ");
+                                                            }
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        // Check if the prop is optional
+                                                        if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
+                                                        {
+                                                            valid = false;
+                                                            sbMessage.Append(component.Name + " value was not provided. ");
+                                                        }
+                                                    }
                                                 }
                                             }
-                                            else
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    // Make sure the CustomComponents property was provided
+                                    if (!resourceType.Exclude.ToLower().Split(',').Contains(normalizedcomponentname))
+                                    {
+                                        // Add property value to name, if exists
+                                        if (GeneralHelper.IsNotNull(request.CustomComponents))
+                                        {
+                                            // Check if the custom compoment value was provided in the request
+                                            if (request.CustomComponents.ContainsKey(normalizedcomponentname))
                                             {
-                                                // Check to make sure it is a valid custom component
-                                                var customComponents = await ConfigurationHelper.GetList<CustomComponent>();
-                                                var validcustomComponent = customComponents.Find(x => x.ParentComponent == normalizedcomponentname && x.ShortName == componentvalue);
-                                                if (validcustomComponent == null)
+                                                // Get the value from the provided custom components
+                                                var componentvalue = request.CustomComponents[normalizedcomponentname];
+                                                if (componentvalue == null)
                                                 {
-                                                    valid = false;
-                                                    sbMessage.Append(component.Name + " value is not a valid custom component short name. ");
+                                                    // Check if the prop is optional
+                                                    if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
+                                                    {
+                                                        valid = false;
+                                                        sbMessage.Append(component.Name + " value was not provided. ");
+                                                    }
                                                 }
                                                 else
                                                 {
@@ -533,6 +623,15 @@ namespace AzureNamingTool.Services
                                                     lstComponents.Add(new string[] { component.Name, componentvalue });
                                                 }
                                             }
+                                            else
+                                            {
+                                                // Check if the prop is optional
+                                                if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
+                                                {
+                                                    valid = false;
+                                                    sbMessage.Append(component.Name + " value was not provided. ");
+                                                }
+                                            }
                                         }
                                         else
                                         {
@@ -543,76 +642,16 @@ namespace AzureNamingTool.Services
                                                 sbMessage.Append(component.Name + " value was not provided. ");
                                             }
                                         }
-                                    }
-                                    else
-                                    {
-                                        // Check if the prop is optional
-                                        if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
-                                        {
-                                            valid = false;
-                                            sbMessage.Append(component.Name + " value was not provided. ");
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // Make sure the CustomComponents property was provided
-                            if (!resourceType.Exclude.ToLower().Split(',').Contains(normalizedcomponentname))
-                            {
-                                // Add property value to name, if exists
-                                if (request.CustomComponents != null)
-                                {
-                                    // Check if the custom compoment value was provided in the request
-                                    if (request.CustomComponents.ContainsKey(normalizedcomponentname))
-                                    {
-                                        // Get the value from the provided custom components
-                                        var componentvalue = request.CustomComponents[normalizedcomponentname];
-                                        if (componentvalue == null)
-                                        {
-                                            // Check if the prop is optional
-                                            if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
-                                            {
-                                                valid = false;
-                                                sbMessage.Append(component.Name + " value was not provided. ");
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (!String.IsNullOrEmpty(name))
-                                            {
-                                                name += resourceDelimiter.Delimiter;
-                                            }
-
-                                            name += componentvalue;
-
-                                            // Add property to array for individual component validation
-                                            lstComponents.Add(new string[] { component.Name, componentvalue });
-                                        }
-                                    }
-                                    else
-                                    {
-                                        // Check if the prop is optional
-                                        if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
-                                        {
-                                            valid = false;
-                                            sbMessage.Append(component.Name + " value was not provided. ");
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    // Check if the prop is optional
-                                    if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
-                                    {
-                                        valid = false;
-                                        sbMessage.Append(component.Name + " value was not provided. ");
                                     }
                                 }
                             }
                         }
                     }
+                }
+                else
+                {
+                    valid = false;
+                    sbMessage.Append("There was a problem generating the name.");
                 }
 
                 // Check if the required component were supplied
@@ -624,15 +663,18 @@ namespace AzureNamingTool.Services
                 }
 
                 // Check the Resource Instance value to ensure it's only nmumeric
-                if (lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance") != null)
+                if (GeneralHelper.IsNotNull(lstComponents))
                 {
-                    if (lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance")[1] != null)
+                    if (lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance") != null)
                     {
-                        if (!ValidationHelper.CheckNumeric(lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance")[1]))
+                        if (GeneralHelper.IsNotNull(lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance")![1]))
                         {
-                            sbMessage.Append("Resource Instance must be a numeric value.");
-                            sbMessage.Append(Environment.NewLine);
-                            valid = false;
+                            if (!ValidationHelper.CheckNumeric(lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance")![1]))
+                            {
+                                sbMessage.Append("Resource Instance must be a numeric value.");
+                                sbMessage.Append(Environment.NewLine);
+                                valid = false;
+                            }
                         }
                     }
                 }
@@ -644,17 +686,20 @@ namespace AzureNamingTool.Services
                     Name = name
                 };
                 serviceResponse = await ResourceTypeService.ValidateResourceTypeName(validatedName);
-                if(serviceResponse.Success)
+                if (serviceResponse.Success)
                 {
-                    ValidatedNameResponse validatedNameResponse = (ValidatedNameResponse)serviceResponse.ResponseObject;
-                    valid = validatedNameResponse.Valid;
-                    if (!String.IsNullOrEmpty(validatedNameResponse.Name))
+                    if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                     {
-                        name = validatedNameResponse.Name;
-                    }
-                    if (!String.IsNullOrEmpty(validatedNameResponse.Message))
-                    {
-                        sbMessage.Append(validatedNameResponse.Message);
+                        ValidatedNameResponse validatedNameResponse = (ValidatedNameResponse)serviceResponse.ResponseObject!;
+                        valid = validatedNameResponse.Valid;
+                        if (!String.IsNullOrEmpty(validatedNameResponse.Name))
+                        {
+                            name = validatedNameResponse.Name;
+                        }
+                        if (!String.IsNullOrEmpty(validatedNameResponse.Message))
+                        {
+                            sbMessage.Append(validatedNameResponse.Message);
+                        }
                     }
                 }
 
@@ -666,10 +711,19 @@ namespace AzureNamingTool.Services
                     {
                         // Check if the name already exists
                         serviceResponse = await GeneratedNamesService.GetItems();
-                        var names = (List<GeneratedName>)serviceResponse.ResponseObject;
-                        if (names.Where(x => x.ResourceName == name).Any())
+                        if (serviceResponse.Success)
                         {
-                            nameallowed = false;
+                            if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                            {
+                                var names = (List<GeneratedName>)serviceResponse.ResponseObject!;
+                                if (GeneralHelper.IsNotNull(names))
+                                {
+                                    if (names.Where(x => x.ResourceName == name).Any())
+                                    {
+                                        nameallowed = false;
+                                    }
+                                }
+                            }
                         }
                     }
                     if (nameallowed)

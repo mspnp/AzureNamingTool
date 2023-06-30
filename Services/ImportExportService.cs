@@ -20,12 +20,18 @@ namespace AzureNamingTool.Services
                 serviceResponse = await ResourceComponentService.GetItems(true);
                 if (serviceResponse.Success)
                 {
-                    configdata.ResourceComponents = serviceResponse.ResponseObject;
+                    if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                    {
+                        configdata.ResourceComponents = serviceResponse.ResponseObject;
+                    }
                 }
 
                 //ResourceDelimiters
                 serviceResponse = await ResourceDelimiterService.GetItems(true);
-                configdata.ResourceDelimiters = serviceResponse.ResponseObject;
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                {
+                    configdata.ResourceDelimiters = serviceResponse.ResponseObject;
+                }
 
                 //ResourceEnvironments
                 serviceResponse = await ResourceEnvironmentService.GetItems();

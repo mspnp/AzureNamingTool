@@ -21,15 +21,18 @@ namespace AzureNamingTool.Services
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<ResourceType>();
-                if (!admin)
+                if (GeneralHelper.IsNotNull(items))
                 {
-                    serviceResponse.ResponseObject = items.Where(x => x.Enabled == true).OrderBy(x => x.Resource).ToList();
+                    if (!admin)
+                    {
+                        serviceResponse.ResponseObject = items.Where(x => x.Enabled == true).OrderBy(x => x.Resource).ToList();
+                    }
+                    else
+                    {
+                        serviceResponse.ResponseObject = items.OrderBy(x => x.Resource).ToList();
+                    }
+                    serviceResponse.Success = true;
                 }
-                else
-                {
-                    serviceResponse.ResponseObject = items.OrderBy(x => x.Resource).ToList();
-                }
-                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
@@ -45,10 +48,16 @@ namespace AzureNamingTool.Services
             try
             {
                 // Get list of items
-                var data = await ConfigurationHelper.GetList<ResourceType>();
-                var item = data.Find(x => x.Id == id);
-                serviceResponse.ResponseObject = item;
-                serviceResponse.Success = true;
+                var items = await ConfigurationHelper.GetList<ResourceType>();
+                if (GeneralHelper.IsNotNull(items))
+                {
+                    var item = items.Find(x => x.Id == id);
+                    if (GeneralHelper.IsNotNull(item))
+                    {
+                        serviceResponse.ResponseObject = item;
+                        serviceResponse.Success = true;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -76,38 +85,43 @@ namespace AzureNamingTool.Services
 
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<ResourceType>();
-
-                // Set the new id
-                if (item.Id == 0)
+                if (GeneralHelper.IsNotNull(items))
                 {
-                    item.Id = items.Count + 1;
-                }
-
-                // Determine new item id
-                if (items.Count > 0)
-                {
-                    // Check if the item already exists
-                    if (items.Exists(x => x.Id == item.Id))
+                    // Set the new id
+                    if (item.Id == 0)
                     {
-                        // Remove the updated item from the list
-                        var existingitem = items.Find(x => x.Id == item.Id);
-                        int index = items.IndexOf(existingitem);
-                        items.RemoveAt(index);
+                        item.Id = items.Count + 1;
                     }
 
-                    // Put the item at the end
-                    items.Add(item);
-                }
-                else
-                {
-                    item.Id = 1;
-                    items.Add(item);
-                }
+                    // Determine new item id
+                    if (items.Count > 0)
+                    {
+                        // Check if the item already exists
+                        if (items.Exists(x => x.Id == item.Id))
+                        {
+                            // Remove the updated item from the list
+                            var existingitem = items.Find(x => x.Id == item.Id);
+                            if (GeneralHelper.IsNotNull(existingitem))
+                            {
+                                int index = items.IndexOf(existingitem);
+                                items.RemoveAt(index);
+                            }
+                        }
 
-                // Write items to file
-                await ConfigurationHelper.WriteList<ResourceType>(items.OrderBy(x => x.Id).ToList());
-                serviceResponse.ResponseObject = "Item added!";
-                serviceResponse.Success = true;
+                        // Put the item at the end
+                        items.Add(item);
+                    }
+                    else
+                    {
+                        item.Id = 1;
+                        items.Add(item);
+                    }
+
+                    // Write items to file
+                    await ConfigurationHelper.WriteList<ResourceType>(items.OrderBy(x => x.Id).ToList());
+                    serviceResponse.ResponseObject = "Item added!";
+                    serviceResponse.Success = true;
+                }
             }
             catch (Exception ex)
             {
@@ -124,14 +138,20 @@ namespace AzureNamingTool.Services
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<ResourceType>();
-                // Get the specified item
-                var item = items.Find(x => x.Id == id);
-                // Remove the item from the collection
-                items.Remove(item);
+                if (GeneralHelper.IsNotNull(items))
+                {
+                    // Get the specified item
+                    var item = items.Find(x => x.Id == id);
+                    if (GeneralHelper.IsNotNull(item))
+                    {
+                        // Remove the item from the collection
+                        items.Remove(item);
 
-                // Write items to file
-                await ConfigurationHelper.WriteList<ResourceType>(items);
-                serviceResponse.Success = true;
+                        // Write items to file
+                        await ConfigurationHelper.WriteList<ResourceType>(items);
+                        serviceResponse.Success = true;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -220,65 +240,72 @@ namespace AzureNamingTool.Services
                 // Get the existing Resource Type items
                 ServiceResponse serviceResponse;
                 serviceResponse = await ResourceTypeService.GetItems();
-                List<ResourceType> types = (List<ResourceType>)serviceResponse.ResponseObject;
-                string url = "https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/repository/resourcetypes.json";
-
-                string refreshdata = await GeneralHelper.DownloadString(url);
-                if (!String.IsNullOrEmpty(refreshdata))
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                 {
-                    var newtypes = new List<ResourceType>();
-                    var options = new JsonSerializerOptions
+                    List<ResourceType> types = (List<ResourceType>)serviceResponse.ResponseObject!;
+                    if (GeneralHelper.IsNotNull(types))
                     {
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                        PropertyNameCaseInsensitive = true
-                    };
-
-                    newtypes = JsonSerializer.Deserialize<List<ResourceType>>(refreshdata, options);
-
-                    // Loop through the new items
-                    // Add any new resource type and update any existing types
-                    foreach (ResourceType newtype in newtypes)
-                    {
-                        // Check if the existing types contain the current type
-                        int i = types.FindIndex(x => x.Resource == newtype.Resource);
-                        if (i > -1)
+                        string url = "https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/repository/resourcetypes.json";
+                        string refreshdata = await GeneralHelper.DownloadString(url);
+                        if (!String.IsNullOrEmpty(refreshdata))
                         {
-                            // Update the Resource Type Information
-                            ResourceType oldtype = types[i];
-                            newtype.Exclude = oldtype.Exclude;
-                            newtype.Optional = oldtype.Optional;
-                            newtype.Enabled = oldtype.Enabled;
-                            if ((!shortNameReset) || (String.IsNullOrEmpty(oldtype.ShortName)))
+                            var newtypes = new List<ResourceType>();
+                            var options = new JsonSerializerOptions
                             {
-                                newtype.ShortName = oldtype.ShortName;
+                                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                                PropertyNameCaseInsensitive = true
+                            };
+
+                            newtypes = JsonSerializer.Deserialize<List<ResourceType>>(refreshdata, options);
+                            if (GeneralHelper.IsNotNull(newtypes))
+                            {
+                                // Loop through the new items
+                                // Add any new resource type and update any existing types
+                                foreach (ResourceType newtype in newtypes)
+                                {
+                                    // Check if the existing types contain the current type
+                                    int i = types.FindIndex(x => x.Resource == newtype.Resource);
+                                    if (i > -1)
+                                    {
+                                        // Update the Resource Type Information
+                                        ResourceType oldtype = types[i];
+                                        newtype.Exclude = oldtype.Exclude;
+                                        newtype.Optional = oldtype.Optional;
+                                        newtype.Enabled = oldtype.Enabled;
+                                        if ((!shortNameReset) || (String.IsNullOrEmpty(oldtype.ShortName)))
+                                        {
+                                            newtype.ShortName = oldtype.ShortName;
+                                        }
+                                        // Remove the old type
+                                        types.RemoveAt(i);
+                                        // Add the new type
+                                        types.Add(newtype);
+                                    }
+                                    else
+                                    {
+                                        // Add a new resource type
+                                        types.Add(newtype);
+                                    }
+                                }
+
+                                // Update the settings file
+                                serviceResponse = await PostConfig(types);
+
+                                // Update the repository file
+                                await FileSystemHelper.WriteFile("resourcetypes.json", refreshdata, "repository/");
+
+                                // Clear cached data
+                                CacheHelper.InvalidateCacheObject("ResourceType");
+
+                                // Update the current configuration file version data information
+                                await ConfigurationHelper.UpdateConfigurationFileVersion("resourcetypes");
                             }
-                            // Remove the old type
-                            types.RemoveAt(i);
-                            // Add the new type
-                            types.Add(newtype);
                         }
                         else
                         {
-                            // Add a new resource type
-                            types.Add(newtype);
+                            AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = "There was a problem refreshing the resource types configuration." });
                         }
                     }
-
-                    // Update the settings file
-                    serviceResponse = await PostConfig(types);
-
-                    // Update the repository file
-                    await FileSystemHelper.WriteFile("resourcetypes.json", refreshdata, "repository/");
-
-                    // Clear cached data
-                    CacheHelper.InvalidateCacheObject("ResourceType");
-
-                    // Update the current configuration file version data information
-                    await ConfigurationHelper.UpdateConfigurationFileVersion("resourcetypes");
-                }
-                else
-                {
-                    AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = "There was a problem refreshing the resource types configuration." });
                 }
             }
             catch (Exception ex)
@@ -295,55 +322,70 @@ namespace AzureNamingTool.Services
             try
             {
                 serviceResponse = await ResourceComponentService.GetItem(componentid);
-                ResourceComponent resourceComponent = (ResourceComponent)serviceResponse.ResponseObject;
-                string component = GeneralHelper.NormalizeName(resourceComponent.Name, false);
-                serviceResponse = await ResourceTypeService.GetItems();
-                List<ResourceType> resourceTypes = (List<ResourceType>)serviceResponse.ResponseObject;
-                List<string> currentvalues = new();
-                // Update all the resource type component settings
-                foreach (ResourceType currenttype in resourceTypes)
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                 {
-                    switch (operation)
+                    ResourceComponent resourceComponent = (ResourceComponent)serviceResponse.ResponseObject!;
+                    if (GeneralHelper.IsNotNull(resourceComponent))
                     {
-                        case "optional-add":
-                            currentvalues = new List<string>(currenttype.Optional.Split(','));
-                            if (!currentvalues.Contains(component))
+                        string component = GeneralHelper.NormalizeName(resourceComponent.Name, false);
+                        serviceResponse = await ResourceTypeService.GetItems();
+                        if (serviceResponse.Success)
+                        {
+                            if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                             {
-                                currentvalues.Add(component);
-                                currenttype.Optional = String.Join(",", currentvalues.ToArray());
-                                await ResourceTypeService.PostItem(currenttype);
+                                List<ResourceType> resourceTypes = (List<ResourceType>)serviceResponse.ResponseObject!;
+                                if (GeneralHelper.IsNotNull(resourceTypes))
+                                {
+                                    List<string> currentvalues = new();
+                                    // Update all the resource type component settings
+                                    foreach (ResourceType currenttype in resourceTypes)
+                                    {
+                                        switch (operation)
+                                        {
+                                            case "optional-add":
+                                                currentvalues = new List<string>(currenttype.Optional.Split(','));
+                                                if (!currentvalues.Contains(component))
+                                                {
+                                                    currentvalues.Add(component);
+                                                    currenttype.Optional = String.Join(",", currentvalues.ToArray());
+                                                    await ResourceTypeService.PostItem(currenttype);
+                                                }
+                                                break;
+                                            case "optional-remove":
+                                                currentvalues = new List<string>(currenttype.Optional.Split(','));
+                                                if (currentvalues.Contains(component))
+                                                {
+                                                    currentvalues.Remove(component);
+                                                    currenttype.Optional = String.Join(",", currentvalues.ToArray());
+                                                    await ResourceTypeService.PostItem(currenttype);
+                                                }
+                                                break;
+                                            case "exclude-add":
+                                                currentvalues = new List<string>(currenttype.Exclude.Split(','));
+                                                if (!currentvalues.Contains(component))
+                                                {
+                                                    currentvalues.Add(component);
+                                                    currenttype.Exclude = String.Join(",", currentvalues.ToArray());
+                                                    await ResourceTypeService.PostItem(currenttype);
+                                                }
+                                                break;
+                                            case "exclude-remove":
+                                                currentvalues = new List<string>(currenttype.Exclude.Split(','));
+                                                if (currentvalues.Contains(component))
+                                                {
+                                                    currentvalues.Remove(component);
+                                                    currenttype.Exclude = String.Join(",", currentvalues.ToArray());
+                                                    await ResourceTypeService.PostItem(currenttype);
+                                                }
+                                                break;
+                                        }
+                                    }
+                                    serviceResponse.Success = true;
+                                }
                             }
-                            break;
-                        case "optional-remove":
-                            currentvalues = new List<string>(currenttype.Optional.Split(','));
-                            if (currentvalues.Contains(component))
-                            {
-                                currentvalues.Remove(component);
-                                currenttype.Optional = String.Join(",", currentvalues.ToArray());
-                                await ResourceTypeService.PostItem(currenttype);
-                            }
-                            break;
-                        case "exclude-add":
-                            currentvalues = new List<string>(currenttype.Exclude.Split(','));
-                            if (!currentvalues.Contains(component))
-                            {
-                                currentvalues.Add(component);
-                                currenttype.Exclude = String.Join(",", currentvalues.ToArray());
-                                await ResourceTypeService.PostItem(currenttype);
-                            }
-                            break;
-                        case "exclude-remove":
-                            currentvalues = new List<string>(currenttype.Exclude.Split(','));
-                            if (currentvalues.Contains(component))
-                            {
-                                currentvalues.Remove(component);
-                                currenttype.Exclude = String.Join(",", currentvalues.ToArray());
-                                await ResourceTypeService.PostItem(currenttype);
-                            }
-                            break;
+                        }
                     }
                 }
-                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
@@ -364,7 +406,10 @@ namespace AzureNamingTool.Services
                 serviceResponse = await ResourceDelimiterService.GetCurrentItem();
                 if (serviceResponse.Success)
                 {
-                    resourceDelimiter = serviceResponse.ResponseObject as ResourceDelimiter;
+                    if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                    {
+                        resourceDelimiter = serviceResponse.ResponseObject as ResourceDelimiter;
+                    }
                 }
                 else
                 {
@@ -374,19 +419,25 @@ namespace AzureNamingTool.Services
                 }
 
                 // Get the specifed resource type
-                serviceResponse = await ResourceTypeService.GetItems(true); 
+                serviceResponse = await ResourceTypeService.GetItems(true);
                 if (serviceResponse.Success)
                 {
-                    // Get the resource types
-                    List<ResourceType> resourceTypes = (List<ResourceType>)serviceResponse.ResponseObject;
-                    // Get the specified resoure type
-                    ResourceType resourceType = resourceTypes.FirstOrDefault(x => x.ShortName == validatedNameRequest.ResourceType);
-                    if(GeneralHelper.IsNotNull(resourceType))
+                    if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                     {
-                        // Create a validated name request
-                        ValidatedNameResponse validatedNameResponse= ValidationHelper.ValidateGeneratedName(resourceType, validatedNameRequest.Name, resourceDelimiter.Delimiter);
-                        serviceResponse.ResponseObject = validatedNameResponse;
-                        serviceResponse.Success = true;
+                        // Get the resource types
+                        List<ResourceType> resourceTypes = (List<ResourceType>)serviceResponse.ResponseObject!;
+                        if (GeneralHelper.IsNotNull(resourceTypes))
+                        {
+                            // Get the specified resoure type
+                            ResourceType resourceType = resourceTypes.FirstOrDefault(x => x.ShortName == validatedNameRequest.ResourceType)!;
+                            if (GeneralHelper.IsNotNull(resourceType))
+                            {
+                                // Create a validated name request
+                                ValidatedNameResponse validatedNameResponse = ValidationHelper.ValidateGeneratedName(resourceType, validatedNameRequest.Name!, resourceDelimiter!.Delimiter);
+                                serviceResponse.ResponseObject = validatedNameResponse;
+                                serviceResponse.Success = true;
+                            }
+                        }
                     }
                 }
             }

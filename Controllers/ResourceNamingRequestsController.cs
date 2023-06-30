@@ -100,8 +100,15 @@ namespace AzureNamingTool.Controllers
                 serviceResponse = await ResourceTypeService.ValidateResourceTypeName(validatedNameRequest);
                 if (serviceResponse.Success)
                 {
-                    ValidatedNameResponse validatedNameResponse = (ValidatedNameResponse)serviceResponse.ResponseObject;
-                    return Ok(validatedNameResponse);
+                    if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                    {
+                        ValidatedNameResponse validatedNameResponse = (ValidatedNameResponse)serviceResponse.ResponseObject!;
+                        return Ok(validatedNameResponse);
+                    }
+                    else
+                    {
+                        return BadRequest("There was a problem validating the name.");
+                    }
                 }
                 else
                 {
