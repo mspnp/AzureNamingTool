@@ -133,7 +133,7 @@ namespace AzureNamingTool.Services
                         if (items.Exists(x => x.SortOrder == item.SortOrder))
                         {
                             // Remove the updated item from the list
-                            items.Insert(items.IndexOf(items.FirstOrDefault(x => x.SortOrder == item.SortOrder)), item);
+                            items.Insert(items.IndexOf(items.FirstOrDefault(x => x.SortOrder == item.SortOrder)!), item);
                         }
                         else
                         {

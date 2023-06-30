@@ -106,7 +106,7 @@
                                     <span class="input-group-text" id="addon-wrapping">
                                         <span class="oi oi-magnifying-glass" id="addon-wrapping"></span>
                                     </span>
-                                    <input @bind-value="@selectedResourceType" @oninput="(EventArgs) => { OnTypeChanged(EventArgs.Value.ToString());}" class="@GetControlStyle()" list="typeslist" id="generatetypes" placeholder="Type to search resource types..." autocomplete="off">
+                                    <input @bind-value="@selectedResourceType" @oninput="(EventArgs) => { OnTypeChanged(EventArgs.Value!.ToString()!);}" class="@GetControlStyle()" list="typeslist" id="generatetypes" placeholder="Type to search resource types..." autocomplete="off">
                                     <datalist id="typeslist">
                                         @foreach (var type in @ResourceTypeService.GetFilteredResourceTypes(servicesData.ResourceTypes, selectedResourceTypeCategory))
                                         {

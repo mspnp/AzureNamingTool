@@ -3196,63 +3196,72 @@
                                     serviceResponse = await ResourceComponentService.GetItems(true);
                                     if (serviceResponse.Success)
                                     {
-                                        currentresourcecomponents = serviceResponse.ResponseObject;
-                                        // Format the posted configuration
-                                        try
+                                        if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                                         {
-                                            CustomComponmentConfig customcomponentconfigupdate = JsonSerializer.Deserialize<CustomComponmentConfig>(newCustomComponentConfig, options);
-                                            // Check if the configuration contains resource components
-                                            if (customcomponentconfigupdate.ParentComponents.Count > 0)
+                                            currentresourcecomponents = serviceResponse.ResponseObject!;
+                                            // Format the posted configuration
+                                            try
                                             {
-                                                // Loop through the posted components
-                                                foreach (ResourceComponent thisparentcomponent in customcomponentconfigupdate.ParentComponents)
+                                                CustomComponmentConfig customcomponentconfigupdate = JsonSerializer.Deserialize<CustomComponmentConfig>(newCustomComponentConfig, options);
+                                                // Check if the configuration contains resource components
+                                                if (customcomponentconfigupdate.ParentComponents.Count > 0)
                                                 {
-                                                    // Check if the posted component exists in the current components
-                                                    if (!currentresourcecomponents.Exists(x => x.Name == thisparentcomponent.Name))
+                                                    // Loop through the posted components
+                                                    foreach (ResourceComponent thisparentcomponent in customcomponentconfigupdate.ParentComponents)
                                                     {
-                                                        // Add the custom component
-                                                        ResourceComponent newcustomcomponent = new()
-                                                            {
-                                                                Name = thisparentcomponent.Name,
-                                                                DisplayName = thisparentcomponent.Name,
-                                                                IsCustom = true,
-                                                                IsFreeText = thisparentcomponent.IsFreeText
-                                                            };
-                                                        serviceResponse = await ResourceComponentService.PostItem(newcustomcomponent);
-                                                        // Add the new custom component to the list
-                                                        currentresourcecomponents.Add(newcustomcomponent);
+                                                        // Check if the posted component exists in the current components
+                                                        if (!currentresourcecomponents.Exists(x => x.Name == thisparentcomponent.Name))
+                                                        {
+                                                            // Add the custom component
+                                                            ResourceComponent newcustomcomponent = new()
+                                                                {
+                                                                    Name = thisparentcomponent.Name,
+                                                                    DisplayName = thisparentcomponent.Name,
+                                                                    IsCustom = true,
+                                                                    IsFreeText = thisparentcomponent.IsFreeText
+                                                                };
+                                                            serviceResponse = await ResourceComponentService.PostItem(newcustomcomponent);
+                                                            // Add the new custom component to the list
+                                                            currentresourcecomponents.Add(newcustomcomponent);
+                                                        }
                                                     }
                                                 }
-                                            }
-                                            if (customcomponentconfigupdate.CustomComponents.Count > 0)
-                                            {
-                                                // Loop through custom components to make sure the parent exists
-                                                foreach (CustomComponent thiscustomcomponent in customcomponentconfigupdate.CustomComponents)
+                                                if (customcomponentconfigupdate.CustomComponents.Count > 0)
                                                 {
-                                                    if (currentresourcecomponents.Where(x => GeneralHelper.NormalizeName(x.Name, true) == thiscustomcomponent.ParentComponent).Count() > 0)
+                                                    // Loop through custom components to make sure the parent exists
+                                                    foreach (CustomComponent thiscustomcomponent in customcomponentconfigupdate.CustomComponents)
                                                     {
-                                                        newcustomcomponents.Add(thiscustomcomponent);
+                                                        if (currentresourcecomponents.Where(x => GeneralHelper.NormalizeName(x.Name, true) == thiscustomcomponent.ParentComponent).Count() > 0)
+                                                        {
+                                                            newcustomcomponents.Add(thiscustomcomponent);
+                                                        }
                                                     }
-                                                }
 
-                                                // Update the custom component options
-                                                serviceResponse = await CustomComponentService.PostConfig(newcustomcomponents);
-                                            }
-                                        }
-                                        catch (Exception)
-                                        {
-                                            // User is likely trying to import just components.
-                                            List<CustomComponent> customComponents = JsonSerializer.Deserialize<List<CustomComponent>>(newCustomComponentConfig, options);
-                                            // Loop through custom components to make sure the parent exists
-                                            foreach (CustomComponent thiscustomcomponent in customComponents)
-                                            {
-                                                if (currentresourcecomponents.Where(x => GeneralHelper.NormalizeName(x.Name, true) == thiscustomcomponent.ParentComponent).Count() > 0)
-                                                {
-                                                    newcustomcomponents.Add(thiscustomcomponent);
+                                                    // Update the custom component options
+                                                    serviceResponse = await CustomComponentService.PostConfig(newcustomcomponents);
                                                 }
                                             }
-                                            // Update the custom component options
-                                            serviceResponse = await CustomComponentService.PostConfig(newcustomcomponents);
+                                            catch (Exception)
+                                            {
+                                                // User is likely trying to import just components.
+                                                List<CustomComponent> customComponents = JsonSerializer.Deserialize<List<CustomComponent>>(newCustomComponentConfig, options);
+                                                if (GeneralHelper.IsNotNull(customComponents))
+                                                {
+                                                    // Loop through custom components to make sure the parent exists
+                                                    foreach (CustomComponent thiscustomcomponent in customComponents)
+                                                    {
+                                                        if (GeneralHelper.IsNotNull(currentresourcecomponents))
+                                                        {
+                                                            if (currentresourcecomponents.Where(x => GeneralHelper.NormalizeName(x.Name, true) == thiscustomcomponent.ParentComponent).Count() > 0)
+                                                            {
+                                                                newcustomcomponents.Add(thiscustomcomponent);
+                                                            }
+                                                        }
+                                                    }
+                                                    // Update the custom component options
+                                                    serviceResponse = await CustomComponentService.PostConfig(newcustomcomponents);
+                                                }
+                                            }
                                         }
                                     }
                                     if (serviceResponse.Success)
@@ -3273,7 +3282,13 @@
                             break;
                     }
                     serviceResponse = await CustomComponentService.GetItems();
-                    servicesData.CustomComponents = (List<CustomComponent>)serviceResponse.ResponseObject;
+                    if (serviceResponse.Success)
+                    {
+                        if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                        {
+                            servicesData.CustomComponents = (List<CustomComponent>)serviceResponse.ResponseObject!;
+                        }
+                    }
                     break;
                 case "Global":
                     switch (action)
@@ -3281,7 +3296,10 @@
                         case "download":
                             serviceResponse = await ImportExportService.ExportConfig(includeAdmin);
                             var globaljson = serviceResponse.ResponseObject;
-                            await BlazorDownloadFileService.DownloadFileFromText("globalconfig.json", JsonSerializer.Serialize(globaljson).ToString(), System.Text.Encoding.UTF8, "application/octet-stream");
+                            if (GeneralHelper.IsNotNull(BlazorDownloadFileService))
+                            {
+                                await BlazorDownloadFileService.DownloadFileFromText("globalconfig.json", JsonSerializer.Serialize(globaljson).ToString(), System.Text.Encoding.UTF8, "application/octet-stream");
+                            }
                             break;
                         case "reset":
                             confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will reset your current configuration for all settings and cannot be undone!\n\nAre you sure?");
@@ -3309,7 +3327,7 @@
                                 confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Global configuration and cannot be undone!\n\nAre you sure?");
                                 if (confirm)
                                 {
-                                    serviceResponse = await ImportExportService.PostConfig(JsonSerializer.Deserialize<ConfigurationData>(newGlobalConfig, options));
+                                    serviceResponse = await ImportExportService.PostConfig(JsonSerializer.Deserialize<ConfigurationData>(newGlobalConfig, options)!);
                                     if (serviceResponse.Success)
                                     {
                                         message.Type = MessageTypesEnum.SUCCESS;
@@ -3341,8 +3359,10 @@
                             stream.Position = 0;
 
                             string policyString = Encoding.Default.GetString(stream.ToArray());
-
-                            await BlazorDownloadFileService.DownloadFileFromText("namePolicyDefinition.json", policyString, System.Text.Encoding.UTF8, "application/json");
+                            if (GeneralHelper.IsNotNull(BlazorDownloadFileService))
+                            {
+                                await BlazorDownloadFileService.DownloadFileFromText("namePolicyDefinition.json", policyString, System.Text.Encoding.UTF8, "application/json");
+                            }
                             break;
                     }
                     break;
@@ -3484,13 +3504,16 @@
                 UseCustomLayout = true
             };
 
-        var modal = Modal.Show<AddModal>(title, parameters, options);
-        var result = await modal.Result;
-        if (!result.Cancelled)
+        if (GeneralHelper.IsNotNull(Modal))
         {
-            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
-            state.SetNavReload(true);
-            StateHasChanged();
+            var modal = Modal.Show<AddModal>(title, parameters, options);
+            var result = await modal.Result;
+            if (!result.Cancelled)
+            {
+                servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                state.SetNavReload(true);
+                StateHasChanged();
+            }
         }
     }
 
@@ -3503,7 +3526,7 @@
         parameters.Add(nameof(EditModal.message), message);
         parameters.Add(nameof(EditModal.title), title);
         parameters.Add(nameof(EditModal.protectedName), protectedname);
-        parameters.Add(nameof(EditModal.parentcomponent), parentcomponent);
+        parameters.Add(nameof(EditModal.parentcomponent), parentcomponent!);
         parameters.Add(nameof(EditModal.servicesData), servicesData);
         parameters.Add("theme", theme);
 

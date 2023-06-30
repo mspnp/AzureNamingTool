@@ -22,7 +22,7 @@ namespace AzureNamingTool.Services
                 {
                     if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                     {
-                        configdata.ResourceComponents = serviceResponse.ResponseObject;
+                        configdata.ResourceComponents = serviceResponse.ResponseObject!;
                     }
                 }
 
@@ -30,51 +30,81 @@ namespace AzureNamingTool.Services
                 serviceResponse = await ResourceDelimiterService.GetItems(true);
                 if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                 {
-                    configdata.ResourceDelimiters = serviceResponse.ResponseObject;
+                    configdata.ResourceDelimiters = serviceResponse.ResponseObject!;
                 }
 
                 //ResourceEnvironments
                 serviceResponse = await ResourceEnvironmentService.GetItems();
-                configdata.ResourceEnvironments = serviceResponse.ResponseObject;
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                {
+                    configdata.ResourceEnvironments = serviceResponse.ResponseObject!;
+                }
 
                 // ResourceFunctions
                 serviceResponse = await ResourceFunctionService.GetItems();
-                configdata.ResourceFunctions = serviceResponse.ResponseObject;
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                {
+                    configdata.ResourceFunctions = serviceResponse.ResponseObject!;
+                }
 
                 // ResourceLocations
                 serviceResponse = await ResourceLocationService.GetItems();
-                configdata.ResourceLocations = serviceResponse.ResponseObject;
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                {
+                    configdata.ResourceLocations = serviceResponse.ResponseObject!;
+                }
 
                 // ResourceOrgs
                 serviceResponse = await ResourceOrgService.GetItems();
-                configdata.ResourceOrgs = serviceResponse.ResponseObject;
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                {
+                    configdata.ResourceOrgs = serviceResponse.ResponseObject!;
+                }
 
                 // ResourceProjAppSvc
                 serviceResponse = await ResourceProjAppSvcService.GetItems();
-                configdata.ResourceProjAppSvcs = serviceResponse.ResponseObject;
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                {
+                    configdata.ResourceProjAppSvcs = serviceResponse.ResponseObject!;
+                }
 
                 // ResourceTypes
                 serviceResponse = await ResourceTypeService.GetItems();
-                configdata.ResourceTypes = serviceResponse.ResponseObject;
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                {
+                    configdata.ResourceTypes = serviceResponse.ResponseObject!;
+                }
 
                 // ResourceUnitDepts
                 serviceResponse = await ResourceUnitDeptService.GetItems();
-                configdata.ResourceUnitDepts = serviceResponse.ResponseObject;
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                {
+                    configdata.ResourceUnitDepts = serviceResponse.ResponseObject!;
+                }
 
                 // CustomComponents
                 serviceResponse = await CustomComponentService.GetItems();
-                configdata.CustomComponents = serviceResponse.ResponseObject;
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                {
+                    configdata.CustomComponents = serviceResponse.ResponseObject!;
+                }
 
                 //GeneratedNames
                 serviceResponse = await GeneratedNamesService.GetItems();
-                configdata.GeneratedNames = serviceResponse.ResponseObject;
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                {
+                    configdata.GeneratedNames = serviceResponse.ResponseObject!;
+                }
 
                 //AdminLogs
                 serviceResponse = await AdminLogService.GetItems();
-                configdata.AdminLogs = serviceResponse.ResponseObject;
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                {
+                    configdata.AdminLogs = serviceResponse.ResponseObject;
+                }
 
-                // Get the current settings
-                var config = ConfigurationHelper.GetConfigurationData();
+                    // Get the current settings
+                    var config = ConfigurationHelper.GetConfigurationData();
                 configdata.DismissedAlerts = config.DismissedAlerts;
                 configdata.DuplicateNamesAllowed = config.DuplicateNamesAllowed;
                 configdata.ConnectivityCheckEnabled = config.ConnectivityCheckEnabled;
@@ -90,7 +120,10 @@ namespace AzureNamingTool.Services
                     configdata.IdentityHeaderName = config.IdentityHeaderName;
                     //AdminUsers
                     serviceResponse = await AdminUserService.GetItems();
-                    configdata.AdminUsers = serviceResponse.ResponseObject;
+                    if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                    {
+                        configdata.AdminUsers = serviceResponse.ResponseObject!;
+                    }
                     // ResourceTypeEditing
                     configdata.ResourceTypeEditingAllowed = config.ResourceTypeEditingAllowed;
                 }
@@ -127,7 +160,10 @@ namespace AzureNamingTool.Services
                 {
                     await AdminUserService.PostConfig(configdata.AdminUsers);
                 }
-                await AdminLogService.PostConfig(configdata.AdminLogs);
+                if (GeneralHelper.IsNotNull(configdata.AdminLogs))
+                {
+                    await AdminLogService.PostConfig(configdata.AdminLogs);
+                }
 
                 var config = ConfigurationHelper.GetConfigurationData();
                 config.DismissedAlerts = configdata.DismissedAlerts;

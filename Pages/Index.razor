@@ -10,7 +10,7 @@
 
 <PageTitle>Azure Naming Tool - Home</PageTitle>
 
-<div class="card @theme.ThemeStyle">
+<div class="card @theme!.ThemeStyle">
     <div class="card-body">
         <p>
             <img src="images/AzureNamingToolLogo.png" height="160" alt="Azure Naming Tool" />
@@ -62,7 +62,7 @@
     public IModalService? Modal { get; set; }
     private bool admin;
 
-    private string appversion = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+    private string appversion = Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
     private string updateurl = "https://github.com/mspnp/AzureNamingTool/blob/main/UPDATING.md";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

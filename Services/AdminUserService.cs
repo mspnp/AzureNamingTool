@@ -30,8 +30,8 @@ namespace AzureNamingTool.Services
             try
             {
                 // Get list of items
-                var data = await ConfigurationHelper.GetList<AdminUser>();
-                var item = data.Find(x => x.Name == name);
+                var items = await ConfigurationHelper.GetList<AdminUser>();
+                var item = items.Find(x => x.Name == name);
                 serviceResponse.ResponseObject = item;
                 serviceResponse.Success = true;
             }

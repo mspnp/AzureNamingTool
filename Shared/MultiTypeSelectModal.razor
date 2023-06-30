@@ -51,7 +51,7 @@
                                 </div>
                                 <div class="collapse show card card-body @theme.ThemeStyle" id="@("multitypesection_"+@category)">
                                     <ul style="list-style-type: none;word-break: break-word;">
-                                        @foreach (var resourceType in ResourceTypeService.GetFilteredResourceTypes(servicesData.ResourceTypes, category))
+                                        @foreach (var resourceType in ResourceTypeService.GetFilteredResourceTypes(servicesData.ResourceTypes!, category))
                                         {
                                             if (!IsTypeVisible(resourceType))
                                                 continue;
@@ -59,11 +59,11 @@
                                                 <div class="form-check">
                                                     @if (multiselectedResourceTypes.Contains(resourceType.Id.ToString()))
                                                     {
-                                                        <input class="form-check-input" type="checkbox" checked value="@resourceType.Id" id="@("multitype_"+@resourceType.Id)" @onchange="eventArgs => { OnMultiTypesChange(resourceType.Id.ToString(), eventArgs.Value); }">
+                                                        <input class="form-check-input" type="checkbox" checked value="@resourceType.Id" id="@("multitype_"+@resourceType.Id)" @onchange="eventArgs => { OnMultiTypesChange(resourceType.Id.ToString(), eventArgs.Value!); }">
                                                     }
                                                     else
                                                     {
-                                                        <input class="form-check-input" type="checkbox" value="@resourceType.Id" id="@("multitype_"+@resourceType.Id)" @onchange="eventArgs => { OnMultiTypesChange(resourceType.Id.ToString(), eventArgs.Value); }">
+                                                        <input class="form-check-input" type="checkbox" value="@resourceType.Id" id="@("multitype_"+@resourceType.Id)" @onchange="eventArgs => { OnMultiTypesChange(resourceType.Id.ToString(), eventArgs.Value!); }">
                                                     }
                                                     @if (!String.IsNullOrEmpty(resourceType.Property))
                                                     {

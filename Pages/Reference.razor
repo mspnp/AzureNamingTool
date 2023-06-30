@@ -131,7 +131,7 @@
                                                                         <strong>Components</strong>
                                                                     </td>
                                                                 </tr>
-                                                                @foreach (var resourceComponent in servicesData.ResourceComponents)
+                                                                @foreach (var resourceComponent in servicesData.ResourceComponents!)
                                                                 {
                                                                     if (!resourcetype.Exclude.ToLower().Split(',').Contains(GeneralHelper.NormalizeName(resourceComponent.Name, true)))
                                                                     {
@@ -145,7 +145,7 @@
                                                                                             Environment:
                                                                                         </td>
                                                                                         <td style="word-wrap:anywhere;overflow-wrap:anywhere;white-space: normal;" class="align-top">
-                                                                                            @servicesData.ResourceEnvironments[0].Name (@servicesData.ResourceEnvironments[0].ShortName)
+                                                                                            @servicesData.ResourceEnvironments![0].Name (@servicesData.ResourceEnvironments[0].ShortName)
                                                                                         </td>
                                                                                     </tr>
                                                                                     break;
@@ -165,7 +165,7 @@
                                                                                             Location:
                                                                                         </td>
                                                                                         <td style="word-wrap:anywhere;overflow-wrap:anywhere;white-space: normal;" class="align-top">
-                                                                                            @servicesData.ResourceLocations[0].Name (@servicesData.ResourceLocations[0].ShortName)
+                                                                                            @servicesData.ResourceLocations![0].Name (@servicesData.ResourceLocations[0].ShortName)
                                                                                         </td>
                                                                                     </tr>
                                                                                     break;
@@ -175,7 +175,7 @@
                                                                                             Org:
                                                                                         </td>
                                                                                         <td style="word-wrap:anywhere;overflow-wrap:anywhere;white-space: normal;" class="align-top">
-                                                                                            @servicesData.ResourceOrgs[0].Name (@servicesData.ResourceOrgs[0].ShortName)
+                                                                                            @servicesData.ResourceOrgs![0].Name (@servicesData.ResourceOrgs[0].ShortName)
                                                                                         </td>
                                                                                     </tr>
                                                                                     break;
@@ -185,7 +185,7 @@
                                                                                             ProjAppSvc:
                                                                                         </td>
                                                                                         <td style="word-wrap:anywhere;overflow-wrap:anywhere;white-space: normal;" class="align-top">
-                                                                                            @servicesData.ResourceProjAppSvcs[0].Name (@servicesData.ResourceProjAppSvcs[0].ShortName)
+                                                                                            @servicesData.ResourceProjAppSvcs![0].Name (@servicesData.ResourceProjAppSvcs[0].ShortName)
                                                                                         </td>
                                                                                     </tr>
                                                                                     break;
@@ -205,7 +205,7 @@
                                                                                             Unit/Dept:
                                                                                         </td>
                                                                                         <td style="word-wrap:anywhere;overflow-wrap:anywhere;white-space: normal;" class="align-top">
-                                                                                            @servicesData.ResourceUnitDepts[0].Name (@servicesData.ResourceUnitDepts[0].ShortName)
+                                                                                            @servicesData.ResourceUnitDepts![0].Name (@servicesData.ResourceUnitDepts[0].ShortName)
                                                                                         </td>
                                                                                     </tr>
                                                                                     break;
@@ -215,21 +215,21 @@
                                                                                             Function:
                                                                                         </td>
                                                                                         <td style="word-wrap:anywhere;overflow-wrap:anywhere;white-space: normal;" class="align-top">
-                                                                                            @servicesData.ResourceFunctions[0].Name (@servicesData.ResourceFunctions[0].ShortName)
+                                                                                            @servicesData.ResourceFunctions![0].Name (@servicesData.ResourceFunctions![0].ShortName)
                                                                                         </td>
                                                                                     </tr>
                                                                                     break;
                                                                                 default:
                                                                                     if (resourceComponent.IsCustom)
                                                                                     {
-                                                                                        if (servicesData.CustomComponents.Where(x => x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)).Count() > 0)
+                                                                                        if (servicesData.CustomComponents!.Where(x => x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)).Count() > 0)
                                                                                         {
                                                                                             <tr>
                                                                                                 <td class="align-top w-25">
                                                                                                     @resourceComponent.Name:
                                                                                                 </td>
                                                                                                 <td style="word-wrap:anywhere;overflow-wrap:anywhere;white-space: normal;" class="align-top">
-                                                                                                    @servicesData.CustomComponents.Where(x=>x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)).FirstOrDefault().Name (@servicesData.CustomComponents.Where(x=>x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)).FirstOrDefault().ShortName)
+                                                                                                    @servicesData.CustomComponents!.Where(x=>x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)).FirstOrDefault()!.Name (@servicesData.CustomComponents!.Where(x=>x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)).FirstOrDefault()!.ShortName)
                                                                                                 </td>
                                                                                             </tr>
                                                                                         }
@@ -491,13 +491,13 @@
 
     private void OnCategoryChanged(ChangeEventArgs e)
     {
-        selectedResourceTypeCategory = e.Value.ToString();
+        selectedResourceTypeCategory = e.Value!.ToString()!;
 
     }
 
     private async void OnTypeChanged(ChangeEventArgs e)
     {
-        await JsRuntime.InvokeVoidAsync("scrollIntoView", e.Value.ToString());
+        await JsRuntime.InvokeVoidAsync("scrollIntoView", e.Value!.ToString());
     }
 
     private void OnInstructionsClick()
