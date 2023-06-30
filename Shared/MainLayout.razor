@@ -27,7 +27,11 @@
             {
                 if (currentuser != "System")
                 {
-                    <div class="w-100">@("User: " + currentuser)</div>
+                    <div class="w-100">
+                        @(
+                            "User: " + currentuser
+                            )
+                    </div>
                 }
             }
             @if (admin)
@@ -78,25 +82,25 @@
 @code {
     [CascadingParameter]
     private IdentityProviderDetails? identityProviderDetails { get; set; }
-    [CascadingParameter] public IModalService? Modal { get; set; }
+    [CascadingParameter] public IModalService Modal { get; set; }
     private ThemeInfo theme = new() { ThemeName = "Light", ThemeStyle = "bg-default text-dark" };
     private bool isdarktheme = false;
     private bool admin;
-    private string feedbackurl =  String.Empty;
+    private string feedbackurl = String.Empty;
 
-    private string currentuser =  String.Empty;
+    private string? currentuser = String.Empty;
 
-    private string details =  String.Empty;
+    private string? details = String.Empty;
 
-    private bool PasswordModalOpen { get; set; } = false;
-    private Type? PageType { get; set; }
+    public bool PasswordModalOpen { get; set; }
+    public Type PageType { get; set; }
 
     protected override void OnParametersSet()
     {
         PageType = (this.Body.Target as RouteView)?.RouteData.PageType;
     }
 
-    private string message = String.Empty;
+    private string? message;
 
     protected override async void OnInitialized()
     {
@@ -105,18 +109,18 @@
         {
             OpenPasswordModal();
         }
-        // Set the current user
-        var currentuservalue = await session.GetAsync<string>("currentuser");
-        if (!String.IsNullOrEmpty(currentuservalue.Value))
-        {
-            currentuser = currentuservalue.Value;
-        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         var adminresult = await session.GetAsync<bool>("admin");
         admin = (bool)adminresult.Value;
+        // Set the current user
+        var currentuservalue = await session.GetAsync<string>("currentuser");
+        if (!String.IsNullOrEmpty(currentuservalue.Value))
+        {
+            currentuser = currentuservalue.Value;
+        }
         if (firstRender)
         {
             // Check if the user has manually logged out. If so, don't attempt to identity them.
@@ -195,7 +199,7 @@
         StateHasChanged();
     }
 
-    private void OnPasswordModalClose(bool accepted)
+    private async Task OnPasswordModalClose(bool accepted)
     {
         PasswordModalOpen = false;
     }
@@ -211,7 +215,7 @@
             config.AdminPassword = "";
             config.APIKey = "";
 
-            await ConfigurationHelper.UpdateSettings(config);
+            ConfigurationHelper.UpdateSettings(config);
             ConfigurationHelper.ResetState(state);
             ConfigurationHelper.VerifySecurity(state);
 
@@ -223,22 +227,19 @@
 
     private async void ThemeChanged(ChangeEventArgs e)
     {
-        if (e.Value != null)
+        isdarktheme = (bool)e.Value;
+        if (!isdarktheme)
         {
-            isdarktheme = (bool)e.Value;
-            if (!isdarktheme)
-            {
-                theme.ThemeName = "Dark";
-                theme.ThemeStyle = "bg-default text-dark";
-            }
-            else
-            {
-                theme.ThemeName = "Light";
-                theme.ThemeStyle = "bg-dark text-white";
-            }
-            await storage.SetAsync("apptheme", theme.ThemeStyle);
-            state.AppTheme = theme.ThemeStyle;
+            theme.ThemeName = "Dark";
+            theme.ThemeStyle = "bg-default text-dark";
         }
+        else
+        {
+            theme.ThemeName = "Light";
+            theme.ThemeStyle = "bg-dark text-white";
+        }
+        await storage.SetAsync("apptheme", theme.ThemeStyle);
+        state.AppTheme = theme.ThemeStyle;
     }
 
     private async void Logout()
