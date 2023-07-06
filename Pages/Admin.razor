@@ -418,7 +418,6 @@
     private bool admin;
     private bool versionalertshown = false;
     private bool disabled = true;
-    private bool showversionalert = false;
     private bool dismissalert = false;
     private bool duplicatenamesallowed = false;
     private bool connectivitycheckenabled = true;
@@ -450,10 +449,6 @@
                 var resultVersionAlert = await session.GetAsync<bool>("versionalert-" + appversion + "-shown");
                 versionalertshown = resultVersionAlert.Success ? resultVersionAlert.Value : false;
                 versionalert = ConfigurationHelper.GetVersionAlert(true).Result;
-                if (!String.IsNullOrEmpty(versionalert))
-                {
-                    showversionalert = true;
-                }
                 duplicatenamesallowed = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("DuplicateNamesAllowed"));
                 connectivitycheckenabled = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("ConnectivityCheckEnabled"));
                 resourcetypeeditingallowed = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("ResourceTypeEditingAllowed"));

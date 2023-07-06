@@ -100,7 +100,7 @@
         PageType = (this.Body!.Target as RouteView)?.RouteData.PageType!;
     }
 
-    protected override async void OnInitialized()
+    protected override void OnInitialized()
     {
         // Check that the admin password is set
         if (!state.Password)
@@ -203,7 +203,7 @@
         StateHasChanged();
     }
 
-    private async Task OnPasswordModalClose(bool accepted)
+    private void OnPasswordModalClose(bool accepted)
     {
         PasswordModalOpen = false;
     }
