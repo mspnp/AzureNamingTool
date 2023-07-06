@@ -583,10 +583,19 @@
                     serviceResponse = await AdminService.GenerateAPIKey();
                     if (serviceResponse.Success)
                     {
-                        currentapikey = serviceResponse.ResponseObject;
-                        message.Type = MessageTypesEnum.SUCCESS;
-                        message.Header = "SUCCESS";
-                        message.Message = "API Key updated!";
+                        if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                        {
+                            currentapikey = serviceResponse.ResponseObject!;
+                            message.Type = MessageTypesEnum.SUCCESS;
+                            message.Header = "SUCCESS";
+                            message.Message = "API Key updated!";
+                        }
+                        else
+                        {
+                            message.Type = MessageTypesEnum.ERROR;
+                            message.Header = "ERROR";
+                            message.Message = "There was a problem generating the API Key!";
+                        }
                     }
                     else
                     {
@@ -738,12 +747,12 @@
                 switch (setting)
                 {
                     case "duplicatenamesallowed":
-                        ConfigurationHelper.SetAppSetting("DuplicateNamesAllowed", e.Value.ToString());
-                        message.Message = "Duplicate Names Allowed setting updated to " + e.Value.ToString().ToUpper() + "!";
+                        ConfigurationHelper.SetAppSetting("DuplicateNamesAllowed", e.Value.ToString()!);
+                        message.Message = "Duplicate Names Allowed setting updated to " + e.Value.ToString()!.ToUpper() + "!";
                         break;
                     case "connectivitycheckenabled":
-                        ConfigurationHelper.SetAppSetting("ConnectivityCheckEnabled", e.Value.ToString());
-                        message.Message = "Connectivity Check Enabled setting updated to " + e.Value.ToString().ToUpper() + "!";
+                        ConfigurationHelper.SetAppSetting("ConnectivityCheckEnabled", e.Value.ToString()!);
+                        message.Message = "Connectivity Check Enabled setting updated to " + e.Value.ToString()!.ToUpper() + "!";
                         // Update the tool connection setting to true, if the connecvity check is disabled. This will cause the stie to always assume there is connectivity and attempt external connections.
                         if (!(bool)e.Value)
                         {
@@ -762,8 +771,8 @@
                     case "resourcetypeeditingallowed":
                         if (GeneralHelper.IsNotNull(e.Value))
                         {
-                            ConfigurationHelper.SetAppSetting("ResourceTypeEditingAllowed", e.Value?.ToString() ?? "");
-                            message.Message = "Resource Type Editing Allowed setting updated to " + e.Value?.ToString().ToUpper() ?? "" + "!";
+                            ConfigurationHelper.SetAppSetting("ResourceTypeEditingAllowed", e.Value!.ToString() ?? "");
+                            message.Message = "Resource Type Editing Allowed setting updated to " + e.Value?.ToString()!.ToUpper() ?? "" + "!";
                             if ((bool)e.Value!)
                             {
                                 await ShowInformationModal("bg-danger", "ATTENTION", "<p>Disabling this setting may result in name generation that will fail regex validation for the resource type.</p><p>Please use caution when editing Resource Type validation settings.");

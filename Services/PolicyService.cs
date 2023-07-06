@@ -24,39 +24,63 @@ namespace AzureNamingTool.Services
 
                 List<String> validations = new();
                 var maxSortOrder = 0;
-                foreach (var nameComponent in nameComponents)
+                if (GeneralHelper.IsNotNull(nameComponents))
                 {
-                    var name = (String)nameComponent.Name;
-                    var isEnabled = (bool)nameComponent.Enabled;
-                    var sortOrder = (int)nameComponent.SortOrder;
-                    maxSortOrder = sortOrder - 1;
-                    if (isEnabled)
+                    foreach (var nameComponent in nameComponents)
                     {
-                        switch (name)
+                        var name = (String)nameComponent.Name;
+                        var isEnabled = (bool)nameComponent.Enabled;
+                        var sortOrder = (int)nameComponent.SortOrder;
+                        maxSortOrder = sortOrder - 1;
+                        if (isEnabled)
                         {
-                            case "ResourceType":
-                                AddValidations(resourceTypes, validations, delimiter, sortOrder);
-                                break;
-                            case "ResourceUnitDept":
-                                AddValidations(unitDepts, validations, delimiter, sortOrder);
-                                break;
-                            case "ResourceEnvironment":
-                                AddValidations(environments, validations, delimiter, sortOrder);
-                                break;
-                            case "ResourceLocation":
-                                AddValidations(locations, validations, delimiter, sortOrder);
-                                break;
-                            case "ResourceOrgs":
-                                AddValidations(orgs, validations, delimiter, sortOrder);
-                                break;
-                            case "ResourceFunctions":
-                                AddValidations(Functions, validations, delimiter, sortOrder);
-                                break;
-                            case "ResourceProjAppSvcs":
-                                AddValidations(projectAppSvcs, validations, delimiter, sortOrder);
-                                break;
-                            default:
-                                break;
+                            switch (name)
+                            {
+                                case "ResourceType":
+                                    if (GeneralHelper.IsNotNull(resourceTypes))
+                                    {
+                                        AddValidations(resourceTypes, validations, delimiter, sortOrder);
+                                    }
+                                    break;
+                                case "ResourceUnitDept":
+                                    if (GeneralHelper.IsNotNull(unitDepts))
+                                    {
+                                        AddValidations(unitDepts, validations, delimiter, sortOrder);
+                                    }
+                                    break;
+                                case "ResourceEnvironment":
+                                    if (GeneralHelper.IsNotNull(environments))
+                                    {
+                                        AddValidations(environments, validations, delimiter, sortOrder);
+                                    }
+                                    break;
+                                case "ResourceLocation":
+                                    if (GeneralHelper.IsNotNull(locations))
+                                    {
+                                        AddValidations(locations, validations, delimiter, sortOrder);
+                                    }
+                                    break;
+                                case "ResourceOrgs":
+                                    if (GeneralHelper.IsNotNull(orgs))
+                                    {
+                                        AddValidations(orgs, validations, delimiter, sortOrder);
+                                    }
+                                    break;
+                                case "ResourceFunctions":
+                                    if (GeneralHelper.IsNotNull(Functions))
+                                    {
+                                        AddValidations(Functions, validations, delimiter, sortOrder);
+                                    }
+                                    break;
+                                case "ResourceProjAppSvcs":
+                                    if (GeneralHelper.IsNotNull(projectAppSvcs))
+                                    {
+                                        AddValidations(projectAppSvcs, validations, delimiter, sortOrder);
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
                     }
                 }

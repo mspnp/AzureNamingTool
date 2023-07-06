@@ -166,7 +166,7 @@
             {
                 if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                 {
-                    lstAdminLogMessages = (List<AdminLogMessage>)serviceResponse.ResponseObject;
+                    lstAdminLogMessages = (List<AdminLogMessage>)serviceResponse.ResponseObject!;
                 }
             }
 
@@ -202,7 +202,7 @@
             {
                 if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                 {
-                    lstAdminLogMessages = (List<AdminLogMessage>)serviceResponse.ResponseObject;
+                    lstAdminLogMessages = (List<AdminLogMessage>)serviceResponse.ResponseObject!;
                 }
             }
             dataLoaded = true;

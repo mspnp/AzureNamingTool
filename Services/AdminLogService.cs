@@ -19,8 +19,11 @@ namespace AzureNamingTool.Services
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<AdminLogMessage>();
-                serviceResponse.ResponseObject = items.OrderByDescending(x => x.CreatedOn).ToList();
-                serviceResponse.Success = true;
+                if (GeneralHelper.IsNotNull(items))
+                {
+                    serviceResponse.ResponseObject = items.OrderByDescending(x => x.CreatedOn).ToList();
+                    serviceResponse.Success = true;
+                }
             }
             catch (Exception ex)
             {

@@ -13,8 +13,11 @@ namespace AzureNamingTool.Services
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<AdminUser>();
-                serviceResponse.ResponseObject = items.OrderBy(x => x.Name).ToList();
-                serviceResponse.Success = true;
+                if (GeneralHelper.IsNotNull(items))
+                {
+                    serviceResponse.ResponseObject = items.OrderBy(x => x.Name).ToList();
+                    serviceResponse.Success = true;
+                }
             }
             catch (Exception ex)
             {
@@ -31,9 +34,12 @@ namespace AzureNamingTool.Services
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<AdminUser>();
-                var item = items.Find(x => x.Name == name);
-                serviceResponse.ResponseObject = item;
-                serviceResponse.Success = true;
+                if (GeneralHelper.IsNotNull(items))
+                {
+                    var item = items.Find(x => x.Name == name);
+                    serviceResponse.ResponseObject = item;
+                    serviceResponse.Success = true;
+                }
             }
             catch (Exception ex)
             {
@@ -86,7 +92,7 @@ namespace AzureNamingTool.Services
                         if (items.Exists(x => x.Id == item.Id))
                         {
                             // Remove the updated item from the list
-                            items.Insert(items.IndexOf(items.FirstOrDefault(x => x.Id == item.Id)), item);
+                            items.Insert(items.IndexOf(items.FirstOrDefault(x => x.Id == item.Id)!), item);
                         }
                         else
                         {
@@ -121,16 +127,19 @@ namespace AzureNamingTool.Services
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<AdminUser>();
-                // Get the specified item
-                var item = items.Find(x => x.Id == id);
-                if (GeneralHelper.IsNotNull(item))
+                if (GeneralHelper.IsNotNull(items))
                 {
-                    // Remove the item from the collection
-                    items.Remove(item);
+                    // Get the specified item
+                    var item = items.Find(x => x.Id == id);
+                    if (GeneralHelper.IsNotNull(item))
+                    {
+                        // Remove the item from the collection
+                        items.Remove(item);
 
-                    // Write items to file
-                    await ConfigurationHelper.WriteList<AdminUser>(items);
-                    serviceResponse.Success = true;
+                        // Write items to file
+                        await ConfigurationHelper.WriteList<AdminUser>(items);
+                        serviceResponse.Success = true;
+                    }
                 }
             }
             catch (Exception ex)
