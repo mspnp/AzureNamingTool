@@ -171,23 +171,23 @@ namespace AzureNamingTool.Services
                 config.ConnectivityCheckEnabled = configdata.ConnectivityCheckEnabled;
 
                 // Set the admin settings, if they are included in the import
-                if (configdata.SALTKey != null)
+                if (GeneralHelper.IsNotNull(configdata.SALTKey))
                 {
                     config.SALTKey = configdata.SALTKey;
                 }
-                if (configdata.AdminPassword != null)
+                if (GeneralHelper.IsNotNull(configdata.AdminPassword))
                 {
                     config.AdminPassword = configdata.AdminPassword;
                 }
-                if (configdata.APIKey != null)
+                if (GeneralHelper.IsNotNull(configdata.APIKey))
                 {
                     config.APIKey = configdata.APIKey;
                 }
-                if (configdata.IdentityHeaderName != null)
+                if (GeneralHelper.IsNotNull(configdata.IdentityHeaderName))
                 {
                     config.IdentityHeaderName = configdata.IdentityHeaderName;
                 }
-                if (configdata.ResourceTypeEditingAllowed != null)
+                if (GeneralHelper.IsNotNull(configdata.ResourceTypeEditingAllowed))
                 {
                     config.ResourceTypeEditingAllowed = configdata.ResourceTypeEditingAllowed;
                 }

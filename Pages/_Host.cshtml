@@ -13,9 +13,9 @@
 
     var identityProviderDetails = new IdentityProviderDetails();
     // Check if there is an HttpContext object
-    if (this.HttpContext != null)
+    if (GeneralHelper.IsNotNull(this.HttpContext))
     {
-        if (this.HttpContext.Request.Headers != null)
+        if (GeneralHelper.IsNotNull(this.HttpContext.Request.Headers))
         {
             // Get the Identity provider, if using Azure App Service Authentication
             if (this.HttpContext.Request.Headers.ContainsKey("X-MS-CLIENT-PRINCIPAL-IDP"))

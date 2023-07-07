@@ -207,7 +207,7 @@
                         </div>
                     </div>
                 }
-                @if ((type == "ResourceType") && (resourceComponents != null))
+                @if ((type == "ResourceType") && (GeneralHelper.IsNotNull(resourceComponents)))
                 {
                     @if (bool.Parse(ConfigurationHelper.GetAppSetting("DevMode")))
                     {
@@ -666,7 +666,7 @@
                     workingmodal.Close();
                 }
 
-                if (responseMessage.Message != null)
+                if (GeneralHelper.IsNotNull(responseMessage.Message))
                 {
                     responseMessage.Message = "(" + GeneralHelper.NormalizeName(type, false) + ") " + itemName + " " + responseMessage.Message;
                     switch (responseMessage.Type)

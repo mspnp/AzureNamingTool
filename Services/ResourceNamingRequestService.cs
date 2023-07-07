@@ -153,9 +153,9 @@ namespace AzureNamingTool.Services
                 }
 
                 // Check the Resource Instance value to ensure it's only nmumeric
-                if (lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance") != null)
+                if (GeneralHelper.IsNotNull(lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance")))
                 {
-                    if (lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance")![1] != null)
+                    if (GeneralHelper.IsNotNull(lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance")![1]))
                     {
                         if (!ValidationHelper.CheckNumeric(lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance")![1]))
                         {
@@ -320,7 +320,7 @@ namespace AzureNamingTool.Services
                     }
 
                     // Make sure the passed custom component names are normalized
-                    if (request.CustomComponents != null)
+                    if (GeneralHelper.IsNotNull(request.CustomComponents))
                     {
                         Dictionary<string, string> newComponents = new();
                         foreach (var cc in request.CustomComponents)
@@ -350,7 +350,7 @@ namespace AzureNamingTool.Services
                                     var value = GeneralHelper.GetPropertyValue(request, component.Name);
 
                                     // Add property value to name, if exists
-                                    if (value != null)
+                                    if (GeneralHelper.IsNotNull(value))
                                     {
                                         if (!String.IsNullOrEmpty(value))
                                         {
@@ -665,7 +665,7 @@ namespace AzureNamingTool.Services
                 // Check the Resource Instance value to ensure it's only nmumeric
                 if (GeneralHelper.IsNotNull(lstComponents))
                 {
-                    if (lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance") != null)
+                    if (GeneralHelper.IsNotNull(lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance")))
                     {
                         if (GeneralHelper.IsNotNull(lstComponents.FirstOrDefault(x => x[0] == "ResourceInstance")![1]))
                         {

@@ -150,7 +150,7 @@
         else
         {
             <div class="mb-3">
-                @if (servicesData != null)
+                @if (GeneralHelper.IsNotNull(servicesData))
                 {
                     <h4>Base Configuration</h4>
 
@@ -315,7 +315,7 @@
 
                 }
 
-                @if (servicesData!.ResourceDelimiters != null)
+                @if (GeneralHelper.IsNotNull(servicesData!.ResourceDelimiters))
                 {
                     <div class="card">
                         <h5 class="card-header text-white bg-secondary text-white">
@@ -453,7 +453,7 @@
                         <div class="collapse card card-body @theme.ThemeStyle" id="customcomponents">
                             @foreach (ResourceComponent customComponent in servicesData.ResourceComponents!.Where(x => x.IsCustom == true))
                             {
-                                @if ((servicesData.CustomComponents!.Where(x => x.ParentComponent == GeneralHelper.NormalizeName(customComponent.Name, true)) != null) && (customComponent.Name != "ResourceInstance"))
+                                @if ((GeneralHelper.IsNotNull(servicesData.CustomComponents!.Where(x => x.ParentComponent == GeneralHelper.NormalizeName(customComponent.Name, true)))) && (customComponent.Name != "ResourceInstance"))
                                 {
                                     <div class="card mb-3">
                                         <div class="card card-header bg-default text-dark" style="font-weight:bold;">
@@ -597,7 +597,7 @@
                     switch (resourceComponent.Name)
                     {
                         case "ResourceEnvironment":
-                            @if (servicesData.ResourceEnvironments != null)
+                            @if (GeneralHelper.IsNotNull(servicesData.ResourceEnvironments))
                             {
                                 <div class="card">
                                     <h5 class="card-header bg-secondary text-white">
@@ -736,7 +736,7 @@
                             }
                             break;
                         case "ResourceFunction":
-                            @if (servicesData.ResourceFunctions != null)
+                            @if (GeneralHelper.IsNotNull(servicesData.ResourceFunctions))
                             {
                                 <div class="card">
                                     <h5 class="card-header text-white bg-secondary text-white">
@@ -876,7 +876,7 @@
                             }
                             break;
                         case "ResourceLocation":
-                            @if (servicesData.ResourceLocations != null)
+                            @if (GeneralHelper.IsNotNull(servicesData.ResourceLocations))
                             {
                                 <div class="card">
                                     <h5 class="card-header text-white bg-secondary text-white">
@@ -1082,7 +1082,7 @@
                             }
                             break;
                         case "ResourceOrg":
-                            @if (servicesData.ResourceOrgs != null)
+                            @if (GeneralHelper.IsNotNull(servicesData.ResourceOrgs))
                             {
                                 <div class="card">
                                     <h5 class="card-header text-white bg-secondary text-white">
@@ -1224,7 +1224,7 @@
                             }
                             break;
                         case "ResourceProjAppSvc":
-                            @if (servicesData.ResourceProjAppSvcs != null)
+                            @if (GeneralHelper.IsNotNull(servicesData.ResourceProjAppSvcs))
                             {
                                 <div class="card">
                                     <h5 class="card-header text-white bg-secondary text-white">
@@ -1363,7 +1363,7 @@
                             }
                             break;
                         case "ResourceType":
-                            @if (servicesData.ResourceTypes != null)
+                            @if (GeneralHelper.IsNotNull(servicesData.ResourceTypes))
                             {
                                 <div class="card">
                                     <h5 class="card-header text-white bg-secondary text-white">
@@ -1615,7 +1615,7 @@
                             }
                             break;
                         case "ResourceUnitDept":
-                            @if (servicesData.ResourceUnitDepts != null)
+                            @if (GeneralHelper.IsNotNull(servicesData.ResourceUnitDepts))
                             {
                                 <div class="card">
                                     <h5 class="card-header text-white bg-secondary text-white">
@@ -2221,7 +2221,7 @@
                                     }
                                     break;
                                 case "update":
-                                    if (newTypeConfig != null)
+                                    if (GeneralHelper.IsNotNull(newTypeConfig))
                                     {
                                         confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Components configuration and cannot be undone!\n\nAre you sure?");
                                         if (confirm)
@@ -2316,7 +2316,7 @@
                                     }
                                     break;
                                 case "update":
-                                    if (newDelimiterConfig != null)
+                                    if (GeneralHelper.IsNotNull(newDelimiterConfig))
                                     {
                                         confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Delimiters configuration and cannot be undone!\n\nAre you sure?");
                                         if (confirm)
@@ -2496,7 +2496,7 @@
                                     }
                                     break;
                                 case "update":
-                                    if (newEnvironmentConfig != null)
+                                    if (GeneralHelper.IsNotNull(newEnvironmentConfig))
                                     {
                                         confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Environments configuration and cannot be undone!\n\nAre you sure?");
                                         if (confirm)
@@ -2661,7 +2661,7 @@
                                     }
                                     break;
                                 case "update":
-                                    if (newFunctionConfig != null)
+                                    if (GeneralHelper.IsNotNull(newFunctionConfig))
                                     {
                                         confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Functions configuration and cannot be undone!\n\nAre you sure?");
                                         if (confirm)
@@ -2821,7 +2821,7 @@
                                     }
                                     break;
                                 case "update":
-                                    if (newLocationConfig != null)
+                                    if (GeneralHelper.IsNotNull(newLocationConfig))
                                     {
                                         confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Locations configuration and cannot be undone!\n\nAre you sure?");
                                         if (confirm)
@@ -2986,7 +2986,7 @@
                                     }
                                     break;
                                 case "update":
-                                    if (newOrgConfig != null)
+                                    if (GeneralHelper.IsNotNull(newOrgConfig))
                                     {
                                         confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Orgs configuration and cannot be undone!\n\nAre you sure?");
                                         if (confirm)
@@ -3151,7 +3151,7 @@
                                     }
                                     break;
                                 case "update":
-                                    if (newProjAppSvcConfig != null)
+                                    if (GeneralHelper.IsNotNull(newProjAppSvcConfig))
                                     {
                                         confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Proejcts/Apps/Services configuration and cannot be undone!\n\nAre you sure?");
                                         if (confirm)
@@ -3292,7 +3292,7 @@
                                     }
                                     break;
                                 case "update":
-                                    if (newTypeConfig != null)
+                                    if (GeneralHelper.IsNotNull(newTypeConfig))
                                     {
                                         confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Types configuration and cannot be undone!\n\nAre you sure?");
                                         if (confirm)
@@ -3457,7 +3457,7 @@
                                     }
                                     break;
                                 case "update":
-                                    if (newUnitDeptConfig != null)
+                                    if (GeneralHelper.IsNotNull(newUnitDeptConfig))
                                     {
                                         confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Units/Depts configuration and cannot be undone!\n\nAre you sure?");
                                         if (confirm)
@@ -3982,7 +3982,7 @@
         parameters.Add(nameof(AddModal.message), message);
         parameters.Add(nameof(AddModal.title), title);
         parameters.Add(nameof(AddModal.servicesData), servicesData);
-        if (parentcomponent != null)
+        if (GeneralHelper.IsNotNull(parentcomponent))
         {
             parameters.Add(nameof(AddModal.parentcomponent), parentcomponent);
         }

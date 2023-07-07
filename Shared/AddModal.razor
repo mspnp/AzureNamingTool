@@ -168,7 +168,7 @@
 
                 break;
             default:
-                if ((itemName != null) && (itemShortName != null))
+                if ((GeneralHelper.IsNotNull(itemName)) && (GeneralHelper.IsNotNull(itemShortName)))
                 {
                     if ((!String.IsNullOrEmpty(itemName)) && (!String.IsNullOrEmpty(itemShortName)))
                     {

@@ -434,7 +434,7 @@
         if (firstRender)
         {
             // Get the version
-            if (Assembly.GetEntryAssembly() != null)
+            if (GeneralHelper.IsNotNull(Assembly.GetEntryAssembly()))
             {
                 appversion = Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
             }
@@ -454,7 +454,7 @@
                 resourcetypeeditingallowed = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("ResourceTypeEditingAllowed"));
                 currentgenerationwebhook = ConfigurationHelper.GetAppSetting("GenerationWebhook", true);
                 currentidentityheadername = ConfigurationHelper.GetAppSetting("IdentityHeaderName", true);
-                if (identityProviderDetails != null)
+                if (GeneralHelper.IsNotNull(identityProviderDetails))
                 {
                     if (!String.IsNullOrEmpty(identityProviderDetails.CurrentIdentityProvider))
                     {
@@ -660,7 +660,7 @@
 
         config = ConfigurationHelper.GetConfigurationData();
 
-        if (message.Message != null)
+        if (GeneralHelper.IsNotNull(message.Message))
         {
             switch (message.Type)
             {
@@ -886,7 +886,7 @@
         parameters.Add(nameof(AddModal.type), type);
         parameters.Add(nameof(AddModal.message), message);
         parameters.Add(nameof(AddModal.title), title);
-        if (parentcomponent != null)
+        if (GeneralHelper.IsNotNull(parentcomponent))
         {
             parameters.Add(nameof(AddModal.parentcomponent), parentcomponent);
         }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core.Features;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using AzureNamingTool.Models;
 using AzureNamingTool.Services;
+using AzureNamingTool.Helpers;
 
 namespace AzureNamingTool.Attributes
 {
@@ -17,12 +18,12 @@ namespace AzureNamingTool.Attributes
                 var minResponseRateFeature = context.HttpContext.Features.Get<IHttpMinResponseDataRateFeature>();
                 //Default Bytes/s = 240, Default TimeOut = 5s
 
-                if (minRequestRateFeature != null)
+                if (GeneralHelper.IsNotNull(minRequestRateFeature))
                 {
                     minRequestRateFeature.MinDataRate = new MinDataRate(bytesPerSecond: 100, gracePeriod: TimeSpan.FromSeconds(10));
                 }
 
-                if (minResponseRateFeature != null)
+                if (GeneralHelper.IsNotNull(minResponseRateFeature))
                 {
                     minResponseRateFeature.MinDataRate = new MinDataRate(bytesPerSecond: 100, gracePeriod: TimeSpan.FromSeconds(10));
                 }

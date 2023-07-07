@@ -93,7 +93,7 @@ namespace AzureNamingTool.Services
                             {
                                 // Remove the updated item from the list
                                 var existingitem = items.Find(x => x.Id == item.Id);
-                                if (existingitem != null)
+                                if (GeneralHelper.IsNotNull(existingitem))
                                 {
                                     int index = items.IndexOf(existingitem);
                                     items.RemoveAt(index);

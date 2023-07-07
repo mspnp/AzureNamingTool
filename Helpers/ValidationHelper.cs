@@ -51,7 +51,7 @@ namespace AzureNamingTool.Helpers
                                 resourceComponent = resourceComponents.Find(x => x.Name == type)!;
                             }
 
-                            if (resourceComponent != null)
+                            if (GeneralHelper.IsNotNull(resourceComponent))
                             {
                                 // Check if the name mathces the length requirements for the component
                                 if ((value.Length >= (Convert.ToInt32(resourceComponent.MinLength)) && (value.Length <= Convert.ToInt32(resourceComponent.MaxLength))))

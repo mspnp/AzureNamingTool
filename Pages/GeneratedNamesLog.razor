@@ -148,7 +148,7 @@
                                             @name.ResourceName
                                         </td>
                                         <td class="align-top">
-                                            @if (name.ResourceTypeName != null)
+                                            @if (GeneralHelper.IsNotNull(name.ResourceTypeName))
                                             {
                                                 @name.ResourceTypeName
                                             }

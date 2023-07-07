@@ -41,7 +41,7 @@ namespace AzureNamingTool.Helpers
                     var config = GetConfigurationData();
 
                     // Check if the app setting is already set
-                    if (config.GetType().GetProperty(key) != null)
+                    if (GeneralHelper.IsNotNull(config.GetType().GetProperty(key)))
                     {
                         value = config!.GetType()!.GetProperty(key)!.GetValue(config, null)!.ToString()!;
 
@@ -457,7 +457,7 @@ namespace AzureNamingTool.Helpers
                 var currentdatajson = await GetCurrentConfigFileVersionData();
 
                 // Determine if the version data is different
-                if ((officialdatajson != null) && (currentdatajson != null))
+                if ((GeneralHelper.IsNotNull(officialdatajson)) && (GeneralHelper.IsNotNull(currentdatajson)))
                 {
                     officialversiondata = JsonSerializer.Deserialize<ConfigurationFileVersionData>(officialdatajson);
                     currentversiondata = JsonSerializer.Deserialize<ConfigurationFileVersionData>(currentdatajson);
@@ -501,7 +501,7 @@ namespace AzureNamingTool.Helpers
                     var currentdatajson = await GetCurrentConfigFileVersionData();
 
                     // Determine if the version data is different
-                    if ((officialdatajson != null) && (currentdatajson != null))
+                    if ((GeneralHelper.IsNotNull(officialdatajson)) && (GeneralHelper.IsNotNull(currentdatajson)))
                     {
                         officialversiondata = JsonSerializer.Deserialize<ConfigurationFileVersionData>(officialdatajson);
                         currentversiondata = JsonSerializer.Deserialize<ConfigurationFileVersionData>(currentdatajson);
@@ -599,7 +599,7 @@ namespace AzureNamingTool.Helpers
 
                 // Check if version alert has been dismissed
                 var dismissedalerts = GetAppSetting("DismissedAlerts").Split(',');
-                if (dismissedalerts != null)
+                if (GeneralHelper.IsNotNull(dismissedalerts))
                 {
                     if (dismissedalerts.Contains(appversion))
                     {
@@ -798,7 +798,7 @@ namespace AzureNamingTool.Helpers
                                         // Check the data to see if it's been configured
                                         if (String.IsNullOrEmpty(currentComponent.MinLength))
                                         {
-                                            if (defaultcomponent != null)
+                                            if (GeneralHelper.IsNotNull(defaultcomponent))
                                             {
                                                 newComponent.MinLength = defaultcomponent.MinLength;
                                             }
@@ -812,7 +812,7 @@ namespace AzureNamingTool.Helpers
                                         // Check the data to see if it's been configured
                                         if (String.IsNullOrEmpty(currentComponent.MaxLength))
                                         {
-                                            if (defaultcomponent != null)
+                                            if (GeneralHelper.IsNotNull(defaultcomponent))
                                             {
                                                 newComponent.MaxLength = defaultcomponent.MaxLength;
                                             }

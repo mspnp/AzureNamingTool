@@ -62,7 +62,7 @@
             </NavLink>
         </div>
 
-        @if (PageType != null)
+        @if (GeneralHelper.IsNotNull(PageType))
         {
             @if (PageType.ToString() == "AzureNamingTool.Pages.Configuration")
             {
@@ -77,7 +77,7 @@
                         <div class="nav-item px-3">
                             <a class="text-decoration-none nav-link" @onclick='(() => OnConfigNavClick("ResourceDelimiter"))' @onclick:preventDefault href="">Delimiters</a>
                         </div>
-                        @if (servicesData.ResourceComponents != null)
+                        @if (GeneralHelper.IsNotNull(servicesData.ResourceComponents))
                         {
                             @foreach (ResourceComponent resourceComponent in servicesData.ResourceComponents.OrderBy(x => x.Name))
                             {
@@ -211,7 +211,7 @@
 
     private async void NewsChanged(ChangeEventArgs e)
     {
-        if (e.Value != null)
+        if (GeneralHelper.IsNotNull(e.Value))
         {
             newsenabled = (bool)e.Value;
             await storage.SetAsync("newsenabled", newsenabled);

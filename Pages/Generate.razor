@@ -441,7 +441,7 @@
                             <div class="card @resultClass text-white mt-3">
                                 <div class="card-header">@resultHeader</div>
                                 <div class="card-body">
-                                    @if (@generatedName != null)
+                                    @if (GeneralHelper.IsNotNull(@generatedName))
                                     {
                                         @if (!String.IsNullOrEmpty(@generatedName))
                                         {
@@ -455,7 +455,7 @@
                                             </div>
                                         }
                                     }
-                                    @if (@message != null)
+                                    @if (GeneralHelper.IsNotNull(@message))
                                     {
                                         @if (!String.IsNullOrEmpty(@message))
                                         {
@@ -745,7 +745,7 @@
                 {
                     if (GeneralHelper.IsNotNull(result.Data))
                     {
-                        multiselectedResourceTypes = result.Data as List<string>;
+                        multiselectedResourceTypes = (List<string>)result.Data;
                         if (GeneralHelper.IsNotNull(multiselectedResourceTypes))
                         {
                             if (GeneralHelper.IsNotNull(multiselectedResourceTypes))
@@ -912,7 +912,7 @@
         {
             await SetServicesData();
         }
-        if ((selectedResourceType != null) || (multiselectedResourceTypes.Count > 0))
+        if ((GeneralHelper.IsNotNull(selectedResourceType)) || (multiselectedResourceTypes.Count > 0))
         {
             boolFormDisabled = false;
             string nomalizedcomponentname;
