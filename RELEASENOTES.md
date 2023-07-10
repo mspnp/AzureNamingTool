@@ -19,5 +19,6 @@
 ### Bug fixes
 - Refactored code for performance/matinaiability
 - Resolved VS complilation warnings
+- Updated Generated Name Log export to properly display components in CSV file
 
 [RELEASE NOTES ARCHIVE](/docs/RELEASENOTESARCHIVE.md)

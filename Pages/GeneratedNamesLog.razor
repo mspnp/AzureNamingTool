@@ -154,12 +154,14 @@
                                             }
                                         </td>
                                         <td class="align-top">
-                                            @foreach (string[] component in name.Components.ToList<string[]>())
-                                            {
-                                                <div style="line-break:anywhere;">
-                                                    @component[0] : @component[1]
-                                                </div>
-                                            }
+                                            <div>
+                                                @foreach (string[] component in name.Components.ToList<string[]>())
+                                                {
+                                                    <div style="line-break:anywhere;">
+                                                        @component[0] : @component[1]
+                                                    </div>
+                                                }
+                                            </div>
                                         </td>
                                     </tr>
                                 }

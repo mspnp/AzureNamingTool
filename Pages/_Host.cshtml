@@ -107,7 +107,7 @@
             var row = [], cols = rows[i].querySelectorAll("td, th");
 
             for (var j = 0; j < cols.length; j++) {
-                row.push(cols[j].innerText);
+                row.push(cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "|"));
             }
 
             data.push(row.join(","));
