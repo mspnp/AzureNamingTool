@@ -136,7 +136,10 @@
                 // Get the list of categories
                 categories = ResourceTypeService.GetTypeCategories(servicesData.ResourceTypes);
             }
-            toastService.ShowError("There was a problem loading the page. Please try again");
+            else
+            {
+                toastService.ShowError("There was a problem loading the page. Please try again");
+            }
         }
         catch (Exception ex)
         {

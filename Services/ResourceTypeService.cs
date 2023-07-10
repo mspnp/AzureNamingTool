@@ -396,7 +396,7 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
-        public static async Task<ServiceResponse> ValidateResourceTypeName(ValidatedNameRequest validatedNameRequest)
+        public static async Task<ServiceResponse> ValidateResourceTypeName(ValidateNameRequest validateNameRequest)
         {
             try
             {
@@ -429,12 +429,12 @@ namespace AzureNamingTool.Services
                         if (GeneralHelper.IsNotNull(resourceTypes))
                         {
                             // Get the specified resoure type
-                            ResourceType resourceType = resourceTypes.FirstOrDefault(x => x.ShortName == validatedNameRequest.ResourceType)!;
+                            ResourceType resourceType = resourceTypes.FirstOrDefault(x => x.ShortName == validateNameRequest.ResourceType)!;
                             if (GeneralHelper.IsNotNull(resourceType))
                             {
-                                // Create a validated name request
-                                ValidatedNameResponse validatedNameResponse = ValidationHelper.ValidateGeneratedName(resourceType, validatedNameRequest.Name!, resourceDelimiter!.Delimiter);
-                                serviceResponse.ResponseObject = validatedNameResponse;
+                                // Create a validate name request
+                                ValidateNameResponse validateNameResponse = ValidationHelper.ValidateGeneratedName(resourceType, validateNameRequest.Name!, resourceDelimiter!.Delimiter);
+                                serviceResponse.ResponseObject = validateNameResponse;
                                 serviceResponse.Success = true;
                             }
                         }

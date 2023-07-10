@@ -70,9 +70,9 @@ namespace AzureNamingTool.Helpers
             return valid;
         }
 
-        public static ValidatedNameResponse ValidateGeneratedName(Models.ResourceType resourceType, string name, string delimiter)
+        public static ValidateNameResponse ValidateGeneratedName(Models.ResourceType resourceType, string name, string delimiter)
         {
-            ValidatedNameResponse response = new();
+            ValidateNameResponse response = new();
             try
             {
                 bool valid = true;
