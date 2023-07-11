@@ -13,7 +13,7 @@
     <div class="modal-dialog" style="z-index: 1050">
         <!-- Pop it above the backdrop -->
         <div class="modal-content @theme.ThemeStyle">
-            <div class="modal-header bg-navcolor text-white">
+            <div class="modal-header @headerstyle text-white">
                 <h3 class="modal-title">@title</h3>
             </div>
             <div class="modal-body">
@@ -309,6 +309,8 @@
     [Parameter] public string type { get; set; } = String.Empty;
     [Parameter] public bool protectedName { get; set; } = false;
     [Parameter] public string parentcomponent { get; set; } = String.Empty;
+    [Parameter] public string headerstyle { get; set; } = String.Empty;
+    [Parameter] public bool admin { get; set; } = false;
     [Parameter] public ServicesData servicesData { get; set; } = new();
 
     private ServiceResponse serviceResponse = new();

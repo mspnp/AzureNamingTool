@@ -15,11 +15,13 @@ namespace AzureNamingTool.Helpers
             bool response = false;
             try
             {
-                var parameters = new ModalParameters();
-                parameters.Add(nameof(ConfirmationModal.title), title);
-                parameters.Add(nameof(ConfirmationModal.message), message);
-                parameters.Add(nameof(ConfirmationModal.headerstyle), headerstyle);
-                parameters.Add("theme", theme);
+                var parameters = new ModalParameters
+                {
+                    { nameof(ConfirmationModal.title), title },
+                    { nameof(ConfirmationModal.message), message },
+                    { nameof(ConfirmationModal.headerstyle), headerstyle },
+                    { "theme", theme }
+                };
 
                 var options = new ModalOptions()
                 {
@@ -48,13 +50,15 @@ namespace AzureNamingTool.Helpers
         {
             try
             {
-                var parameters = new ModalParameters();
-                parameters.Add(nameof(InformationModal.message), message);
-                parameters.Add(nameof(InformationModal.title), title);
-                parameters.Add(nameof(InformationModal.headerstyle), headerstyle);
-                parameters.Add(nameof(InformationModal.component), component);
-                parameters.Add(nameof(InformationModal.admin), admin);
-                parameters.Add("theme", theme);
+                var parameters = new ModalParameters
+                {
+                    { nameof(InformationModal.message), message },
+                    { nameof(InformationModal.title), title },
+                    { nameof(InformationModal.headerstyle), headerstyle },
+                    { nameof(InformationModal.component), component },
+                    { nameof(InformationModal.admin), admin },
+                    { "theme", theme }
+                };
 
                 var options = new ModalOptions()
                 {
@@ -79,11 +83,15 @@ namespace AzureNamingTool.Helpers
             try
             {
 
-                var parameters = new ModalParameters();
-                parameters.Add(nameof(AddModal.id), id);
-                parameters.Add(nameof(AddModal.type), type);
-                parameters.Add(nameof(AddModal.message), message);
-                parameters.Add(nameof(AddModal.title), title);
+                var parameters = new ModalParameters
+                {
+                    { nameof(AddModal.id), id },
+                    { nameof(AddModal.type), type },
+                    { nameof(AddModal.message), message },
+                    { nameof(AddModal.title), title },
+                    { nameof(AddModal.headerstyle), headerstyle },
+                    { nameof(AddModal.admin), admin }
+                };
                 if (GeneralHelper.IsNotNull(parentcomponent))
                 {
                     parameters.Add(nameof(AddModal.parentcomponent), parentcomponent);
@@ -119,15 +127,18 @@ namespace AzureNamingTool.Helpers
             bool response = false;
             try
             {
-                var parameters = new ModalParameters();
-                parameters.Add(nameof(EditModal.id), id);
-                parameters.Add(nameof(EditModal.type), type);
-                parameters.Add(nameof(EditModal.message), message);
-                parameters.Add(nameof(EditModal.title), title);
-                parameters.Add(nameof(EditModal.protectedName), protectedname);
-                parameters.Add(nameof(EditModal.parentcomponent), parentcomponent!);
-                parameters.Add(nameof(EditModal.servicesData), servicesData);
-                parameters.Add("theme", theme);
+                var parameters = new ModalParameters
+                {
+                    { nameof(EditModal.id), id },
+                    { nameof(EditModal.type), type },
+                    { nameof(EditModal.message), message },
+                    { nameof(EditModal.title), title },
+                    { nameof(EditModal.protectedName), protectedname },
+                    { nameof(EditModal.parentcomponent), parentcomponent! },
+                    { nameof(EditModal.servicesData), servicesData },
+                    { nameof(EditModal.headerstyle), headerstyle },
+                    { "theme", theme }
+                };
 
                 var options = new ModalOptions()
                 {
