@@ -76,7 +76,14 @@ namespace AzureNamingTool.Services
                     // Set the new id
                     if (item.Id == 0)
                     {
-                        item.Id = items.Count + 1;
+                        if (items.Count > 0)
+                        {
+                            item.Id = items.Max(t => t.Id) + 1;
+                        }
+                        else
+                        {
+                            item.Id = 1;
+                        }
                     }
 
                     int position = 1;
@@ -84,12 +91,11 @@ namespace AzureNamingTool.Services
 
                     if (item.SortOrder == 0)
                     {
-                        item.Id = items.Max(t => t.Id) + 1;
+                        item.SortOrder = items.Count + 1;
                     }
 
                     // Determine new item id
                     if (items.Count > 0)
-
                     {
                         // Check if the item already exists
                         if (items.Exists(x => x.Id == item.Id))

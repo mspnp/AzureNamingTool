@@ -22,5 +22,6 @@
 - Resolved VS complilation warnings
 - Updated Generated Name Log export to properly display components in CSV file
 - Updated Instructions to properly display when using Dark mode
+- Updated Unit/Dept Add order process to properly insert new item
 
 [RELEASE NOTES ARCHIVE](/docs/RELEASENOTESARCHIVE.md)
