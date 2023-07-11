@@ -428,7 +428,14 @@
                             serviceResponse = await CustomComponentService.PostItem(customcomponent);
                         }
                         resourceComponent.Name = itemName;
-                        resourceComponent.DisplayName = itemName;
+                        if (resourceComponent.IsCustom)
+                        {
+                            resourceComponent.DisplayName = itemName;
+                        }
+                        else
+                        {
+                            resourceComponent.DisplayName = itemDisplayName;
+                        }
                         resourceComponent.MinLength = itemMinLength;
                         resourceComponent.MaxLength = itemMaxLength;
                         serviceResponse = await ResourceComponentService.PostItem(resourceComponent);

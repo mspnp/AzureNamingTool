@@ -26,7 +26,7 @@
             </h1>
         </div>
         <div style="float:right;">
-            <button class="btn btn-secondary" title="Instructions" @onclick="@(e => ShowInstructionsModal())">
+            <button class="btn btn-secondary" title="Instructions" @onclick="@(e => ModalHelper.ShowInformationModal(Modal!, theme, "bg-navcolor", "Generated Names Log", String.Empty, "generatednamesloginstructions", false))">
                 <span class="oi oi-document" aria-hidden="true"></span> Documentation
             </button>
         </div>
@@ -329,35 +329,5 @@
         startdate = DateTime.Today.AddDays(-30);
         enddate = DateTime.Today;
         filterData = "";
-    }
-
-    private void ShowInstructionsModal()
-    {
-        try
-        {
-            var parameters = new ModalParameters();
-            parameters.Add(nameof(InformationModal.message), String.Empty);
-            parameters.Add(nameof(InformationModal.title), "Generated Names Log");
-            parameters.Add(nameof(InformationModal.headerstyle), "bg-navcolor");
-            parameters.Add(nameof(InformationModal.component), "generatednamesloginstructions");
-            parameters.Add(nameof(InformationModal.admin), admin);
-
-            parameters.Add("theme", theme);
-
-            var options = new ModalOptions()
-                {
-                    HideCloseButton = true,
-                    UseCustomLayout = true
-                };
-
-            if (GeneralHelper.IsNotNull(Modal))
-            {
-                var modal = Modal.Show<InformationModal>("Instructions", parameters, options);
-            }
-        }
-        catch (Exception ex)
-        {
-            AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
-        }
     }
 }

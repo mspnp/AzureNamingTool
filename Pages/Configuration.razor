@@ -27,7 +27,7 @@
             </h1>
         </div>
         <div style="float:right;">
-            <button class="btn btn-secondary" title="Instructions" @onclick="@(e => ShowInstructionsModal())">
+            <button class="btn btn-secondary" title="Instructions" @onclick="@(e => ModalHelper.ShowInformationModal(Modal!, theme, "bg-navcolor", "Configuration", String.Empty, "toolconfigurationinstructions", admin))">
                 <span class="oi oi-document" aria-hidden="true"></span> Documentation
             </button>
         </div>
@@ -1966,7 +1966,7 @@
                                 versionmessage += message;
                             }
                             // Display a notification of the files requiring updating
-                            await ShowInformationModal("bg-navcolor", "ATTENTION", versionmessage);
+                            ModalHelper.ShowInformationModal(Modal!, theme, "bg-navcolor", "ATTENTION", versionmessage, "", admin);
                             await session.SetAsync("configurationfilealertshown", true);
                         }
                     }
@@ -2007,6 +2007,7 @@
             message = new ResponseMessage();
             bool confirm = false;
             bool generalerror = false;
+            bool response = false;
             var workingmodaloptions = new ModalOptions()
                 {
                     HideCloseButton = true,
@@ -2018,7 +2019,6 @@
                 try
                 {
                     ServiceResponse serviceResponse;
-
                     JsonSerializerOptions options = new JsonSerializerOptions
                         {
                             PropertyNameCaseInsensitive = true
@@ -2150,13 +2150,25 @@
                                 case "blank":
                                     break;
                                 case "add":
-                                    ShowAddModal((int)id, "ResourceComponent", "Add Component", "<p>Add a Component.</p>");
+                                    confirm = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Component", "<p>Add a Component.</p>", (int)id, "ResourceComponent", admin, "");
+                                    if (confirm)
+                                    {
+                                        servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                                        state.SetNavReload(true);
+                                        StateHasChanged();
+                                    }
                                     break;
                                 case "edit":
                                     resourceComponent = servicesData.ResourceComponents!.Find(x => x.Id == id)!;
                                     if (GeneralHelper.IsNotNull(resourceComponent))
                                     {
-                                        ShowEditModal((int)id, "ResourceComponent", "Edit Component", "Edit the Component.", !resourceComponent.IsCustom);
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Component", "Edit the Component.", (int)id, "ResourceComponent", !resourceComponent.IsCustom);
+                                        if (confirm)
+                                        {
+                                            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                                            state.SetNavReload(true);
+                                            StateHasChanged();
+                                        }
                                     }
                                     else
                                     {
@@ -2164,7 +2176,7 @@
                                     }
                                     break;
                                 case "delete":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will delete the Component and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         resourceComponent = servicesData.ResourceComponents!.Find(x => x.Id == id)!;
@@ -2205,7 +2217,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will reset your current Components configuration and cannot be undone!\n\nAre you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current Components configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourcecomponents.json"))
@@ -2223,7 +2235,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newTypeConfig))
                                     {
-                                        confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Components configuration and cannot be undone!\n\nAre you sure?");
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Components configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceComponentService.PostConfig(JsonSerializer.Deserialize<List<ResourceComponent>>(newTypeConfig, options)!);
@@ -2318,7 +2330,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newDelimiterConfig))
                                     {
-                                        confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Delimiters configuration and cannot be undone!\n\nAre you sure?");
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Delimiters configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceDelimiterService.PostConfig(JsonSerializer.Deserialize<List<ResourceDelimiter>>(newDelimiterConfig, options)!);
@@ -2337,7 +2349,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will reset your current Delimiters configuration and cannot be undone!\n\nAre you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your reset Delimiters configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourcedelimiters.json"))
@@ -2422,7 +2434,13 @@
                                 case "edit":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        ShowEditModal((int)id, "ResourceEnvironment", "Edit Environment", "<p>Edit the Environment.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>");
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Environment", "<p>Edit the Environment.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceEnvironment", false);
+                                        if (confirm)
+                                        {
+                                            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                                            state.SetNavReload(true);
+                                            StateHasChanged();
+                                        }
                                     }
                                     else
                                     {
@@ -2430,7 +2448,7 @@
                                     }
                                     break;
                                 case "delete":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will delete the Environment and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         resourceEnvironment = servicesData.ResourceEnvironments!.Find(x => x.Id == id)!;
@@ -2458,7 +2476,13 @@
                                 case "add":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        ShowAddModal((int)id, "ResourceEnvironment", "Add Environment", "<p>Add an Environment.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>");
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Environment", "<p>Add an Environment.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceEnvironment", admin, "");
+                                        if (response)
+                                        {
+                                            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                                            state.SetNavReload(true);
+                                            StateHasChanged();
+                                        }
                                     }
                                     else
                                     {
@@ -2480,7 +2504,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will reset your current Environments configuration and cannot be undone!\n\nAre you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current Environments configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourceenvironments.json"))
@@ -2498,7 +2522,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newEnvironmentConfig))
                                     {
-                                        confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Environments configuration and cannot be undone!\n\nAre you sure?");
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Environments configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceEnvironmentService.PostConfig(JsonSerializer.Deserialize<List<ResourceEnvironment>>(newEnvironmentConfig, options)!);
@@ -2587,7 +2611,13 @@
                                 case "edit":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        ShowEditModal((int)id, "ResourceFunction", "Edit Function", "<p>Edit the Function.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>");
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Function", "<p>Edit the Function.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceFunction", false);
+                                        if (confirm)
+                                        {
+                                            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                                            state.SetNavReload(true);
+                                            StateHasChanged();
+                                        }
                                     }
                                     else
                                     {
@@ -2595,7 +2625,7 @@
                                     }
                                     break;
                                 case "delete":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will delete the Function and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         resourceFunction = servicesData.ResourceFunctions!.Find(x => x.Id == id)!;
@@ -2623,7 +2653,13 @@
                                 case "add":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        ShowAddModal((int)id, "ResourceFunction", "Add Function", "<p>Add a Function.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>");
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Function", "<p>Add a Function.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceFunction", admin, "");
+                                        if (response)
+                                        {
+                                            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                                            state.SetNavReload(true);
+                                            StateHasChanged();
+                                        }
                                     }
                                     else
                                     {
@@ -2645,7 +2681,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will reset your current Functions configuration and cannot be undone!\n\nAre you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current Functions configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourcefunctions.json"))
@@ -2663,7 +2699,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newFunctionConfig))
                                     {
-                                        confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Functions configuration and cannot be undone!\n\nAre you sure?");
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Functions configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceFunctionService.PostConfig(JsonSerializer.Deserialize<List<ResourceFunction>>(newFunctionConfig, options)!);
@@ -2745,7 +2781,13 @@
                                 case "edit":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        ShowEditModal((int)id, "ResourceLocation", "Edit Location", "<p>Edit the Location.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", true);
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Location", "<p>Edit the Location.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceLocation", true);
+                                        if (confirm)
+                                        {
+                                            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                                            state.SetNavReload(true);
+                                            StateHasChanged();
+                                        }
                                     }
                                     else
                                     {
@@ -2753,7 +2795,7 @@
                                     }
                                     break;
                                 case "delete":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will delete the Location and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         resourceLocation = servicesData.ResourceLocations!.Find(x => x.Id == id)!;
@@ -2787,7 +2829,7 @@
                                     }
                                     break;
                                 case "refresh":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will refresh your current Locations configuration with the latest configuration!\n\nAre you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will refresh your current Locations configuration with the latest configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         serviceResponse = await ResourceLocationService.RefreshResourceLocations(refreshlocationshortnames);
@@ -2805,7 +2847,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will reset your current Locations configuration and cannot be undone!\n\nAre you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current Locations configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourcelocations.json"))
@@ -2823,7 +2865,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newLocationConfig))
                                     {
-                                        confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Locations configuration and cannot be undone!\n\nAre you sure?");
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Locations configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceLocationService.PostConfig(JsonSerializer.Deserialize<List<AzureNamingTool.Models.ResourceLocation>>(newLocationConfig, options)!);
@@ -2912,7 +2954,13 @@
                                 case "edit":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        ShowEditModal((int)id, "ResourceOrg", "Edit Org", "<p>Edit the Org.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>");
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Org", "<p>Edit the Org.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceOrg", false);
+                                        if (confirm)
+                                        {
+                                            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                                            state.SetNavReload(true);
+                                            StateHasChanged();
+                                        }
                                     }
                                     else
                                     {
@@ -2920,7 +2968,7 @@
                                     }
                                     break;
                                 case "delete":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will delete the Org and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         resourceOrg = servicesData.ResourceOrgs!.Find(x => x.Id == id)!;
@@ -2948,7 +2996,13 @@
                                 case "add":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        ShowAddModal((int)id, "ResourceOrg", "Add Org", "<p>Add an Org.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>");
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Org", "<p>Add an Org.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceOrg", admin, "");
+                                        if (response)
+                                        {
+                                            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                                            state.SetNavReload(true);
+                                            StateHasChanged();
+                                        }
                                     }
                                     else
                                     {
@@ -2970,7 +3024,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will reset your current Orgs configuration and cannot be undone!\n\nAre you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current Orgs configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourceorgs.json"))
@@ -2988,7 +3042,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newOrgConfig))
                                     {
-                                        confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Orgs configuration and cannot be undone!\n\nAre you sure?");
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Orgs configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceOrgService.PostConfig(JsonSerializer.Deserialize<List<ResourceOrg>>(newOrgConfig, options)!);
@@ -3077,7 +3131,13 @@
                                 case "edit":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        ShowEditModal((int)id, "ResourceProjAppSvc", "Edit Project/App/Service", "<p>Edit the Project/App/Service.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>");
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Org", "<p>Edit the Project/App/Service.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceProjAppSvc", false);
+                                        if (confirm)
+                                        {
+                                            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                                            state.SetNavReload(true);
+                                            StateHasChanged();
+                                        }
                                     }
                                     else
                                     {
@@ -3085,7 +3145,7 @@
                                     }
                                     break;
                                 case "delete":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will delete the Project/App/Service and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         resourceProjAppSvc = servicesData.ResourceProjAppSvcs!.Find(x => x.Id == id)!;
@@ -3113,7 +3173,13 @@
                                 case "add":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        ShowAddModal((int)id, "ResourceProjAppSvc", "Add Project/App/Service", "<p>Add an Project/App/Service.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>");
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Project/App/Service", "<p>Add an Project/App/Service.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceProjAppSvc", admin, "");
+                                        if (response)
+                                        {
+                                            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                                            state.SetNavReload(true);
+                                            StateHasChanged();
+                                        }
                                     }
                                     else
                                     {
@@ -3135,7 +3201,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will reset your current Projects/Apps/Services configuration and cannot be undone!\n\nAre you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current Projects/Apps/Services configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourceprojappsvcs.json"))
@@ -3153,7 +3219,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newProjAppSvcConfig))
                                     {
-                                        confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Proejcts/Apps/Services configuration and cannot be undone!\n\nAre you sure?");
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Projects/Apps/Services configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceProjAppSvcService.PostConfig(JsonSerializer.Deserialize<List<ResourceProjAppSvc>>(newProjAppSvcConfig, options)!);
@@ -3236,7 +3302,13 @@
                                     resourceType = servicesData.ResourceTypes!.Find(x => x.Id == id)!;
                                     if (GeneralHelper.IsNotNull(resourceType))
                                     {
-                                        ShowEditModal((int)id, "ResourceType", "Edit Resource Type", "<p>Edit the Resource Type.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + resourceType.LengthMin + "-" + resourceType.LengthMax + " characters.</li></ul>", true);
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Resource Type", "<p>Edit the Resource Type.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + resourceType.LengthMin + "-" + resourceType.LengthMax + " characters.</li></ul>", (int)id, "ResourceType", true);
+                                        if (confirm)
+                                        {
+                                            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                                            state.SetNavReload(true);
+                                            StateHasChanged();
+                                        }
                                     }
                                     else
                                     {
@@ -3258,7 +3330,7 @@
                                     }
                                     break;
                                 case "refresh":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will refresh your current Types configuration with the latest configuration!\n\nAre you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will refresh your current Types configuration with the latest configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         serviceResponse = await ResourceTypeService.RefreshResourceTypes(refreshtypeshortnames);
@@ -3276,7 +3348,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will reset your current Types configuration and cannot be undone!\n\nAre you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current Types configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourcetypes.json"))
@@ -3294,7 +3366,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newTypeConfig))
                                     {
-                                        confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Types configuration and cannot be undone!\n\nAre you sure?");
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Types configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceTypeService.PostConfig(JsonSerializer.Deserialize<List<ResourceType>>(newTypeConfig, options)!);
@@ -3383,7 +3455,13 @@
                                 case "edit":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        ShowEditModal((int)id, "ResourceUnitDept", "Edit Unit/Dept", "<p>Edit the Unit/Dept.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>");
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Unit/Dept", "<p>Edit the Unit/Dept.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceUnitDept", false);
+                                        if (confirm)
+                                        {
+                                            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                                            state.SetNavReload(true);
+                                            StateHasChanged();
+                                        }
                                     }
                                     else
                                     {
@@ -3391,7 +3469,8 @@
                                     }
                                     break;
                                 case "delete":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will delete the Unit/Dept and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         resourceUnitDept = servicesData.ResourceUnitDepts!.Find(x => x.Id == id)!;
@@ -3419,7 +3498,13 @@
                                 case "add":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        ShowAddModal((int)id, "ResourceUnitDept", "Add Unit/Dept", "<p>Add a Unit/Dept.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>");
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Unit/Dept", "<p>Add a Unit/Dept.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceUnitDept", admin, "");
+                                        if (response)
+                                        {
+                                            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                                            state.SetNavReload(true);
+                                            StateHasChanged();
+                                        }
                                     }
                                     else
                                     {
@@ -3441,7 +3526,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will reset your current Units/Depts configuration and cannot be undone!\n\nAre you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current Units/Depts configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourceunitdepts.json"))
@@ -3459,7 +3544,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newUnitDeptConfig))
                                     {
-                                        confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Units/Depts configuration and cannot be undone!\n\nAre you sure?");
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Units/Depts configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceUnitDeptService.PostConfig(JsonSerializer.Deserialize<List<ResourceUnitDept>>(newUnitDeptConfig, options)!);
@@ -3549,7 +3634,13 @@
                                     // Get the component in the list
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        ShowAddModal((int)id, "CustomComponent", "Add Custom Component", "<p>Add a Custom Component.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", parentcomponent);
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Custom Component", "<p>Add a Custom Component.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "CustomComponent", admin, parentcomponent);
+                                        if (response)
+                                        {
+                                            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                                            state.SetNavReload(true);
+                                            StateHasChanged();
+                                        }
                                     }
                                     else
                                     {
@@ -3561,7 +3652,13 @@
                                     customComponent = servicesData.CustomComponents!.Find(x => x.Id == id)!;
                                     if (GeneralHelper.IsNotNull(customComponent))
                                     {
-                                        ShowEditModal((int)id, "CustomComponent", "Edit Custom Component", "<p>Edit the Custom Component.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", false, customComponent.ParentComponent);
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Custom Component", "<p>Edit the Custom Component.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "CustomComponent", false, customComponent.ParentComponent);
+                                        if (confirm)
+                                        {
+                                            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                                            state.SetNavReload(true);
+                                            StateHasChanged();
+                                        }
                                     }
                                     else
                                     {
@@ -3569,7 +3666,7 @@
                                     }
                                     break;
                                 case "delete":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will delete the Custom Component and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         customComponent = servicesData.CustomComponents!.Find(x => x.Id == id)!;
@@ -3636,7 +3733,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will reset your current Custom Components configuration and cannot be undone!\n\nAre you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current Custom Components configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("customcomponents.json"))
@@ -3654,7 +3751,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newCustomComponentConfig))
                                     {
-                                        confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Custom Components configuration and cannot be undone!\n\nAre you sure?");
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Custom Components configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             List<ResourceComponent> currentresourcecomponents = new();
@@ -3778,11 +3875,11 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will reset your current configuration for all settings and cannot be undone!\n\nAre you sure?");
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current configuration for all settings and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
-                                        bool confirm2 = confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nEvery setting of the site will be reset if you continue! It is recommended you take a backup of the configuration before proceeding!\n\nAre you sure?");
-                                        if (confirm2)
+                                        bool confirmglobalreset = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">Every setting of the site will be reset if you continue! It is recommended you take a backup of the configuration before proceeding!</div><div class=\"mb-3\">Continue?</div>", "bg-danger", theme);
+                                        if (confirmglobalreset)
                                         {
                                             if (ConfigurationHelper.ResetSiteConfiguration())
                                             {
@@ -3800,21 +3897,25 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newGlobalConfig))
                                     {
-                                        confirm = await JsRuntime.InvokeAsync<bool>("confirm", "WARNING!\n\nThis will update your current Global configuration and cannot be undone!\n\nAre you sure?");
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Global configuration and cannot be undone!!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
-                                            serviceResponse = await ImportExportService.PostConfig(JsonSerializer.Deserialize<ConfigurationData>(newGlobalConfig, options)!);
-                                            if (serviceResponse.Success)
+                                            bool confirmglobalupdate = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">Every setting of the site will be updated if you continue! It is recommended you take a backup of the configuration before proceeding!</div><div class=\"mb-3\">Continue?</div>", "bg-danger", theme);
+                                            if (confirmglobalupdate)
                                             {
-                                                message.Type = MessageTypesEnum.SUCCESS;
-                                                message.Message = "Global config update succeeded!";
-                                                newGlobalConfig = String.Empty;
-                                            }
-                                            else
-                                            {
-                                                message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = "Global config update failed!";
-                                                message.MessageDetails = serviceResponse.ResponseMessage;
+                                                serviceResponse = await ImportExportService.PostConfig(JsonSerializer.Deserialize<ConfigurationData>(newGlobalConfig, options)!);
+                                                if (serviceResponse.Success)
+                                                {
+                                                    message.Type = MessageTypesEnum.SUCCESS;
+                                                    message.Message = "Global config update succeeded!";
+                                                    newGlobalConfig = String.Empty;
+                                                }
+                                                else
+                                                {
+                                                    message.Type = MessageTypesEnum.ERROR;
+                                                    message.Message = "Global config update failed!";
+                                                    message.MessageDetails = serviceResponse.ResponseMessage;
+                                                }
                                             }
                                         }
                                     }
@@ -3860,31 +3961,31 @@
                 }
             }
 
-            if(!generalerror)
+            if (!generalerror)
             {
-            if (!String.IsNullOrEmpty(message.Message))
-            {
-                message.Message = "(" + type + ") " + message.Message;
-                switch (message.Type)
+                if (!String.IsNullOrEmpty(message.Message))
                 {
-                    case MessageTypesEnum.INFORMATION:
-                        toastService.ShowInfo(message.Message);
-                        break;
-                    case MessageTypesEnum.SUCCESS:
-                        toastService.ShowSuccess(message.Message);
-                        break;
-                    case MessageTypesEnum.WARNING:
-                        toastService.ShowWarning(message.Message);
-                        break;
-                    case MessageTypesEnum.ERROR:
-                        toastService.ShowError(message.Message);
-                        break;
-                }
+                    message.Message = "(" + type + ") " + message.Message;
+                    switch (message.Type)
+                    {
+                        case MessageTypesEnum.INFORMATION:
+                            toastService.ShowInfo(message.Message);
+                            break;
+                        case MessageTypesEnum.SUCCESS:
+                            toastService.ShowSuccess(message.Message);
+                            break;
+                        case MessageTypesEnum.WARNING:
+                            toastService.ShowWarning(message.Message);
+                            break;
+                        case MessageTypesEnum.ERROR:
+                            toastService.ShowError(message.Message);
+                            break;
+                    }
 
-                // Get the current user, if any
-                string currentuser = await IdentityHelper.GetCurrentUser(session);
-                AdminLogService.PostItem(new AdminLogMessage() { Title = message.Type.ToString(), Message = message.Message, Source = currentuser });
-            }
+                    // Get the current user, if any
+                    string currentuser = await IdentityHelper.GetCurrentUser(session);
+                    AdminLogService.PostItem(new AdminLogMessage() { Title = message.Type.ToString(), Message = message.Message, Source = currentuser });
+                }
             }
             else
             {
@@ -3971,120 +4072,6 @@
             case "newGlobalConfig":
                 newGlobalConfig = value;
                 break;
-        }
-    }
-
-    async void ShowAddModal(int id, string type, string title, string message, string parentcomponent = "")
-    {
-        var parameters = new ModalParameters();
-        parameters.Add(nameof(AddModal.id), id);
-        parameters.Add(nameof(AddModal.type), type);
-        parameters.Add(nameof(AddModal.message), message);
-        parameters.Add(nameof(AddModal.title), title);
-        parameters.Add(nameof(AddModal.servicesData), servicesData);
-        if (GeneralHelper.IsNotNull(parentcomponent))
-        {
-            parameters.Add(nameof(AddModal.parentcomponent), parentcomponent);
-        }
-        parameters.Add("theme", theme);
-
-        var options = new ModalOptions()
-            {
-                HideCloseButton = true,
-                UseCustomLayout = true
-            };
-
-        if (GeneralHelper.IsNotNull(Modal))
-        {
-            var modal = Modal.Show<AddModal>(title, parameters, options);
-            var result = await modal.Result;
-            if (!result.Cancelled)
-            {
-                servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
-                state.SetNavReload(true);
-                StateHasChanged();
-            }
-        }
-    }
-
-
-    async void ShowEditModal(int id, string type, string title, string message, bool protectedname = false, string? parentcomponent = null)
-    {
-        var parameters = new ModalParameters();
-        parameters.Add(nameof(EditModal.id), id);
-        parameters.Add(nameof(EditModal.type), type);
-        parameters.Add(nameof(EditModal.message), message);
-        parameters.Add(nameof(EditModal.title), title);
-        parameters.Add(nameof(EditModal.protectedName), protectedname);
-        parameters.Add(nameof(EditModal.parentcomponent), parentcomponent!);
-        parameters.Add(nameof(EditModal.servicesData), servicesData);
-        parameters.Add("theme", theme);
-
-        var options = new ModalOptions()
-            {
-                HideCloseButton = true,
-                UseCustomLayout = true
-            };
-        if (GeneralHelper.IsNotNull(Modal))
-        {
-            var modal = Modal.Show<EditModal>(title, parameters, options);
-            var result = await modal.Result;
-        }
-        servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
-        state.SetNavReload(true);
-        StateHasChanged();
-    }
-
-    async Task ShowInformationModal(string headerstyle, string title, string message)
-    {
-        var parameters = new ModalParameters();
-        parameters.Add(nameof(InformationModal.message), message);
-        parameters.Add(nameof(InformationModal.title), title);
-        parameters.Add(nameof(InformationModal.headerstyle), headerstyle);
-        parameters.Add("theme", theme);
-
-        var options = new ModalOptions()
-            {
-                HideCloseButton = true,
-                UseCustomLayout = true
-            };
-
-        if (GeneralHelper.IsNotNull(Modal))
-        {
-            var modal = Modal.Show<InformationModal>(title, parameters, options);
-            var result = await modal.Result;
-            if (!result.Cancelled)
-            {
-                StateHasChanged();
-            }
-        }
-    }
-
-    private void ShowInstructionsModal()
-    {
-        try
-        {
-            var parameters = new ModalParameters();
-            parameters.Add(nameof(InformationModal.message), String.Empty);
-            parameters.Add(nameof(InformationModal.title), "Configuration");
-            parameters.Add(nameof(InformationModal.headerstyle), "bg-navcolor");
-            parameters.Add(nameof(InformationModal.component), "toolconfigurationinstructions");
-            parameters.Add(nameof(InformationModal.admin), admin);
-            parameters.Add("theme", theme);
-
-            var options = new ModalOptions()
-                {
-                    HideCloseButton = true,
-                    UseCustomLayout = true
-                };
-            if (GeneralHelper.IsNotNull(Modal))
-            {
-                var modal = Modal.Show<InformationModal>("Instructions", parameters, options);
-            }
-        }
-        catch (Exception ex)
-        {
-            AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
         }
     }
 

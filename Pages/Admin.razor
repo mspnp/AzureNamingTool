@@ -27,7 +27,7 @@
             @if (admin)
             {
                 <div style="float:right;">
-                    <button class="btn btn-secondary" title="Instructions" @onclick="@(e => ShowInstructionsModal())">
+                    <button class="btn btn-secondary" title="Instructions" @onclick="@(e => ModalHelper.ShowInformationModal(Modal!, theme, "bg-navcolor", "Admin", String.Empty, "adminconfigurationinstructions", admin))">
                         <span class="oi oi-document" aria-hidden="true"></span> Documentation
                     </button>
                 </div>
@@ -478,6 +478,7 @@
         ServiceResponse serviceResponse = new();
         bool redirect = false;
         bool confirm = false;
+        bool displaymessage = true;
 
         switch (action)
         {
@@ -514,8 +515,8 @@
                 redirect = true;
                 break;
             case "password":
-                bool confirmPassword = await JsRuntime.InvokeAsync<bool>("confirm", "This will change the Global Admin Password. Are you sure?");
-                if (confirmPassword)
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3\">This will update the Global Admin Password.</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                if (confirm)
                 {
                     // Set the new admin password
                     serviceResponse = await AdminService.UpdatePassword(newpassword);
@@ -532,10 +533,14 @@
                         message.Message = "There was a problem updating the Global Admin Password!";
                     }
                 }
+                else
+                {
+                    displaymessage = false;
+                }
                 break;
             case "identityheadernamesave":
-                bool confirmIdentityHeaderNameSave = await JsRuntime.InvokeAsync<bool>("confirm", "This will update the current Identity Header Name. Are you sure?");
-                if (confirmIdentityHeaderNameSave)
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3\">This will update the Identity Header Name.</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                if (confirm)
                 {
                     serviceResponse = await AdminService.UpdateIdentityHeaderName(currentidentityheadername);
                     if (serviceResponse.Success)
@@ -551,10 +556,14 @@
                         message.Message = "There was a problem updating the Identity Header Name!";
                     }
                 }
+                else
+                {
+                    displaymessage = false;
+                }
                 break;
             case "apikeysave":
-                bool confrimAPIKeySave = await JsRuntime.InvokeAsync<bool>("confirm", "This will update the current API Key. Are you sure?");
-                if (confrimAPIKeySave)
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3\">This will update the API Key.</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                if (confirm)
                 {
                     serviceResponse = await AdminService.UpdateAPIKey(currentapikey);
                     if (serviceResponse.Success)
@@ -570,10 +579,14 @@
                         message.Message = "There was a problem updating the API Key!";
                     }
                 }
+                else
+                {
+                    displaymessage = false;
+                }
                 break;
             case "apikeygenerate":
-                bool confrimAPIKeyGenerate = await JsRuntime.InvokeAsync<bool>("confirm", "This will generate a new API Key. Are you sure?");
-                if (confrimAPIKeyGenerate)
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3\">This will generate a new API Key.</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                if (confirm)
                 {
                     serviceResponse = await AdminService.GenerateAPIKey();
                     if (serviceResponse.Success)
@@ -599,10 +612,14 @@
                         message.Message = "There was a problem generating the API Key!";
                     }
                 }
+                else
+                {
+                    displaymessage = false;
+                }
                 break;
             case "generationwebhooksave":
-                bool confirmGenerationWebhook = await JsRuntime.InvokeAsync<bool>("confirm", "This will update the current Generation Webhook. Are you sure?");
-                if (confirmGenerationWebhook)
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3\">This will update the Generation Webhook.</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                if (confirm)
                 {
                     if (!String.IsNullOrEmpty(currentgenerationwebhook))
                     {
@@ -619,6 +636,10 @@
                     message.Header = "SUCCESS";
                     message.Message = "Generation Webhook configuration saved!";
                 }
+                else
+                {
+                    displaymessage = false;
+                }
                 break;
             case "clearcache":
                 CacheHelper.ClearAllCache();
@@ -628,18 +649,29 @@
                 break;
             case "viewcachedata":
                 string cachedata = CacheHelper.GetAllCacheData();
-                await ShowInformationModal("bg-navcolor", "Cache Data", "<p>This is the current cache data.</p>" + cachedata);
+                ModalHelper.ShowInformationModal(Modal!, theme, "bg-navcolor", "Cache Data", "<p>This is the current cache data.</p>" + cachedata, "", admin);
+                displaymessage = false;
                 break;
             case "samplepost":
                 string webhookdata = await FileSystemHelper.ReadFile("samplewebhookdata.json", "");
-                await ShowInformationModal("bg-navcolor", "Sample Post", "<p>This is a sample Generation Webhook post.</p><code style=\"display: block; white-space: pre-wrap;\">" + webhookdata + "</code>");
+                ModalHelper.ShowInformationModal(Modal!, theme, "bg-navcolor", "Sample Post", "<p>This is a sample Generation Webhook post.</p><code style=\"display: block; white-space: pre-wrap;\">" + webhookdata + "</code>", "", admin);
+                displaymessage = false;
                 break;
-
             case "adminuseradd":
-                ShowAddModal(id, "AdminUser", "Add Admin User", "<p>Add an Admin User.</p>");
+                bool added = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Admin User", "<p>Add an Admin User.</p>", id, "AdminUser", admin, "");
+                if (added)
+                {
+                    servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                    state.SetNavReload(true);
+                    StateHasChanged();
+                }
+                else
+                {
+                    displaymessage = false;
+                }
                 break;
             case "adminuserdelete":
-                confirm = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3\">This will delete the Admin User.</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                 if (confirm)
                 {
                     serviceResponse = await AdminUserService.DeleteItem(Convert.ToInt32(id));
@@ -655,29 +687,36 @@
                         message.MessageDetails = serviceResponse.ResponseMessage;
                     }
                 }
+                else
+                {
+                    displaymessage = false;
+                }
                 break;
         }
 
         config = ConfigurationHelper.GetConfigurationData();
 
-        if (GeneralHelper.IsNotNull(message.Message))
+        if ((GeneralHelper.IsNotNull(message.Message)) && (displaymessage))
         {
-            switch (message.Type)
+            if (!String.IsNullOrEmpty(message.Message))
             {
-                case MessageTypesEnum.INFORMATION:
-                    toastService.ShowInfo(message.Message);
-                    break;
-                case MessageTypesEnum.SUCCESS:
-                    toastService.ShowSuccess(message.Message);
-                    break;
-                case MessageTypesEnum.WARNING:
-                    toastService.ShowWarning(message.Message);
-                    break;
-                case MessageTypesEnum.ERROR:
-                    toastService.ShowError(message.Message);
-                    break;
+                switch (message.Type)
+                {
+                    case MessageTypesEnum.INFORMATION:
+                        toastService.ShowInfo(message.Message);
+                        break;
+                    case MessageTypesEnum.SUCCESS:
+                        toastService.ShowSuccess(message.Message);
+                        break;
+                    case MessageTypesEnum.WARNING:
+                        toastService.ShowWarning(message.Message);
+                        break;
+                    case MessageTypesEnum.ERROR:
+                        toastService.ShowError(message.Message);
+                        break;
+                }
+                AdminLogService.PostItem(new AdminLogMessage() { Title = message.Type.ToString(), Message = message.Message, Source = currentuser });
             }
-            AdminLogService.PostItem(new AdminLogMessage() { Title = message.Type.ToString(), Message = message.Message, Source = currentuser });
         }
 
 
@@ -759,7 +798,7 @@
                         }
                         if (!(bool)e.Value)
                         {
-                            await ShowInformationModal("bg-danger", "ATTENTION", "<p>Disabling this setting may result in connectivity errors being logged to the Admin Log.<p>");
+                            ModalHelper.ShowInformationModal(Modal!, theme, "bg-danger", "ATTENTION", "<p>Disabling this setting may result in connectivity errors being logged to the Admin Log.<p>", "", admin);
                         }
 
                         break;
@@ -770,7 +809,7 @@
                             message.Message = "Resource Type Editing Allowed setting updated to " + e.Value?.ToString()!.ToUpper() ?? "" + "!";
                             if ((bool)e.Value!)
                             {
-                                await ShowInformationModal("bg-danger", "ATTENTION", "<p>Disabling this setting may result in name generation that will fail regex validation for the resource type.</p><p>Please use caution when editing Resource Type validation settings.");
+                                ModalHelper.ShowInformationModal(Modal!, theme, "bg-danger", "ATTENTION", "<p>Disabling this setting may result in name generation that will fail regex validation for the resource type.</p><p>Please use caution when editing Resource Type validation settings.", "", admin);
                             }
                         }
                         break;
@@ -825,92 +864,6 @@
         }
     }
 
-    async Task ShowInformationModal(string headerstyle, string title, string message)
-    {
-        var parameters = new ModalParameters();
-        parameters.Add(nameof(InformationModal.message), message);
-        parameters.Add(nameof(InformationModal.title), title);
-        parameters.Add(nameof(InformationModal.headerstyle), headerstyle);
-        parameters.Add("theme", theme);
-
-        var options = new ModalOptions()
-            {
-                HideCloseButton = true,
-                UseCustomLayout = true
-            };
-
-        if (GeneralHelper.IsNotNull(Modal))
-        {
-            var modal = Modal.Show<InformationModal>(title, parameters, options);
-            var result = await modal.Result;
-            if (!result.Cancelled)
-            {
-                StateHasChanged();
-            }
-        }
-    }
-
-    private void ShowInstructionsModal()
-    {
-        try
-        {
-            var parameters = new ModalParameters();
-            parameters.Add(nameof(InformationModal.message), String.Empty);
-            parameters.Add(nameof(InformationModal.title), "Admin");
-            parameters.Add(nameof(InformationModal.headerstyle), "bg-navcolor");
-            parameters.Add(nameof(InformationModal.component), "adminconfigurationinstructions");
-            parameters.Add(nameof(InformationModal.admin), admin);
-            parameters.Add("theme", theme);
-
-            var options = new ModalOptions()
-                {
-                    HideCloseButton = true,
-                    UseCustomLayout = true
-                };
-
-            if (GeneralHelper.IsNotNull(Modal))
-            {
-                var modal = Modal.Show<InformationModal>("Instructions", parameters, options);
-            }
-        }
-        catch (Exception ex)
-        {
-            AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
-        }
-    }
-
-    async void ShowAddModal(int id, string type, string title, string message, string parentcomponent = "")
-    {
-        var parameters = new ModalParameters();
-        parameters.Add(nameof(AddModal.id), id);
-        parameters.Add(nameof(AddModal.type), type);
-        parameters.Add(nameof(AddModal.message), message);
-        parameters.Add(nameof(AddModal.title), title);
-        if (GeneralHelper.IsNotNull(parentcomponent))
-        {
-            parameters.Add(nameof(AddModal.parentcomponent), parentcomponent);
-        }
-        parameters.Add(nameof(AddModal.servicesData), servicesData);
-        parameters.Add("theme", theme);
-
-        var options = new ModalOptions()
-            {
-                HideCloseButton = true,
-                UseCustomLayout = true
-            };
-
-        if (GeneralHelper.IsNotNull(Modal))
-        {
-            var modal = Modal.Show<AddModal>(title, parameters, options);
-            var result = await modal.Result;
-            if (!result.Cancelled)
-            {
-                servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
-                state.SetNavReload(true);
-                StateHasChanged();
-            }
-        }
-    }
     private async void SubmitIssue(string type)
     {
         string issueURL = "";

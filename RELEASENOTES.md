@@ -14,6 +14,7 @@
 - Reddesigned Generate page with new functionality
 - Added auto-complete to Generate page
 - Udpated Generate page messaging
+- Updated modal styling
 - Updated Release Notes
 
 ### Bug fixes

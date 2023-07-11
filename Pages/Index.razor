@@ -87,7 +87,9 @@
                             // Check if the client's version matches the current offical version
                             if (appversion != latestversion)
                             {
-                                ShowVersionModal("bg-navcolor", "ATTENTION", "<p style='font-weight:bold;'>Your current version is out of date!</p><p>Please click <a href='" + updateurl + "' target='_blank'>here</a> to update to the current version for the latest features!</p><p><span style='font-weight:bold;'>Installed Version:</span> <span style='font-style:italic; '>" + appversion + "</p><p><span style='font-weight:bold;'>Latest version:</span> <span style='font-style:italic; '>" + latestversion + "</span></p>");
+                                ModalHelper.ShowInformationModal(Modal!, theme!, "bg-navcolor", "ATTENTION", "<p style='font-weight:bold;'>Your current version is out of date!</p><p>Please click <a href='" + updateurl + "' target='_blank'>here</a> to update to the current version for the latest features!</p><p><span style='font-weight:bold;'>Installed Version:</span> <span style='font-style:italic; '>" + appversion + "</p><p><span style='font-weight:bold;'>Latest version:</span> <span style='font-style:italic; '>" + latestversion + "</span></p>", "", true);
+                                await session.SetAsync("versionnotification", true);
+                                StateHasChanged();
                             }
                         }
                     }
@@ -103,34 +105,5 @@
     private void OnInstructionsClick()
     {
         NavigationManager.NavigateTo("/instructions");
-    }
-
-    async void ShowVersionModal(string headerstyle, string title, string message)
-    {
-        var parameters = new ModalParameters();
-        parameters.Add(nameof(InformationModal.message), message);
-        parameters.Add(nameof(InformationModal.title), title);
-        parameters.Add(nameof(InformationModal.headerstyle), headerstyle);
-        if (GeneralHelper.IsNotNull(theme))
-        {
-            parameters.Add("theme", theme);
-        }
-
-        var options = new ModalOptions()
-            {
-                HideCloseButton = true,
-                UseCustomLayout = true
-            };
-
-        if (GeneralHelper.IsNotNull(Modal))
-        {
-            var modal = Modal.Show<InformationModal>(title, parameters, options);
-            var result = await modal.Result;
-            await session.SetAsync("versionnotification", true);
-            if (!result.Cancelled)
-            {
-                StateHasChanged();
-            }
-        }
     }
 }
