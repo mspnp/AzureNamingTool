@@ -559,100 +559,63 @@
 
     private async Task HandleValidSubmit()
     {
-        try
+        var workingmodaloptions = new ModalOptions()
+            {
+                HideCloseButton = true,
+                UseCustomLayout = true
+            };
+        if (GeneralHelper.IsNotNull(Modal))
         {
-            if (!GeneralHelper.IsNotNull(servicesData))
+            var workingmodal = Modal!.Show<WorkingModal>("Working", workingmodaloptions);
+            try
             {
-                await SetServicesData();
-            }
-            StringBuilder sbNames = new();
-            StringBuilder sbMessage = new();
-            generatedName = "";
-            message = "";
 
-            ResourceType resourceType = new();
-            // Create the name request
-            resourceNameRequest.ResourceEnvironment = selectedResourceEnvironment;
-            resourceNameRequest.ResourceFunction = selectedResourceFunction;
-            resourceNameRequest.ResourceInstance = selectedResourceInstance;
-            resourceNameRequest.ResourceLocation = selectedResourceLocation;
-            resourceNameRequest.ResourceOrg = selectedResourceOrg;
-            resourceNameRequest.ResourceProjAppSvc = selectedResourceProjAppSvc;
-            resourceNameRequest.ResourceUnitDept = selectedResourceUnitDept;
-            resourceNameRequest.CustomComponents = selectedCustomComponents;
-            string currentuser = await IdentityHelper.GetCurrentUser(session);
-            resourceNameRequest.CreatedBy = currentuser;
-
-            sbNames.Append("<table class=\"table text-light generatednames\">");
-            sbNames.Append("<thead>");
-            sbNames.Append("<tr>");
-            sbNames.Append("<th class\"w25\">Reource Type</th>");
-            sbNames.Append("<th class\"w25\">Generated Name</th>");
-            sbNames.Append("<th class\"w50\">Notes</th>");
-            sbNames.Append("</tr>");
-            sbNames.Append("</thead>");
-            sbNames.Append("<tbody>");
-
-            // Check the genrate mode
-            if (multiselectedResourceTypes.Count == 0)
-            {
-                // Single type generation
-                StringBuilder sbName = new();
-                selectedResourceType = GeneralHelper.FormatResoureType(selectedResourceType);
-                resourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType)!;
-                if (GeneralHelper.IsNotNull(resourceType))
+                if (!GeneralHelper.IsNotNull(servicesData))
                 {
-                    resourceNameRequest.ResourceType = resourceType.ShortName;
-                    resourceNameRequest.ResourceId = resourceType.Id;
-                    resourceNameRequestResponse = await ResourceNamingRequestService.RequestName(resourceNameRequest);
-
-                    // Prepare the response
-                    sbNames.Append("<tr>");
-                    if (!String.IsNullOrEmpty(resourceType.Property))
-                    {
-                        sbNames.Append("<td class=\"col-3\">" + @resourceType.Resource + " - " + @resourceType.Property + "</td>");
-                    }
-                    else
-                    {
-                        sbNames.Append("<td class=\"col-3\">" + @resourceType.Resource + "</td>");
-                    }
-                    sbNames.Append("<td class=\"col-3\">" + resourceNameRequestResponse.ResourceName + "</td>");
-                    sbNames.Append("<td class=\"col-3\">");
-                    if (!String.IsNullOrEmpty(resourceNameRequestResponse.Message))
-                    {
-                        sbNames.Append(resourceNameRequestResponse.Message);
-                    }
-                    sbNames.Append("</td>");
-                    sbNames.Append("</tr>");
-
-                    // Set the result container
-                    if (resourceNameRequestResponse.Success)
-                    {
-                        resultClass = "bg-success";
-                        resultHeader = "SUCCESS";
-                        componentsVisible = "collapse";
-                    }
-                    else
-                    {
-                        resultClass = "bg-danger";
-                        resultHeader = "FAILURE";
-                        componentsVisible = "collapse show";
-                    }
+                    await SetServicesData();
                 }
-            }
-            else
-            {
-                // Attempt to genrate name for each seelct types
-                resultClass = "bg-success";
-                foreach (string id in multiselectedResourceTypes)
+                StringBuilder sbNames = new();
+                StringBuilder sbMessage = new();
+                generatedName = "";
+                message = "";
+
+                ResourceType resourceType = new();
+                // Create the name request
+                resourceNameRequest.ResourceEnvironment = selectedResourceEnvironment;
+                resourceNameRequest.ResourceFunction = selectedResourceFunction;
+                resourceNameRequest.ResourceInstance = selectedResourceInstance;
+                resourceNameRequest.ResourceLocation = selectedResourceLocation;
+                resourceNameRequest.ResourceOrg = selectedResourceOrg;
+                resourceNameRequest.ResourceProjAppSvc = selectedResourceProjAppSvc;
+                resourceNameRequest.ResourceUnitDept = selectedResourceUnitDept;
+                resourceNameRequest.CustomComponents = selectedCustomComponents;
+                string currentuser = await IdentityHelper.GetCurrentUser(session);
+                resourceNameRequest.CreatedBy = currentuser;
+
+                sbNames.Append("<table class=\"table text-light generatednames\">");
+                sbNames.Append("<thead>");
+                sbNames.Append("<tr>");
+                sbNames.Append("<th class\"w25\">Reource Type</th>");
+                sbNames.Append("<th class\"w25\">Generated Name</th>");
+                sbNames.Append("<th class\"w50\">Notes</th>");
+                sbNames.Append("</tr>");
+                sbNames.Append("</thead>");
+                sbNames.Append("<tbody>");
+
+                // Check the genrate mode
+                if (multiselectedResourceTypes.Count == 0)
                 {
-                    resourceType = servicesData.ResourceTypes!.Find(x => x.Id == Convert.ToInt32(id))!;
+                    // Single type generation
+                    StringBuilder sbName = new();
+                    selectedResourceType = GeneralHelper.FormatResoureType(selectedResourceType);
+                    resourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType)!;
                     if (GeneralHelper.IsNotNull(resourceType))
                     {
                         resourceNameRequest.ResourceType = resourceType.ShortName;
                         resourceNameRequest.ResourceId = resourceType.Id;
                         resourceNameRequestResponse = await ResourceNamingRequestService.RequestName(resourceNameRequest);
 
+                        // Prepare the response
                         sbNames.Append("<tr>");
                         if (!String.IsNullOrEmpty(resourceType.Property))
                         {
@@ -671,28 +634,79 @@
                         sbNames.Append("</td>");
                         sbNames.Append("</tr>");
 
-                        // Set the  result container
-                        if (!resourceNameRequestResponse.Success)
+                        // Set the result container
+                        if (resourceNameRequestResponse.Success)
+                        {
+                            resultClass = "bg-success";
+                            resultHeader = "SUCCESS";
+                            componentsVisible = "collapse";
+                        }
+                        else
                         {
                             resultClass = "bg-danger";
                             resultHeader = "FAILURE";
+                            componentsVisible = "collapse show";
                         }
                     }
                 }
+                else
+                {
+                    // Attempt to genrate name for each seelct types
+                    resultClass = "bg-success";
+                    foreach (string id in multiselectedResourceTypes)
+                    {
+                        resourceType = servicesData.ResourceTypes!.Find(x => x.Id == Convert.ToInt32(id))!;
+                        if (GeneralHelper.IsNotNull(resourceType))
+                        {
+                            resourceNameRequest.ResourceType = resourceType.ShortName;
+                            resourceNameRequest.ResourceId = resourceType.Id;
+                            resourceNameRequestResponse = await ResourceNamingRequestService.RequestName(resourceNameRequest);
 
+                            sbNames.Append("<tr>");
+                            if (!String.IsNullOrEmpty(resourceType.Property))
+                            {
+                                sbNames.Append("<td class=\"col-3\">" + @resourceType.Resource + " - " + @resourceType.Property + "</td>");
+                            }
+                            else
+                            {
+                                sbNames.Append("<td class=\"col-3\">" + @resourceType.Resource + "</td>");
+                            }
+                            sbNames.Append("<td class=\"col-3\">" + resourceNameRequestResponse.ResourceName + "</td>");
+                            sbNames.Append("<td class=\"col-3\">");
+                            if (!String.IsNullOrEmpty(resourceNameRequestResponse.Message))
+                            {
+                                sbNames.Append(resourceNameRequestResponse.Message);
+                            }
+                            sbNames.Append("</td>");
+                            sbNames.Append("</tr>");
+
+                            // Set the  result container
+                            if (!resourceNameRequestResponse.Success)
+                            {
+                                resultClass = "bg-danger";
+                                resultHeader = "FAILURE";
+                            }
+                        }
+                    }
+
+                }
+
+                sbNames.Append("</tbody>");
+                sbNames.Append("</table>");
+
+                // Always show the response
+                generatedName = sbNames.ToString();
             }
 
-            sbNames.Append("</tbody>");
-            sbNames.Append("</table>");
-
-            // Always show the response
-            generatedName = sbNames.ToString();
-        }
-
-        catch (Exception ex)
-        {
-            AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
-            toastService.ShowError("There was a problem generting the name(s). Please try again");
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                toastService.ShowError("There was a problem generting the name(s). Please try again");
+            }
+            finally
+            {
+                workingmodal.Close();
+            }
         }
     }
 
