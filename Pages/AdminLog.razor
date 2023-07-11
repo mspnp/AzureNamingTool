@@ -190,7 +190,7 @@
     {
         ServiceResponse serviceResponse = new();
         bool confirm = false;
-        confirm = await JsRuntime.InvokeAsync<bool>("confirm", "This will purge the Admin Log. Are you sure?");
+        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will purge the Admin Log and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
         if (confirm)
         {
             await LogHelper.PurgeAdminLog();

@@ -279,7 +279,7 @@
                                                     Click <strong>Reset</strong> to reset the Components Configuration back to the default values at the time of installation.
                                                 </p>
                                                 <p>
-                                                    <strong>NOTE: This will reset your current configuration and cannot be undone!</strong>
+                                                    <strong>NOTE:</strong> This will reset the current Components Configuration and cannot be undone!
                                                 </p>
                                                 <p>
                                                     <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("ResourceComponent",0,"reset")) title="Reset">
@@ -294,7 +294,7 @@
                                             </div>
                                             <div class="card card-body">
                                                 <p>
-                                                    Enter the new Components Configuration JSON below and click <strong>Import</strong> to import the Components Configuration. <strong>NOTE:</strong> This will overwrite the existing Components Configuration.
+                                                    Enter the new Components Configuration JSON below and click <strong>Import</strong> to import the Components Configuration.</p><p><strong>NOTE:</strong> This will update the existing Components Configuration and cannot be undone!
                                                 </p>
                                                 <p>
                                                     <textarea title="Configuration" class="form-control" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newComponentConfig",(string)ui.Value);})">@newComponentConfig</textarea>
@@ -405,7 +405,7 @@
                                                     Click <strong>Reset</strong> to reset the Delimiters Configuration back to the default values at the time of installation.
                                                 </p>
                                                 <p>
-                                                    <strong>NOTE: This will reset your current configuration and cannot be undone!</strong>
+                                                    <strong>NOTE:</strong> This will reset the current Delimiters Configuration and cannot be undone!
                                                 </p>
                                                 <p>
                                                     <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("ResourceDelimiter",0,"reset")) title="Reset">
@@ -420,7 +420,9 @@
                                             </div>
                                             <div class="card card-body @theme.ThemeStyle">
                                                 <p>
-                                                    Enter the new Delimiters Configuration JSON below and click <strong>Import</strong> to import the Delimiters Configuration. <strong>NOTE:</strong> This will overwrite the existing Resource Delimiters Configuration.
+                                                    Enter the new Delimiters Configuration JSON below and click <strong>Import</strong> to import the Delimiters Configuration.
+                                                </p><p>
+                                                    <strong>NOTE:</strong> This will update the existing Delimiters Configuration and cannot be undone!
                                                 </p>
                                                 <p>
                                                     <textarea title="Configuration" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newDelimiterConfig",(string)ui.Value!);})">@newDelimiterConfig</textarea>
@@ -574,7 +576,7 @@
                                                     Enter the new Custom Components Configuration JSON below and click <strong>Import</strong> to import the Custom Components Configuration.
                                                 </p>
                                                 <p>
-                                                    <strong>NOTE:</strong> This will overwrite the existing Custom Components Configuration.
+                                                    <strong>NOTE:</strong> This will update the existing Custom Components Configuration and cannot be undone!
                                                 </p>
                                                 <p>
                                                     <textarea title="Configuration" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newCustomComponentConfig",(string)ui.Value!);})">@newCustomComponentConfig</textarea>
@@ -701,7 +703,7 @@
                                                                 Click <strong>Reset</strong> to reset the Environments Configuration back to the default values at the time of installation.
                                                             </p>
                                                             <p>
-                                                                <strong>NOTE: This will reset your current configuration and cannot be undone!</strong>
+                                                                <strong>NOTE:</strong> This will reset the current Environments Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("ResourceEnvironment",0,"reset")) title="Reset">
@@ -716,7 +718,9 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Enter the new Environments Configuration JSON below and click <strong>Import</strong> to import the Environments Configuration. <strong>NOTE:</strong> This will overwrite the existing Environments Configuration.
+                                                                Enter the new Environments Configuration JSON below and click <strong>Import</strong> to import the Environments Configuration.
+                                                            </p><p>
+                                                                <strong>NOTE:</strong> This will update the existing Environments Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <textarea title="Configuration" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newEnvironmentConfig",(string)ui.Value!);})">@newEnvironmentConfig</textarea>
@@ -841,7 +845,7 @@
                                                                 Click <strong>Reset</strong> to reset the Functions Configuration back to the default values at the time of installation.
                                                             </p>
                                                             <p>
-                                                                <strong>NOTE: This will reset your current configuration and cannot be undone!</strong>
+                                                                <strong>NOTE:</strong> This will reset the current Functions configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("ResourceFunction",0,"reset")) title="Reset">
@@ -856,7 +860,9 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Enter the new Functions Configuration JSON below and click <strong>Import</strong> to import the Functions Configuration. <strong>NOTE:</strong> This will overwrite the existing Functions Configuration.
+                                                                Enter the new Functions Configuration JSON below and click <strong>Import</strong> to import the Functions Configuration.
+                                                            </p><p>
+                                                                <strong>NOTE:</strong> This will update the existing Functions Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <textarea title="New Function Config" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newFunctionConfig",(string)ui.Value!);})">@newFunctionConfig</textarea>
@@ -1014,7 +1020,7 @@
                                                                 <p>
                                                                     <strong>NOTES:</strong>
                                                                     <ul>
-                                                                        <li><strong>This will refresh your current configuration and cannot be undone!</strong></li>
+                                                                        <li><strong>This will refresh the current Locations Configuration and cannot be undone!</strong></li>
                                                                         <li>New location configurations will be added.</li>
                                                                         @if (refreshlocationshortnames)
                                                                         {
@@ -1024,7 +1030,7 @@
                                                                         else
                                                                         {
                                                                             <li>
-                                                                                All of your existing location configurations will be retained.
+                                                                                All of the existing Location configurations will be retained.
                                                                             </li>
                                                                         }
                                                                     </ul>
@@ -1033,7 +1039,7 @@
                                                                     <button type="button" class="btn btn-success" @onclick=@(e => FormAction("ResourceLocation",0,"refresh")) title="Refresh">
                                                                         <span class="oi oi-reload" aria-hidden="true"></span> Refresh
                                                                     </button>
-                                                                    <input title="Refresh Short Names" class="form-check-input" type="checkbox" @bind="@refreshlocationshortnames" onclick="checkboxConfirmChange(this, '** ATTENTION ***\n\nThis will reset your location short names to match the latest Azure Naming Tool values.\n\nThis cannot be undone!\n\nAre you sure?');" style="margin-top: 9px; margin-left:10px;"> Refresh short names?
+                                                                    <input title="Refresh Short Names" class="form-check-input" type="checkbox" @onchange="@((ChangeEventArgs e) =>OnRefreshLocationsCheckboxClicked(e))" style="margin-top: 9px; margin-left:10px;"> Refresh short names?
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -1047,7 +1053,7 @@
                                                                 Click <strong>Reset</strong> to reset the Locations Configuration back to the default values at the time of installation.
                                                             </p>
                                                             <p>
-                                                                <strong>NOTE: This will reset your current configuration and cannot be undone!</strong>
+                                                                <strong>NOTE:</strong> This will reset the current Locations Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("ResourceLocation",0,"reset")) title="Reset">
@@ -1062,7 +1068,9 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Enter the new Locations Configuration JSON below and click <strong>Import</strong> to import the Locations Configuration. <strong>NOTE:</strong> This will overwrite the existing Locations Configuration.
+                                                                Enter the new Locations Configuration JSON below and click <strong>Import</strong> to import the Locations Configuration.
+                                                            </p><p>
+                                                                <strong>NOTE:</strong> This will update the existing Locations Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <textarea title="Configuration" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newLocationConfig",(string)ui.Value!);})">@newLocationConfig</textarea>
@@ -1186,7 +1194,7 @@
                                                                 Click <strong>Reset</strong> to reset the Orgs Configuration back to the default values at the time of installation.
                                                             </p>
                                                             <p>
-                                                                <strong>NOTE: This will reset your current configuration and cannot be undone!</strong>
+                                                                <strong>NOTE:</strong> This will reset the current Orgs Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("ResourceOrg",0,"reset")) title="Reset">
@@ -1204,7 +1212,7 @@
                                                                 Enter the new Orgs Configuration JSON below and click <strong>Import</strong> to import the Orgs Configuration.
                                                             </p>
                                                             <p>
-                                                                <strong>NOTE: This will overwrite the existing Orgs Configuration and cannot be undone!</strong>
+                                                                <strong>NOTE:</strong> This will update the existing Orgs Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <textarea title="Configuration" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newOrgConfig",(string)ui.Value!);})">@newOrgConfig</textarea>
@@ -1328,7 +1336,7 @@
                                                                 Click <strong>Reset</strong> to reset the Project/App/Services Configuration back to the default values at the time of installation.
                                                             </p>
                                                             <p>
-                                                                <strong>NOTE: This will reset your current configuration and cannot be undone!</strong>
+                                                                <strong>NOTE:</strong> This will reset the current Project/App/Services Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("ResourceProjAppSvc",0,"reset")) title="Reset">
@@ -1343,7 +1351,9 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Enter the new Projects/Apps/Services Configuration JSON below and click <strong>Import</strong> to import the Projects/Apps/Services Configuration. <strong>NOTE:</strong> This will overwrite the existing Projects/Apps/Services Configuration.
+                                                                Enter the new Projects/Apps/Services Configuration JSON below and click <strong>Import</strong> to import the Projects/Apps/Services Configuration.
+                                                            </p><p>
+                                                                <strong>NOTE:</strong> This will update the existing Projects/Apps/Services Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <textarea title="Configuration" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newProjAppSvcConfig",(string)ui.Value!);})">@newProjAppSvcConfig</textarea>
@@ -1543,12 +1553,12 @@
                                                                 <p>
                                                                     <strong>NOTES:</strong>
                                                                     <ul>
-                                                                        <li><strong>This will refresh your current configuration and cannot be undone!</strong></li>
+                                                                        <li><strong>This will refresh the current Resource Types Configuration and cannot be undone!</strong></li>
                                                                         <li>New resource type configurations will be added.</li>
                                                                         @if (refreshtypeshortnames)
                                                                         {
                                                                             <li>
-                                                                                All resource type configurations will be updated, but all of your existing resource type configuration (except the short name value) customizations will be retained.
+                                                                                All resource type configurations will be updated, but all of the existing Resource Type Configurations (except the short name value) customizations will be retained.
                                                                             </li>
                                                                             <li>
                                                                                 <span style="color:red; font-weight:bold;">Any customized short names will be overwritten.</span>
@@ -1557,7 +1567,7 @@
                                                                         else
                                                                         {
                                                                             <li>
-                                                                                Resource type configurations will be updated, but all of your existing resource type configuration customizations will be retained.
+                                                                                Resource type configurations will be updated, but all of the existing Resource Type Configurations customizations will be retained.
                                                                             </li>
                                                                         }
                                                                     </ul>
@@ -1566,7 +1576,7 @@
                                                                     <button type="button" class="btn btn-success" @onclick=@(e => FormAction("ResourceType",0,"refresh")) title="Refresh">
                                                                         <span class="oi oi-reload" aria-hidden="true"></span> Refresh
                                                                     </button>
-                                                                    <input title="Refresh Short Names" class="form-check-input" type="checkbox" @bind="@refreshtypeshortnames" onclick="checkboxConfirmChange(this, '** ATTENTION ***\n\nThis will reset your type short names to match the latest Azure Naming Tool values.\n\nThis cannot be undone!\n\nAre you sure?');" style="margin-top: 9px; margin-left:10px;"> Refresh short names?
+                                                                    <input title="Refresh Short Names" class="form-check-input" type="checkbox" @onchange="@((ChangeEventArgs e) =>OnRefreshTypesCheckboxClicked(e))" style="margin-top: 9px; margin-left:10px;"> Refresh short names?
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -1580,7 +1590,7 @@
                                                                 Click <strong>Reset</strong> to reset the Resource Types Configuration back to the default values at the time of installation.
                                                             </p>
                                                             <p>
-                                                                <strong>NOTE: This will reset your current configuration and cannot be undone!</strong>
+                                                                <strong>NOTE:</strong> This will reset the current Resource Types Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("ResourceType",0,"reset")) title="Reset">
@@ -1595,7 +1605,9 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Enter the new Resource Types Configuration JSON below and click <strong>Import</strong> to import the Resource Types Configuration. <strong>NOTE:</strong> This will overwrite the existing Resource Types Configuration.
+                                                                Enter the new Resource Types Configuration JSON below and click <strong>Import</strong> to import the Resource Types Configuration.
+                                                            </p><p>
+                                                                <strong>NOTE:</strong> This will update the existing Resource Types Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <textarea title="Configuration" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newTypeConfig",(string)ui.Value!);})">@newTypeConfig</textarea>
@@ -1717,10 +1729,10 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Click <strong>Reset</strong> to reset the UnitsDepts Configuration back to the default values at the time of installation.
+                                                                Click <strong>Reset</strong> to reset the Units/Depts Configuration back to the default values at the time of installation.
                                                             </p>
                                                             <p>
-                                                                <strong>NOTE: This will reset your current configuration and cannot be undone!</strong>
+                                                                <strong>NOTE:</strong> This will reset THe current Units/Depts configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("ResourceUnitDept",0,"reset")) title="Reset">
@@ -1735,7 +1747,9 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Enter the new Units/Depts Configuration JSON below and click <strong>Import</strong> to import the Units/Depts Configuration. <strong>NOTE:</strong> This will overwrite the existing Units/Depts Configuration.
+                                                                Enter the new Units/Depts Configuration JSON below and click <strong>Import</strong> to import the Units/Depts Configuration.
+                                                            </p><p>
+                                                                <strong>NOTE:</strong> This will update the existing Units/Depts Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <textarea title="Configuration" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newUnitDeptConfig",(string)ui.Value!);})">@newUnitDeptConfig</textarea>
@@ -1799,7 +1813,7 @@
                                         Click <strong>Reset</strong> to reset the Global Configuration back to the default values at the time of installation. This will apply to all component configurations.
                                     </p>
                                     <p>
-                                        <strong>NOTE: This will reset your current configuration and cannot be undone!</strong>
+                                        <strong>NOTE:</strong> This will reset the current Global Configuration and cannot be undone!
                                     </p>
                                     <p>
                                         <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("Global",0,"reset")) title="Reset">
@@ -1814,7 +1828,10 @@
                                 </div>
                                 <div class="card card-body @theme.ThemeStyle">
                                     <p>
-                                        Enter the new Global Configuration JSON below and click <strong>Import</strong> to import the Global Configuration. <strong>NOTE:</strong> This will overwrite all existing configurations.
+                                        Enter the new Global Configuration JSON below and click <strong>Import</strong> to import the Global Configuration.
+                                    </p>
+                                    <p>
+                                        <strong>NOTE:</strong> This will update all existing configurations and cannot be undone!
                                     </p>
                                     <p>
                                         <textarea title="Configuration" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newGlobalConfig",(string)ui.Value!);})" />
@@ -2217,7 +2234,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current Components configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Components Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourcecomponents.json"))
@@ -2235,7 +2252,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newTypeConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Components configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Components Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceComponentService.PostConfig(JsonSerializer.Deserialize<List<ResourceComponent>>(newTypeConfig, options)!);
@@ -2330,7 +2347,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newDelimiterConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Delimiters configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Delimiters Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceDelimiterService.PostConfig(JsonSerializer.Deserialize<List<ResourceDelimiter>>(newDelimiterConfig, options)!);
@@ -2349,7 +2366,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your reset Delimiters configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the reset Delimiters Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourcedelimiters.json"))
@@ -2504,7 +2521,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current Environments configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Environments Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourceenvironments.json"))
@@ -2522,7 +2539,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newEnvironmentConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Environments configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Environments Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceEnvironmentService.PostConfig(JsonSerializer.Deserialize<List<ResourceEnvironment>>(newEnvironmentConfig, options)!);
@@ -2681,7 +2698,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current Functions configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Functions Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourcefunctions.json"))
@@ -2699,7 +2716,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newFunctionConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Functions configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Functions Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceFunctionService.PostConfig(JsonSerializer.Deserialize<List<ResourceFunction>>(newFunctionConfig, options)!);
@@ -2829,7 +2846,7 @@
                                     }
                                     break;
                                 case "refresh":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will refresh your current Locations configuration with the latest configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will refresh the current Locations Configuration with the latest configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         serviceResponse = await ResourceLocationService.RefreshResourceLocations(refreshlocationshortnames);
@@ -2847,7 +2864,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current Locations configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Locations Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourcelocations.json"))
@@ -2865,7 +2882,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newLocationConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Locations configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Locations Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceLocationService.PostConfig(JsonSerializer.Deserialize<List<AzureNamingTool.Models.ResourceLocation>>(newLocationConfig, options)!);
@@ -3024,7 +3041,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current Orgs configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Orgs Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourceorgs.json"))
@@ -3042,7 +3059,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newOrgConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Orgs configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Orgs Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceOrgService.PostConfig(JsonSerializer.Deserialize<List<ResourceOrg>>(newOrgConfig, options)!);
@@ -3201,7 +3218,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current Projects/Apps/Services configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Projects/Apps/Services Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourceprojappsvcs.json"))
@@ -3219,7 +3236,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newProjAppSvcConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Projects/Apps/Services configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Projects/Apps/Services Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceProjAppSvcService.PostConfig(JsonSerializer.Deserialize<List<ResourceProjAppSvc>>(newProjAppSvcConfig, options)!);
@@ -3330,7 +3347,7 @@
                                     }
                                     break;
                                 case "refresh":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will refresh your current Types configuration with the latest configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will refresh the current Types Configuration with the latest configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         serviceResponse = await ResourceTypeService.RefreshResourceTypes(refreshtypeshortnames);
@@ -3348,7 +3365,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current Types configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Types Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourcetypes.json"))
@@ -3366,7 +3383,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newTypeConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Types configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Types Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceTypeService.PostConfig(JsonSerializer.Deserialize<List<ResourceType>>(newTypeConfig, options)!);
@@ -3526,7 +3543,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current Units/Depts configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Units/Depts Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourceunitdepts.json"))
@@ -3544,7 +3561,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newUnitDeptConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Units/Depts configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Units/Depts Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceUnitDeptService.PostConfig(JsonSerializer.Deserialize<List<ResourceUnitDept>>(newUnitDeptConfig, options)!);
@@ -3733,7 +3750,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current Custom Components configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Custom Components Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("customcomponents.json"))
@@ -3751,7 +3768,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newCustomComponentConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Custom Components configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Custom Components Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             List<ResourceComponent> currentresourcecomponents = new();
@@ -3875,7 +3892,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset your current configuration for all settings and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Global Configuration for all settings and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         bool confirmglobalreset = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">Every setting of the site will be reset if you continue! It is recommended you take a backup of the configuration before proceeding!</div><div class=\"mb-3\">Continue?</div>", "bg-danger", theme);
@@ -3897,7 +3914,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newGlobalConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update your current Global configuration and cannot be undone!!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Global Configuration and cannot be undone!!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             bool confirmglobalupdate = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">Every setting of the site will be updated if you continue! It is recommended you take a backup of the configuration before proceeding!</div><div class=\"mb-3\">Continue?</div>", "bg-danger", theme);
@@ -4102,5 +4119,29 @@
     private async Task OnConnectivtyAlertDismissed()
     {
         await session.SetAsync("connectivityalertshown", true);
+    }
+
+    private void OnRefreshLocationsCheckboxClicked(ChangeEventArgs e)
+    {
+        if (GeneralHelper.IsNotNull(e.Value))
+        {
+            refreshlocationshortnames = bool.Parse(e.Value.ToString()!);
+            if (refreshlocationshortnames)
+            {
+                ModalHelper.ShowInformationModal(Modal!, theme, "bg-danger", "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the Locations short names and details to match the latest Azure Naming Tool values and cannot be undone!</div>", "", admin);
+            }
+        }
+    }
+
+    private void OnRefreshTypesCheckboxClicked(ChangeEventArgs e)
+    {
+        if (GeneralHelper.IsNotNull(e.Value))
+        {
+            refreshtypeshortnames = bool.Parse(e.Value.ToString()!);
+            if (refreshtypeshortnames)
+            {
+                ModalHelper.ShowInformationModal(Modal!, theme, "bg-danger", "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the Types short names and details to match the latest Azure Naming Tool values and cannot be undone!</div>", "", admin);
+            }
+        }
     }
 }
