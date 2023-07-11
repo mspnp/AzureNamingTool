@@ -515,7 +515,7 @@
                 redirect = true;
                 break;
             case "password":
-                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3\">This will update the Global Admin Password.</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the Global Admin Password.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                 if (confirm)
                 {
                     // Set the new admin password
@@ -539,7 +539,7 @@
                 }
                 break;
             case "identityheadernamesave":
-                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3\">This will update the Identity Header Name.</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the Identity Header Name.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                 if (confirm)
                 {
                     serviceResponse = await AdminService.UpdateIdentityHeaderName(currentidentityheadername);
@@ -562,7 +562,7 @@
                 }
                 break;
             case "apikeysave":
-                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3\">This will update the API Key.</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the API Key.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                 if (confirm)
                 {
                     serviceResponse = await AdminService.UpdateAPIKey(currentapikey);
@@ -585,7 +585,7 @@
                 }
                 break;
             case "apikeygenerate":
-                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3\">This will generate a new API Key.</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will generate a new API Key.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                 if (confirm)
                 {
                     serviceResponse = await AdminService.GenerateAPIKey();
@@ -618,7 +618,7 @@
                 }
                 break;
             case "generationwebhooksave":
-                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3\">This will update the Generation Webhook.</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the Generation Webhook.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                 if (confirm)
                 {
                     if (!String.IsNullOrEmpty(currentgenerationwebhook))
@@ -671,7 +671,7 @@
                 }
                 break;
             case "adminuserdelete":
-                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3\">This will delete the Admin User.</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will delete the Admin User.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                 if (confirm)
                 {
                     serviceResponse = await AdminUserService.DeleteItem(Convert.ToInt32(id));

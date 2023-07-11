@@ -237,7 +237,7 @@
         ServiceResponse serviceResponse = new();
         ResponseMessage message = new();
         bool confirm = false;
-        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will delete the Generated Name and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will delete the Generated Name and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
         if (confirm)
         {
             serviceResponse = await GeneratedNamesService.GetItem(Convert.ToInt32(id));
@@ -291,7 +291,7 @@
         ServiceResponse serviceResponse = new();
 
         bool confirm = false;
-        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will purge the Generated Names Log and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will purge the Generated Names Log and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
         if (confirm)
         {
             await LogHelper.PurgeGeneratedNames();
