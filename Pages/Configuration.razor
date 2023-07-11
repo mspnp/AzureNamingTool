@@ -2193,7 +2193,7 @@
                                     }
                                     break;
                                 case "delete":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will delete the Component and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will delete the Component and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         resourceComponent = servicesData.ResourceComponents!.Find(x => x.Id == id)!;
@@ -2234,7 +2234,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Components Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will reset the current Components Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourcecomponents.json"))
@@ -2252,7 +2252,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newTypeConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Components Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the current Components Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceComponentService.PostConfig(JsonSerializer.Deserialize<List<ResourceComponent>>(newTypeConfig, options)!);
@@ -2347,7 +2347,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newDelimiterConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Delimiters Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the current Delimiters Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceDelimiterService.PostConfig(JsonSerializer.Deserialize<List<ResourceDelimiter>>(newDelimiterConfig, options)!);
@@ -2366,7 +2366,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the reset Delimiters Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the reset Delimiters Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourcedelimiters.json"))
@@ -2465,7 +2465,7 @@
                                     }
                                     break;
                                 case "delete":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will delete the Environment and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will delete the Environment and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         resourceEnvironment = servicesData.ResourceEnvironments!.Find(x => x.Id == id)!;
@@ -2521,7 +2521,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Environments Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will reset the current Environments Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourceenvironments.json"))
@@ -2539,7 +2539,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newEnvironmentConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Environments Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the current Environments Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceEnvironmentService.PostConfig(JsonSerializer.Deserialize<List<ResourceEnvironment>>(newEnvironmentConfig, options)!);
@@ -2642,7 +2642,7 @@
                                     }
                                     break;
                                 case "delete":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will delete the Function and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will delete the Function and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         resourceFunction = servicesData.ResourceFunctions!.Find(x => x.Id == id)!;
@@ -2698,7 +2698,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Functions Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will reset the current Functions Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourcefunctions.json"))
@@ -2716,7 +2716,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newFunctionConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Functions Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the current Functions Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceFunctionService.PostConfig(JsonSerializer.Deserialize<List<ResourceFunction>>(newFunctionConfig, options)!);
@@ -2812,7 +2812,7 @@
                                     }
                                     break;
                                 case "delete":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will delete the Location and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will delete the Location and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         resourceLocation = servicesData.ResourceLocations!.Find(x => x.Id == id)!;
@@ -2846,7 +2846,7 @@
                                     }
                                     break;
                                 case "refresh":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will refresh the current Locations Configuration with the latest configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will refresh the current Locations Configuration with the latest configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         serviceResponse = await ResourceLocationService.RefreshResourceLocations(refreshlocationshortnames);
@@ -2864,7 +2864,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Locations Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will reset the current Locations Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourcelocations.json"))
@@ -2882,7 +2882,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newLocationConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Locations Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the current Locations Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceLocationService.PostConfig(JsonSerializer.Deserialize<List<AzureNamingTool.Models.ResourceLocation>>(newLocationConfig, options)!);
@@ -2985,7 +2985,7 @@
                                     }
                                     break;
                                 case "delete":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will delete the Org and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will delete the Org and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         resourceOrg = servicesData.ResourceOrgs!.Find(x => x.Id == id)!;
@@ -3041,7 +3041,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Orgs Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will reset the current Orgs Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourceorgs.json"))
@@ -3059,7 +3059,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newOrgConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Orgs Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the current Orgs Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceOrgService.PostConfig(JsonSerializer.Deserialize<List<ResourceOrg>>(newOrgConfig, options)!);
@@ -3162,7 +3162,7 @@
                                     }
                                     break;
                                 case "delete":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will delete the Project/App/Service and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will delete the Project/App/Service and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         resourceProjAppSvc = servicesData.ResourceProjAppSvcs!.Find(x => x.Id == id)!;
@@ -3218,7 +3218,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Projects/Apps/Services Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will reset the current Projects/Apps/Services Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourceprojappsvcs.json"))
@@ -3236,7 +3236,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newProjAppSvcConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Projects/Apps/Services Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the current Projects/Apps/Services Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceProjAppSvcService.PostConfig(JsonSerializer.Deserialize<List<ResourceProjAppSvc>>(newProjAppSvcConfig, options)!);
@@ -3347,7 +3347,7 @@
                                     }
                                     break;
                                 case "refresh":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will refresh the current Types Configuration with the latest configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will refresh the current Types Configuration with the latest configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         serviceResponse = await ResourceTypeService.RefreshResourceTypes(refreshtypeshortnames);
@@ -3365,7 +3365,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Types Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will reset the current Types Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourcetypes.json"))
@@ -3383,7 +3383,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newTypeConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Types Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the current Types Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceTypeService.PostConfig(JsonSerializer.Deserialize<List<ResourceType>>(newTypeConfig, options)!);
@@ -3487,7 +3487,7 @@
                                     break;
                                 case "delete":
 
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will delete the Unit/Dept and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will delete the Unit/Dept and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         resourceUnitDept = servicesData.ResourceUnitDepts!.Find(x => x.Id == id)!;
@@ -3543,7 +3543,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Units/Depts Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will reset the current Units/Depts Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("resourceunitdepts.json"))
@@ -3561,7 +3561,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newUnitDeptConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Units/Depts Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the current Units/Depts Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             serviceResponse = await ResourceUnitDeptService.PostConfig(JsonSerializer.Deserialize<List<ResourceUnitDept>>(newUnitDeptConfig, options)!);
@@ -3683,7 +3683,7 @@
                                     }
                                     break;
                                 case "delete":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will delete the Custom Component and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will delete the Custom Component and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         customComponent = servicesData.CustomComponents!.Find(x => x.Id == id)!;
@@ -3750,7 +3750,7 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Custom Components Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will reset the current Custom Components Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
                                         if (FileSystemHelper.ResetConfiguration("customcomponents.json"))
@@ -3768,7 +3768,7 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newCustomComponentConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Custom Components Configuration and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the current Custom Components Configuration and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
                                             List<ResourceComponent> currentresourcecomponents = new();
@@ -3892,10 +3892,10 @@
                                     }
                                     break;
                                 case "reset":
-                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the current Global Configuration for all settings and cannot be undone!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will reset the current Global Configuration for all settings and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
-                                        bool confirmglobalreset = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">Every setting of the site will be reset if you continue! It is recommended you take a backup of the configuration before proceeding!</div><div class=\"mb-3\">Continue?</div>", "bg-danger", theme);
+                                        bool confirmglobalreset = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">Every setting of the site will be reset if you continue! It is recommended you take a backup of the configuration before proceeding!</div><div class=\"my-4\">Continue?</div>", "bg-danger", theme);
                                         if (confirmglobalreset)
                                         {
                                             if (ConfigurationHelper.ResetSiteConfiguration())
@@ -3914,10 +3914,10 @@
                                 case "update":
                                     if (GeneralHelper.IsNotNull(newGlobalConfig))
                                     {
-                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will update the current Global Configuration and cannot be undone!!</div><div class=\"mb-3\">Are you sure?</div>", "bg-danger", theme);
+                                        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the current Global Configuration and cannot be undone!!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
-                                            bool confirmglobalupdate = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">Every setting of the site will be updated if you continue! It is recommended you take a backup of the configuration before proceeding!</div><div class=\"mb-3\">Continue?</div>", "bg-danger", theme);
+                                            bool confirmglobalupdate = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">Every setting of the site will be updated if you continue! It is recommended you take a backup of the configuration before proceeding!</div><div class=\"my-4\">Continue?</div>", "bg-danger", theme);
                                             if (confirmglobalupdate)
                                             {
                                                 serviceResponse = await ImportExportService.PostConfig(JsonSerializer.Deserialize<ConfigurationData>(newGlobalConfig, options)!);
@@ -4128,7 +4128,7 @@
             refreshlocationshortnames = bool.Parse(e.Value.ToString()!);
             if (refreshlocationshortnames)
             {
-                ModalHelper.ShowInformationModal(Modal!, theme, "bg-danger", "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the Locations short names and details to match the latest Azure Naming Tool values and cannot be undone!</div>", "", admin);
+                ModalHelper.ShowInformationModal(Modal!, theme, "bg-danger", "ATTENTION", "<div class=\"my-4\">This will reset the Locations short names and details to match the latest Azure Naming Tool values and cannot be undone!</div>", "", admin);
             }
         }
     }
@@ -4140,7 +4140,7 @@
             refreshtypeshortnames = bool.Parse(e.Value.ToString()!);
             if (refreshtypeshortnames)
             {
-                ModalHelper.ShowInformationModal(Modal!, theme, "bg-danger", "ATTENTION", "<div class=\"mb-3 fw-bold\">WARNING!</div><div class=\"mb-3\">This will reset the Types short names and details to match the latest Azure Naming Tool values and cannot be undone!</div>", "", admin);
+                ModalHelper.ShowInformationModal(Modal!, theme, "bg-danger", "ATTENTION", "<div class=\"my-4\">This will reset the Types short names and details to match the latest Azure Naming Tool values and cannot be undone!</div>", "", admin);
             }
         }
     }
