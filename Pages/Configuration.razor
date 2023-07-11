@@ -3895,7 +3895,7 @@
                                     confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will reset the current Global Configuration for all settings and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
-                                        bool confirmglobalreset = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">Every setting of the site will be reset if you continue! It is recommended you take a backup of the configuration before proceeding!</div><div class=\"my-4\">Continue?</div>", "bg-danger", theme);
+                                        bool confirmglobalreset = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\"><strong>Every setting of the site will be reset if you continue!</strong></div><div class=\"my-4\">It is recommended you take a backup of the configuration before proceeding!</div><div class=\"my-4\">Continue?</div>", "bg-danger", theme);
                                         if (confirmglobalreset)
                                         {
                                             if (ConfigurationHelper.ResetSiteConfiguration())
@@ -3917,7 +3917,7 @@
                                         confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the current Global Configuration and cannot be undone!!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
-                                            bool confirmglobalupdate = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">Every setting of the site will be updated if you continue! It is recommended you take a backup of the configuration before proceeding!</div><div class=\"my-4\">Continue?</div>", "bg-danger", theme);
+                                            bool confirmglobalupdate = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\"><strong>Every setting of the site will be updated if you continue!</strong></div><div class=\"my-4\">It is recommended you take a backup of the configuration before proceeding!</div><div class=\"my-4\">Continue?</div>", "bg-danger", theme);
                                             if (confirmglobalupdate)
                                             {
                                                 serviceResponse = await ImportExportService.PostConfig(JsonSerializer.Deserialize<ConfigurationData>(newGlobalConfig, options)!);
