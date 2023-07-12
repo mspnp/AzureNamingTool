@@ -1,10 +1,8 @@
 ﻿using AzureNamingTool.Models;
 using AzureNamingTool.Services;
-using AzureNamingTool.Shared;
-using Blazored.Modal.Services;
+using AzureNamingTool.Shared.Modals;
 using Blazored.Modal;
-using AzureNamingTool.Pages;
-using System.Reflection;
+using Blazored.Modal.Services;
 
 namespace AzureNamingTool.Helpers
 {
