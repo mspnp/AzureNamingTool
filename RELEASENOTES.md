@@ -11,7 +11,6 @@
 - Migrated project to new GitHub repo
 - Updated project documantion/guides
 - Added ValidateName function to API
-- Reddesigned Generate page with new functionality
 - Added auto-complete to Generate page
 - Udpated Generate page messaging
 - Updated modal styling

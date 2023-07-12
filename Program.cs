@@ -12,7 +12,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddMvcCore().AddApiExplorer();
 builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor().AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000);
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddServerSideBlazor().AddCircuitOptions(x => x.DetailedErrors = true).AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000);
+}
+else
+{
+    builder.Services.AddServerSideBlazor().AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000);
+}
 builder.Services.AddBlazorDownloadFile();
 builder.Services.AddBlazoredToast();
 builder.Services.AddBlazoredModal();
@@ -46,7 +53,6 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddMemoryCache();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
