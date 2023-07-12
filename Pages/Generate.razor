@@ -126,7 +126,6 @@
                             <div class="mb-3">
                                 <input type="button" class="btn btn-success" title="Clear" value="Clear" @onclick="@(e => ResetForm(true))" />
                             </div>
-
                             @if (GeneralHelper.IsNotNull(currentResourceType))
                             {
                                 @if (!filteredscopes.Contains(currentResourceType.Scope))
@@ -210,7 +209,7 @@
                         </div>
                     </div>
 
-                    @if (!String.IsNullOrEmpty(selectedResourceType))
+                    @if ((!String.IsNullOrEmpty(selectedResourceType)) && (GeneralHelper.IsNotNull(currentResourceType)))
                     {
                         @if (componentsVisible == "collapse")
                         {
@@ -813,12 +812,9 @@
                 selectedResourceType = GeneralHelper.FormatResoureType(selectedResourceType);
 
                 // Find the selected resoruce type
-                //currentResourceType = servicesData.ResourceTypes.Find((t) => t.Id == Convert.ToInt32(selectedResourceType));
                 currentResourceType = servicesData.ResourceTypes!.Find((t) => t.Resource == selectedResourceType);
-
                 if (GeneralHelper.IsNotNull(currentResourceType))
                 {
-
                     // Set the optional components
                     selectedResourceTypeOptional = currentResourceType.Optional;
 
@@ -848,6 +844,10 @@
 
                     ValidateForm();
                 }
+            }
+            else
+            {
+                currentResourceType = null;
             }
         }
         catch (Exception ex)
