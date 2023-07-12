@@ -63,9 +63,9 @@ The following are important notes/aspects of the Azure Naming Tool:
 * The application contains a *repository* folder, which contains the default component configuration JSON files. When deployed, these files are then copied to the *settings* folder.
 * The Admin interface allows configurations to be "reset", if needed. This process copies the configuration from the *repository* folder to the *settings* folder.
 * The API requires an API Key for all executions. A default API Key (guid) will be generated on first launch. This value can be updated in the Admin section.
-* On the first launch, the application will prompt for the Admin password to be set.
+* On the first launch, the application will prompt for the Global Admin password to be set.
 
-  ![Admin Password Prompt](/wwwroot/Screenshots/AdminPasswordPrompt.png)
+  ![Global Admin Password Prompt](/wwwroot/Screenshots/AdminPasswordPrompt.png)
 
 ## Pages
 

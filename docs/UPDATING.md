@@ -55,7 +55,7 @@ To update the Azure Naming Tool running as an Azure Web App using the GitHub Act
 	4. Once the fork is updated, click on Actions
 	5. Confirm the Azure Naming Tool - Build and deploy to an Azure Web App workflow completed successfully
 	6. Once the process is complete, confirm the site is running
-	7. Login in using the existing Admin password
+	7. Login in using the existing Global Admin password
 	8. On the Configuration Page, confirm your existing configuration is applied
 
 If the settings are not applied, please see the **[Restore Settings](#restore-settings)** instructions. 
@@ -69,7 +69,7 @@ To update the Azure Naming Tool running as a container within a Docker environme
 	1. Complete the Backup Settings instructions above.
 	2. Complete the Run as a Docker container instructions to update your local codebase and Docker image
 	3. Once the process is complete, confirm the site is running
-	4. Login in using the existing Admin password
+	4. Login in using the existing Global Admin password
 	5. On the Configuration Page, confirm your existing configuration is applied
 		a. If the Docker volume was not modified, all the existing settings should be retained
 
@@ -85,7 +85,7 @@ To update the Azure Naming Tool running a stand-alone site:
 	3. Complete the Run as a Stand-Alone Site instructions to update your local codebase
 	4. Copy the /settings folder from your safe location back to the application root
 	5. Once the process is complete, confirm the site is running
-	6. Login in using the existing Admin password
+	6. Login in using the existing Global Admin password
 	7. On the Configuration Page, confirm your existing configuration is applied
 
 If the settings are not applied, please see the **[Restore Settings](#restore-settings)** instructions. 

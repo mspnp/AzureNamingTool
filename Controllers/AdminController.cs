@@ -25,10 +25,10 @@ namespace AzureNamingTool.Controllers
 
         // POST api/<AdminController>
         /// <summary>
-        /// This function will update the Admin Password. 
+        /// This function will update the Global Admin Password. 
         /// </summary>
-        /// <param name="password">string - New Admin Password</param>
-        /// <param name="adminpassword">string - Current Admin Password</param>
+        /// <param name="password">string - New Global Admin Password</param>
+        /// <param name="adminpassword">string - Current Global Admin Password</param>
         /// <returns>string - Successful update</returns>
         [HttpPost]
         [Route("[action]")]
@@ -66,7 +66,7 @@ namespace AzureNamingTool.Controllers
         /// This function will update the API Key. 
         /// </summary>
         /// <param name="apikey">string - New API Key</param>
-        /// <param name="adminpassword">string - Current Admin Password</param>
+        /// <param name="adminpassword">string - Current Global Admin Password</param>
         /// <returns>dttring - Successful update</returns>
         [HttpPost]
         [Route("[action]")]
@@ -103,7 +103,7 @@ namespace AzureNamingTool.Controllers
         /// <summary>
         /// This function will generate a new API Key. 
         /// </summary>
-        /// <param name="adminpassword">string - Current Admin Password</param>
+        /// <param name="adminpassword">string - Current Global Admin Password</param>
         /// <returns>string - Successful update / Generated API Key</returns>
 
         [HttpPost]

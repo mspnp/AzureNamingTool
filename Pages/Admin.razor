@@ -518,7 +518,7 @@
                 confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the Global Admin Password.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                 if (confirm)
                 {
-                    // Set the new admin password
+                    // Set the new Global admin password
                     serviceResponse = await AdminService.UpdatePassword(newpassword);
                     if (serviceResponse.Success)
                     {
