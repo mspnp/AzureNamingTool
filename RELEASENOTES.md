@@ -9,16 +9,16 @@
 
 ### Features
 - Migrated project to new GitHub repo
-- Updated project documantion/guides
+- Updated project documentation/guides
 - Added ValidateName function to API
 - Added auto-complete to Generate page
-- Udpated Generate page messaging
+- Updated Generate page messaging
 - Updated modal styling
 - Updated Release Notes
 
 ### Bug fixes
-- Refactored code for performance/matinaiability
-- Resolved VS complilation warnings
+- Refactored code for performance/maintainability
+- Resolved VS compilation warnings
 - Updated Generated Name Log export to properly display components in CSV file
 - Updated Instructions to properly display when using Dark mode
 - Updated Unit/Dept Add order process to properly insert new item
