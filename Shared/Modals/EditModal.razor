@@ -13,7 +13,7 @@
     <div class="modal-dialog" style="z-index: 1050">
         <!-- Pop it above the backdrop -->
         <div class="modal-content @theme.ThemeStyle">
-            <div class="modal-header bg-navcolor text-white">
+            <div class="modal-header @headerstyle text-white">
                 <h3 class="modal-title">@title</h3>
             </div>
             <div class="modal-body">
@@ -37,16 +37,16 @@
                                 {
                                     @if (type == "ResourceComponent")
                                     {
-                                        <input title="Name" value="@itemDisplayName" disabled type="text" class="form-control @theme.ThemeStyle" id="name" @onchange="@((ui) => { itemName = (string)ui.Value;})" />
+                                        <input title="Name" value="@itemDisplayName" disabled type="text" class="form-control @theme.ThemeStyle" id="name" @onchange="@((ui) => { itemName = (string)ui.Value!;})" />
                                     }
                                     else
                                     {
-                                        <input title="Name" value="@itemName" disabled type="text" class="form-control @theme.ThemeStyle" id="name" @onchange="@((ui) => { itemName = (string)ui.Value;})" />
+                                        <input title="Name" value="@itemName" disabled type="text" class="form-control @theme.ThemeStyle" id="name" @onchange="@((ui) => { itemName = (string)ui.Value!;})" />
                                     }
                                 }
                                 else
                                 {
-                                    <input title="Name" value="@itemName" type="text" class="form-control @theme.ThemeStyle" id="name" @onchange="@((ui) => { itemName = (string)ui.Value;})" />
+                                    <input title="Name" value="@itemName" type="text" class="form-control @theme.ThemeStyle" id="name" @onchange="@((ui) => { itemName = (string)ui.Value!;})" />
                                 }
                             </div>
                         </div>
@@ -57,7 +57,7 @@
                                     Short Name
                                 </div>
                                 <div>
-                                    <input title="Short Name" value="@itemShortName" type="text" class="form-control @theme.ThemeStyle" id="shortname" @onchange="@((ui) => { itemShortName = (string)ui.Value;})" />
+                                    <input title="Short Name" value="@itemShortName" type="text" class="form-control @theme.ThemeStyle" id="shortname" @onchange="@((ui) => { itemShortName = (string)ui.Value!;})" />
                                 </div>
                             </div>
                         }
@@ -72,7 +72,7 @@
                                         These settings are configured by the Azure Naming Tool team and match the Azure portal validation requirements. Overriding these values may result in invalid names for a resource.
                                     </div>
                                     <div>
-                                        <button type="button" class="close btn btn-light" data-dismiss="alert" aria-label="Dismiss">
+                                        <button type="button" class="close btn btn-light" data-bs-dismiss="alert" aria-label="Dismiss">
                                             <span aria-hidden="true">Dismiss</span>
                                         </button>
                                     </div>
@@ -83,7 +83,7 @@
                                     Minimum Length
                                 </div>
                                 <div>
-                                    <input title="Minimum Length" value="@itemMinLength" type="text" class="form-control @theme.ThemeStyle" id="minlength" @onchange="@((ui) => { itemMinLength = (string)ui.Value;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+                                    <input title="Minimum Length" value="@itemMinLength" type="text" class="form-control @theme.ThemeStyle" id="minlength" @onchange="@((ui) => { itemMinLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -91,7 +91,7 @@
                                     Maximum Length
                                 </div>
                                 <div>
-                                    <input title="Maximum Length" value="@itemMaxLength" type="text" class="form-control @theme.ThemeStyle" id="maxlength" @onchange="@((ui) => { itemMaxLength = (string)ui.Value;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+                                    <input title="Maximum Length" value="@itemMaxLength" type="text" class="form-control @theme.ThemeStyle" id="maxlength" @onchange="@((ui) => { itemMaxLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
                                 </div>
                             </div>
                         }
@@ -106,7 +106,7 @@
                                         These settings are disabled by default. You can allow the editing of these values by enabling the "Resource Type Editing" setting in the Admin section.
                                     </div>
                                     <div>
-                                        <button type="button" class="close btn btn-light" data-dismiss="alert" aria-label="Dismiss">
+                                        <button type="button" class="close btn btn-light" data-bs-dismiss="alert" aria-label="Dismiss">
                                             <span aria-hidden="true">Dismiss</span>
                                         </button>
                                     </div>
@@ -116,7 +116,7 @@
                                         Minimum Length
                                     </div>
                                     <div>
-                                        <input title="Minimum Length" value="@itemMinLength" type="text" disabled class="form-control @theme.ThemeStyle" id="minlength" @onchange="@((ui) => { itemMinLength = (string)ui.Value;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+                                        <input title="Minimum Length" value="@itemMinLength" type="text" disabled class="form-control @theme.ThemeStyle" id="minlength" @onchange="@((ui) => { itemMinLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
                                     </div>
                                 </div>
                                 <div class="mb-3">
@@ -124,7 +124,7 @@
                                         Maximum Length
                                     </div>
                                     <div>
-                                        <input title="Maximum Length" value="@itemMaxLength" type="text" disabled class="form-control @theme.ThemeStyle" id="maxlength" @onchange="@((ui) => { itemMaxLength = (string)ui.Value;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+                                        <input title="Maximum Length" value="@itemMaxLength" type="text" disabled class="form-control @theme.ThemeStyle" id="maxlength" @onchange="@((ui) => { itemMaxLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
                                     </div>
                                 </div>
                             }
@@ -207,7 +207,7 @@
                         </div>
                     </div>
                 }
-                @if ((type == "ResourceType") && (resourceComponents != null))
+                @if ((type == "ResourceType") && (GeneralHelper.IsNotNull(resourceComponents)))
                 {
                     @if (bool.Parse(ConfigurationHelper.GetAppSetting("DevMode")))
                     {
@@ -216,7 +216,7 @@
                                 Regex
                             </div>
                             <div class="card card-body @theme.ThemeStyle">
-                                <input title="RegEx" value="@itemRegEx" type="text" class="form-control @theme.ThemeStyle" id="shortname" @onchange="@((ui) => { itemRegEx = (string)ui.Value;})" />
+                                <input title="RegEx" value="@itemRegEx" type="text" class="form-control @theme.ThemeStyle" id="shortname" @onchange="@((ui) => { itemRegEx = (string)ui.Value!;})" />
                             </div>
                         </div>
                     }
@@ -309,6 +309,8 @@
     [Parameter] public string type { get; set; } = String.Empty;
     [Parameter] public bool protectedName { get; set; } = false;
     [Parameter] public string parentcomponent { get; set; } = String.Empty;
+    [Parameter] public string headerstyle { get; set; } = String.Empty;
+    [Parameter] public bool admin { get; set; } = false;
     [Parameter] public ServicesData servicesData { get; set; } = new();
 
     private ServiceResponse serviceResponse = new();
@@ -330,10 +332,14 @@
 
     protected override async void OnInitialized()
     {
+        if (GeneralHelper.IsNotNull(servicesData))
+        {
+            servicesData = await ServicesHelper.LoadServicesData(servicesData, true);
+        }
         switch (type)
         {
             case "ResourceComponent":
-                ResourceComponent resourceComponent = servicesData.ResourceComponents.Find(x => x.Id == id);
+                ResourceComponent resourceComponent = servicesData.ResourceComponents!.Find(x => x.Id == id)!;
                 itemName = resourceComponent.Name;
                 itemDisplayName = resourceComponent.DisplayName;
                 itemMinLength = resourceComponent.MinLength;
@@ -342,28 +348,28 @@
                 itemMaxLengthOriginal = itemMaxLength;
                 break;
             case "ResourceEnvironment":
-                ResourceEnvironment resourceEnvironment = servicesData.ResourceEnvironments.Find(x => x.Id == id);
+                ResourceEnvironment resourceEnvironment = servicesData.ResourceEnvironments!.Find(x => x.Id == id)!;
                 itemName = resourceEnvironment.Name;
                 itemShortName = resourceEnvironment.ShortName;
                 break;
             case "ResourceLocation":
-                ResourceLocation resourceLocation = servicesData.ResourceLocations.Find(x => x.Id == id);
+                ResourceLocation resourceLocation = servicesData.ResourceLocations!.Find(x => x.Id == id)!;
                 itemName = resourceLocation.Name;
                 itemShortName = resourceLocation.ShortName;
                 break;
             case "ResourceOrg":
-                ResourceOrg resourceOrg = servicesData.ResourceOrgs.Find(x => x.Id == id);
+                ResourceOrg resourceOrg = servicesData.ResourceOrgs!.Find(x => x.Id == id)!;
                 itemName = resourceOrg.Name;
                 itemShortName = resourceOrg.ShortName;
                 break;
             case "ResourceProjAppSvc":
-                ResourceProjAppSvc resourceProjAppSvc = servicesData.ResourceProjAppSvcs.Find(x => x.Id == id);
+                ResourceProjAppSvc resourceProjAppSvc = servicesData.ResourceProjAppSvcs!.Find(x => x.Id == id)!;
                 itemName = resourceProjAppSvc.Name;
                 itemShortName = resourceProjAppSvc.ShortName;
                 break;
             case "ResourceType":
                 serviceResponse = await ResourceTypeService.GetItem(id);
-                ResourceType resourceType = servicesData.ResourceTypes.Find(x => x.Id == id);
+                ResourceType resourceType = servicesData.ResourceTypes!.Find(x => x.Id == id)!;
                 itemName = resourceType.Resource;
                 itemShortName = resourceType.ShortName;
                 optional = resourceType.Optional;
@@ -373,20 +379,20 @@
                 itemMinLengthOriginal = itemMinLength;
                 itemMaxLength = resourceType.LengthMax;
                 itemMaxLengthOriginal = itemMaxLength;
-                resourceComponents = servicesData.ResourceComponents.OrderBy(x => x.Name).ToList();
+                resourceComponents = servicesData.ResourceComponents!.OrderBy(x => x.Name).ToList();
                 break;
             case "ResourceUnitDept":
-                ResourceUnitDept resourceUnitDept = servicesData.ResourceUnitDepts.Find(x => x.Id == id);
+                ResourceUnitDept resourceUnitDept = servicesData.ResourceUnitDepts!.Find(x => x.Id == id)!;
                 itemName = resourceUnitDept.Name;
                 itemShortName = resourceUnitDept.ShortName;
                 break;
             case "ResourceFunction":
-                ResourceFunction resourceFunction = servicesData.ResourceFunctions.Find(x => x.Id == id);
+                ResourceFunction resourceFunction = servicesData.ResourceFunctions!.Find(x => x.Id == id)!;
                 itemName = resourceFunction.Name;
                 itemShortName = resourceFunction.ShortName;
                 break;
             case "CustomComponent":
-                CustomComponent customComponent = servicesData.CustomComponents.Find(x => x.Id == id);
+                CustomComponent customComponent = servicesData.CustomComponents!.Find(x => x.Id == id)!;
                 itemName = customComponent.Name;
                 itemShortName = customComponent.ShortName;
                 break;
@@ -414,17 +420,24 @@
                             toastService.ShowInfo("You have modified the min/max length. You will need to verify the existing options meet the new length requirements!");
                         }
 
-                        ResourceComponent resourceComponent = servicesData.ResourceComponents.Find(x => x.Id == id);
+                        ResourceComponent resourceComponent = servicesData.ResourceComponents!.Find(x => x.Id == id)!;
 
                         // Update any references in the custom components configuration to be the new custom component type name
-                        var customcomponents = (List<CustomComponent>)servicesData.CustomComponents.FindAll(x => GeneralHelper.NormalizeName(x.ParentComponent, true) == GeneralHelper.NormalizeName(resourceComponent.Name, true));
+                        var customcomponents = (List<CustomComponent>)servicesData.CustomComponents!.FindAll(x => GeneralHelper.NormalizeName(x.ParentComponent, true) == GeneralHelper.NormalizeName(resourceComponent.Name, true));
                         foreach (var customcomponent in customcomponents)
                         {
                             customcomponent.ParentComponent = GeneralHelper.NormalizeName(itemName, true);
                             serviceResponse = await CustomComponentService.PostItem(customcomponent);
                         }
                         resourceComponent.Name = itemName;
-                        resourceComponent.DisplayName = itemName;
+                        if (resourceComponent.IsCustom)
+                        {
+                            resourceComponent.DisplayName = itemName;
+                        }
+                        else
+                        {
+                            resourceComponent.DisplayName = itemDisplayName;
+                        }
                         resourceComponent.MinLength = itemMinLength;
                         resourceComponent.MaxLength = itemMaxLength;
                         serviceResponse = await ResourceComponentService.PostItem(resourceComponent);
@@ -449,30 +462,30 @@
                         switch (type)
                         {
                             case "ResourceEnvironment":
-                                ResourceEnvironment resourceEnvironment = servicesData.ResourceEnvironments.Find(x => x.Id == id);
+                                ResourceEnvironment resourceEnvironment = servicesData.ResourceEnvironments!.Find(x => x.Id == id)!;
                                 resourceEnvironment.Name = itemName;
                                 resourceEnvironment.ShortName = itemShortName;
                                 serviceResponse = await ResourceEnvironmentService.PostItem(resourceEnvironment);
                                 break;
                             case "ResourceLocation":
-                                ResourceLocation resourceLocation = servicesData.ResourceLocations.Find(x => x.Id == id);
+                                ResourceLocation resourceLocation = servicesData.ResourceLocations!.Find(x => x.Id == id)!;
                                 resourceLocation.ShortName = itemShortName;
                                 serviceResponse = await ResourceLocationService.PostItem(resourceLocation);
                                 break;
                             case "ResourceOrg":
-                                ResourceOrg resourceOrg = servicesData.ResourceOrgs.Find(x => x.Id == id);
+                                ResourceOrg resourceOrg = servicesData.ResourceOrgs!.Find(x => x.Id == id)!;
                                 resourceOrg.Name = itemName;
                                 resourceOrg.ShortName = itemShortName;
                                 serviceResponse = await ResourceOrgService.PostItem(resourceOrg);
                                 break;
                             case "ResourceProjAppSvc":
-                                ResourceProjAppSvc resourceProjAppSvc = servicesData.ResourceProjAppSvcs.Find(x => x.Id == id);
+                                ResourceProjAppSvc resourceProjAppSvc = servicesData.ResourceProjAppSvcs!.Find(x => x.Id == id)!;
                                 resourceProjAppSvc.Name = itemName;
                                 resourceProjAppSvc.ShortName = itemShortName;
                                 serviceResponse = await ResourceProjAppSvcService.PostItem(resourceProjAppSvc);
                                 break;
                             case "ResourceType":
-                                ResourceType resourceType = servicesData.ResourceTypes.Find(x => x.Id == id);
+                                ResourceType resourceType = servicesData.ResourceTypes!.Find(x => x.Id == id)!;
                                 resourceType.ShortName = itemShortName;
                                 resourceType.Optional = "";
                                 resourceType.Exclude = "";
@@ -530,19 +543,19 @@
                                 serviceResponse = await ResourceTypeService.PostItem(resourceType);
                                 break;
                             case "ResourceUnitDept":
-                                ResourceUnitDept resourceUnitDept = servicesData.ResourceUnitDepts.Find(x => x.Id == id);
+                                ResourceUnitDept resourceUnitDept = servicesData.ResourceUnitDepts!.Find(x => x.Id == id)!;
                                 resourceUnitDept.Name = itemName;
                                 resourceUnitDept.ShortName = itemShortName;
                                 serviceResponse = await ResourceUnitDeptService.PostItem(resourceUnitDept);
                                 break;
                             case "ResourceFunction":
-                                ResourceFunction resourceFunction = servicesData.ResourceFunctions.Find(x => x.Id == id);
+                                ResourceFunction resourceFunction = servicesData.ResourceFunctions!.Find(x => x.Id == id)!;
                                 resourceFunction.Name = itemName;
                                 resourceFunction.ShortName = itemShortName;
                                 serviceResponse = await ResourceFunctionService.PostItem(resourceFunction);
                                 break;
                             case "CustomComponent":
-                                CustomComponent customComponent = servicesData.CustomComponents.Find(x => x.Id == id);
+                                CustomComponent customComponent = servicesData.CustomComponents!.Find(x => x.Id == id)!;
                                 customComponent.Name = itemName;
                                 customComponent.ShortName = itemShortName;
                                 serviceResponse = await CustomComponentService.PostItem(customComponent);
@@ -585,6 +598,10 @@
     {
         try
         {
+            if (!GeneralHelper.IsNotNull(servicesData))
+            {
+                servicesData = await ServicesHelper.LoadServicesData(servicesData, true);
+            }
             bool confirm = false;
             confirm = await JsRuntime.InvokeAsync<bool>("confirm", "This will update all resource types! Are you sure?");
             if (confirm)
@@ -597,64 +614,68 @@
                         UseCustomLayout = true
                     };
 
-                var workingmodal = Modal.Show<WorkingModal>("Working", workingmodaloptions);
-
-                try
+                if (GeneralHelper.IsNotNull(Modal))
                 {
-                    ServiceResponse serviceResponse;
-                    switch (type)
+                    var workingmodal = Modal.Show<WorkingModal>("Working", workingmodaloptions);
+
+                    try
                     {
-                        case "ResourceComponent":
-                            ResourceComponent resourceComponent = servicesData.ResourceComponents.Find(x => x.Id == id);
-                            int componentid = (int)resourceComponent.Id;
-                            responseMessage.Message = resourceComponent.Name;
-                            List<string> currentvalues = new();
-                            switch (action)
-                            {
-                                case "optional-add":
-                                    serviceResponse = await ResourceTypeService.UpdateTypeComponents("optional-add", componentid);
-                                    if (serviceResponse.Success)
+                        ServiceResponse serviceResponse;
+                        switch (type)
+                        {
+                            case "ResourceComponent":
+                                ResourceComponent resourceComponent = servicesData.ResourceComponents!.Find(x => x.Id == id)!;
+                                if (GeneralHelper.IsNotNull(resourceComponent))
+                                {
+                                    int componentid = (int)resourceComponent.Id;
+                                    responseMessage.Message = resourceComponent.Name;
+                                    List<string> currentvalues = new();
+                                    switch (action)
                                     {
-                                        responseMessage.Message += " ADDED as OPTIONAL!";
+                                        case "optional-add":
+                                            serviceResponse = await ResourceTypeService.UpdateTypeComponents("optional-add", componentid);
+                                            if (serviceResponse.Success)
+                                            {
+                                                responseMessage.Message += " ADDED as OPTIONAL!";
+                                            }
+                                            break;
+                                        case "optional-remove":
+                                            serviceResponse = await ResourceTypeService.UpdateTypeComponents("optional-remove", componentid);
+                                            if (serviceResponse.Success)
+                                            {
+                                                responseMessage.Message += " REMOVED from OPTIONAL!";
+                                            }
+                                            break;
+                                        case "exclude-add":
+                                            serviceResponse = await ResourceTypeService.UpdateTypeComponents("exclude-add", componentid);
+                                            if (serviceResponse.Success)
+                                            {
+                                                responseMessage.Message += " ADDED as EXCLUDE!";
+                                            }
+                                            break;
+                                        case "exclude-remove":
+                                            serviceResponse = await ResourceTypeService.UpdateTypeComponents("exclude-remove", componentid);
+                                            if (serviceResponse.Success)
+                                            {
+                                                responseMessage.Message += " REMOVED from EXCLUDE!";
+                                            }
+                                            break;
                                     }
-                                    break;
-                                case "optional-remove":
-                                    serviceResponse = await ResourceTypeService.UpdateTypeComponents("optional-remove", componentid);
-                                    if (serviceResponse.Success)
-                                    {
-                                        responseMessage.Message += " REMOVED from OPTIONAL!";
-                                    }
-                                    break;
-                                case "exclude-add":
-                                    serviceResponse = await ResourceTypeService.UpdateTypeComponents("exclude-add", componentid);
-                                    if (serviceResponse.Success)
-                                    {
-                                        responseMessage.Message += " ADDED as EXCLUDE!";
-                                    }
-                                    break;
-                                case "exclude-remove":
-                                    serviceResponse = await ResourceTypeService.UpdateTypeComponents("exclude-remove", componentid);
-                                    if (serviceResponse.Success)
-                                    {
-                                        responseMessage.Message += " REMOVED from EXCLUDE!";
-                                    }
-                                    break;
-                            }
-                            break;
+                                }
+                                break;
+                        }
+                        StateHasChanged();
                     }
-
-                    StateHasChanged();
+                    catch (Exception ex)
+                    {
+                        AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                        responseMessage.Type = MessageTypesEnum.ERROR;
+                        responseMessage.Message = "There was a problem with the request.";
+                    }
+                    workingmodal.Close();
                 }
-                catch (Exception ex)
-                {
-                    AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
-                    responseMessage.Type = MessageTypesEnum.ERROR;
-                    responseMessage.Message = "There was a problem with the request.";
-                }
 
-                workingmodal.Close();
-
-                if (responseMessage.Message != null)
+                if (GeneralHelper.IsNotNull(responseMessage.Message))
                 {
                     responseMessage.Message = "(" + GeneralHelper.NormalizeName(type, false) + ") " + itemName + " " + responseMessage.Message;
                     switch (responseMessage.Type)

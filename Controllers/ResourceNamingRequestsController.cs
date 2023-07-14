@@ -86,22 +86,29 @@ namespace AzureNamingTool.Controllers
         /// <summary>
         /// This function will validate the name for the specified resource type and delimiter.  
         /// </summary>
-        /// <param name="validatedNameRequest">ValidatedNameRequest (json) - Validated Name Request data</param>
-        /// <returns>ValidatedNameResponse - Name validation response</returns>
+        /// <param name="validateNameRequest">ValidateNameRequest (json) - Validate Name Request data</param>
+        /// <returns>ValidateNameResponse - Name validation response</returns>
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> ValidateName([FromBody] ValidatedNameRequest validatedNameRequest)
+        public async Task<IActionResult> ValidateName([FromBody] ValidateNameRequest validateNameRequest)
         {
             try
             {
                 ServiceResponse serviceResponse = new();
                 // Get the current delimiter
                 serviceResponse = await ResourceDelimiterService.GetCurrentItem();
-                serviceResponse = await ResourceTypeService.ValidateResourceTypeName(validatedNameRequest);
+                serviceResponse = await ResourceTypeService.ValidateResourceTypeName(validateNameRequest);
                 if (serviceResponse.Success)
                 {
-                    ValidatedNameResponse validatedNameResponse = (ValidatedNameResponse)serviceResponse.ResponseObject;
-                    return Ok(validatedNameResponse);
+                    if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                    {
+                        ValidateNameResponse validateNameResponse = (ValidateNameResponse)serviceResponse.ResponseObject!;
+                        return Ok(validateNameResponse);
+                    }
+                    else
+                    {
+                        return BadRequest("There was a problem validating the name.");
+                    }
                 }
                 else
                 {

@@ -14,14 +14,16 @@ namespace AzureNamingTool.Helpers
             List<GeneratedName> lstGeneratedNames = new();
             try
             {
-                string data = await FileSystemHelper.ReadFile("generatednames.json");
-                var items = new List<GeneratedName>();
-                var options = new JsonSerializerOptions
+                string items = await FileSystemHelper.ReadFile("generatednames.json");
+                if (GeneralHelper.IsNotNull(items))
                 {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    PropertyNameCaseInsensitive = true
-                };
-                lstGeneratedNames = JsonSerializer.Deserialize<List<GeneratedName>>(data, options).OrderByDescending(x => x.CreatedOn).ToList();
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        PropertyNameCaseInsensitive = true
+                    };
+                    lstGeneratedNames = JsonSerializer.Deserialize<List<GeneratedName>>(items, options)!.OrderByDescending(x => x.CreatedOn).ToList();
+                }
             }
             catch (Exception ex)
             {
@@ -89,13 +91,16 @@ namespace AzureNamingTool.Helpers
             try
             {
                 string data = await FileSystemHelper.ReadFile("adminlogmessages.json");
-                var items = new List<AdminLogMessage>();
-                var options = new JsonSerializerOptions
+                if (GeneralHelper.IsNotNull(data))
                 {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    PropertyNameCaseInsensitive = true
-                };
-                lstAdminLogMessages = JsonSerializer.Deserialize<List<AdminLogMessage>>(data, options).OrderByDescending(x => x.CreatedOn).ToList();
+                    var items = new List<AdminLogMessage>();
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        PropertyNameCaseInsensitive = true
+                    };
+                    lstAdminLogMessages = JsonSerializer.Deserialize<List<AdminLogMessage>>(data, options)!.OrderByDescending(x => x.CreatedOn).ToList();
+                }
             }
             catch (Exception ex)
             {

@@ -11,14 +11,14 @@
     <div class="modal-dialog" style="z-index: 1050">
         <!-- Pop it above the backdrop -->
         <div class="modal-content @theme.ThemeStyle">
-            <div class="modal-header bg-navcolor text-white">
+            <div class="modal-header @headerstyle text-white">
                 <h3 class="modal-title">@title</h3>
             </div>
             <div class="modal-body">
                 @((MarkupString)message)
                 <div class="form-group mb-3">
                     <label for="name" style="font-weight:bold;">Name</label>
-                    <input title="Name" value="@itemName" type="text" class="form-control @theme.ThemeStyle" id="name" @onchange="@((ui) => { itemName = (string)ui.Value;})" />
+                    <input title="Name" value="@itemName" type="text" class="form-control @theme.ThemeStyle" id="name" @onchange="@((ui) => { itemName = (string)ui.Value!;})" />
                 </div>
                 @switch (type)
                 {
@@ -38,7 +38,7 @@
                                     Minimum Length
                                 </div>
                                 <div>
-                                    <input title="Minimum Length" value="@itemMinLength" type="text" class="form-control @theme.ThemeStyle" id="minlength" @onchange="@((ui) => { itemMinLength = (string)ui.Value;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+                                    <input title="Minimum Length" value="@itemMinLength" type="text" class="form-control @theme.ThemeStyle" id="minlength" @onchange="@((ui) => { itemMinLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -46,7 +46,7 @@
                                     Maximum Length
                                 </div>
                                 <div>
-                                    <input title="Maximum Length" value="@itemMaxLength" type="text" class="form-control @theme.ThemeStyle" id="maxlength" @onchange="@((ui) => { itemMaxLength = (string)ui.Value;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+                                    <input title="Maximum Length" value="@itemMaxLength" type="text" class="form-control @theme.ThemeStyle" id="maxlength" @onchange="@((ui) => { itemMaxLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
                                 </div>
                             </div>
                         </div>
@@ -56,7 +56,7 @@
                     default:
                         <div class="form-group mb-3">
                             <label for="shortName" style="font-weight:bold;">Short Name</label>
-                            <input title="Short Name" value="@itemShortName" type="text" class="form-control @theme.ThemeStyle" id="shortname" @onchange="@((ui) => { itemShortName = (string)ui.Value;})" />
+                            <input title="Short Name" value="@itemShortName" type="text" class="form-control @theme.ThemeStyle" id="shortname" @onchange="@((ui) => { itemShortName = (string)ui.Value!;})" />
                         </div>
                         break;
                 }
@@ -80,6 +80,8 @@
     [Parameter] public string message { get; set; } = String.Empty;
     [Parameter] public string type { get; set; } = String.Empty;
     [Parameter] public string parentcomponent { get; set; } = String.Empty;
+    [Parameter] public string headerstyle { get; set; } = String.Empty;
+    [Parameter] public bool admin { get; set; } = false;
     [Parameter] public ServicesData servicesData { get; set; } = new();
 
 
@@ -113,6 +115,7 @@
                     else
                     {
                         // Make sure the name is unique
+                        ArgumentNullException.ThrowIfNull(servicesData.ResourceComponents);
                         List<ResourceComponent> resourceComponents = servicesData.ResourceComponents;
                         if (resourceComponents.Where(x => GeneralHelper.NormalizeName(x.Name, true) == GeneralHelper.NormalizeName(itemName, true)).Count() > 0)
                         {
@@ -148,6 +151,7 @@
                 {
                     // Check if the item already exists
                     serviceResponse = await AdminUserService.GetItems();
+                    ArgumentNullException.ThrowIfNull(servicesData.AdminUsers);
                     List<AdminUser> adminUsers = servicesData.AdminUsers;
                     if (adminUsers.Any(x => x.Name == itemName))
                     {
@@ -166,7 +170,7 @@
 
                 break;
             default:
-                if ((itemName != null) && (itemShortName != null))
+                if ((GeneralHelper.IsNotNull(itemName)) && (GeneralHelper.IsNotNull(itemShortName)))
                 {
                     if ((!String.IsNullOrEmpty(itemName)) && (!String.IsNullOrEmpty(itemShortName)))
                     {
@@ -178,6 +182,7 @@
                             {
                                 case "ResourceEnvironment":
                                     // Check if the item already exists
+                                    ArgumentNullException.ThrowIfNull(servicesData.ResourceEnvironments);
                                     List<ResourceEnvironment> resourceEnvironments = servicesData.ResourceEnvironments;
                                     if (resourceEnvironments.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
                                     {
@@ -198,6 +203,7 @@
                                 case "ResourceLocation":
                                     // Check if the item already exists
                                     serviceResponse = await ResourceLocationService.GetItems();
+                                    ArgumentNullException.ThrowIfNull(servicesData.ResourceLocations);
                                     List<ResourceLocation> resourceLocations = servicesData.ResourceLocations;
                                     if (resourceLocations.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
                                     {
@@ -218,6 +224,7 @@
                                 case "ResourceOrg":
                                     // Check if the item already exists
                                     serviceResponse = await ResourceOrgService.GetItems();
+                                    ArgumentNullException.ThrowIfNull(servicesData.ResourceOrgs);
                                     List<ResourceOrg> resourceOrgs = servicesData.ResourceOrgs;
                                     if (resourceOrgs.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
                                     {
@@ -238,6 +245,7 @@
                                 case "ResourceProjAppSvc":
                                     // Check if the item already exists
                                     serviceResponse = await ResourceProjAppSvcService.GetItems();
+                                    ArgumentNullException.ThrowIfNull(servicesData.ResourceProjAppSvcs);
                                     List<ResourceProjAppSvc> resourceProjAppSvcs = servicesData.ResourceProjAppSvcs;
                                     if (resourceProjAppSvcs.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
                                     {
@@ -258,6 +266,7 @@
                                 case "ResourceUnitDept":
                                     // Check if the item already exists
                                     serviceResponse = await ResourceUnitDeptService.GetItems();
+                                    ArgumentNullException.ThrowIfNull(servicesData.ResourceUnitDepts);
                                     List<ResourceUnitDept> resourceUnitDepts = servicesData.ResourceUnitDepts;
                                     if (resourceUnitDepts.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
                                     {
@@ -278,6 +287,7 @@
                                 case "ResourceFunction":
                                     // Check if the item already exists
                                     serviceResponse = await ResourceFunctionService.GetItems();
+                                    ArgumentNullException.ThrowIfNull(servicesData.ResourceFunctions);
                                     List<ResourceFunction> resourceFunctions = servicesData.ResourceFunctions;
                                     if (resourceFunctions.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
                                     {
@@ -298,6 +308,7 @@
                                 case "CustomComponent":
                                     // Check if the item already exists
                                     serviceResponse = await CustomComponentService.GetItems();
+                                    ArgumentNullException.ThrowIfNull(servicesData.CustomComponents);
                                     List<CustomComponent> customComponents = servicesData.CustomComponents;
                                     if (customComponents.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
                                     {

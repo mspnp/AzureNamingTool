@@ -16,7 +16,10 @@
             try
             {
                 var targetUrl = "//platform.twitter.com/widgets.js";
-                await JsRuntime.InvokeVoidAsync("loadJs", targetUrl);
+                if (GeneralHelper.IsNotNull(JsRuntime))
+                {
+                    await JsRuntime.InvokeVoidAsync("loadJs", targetUrl);
+                }
             }
             catch (Exception ex)
             {

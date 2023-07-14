@@ -20,12 +20,12 @@ else
         <h5 class="card-header bg-default text-dark">
             Base Configuration
         </h5>
-        <div class="card card-body @theme.ThemeStyle">
+        <div class="card card-body @theme!.ThemeStyle">
             <p>
                 This section provides the ability to configure the base components required for resource name generation.
             </p>
             <div class="card">
-                <div class="card-body">
+                <div class="card-body @theme!.ThemeStyle">
                     <h5>
                         Components
                     </h5>
@@ -42,7 +42,7 @@ else
                 </div>
             </div>
             <div class="card">
-                <div class="card-body">
+                <div class="card-body @theme!.ThemeStyle">
                     <h5>
                         Delimiters
                     </h5>
@@ -63,7 +63,7 @@ else
                 Note: The Resource Type and Location components allow limited configuration to ensure compatibility with Azure.
             </p>
             <div class="card">
-                <div class="card-body">
+                <div class="card-body @theme!.ThemeStyle">
                     <h5>
                         Export
                     </h5>
@@ -73,7 +73,7 @@ else
                 </div>
             </div>
             <div class="card">
-                <div class="card-body">
+                <div class="card-body @theme!.ThemeStyle">
                     <h5>
                         Refresh
                     </h5>
@@ -83,7 +83,7 @@ else
                 </div>
             </div>
             <div class="card">
-                <div class="card-body">
+                <div class="card-body @theme!.ThemeStyle">
                     <h5>
                         Reset
                     </h5>
@@ -91,7 +91,7 @@ else
                 </div>
             </div>
             <div class="card">
-                <div class="card-body">
+                <div class="card-body @theme!.ThemeStyle">
                     <h5>
                         Import
                     </h5>
@@ -109,7 +109,7 @@ else
                 This section provides functionality to modify the global configuration for the tool. Administrators can export the current configuration (combining all component configuration files into a JSON file), or import a new configuration. This feature is used for backup/restore of the installation configuration.
             </p>
             <div class="card">
-                <div class="card-body">
+                <div class="card-body @theme!.ThemeStyle">
                     <h5>
                         Global Configuration
                     </h5>
@@ -135,27 +135,28 @@ else
         <h5 class="card-header bg-default text-dark">
             Base Configuration
         </h5>
-        <div class="card card-body @theme.ThemeStyle">
+        <div class="card card-body @theme!.ThemeStyle">
             <p>
                 This section displays the current required/optional base components for resource name generation.
             </p>
-                        <div class="card">
-                <div class="card-body">
+            <div class="card">
+                <div class="card-body @theme!.ThemeStyle">
                     <h5>
-                    Components
-                </h5
-            <p>
-                This section displays the current required/optional components which will be used for resource name generation.
-            </p>
+                        Components
+                    </h5>
+                    <p>
+                        This section displays the current required/optional components which will be used for resource name generation.
+                    </p>
                 </div>
             </div>
-                        <div class="card">
-                <div class="card-body">
+            <div class="card">
+                <div class="card-body @theme!.ThemeStyle">
                     <h5>
-                        Delimiters</h5
-            <p>
-                This section displays the current delimiter. In the event a resource type does not allow the selected delimiter, it will be removed.
-            </p>
+                        Delimiters
+                    </h5>
+                    <p>
+                        This section displays the current delimiter. In the event a resource type does not allow the selected delimiter, it will be removed.
+                    </p>
                 </div>
             </div>
         </div>

@@ -18,7 +18,7 @@
 @inject NavigationManager NavigationManager
 
 <PageTitle>Azure Naming Tool - Admin Log</PageTitle>
-<div class="card  @theme.ThemeStyle">
+<div class="card  @theme!.ThemeStyle">
     <div class="card-body">
         <div style="float:left;">
             <h1>
@@ -26,7 +26,7 @@
             </h1>
         </div>
         <div style="float:right;">
-            <button class="btn btn-secondary" title="Instructions" @onclick="@(e => ShowInstructionsModal())">
+            <button class="btn btn-secondary" title="Instructions" @onclick="@(e => ModalHelper.ShowInformationModal(Modal!, theme, "bg-navcolor", "Admin Log", String.Empty, "adminloginstructions", admin))">
                 <span class="oi oi-document" aria-hidden="true"></span> Documentation
             </button>
         </div>
@@ -146,7 +146,7 @@
     private bool admin = false;
     private bool dataLoaded = false;
     List<AdminLogMessage> lstAdminLogMessages = new();
-    public string filterData { get; set; } =  String.Empty;
+    public string filterData { get; set; } = String.Empty;
     public DateTime startdate { get; set; } = DateTime.Today.AddDays(-30);
     public DateTime enddate { get; set; } = DateTime.Today;
 
@@ -162,7 +162,13 @@
             }
             ServiceResponse serviceResponse = new();
             serviceResponse = await AdminLogService.GetItems();
-            lstAdminLogMessages = (List<AdminLogMessage>)serviceResponse.ResponseObject;
+            if (serviceResponse.Success)
+            {
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                {
+                    lstAdminLogMessages = (List<AdminLogMessage>)serviceResponse.ResponseObject!;
+                }
+            }
 
             dataLoaded = true;
             StateHasChanged();
@@ -184,7 +190,7 @@
     {
         ServiceResponse serviceResponse = new();
         bool confirm = false;
-        confirm = await JsRuntime.InvokeAsync<bool>("confirm", "This will purge the Admin Log. Are you sure?");
+        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will purge the Admin Log and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme!);
         if (confirm)
         {
             await LogHelper.PurgeAdminLog();
@@ -192,7 +198,13 @@
             AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "Admin Log purged." });
             CacheHelper.InvalidateCacheObject("AdminLogMessage");
             serviceResponse = await AdminLogService.GetItems();
-            lstAdminLogMessages = (List<AdminLogMessage>)serviceResponse.ResponseObject;
+            if (serviceResponse.Success)
+            {
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                {
+                    lstAdminLogMessages = (List<AdminLogMessage>)serviceResponse.ResponseObject!;
+                }
+            }
             dataLoaded = true;
             StateHasChanged();
         }
@@ -225,30 +237,5 @@
         startdate = DateTime.Today.AddDays(-30);
         enddate = DateTime.Today;
         filterData = "";
-    }
-
-    private void ShowInstructionsModal()
-    {
-        try
-        {
-            var parameters = new ModalParameters();
-            parameters.Add(nameof(InformationModal.message), String.Empty);
-            parameters.Add(nameof(InformationModal.title), "Admin Log");
-            parameters.Add(nameof(InformationModal.headerstyle), "bg-navcolor");
-            parameters.Add(nameof(InformationModal.component), "adminloginstructions");
-            parameters.Add("theme", theme);
-
-            var options = new ModalOptions()
-                {
-                    HideCloseButton = true,
-                    UseCustomLayout = true
-                };
-
-            var modal = Modal.Show<InformationModal>("Instructions", parameters, options);
-        }
-        catch (Exception ex)
-        {
-            AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
-        }
     }
 }

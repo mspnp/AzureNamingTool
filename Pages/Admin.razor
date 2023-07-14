@@ -27,7 +27,7 @@
             @if (admin)
             {
                 <div style="float:right;">
-                    <button class="btn btn-secondary" title="Instructions" @onclick="@(e => ShowInstructionsModal())">
+                    <button class="btn btn-secondary" title="Instructions" @onclick="@(e => ModalHelper.ShowInformationModal(Modal!, theme, "bg-navcolor", "Admin", String.Empty, "adminconfigurationinstructions", admin))">
                         <span class="oi oi-document" aria-hidden="true"></span> Documentation
                     </button>
                 </div>
@@ -41,7 +41,7 @@
                     </p>
                     <div class="form-group">
                         <label for="password" style="font-weight:bold">Global Admin Password</label>
-                        <input title="Password" class="form-control mb-3" type="password" @onchange="@((ui) => { SetFormValue("login",(string)ui.Value);})" />
+                        <input title="Password" class="form-control mb-3" type="password" @onchange="@((ui) => { SetFormValue("login",(string)ui.Value!);})" />
                     </div>
                 }
                 else
@@ -99,7 +99,7 @@
                                             <li>Be at least 8 characters</li>
                                         </ul>
                                         <div class="form-group">
-                                            <input title="New Password" id="newpassword" class="form-control  mb-3" type="password" @onchange="@((ui) => { SetFormValue("password",(string)ui.Value);})" />
+                                            <input title="New Password" id="newpassword" class="form-control  mb-3" type="password" @onchange="@((ui) => { SetFormValue("password",(string)ui.Value!);})" />
                                             <button title="Save Password" type="button" disabled="@disabled" class="btn btn-success" @onclick="@(e => AdminFormAction("password"))">Save</button>
                                         </div>
                                     </div>
@@ -115,7 +115,7 @@
                                             The current API key is displayed. Click <strong>Generate</strong> to generate a new random API Key, or update the text to the desired value.
                                         </p>
                                         <div class="form-group">
-                                            <input title="API Key" id="currentapikey" class="form-control mb-3" type="text" @onchange="@((ui) => { SetFormValue("apikey",(string)ui.Value);})" value="@currentapikey" />
+                                            <input title="API Key" id="currentapikey" class="form-control mb-3" type="text" @onchange="@((ui) => { SetFormValue("apikey",(string)ui.Value!);})" value="@currentapikey" />
                                             <button type="button" class="btn btn-success" @onclick="@(e => AdminFormAction("apikeysave"))" title="Save API Key">Save</button>
                                             <button type="button" class="btn btn-success" @onclick="@(e => AdminFormAction("apikeygenerate"))" title="Generate API Key">Generate</button>
                                         </div>
@@ -166,7 +166,7 @@
                                             This setting is used to identify site users when authenticating using an Identity provider. Authentication using an Identity provider will often inject headers into the request. The site will check for the specified header name and assign the value as the user's identity. This value will be used to log user activity.
                                         </p>
                                         <div class="form-group mb-3">
-                                            <input title="Identity Header Name" id="currentidentityheadername" class="form-control mb-3" type="text" @onchange="@((ui) => { SetFormValue("identityheadername",(string)ui.Value);})" value="@currentidentityheadername" />
+                                            <input title="Identity Header Name" id="currentidentityheadername" class="form-control mb-3" type="text" @onchange="@((ui) => { SetFormValue("identityheadername",(string)ui.Value!);})" value="@currentidentityheadername" />
                                             <button type="button" class="btn btn-success" @onclick="@(e => AdminFormAction("identityheadernamesave"))" title="Save Identity Header Name">Save</button>
                                         </div>
                                         <p class="alert alert-info" role="alert">
@@ -213,34 +213,44 @@
                                                 <span class="oi oi-plus" aria-hidden="true"></span> Add Admin User
                                             </button>
                                         </div>
-                                        @if (servicesData.AdminUsers.Count > 0)
+                                        @if (GeneralHelper.IsNotNull(servicesData.AdminUsers))
                                         {
-                                            <div class="table-responsive">
-                                                <table class="table @theme.ThemeStyle">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Name</th>
-                                                            <th>Actions</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @foreach (var item in @servicesData.AdminUsers)
-                                                        {
+                                            @if (servicesData.AdminUsers.Count > 0)
+                                            {
+                                                <div class="table-responsive">
+                                                    <table class="table @theme.ThemeStyle">
+                                                        <thead>
                                                             <tr>
-                                                                <td>@item.Name</td>
-                                                                <td>
-                                                                    @if (GeneralHelper.NormalizeName(currentuser, true) != GeneralHelper.NormalizeName(@item.Name, true))
-                                                                    {
-                                                                        <button type="button" class="btn btn-danger" @onclick="@(e => AdminFormAction("adminuserdelete",item.Id))" title="Delete">
-                                                                            <span class="oi oi-x" aria-hidden="true"></span>
-                                                                        </button>
-                                                                    }
-                                                                </td>
+                                                                <th>Name</th>
+                                                                <th>Actions</th>
                                                             </tr>
-                                                        }
-                                                    </tbody>
-                                                </table>
-                                            </div>
+                                                        </thead>
+                                                        <tbody>
+                                                            @if (GeneralHelper.IsNotNull(servicesData.AdminUsers))
+                                                            {
+                                                                @foreach (var item in @servicesData.AdminUsers)
+                                                                {
+                                                                    <tr>
+                                                                        <td>@item.Name</td>
+                                                                        <td>
+                                                                            @if (GeneralHelper.NormalizeName(currentuser, true) != GeneralHelper.NormalizeName(@item.Name, true))
+                                                                            {
+                                                                                <button type="button" class="btn btn-danger" @onclick="@(e => AdminFormAction("adminuserdelete",item.Id))" title="Delete">
+                                                                                    <span class="oi oi-x" aria-hidden="true"></span>
+                                                                                </button>
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <p style="font-style:italic;">There currently no assigned admin users.</p>
+                                            }
                                         }
                                         else
                                         {
@@ -370,7 +380,7 @@
                                         </p>
                                     </div>
                                     <div class="mb-3">
-                                        <input title="Generation Webhook" id="currentgenerationwebhook" class="form-control" type="text" @onchange="@((ui) => { SetFormValue("generationwebhook",(string)ui.Value);})" value="@currentgenerationwebhook" />
+                                        <input title="Generation Webhook" id="currentgenerationwebhook" class="form-control" type="text" @onchange="@((ui) => { SetFormValue("generationwebhook",(string)ui.Value!);})" value="@currentgenerationwebhook" />
                                     </div>
                                     <div>
                                         <button type="button" class="btn btn-success w-auto" @onclick="@(e => AdminFormAction("generationwebhooksave"))" title="Save Generate Webhook">Save</button>
@@ -399,25 +409,24 @@
     [CascadingParameter]
     private IdentityProviderDetails identityProviderDetails { get; set; } = new();
     private ServicesData servicesData = new();
-    private string currentpassword =  String.Empty;
-    private string newpassword =  String.Empty;
-    private string currentapikey =  String.Empty;
-    private string currentidentityheadername =  String.Empty;
-    private string currentidentityprovider =  String.Empty;
+    private string currentpassword = String.Empty;
+    private string newpassword = String.Empty;
+    private string currentapikey = String.Empty;
+    private string currentidentityheadername = String.Empty;
+    private string currentidentityprovider = String.Empty;
     private ResponseMessage message = new();
     private bool admin;
     private bool versionalertshown = false;
     private bool disabled = true;
-    private bool showversionalert = false;
     private bool dismissalert = false;
     private bool duplicatenamesallowed = false;
     private bool connectivitycheckenabled = true;
     private bool resourcetypeeditingallowed = false;
-    private string currentgenerationwebhook =  String.Empty;
-    private string versionalert =  String.Empty;
+    private string currentgenerationwebhook = String.Empty;
+    private string versionalert = String.Empty;
     private string appversion = String.Empty;
     private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
-    private string currentuser =  String.Empty;
+    private string currentuser = String.Empty;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -425,9 +434,9 @@
         if (firstRender)
         {
             // Get the version
-            if(Assembly.GetEntryAssembly() != null)
+            if (GeneralHelper.IsNotNull(Assembly.GetEntryAssembly()))
             {
-                appversion = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+                appversion = Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
             }
 
             servicesData = await ServicesHelper.LoadServicesData(servicesData, true);
@@ -435,21 +444,17 @@
             admin = (bool)result.Value;
             if (admin)
             {
-                currentapikey = GeneralHelper.DecryptString(config.APIKey, config.SALTKey);
+                currentapikey = GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!);
                 // Determine if the version notification has been dismissed
                 var resultVersionAlert = await session.GetAsync<bool>("versionalert-" + appversion + "-shown");
                 versionalertshown = resultVersionAlert.Success ? resultVersionAlert.Value : false;
                 versionalert = ConfigurationHelper.GetVersionAlert(true).Result;
-                if (!String.IsNullOrEmpty(versionalert))
-                {
-                    showversionalert = true;
-                }
                 duplicatenamesallowed = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("DuplicateNamesAllowed"));
                 connectivitycheckenabled = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("ConnectivityCheckEnabled"));
                 resourcetypeeditingallowed = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("ResourceTypeEditingAllowed"));
                 currentgenerationwebhook = ConfigurationHelper.GetAppSetting("GenerationWebhook", true);
                 currentidentityheadername = ConfigurationHelper.GetAppSetting("IdentityHeaderName", true);
-                if (identityProviderDetails != null)
+                if (GeneralHelper.IsNotNull(identityProviderDetails))
                 {
                     if (!String.IsNullOrEmpty(identityProviderDetails.CurrentIdentityProvider))
                     {
@@ -473,18 +478,19 @@
         ServiceResponse serviceResponse = new();
         bool redirect = false;
         bool confirm = false;
+        bool displaymessage = true;
 
         switch (action)
         {
             case "login":
                 // Check the password
-                if (currentpassword == GeneralHelper.DecryptString(config.AdminPassword, config.SALTKey))
+                if (currentpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
                 {
                     state.SetAdmin(true);
                     await session.SetAsync("admin", true);
                     await session.SetAsync("currentuser", "GlobalAdmin");
                     // Load the current API Key
-                    currentapikey = GeneralHelper.DecryptString(config.APIKey, config.SALTKey);
+                    currentapikey = GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!);
                     message.Type = MessageTypesEnum.INFORMATION;
                     message.Header = "INFORMATION";
                     message.Message = "Global Admin logged in.";
@@ -509,10 +515,10 @@
                 redirect = true;
                 break;
             case "password":
-                bool confirmPassword = await JsRuntime.InvokeAsync<bool>("confirm", "This will change the Global Admin Password. Are you sure?");
-                if (confirmPassword)
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the Global Admin Password.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                if (confirm)
                 {
-                    // Set the new admin password
+                    // Set the new Global admin password
                     serviceResponse = await AdminService.UpdatePassword(newpassword);
                     if (serviceResponse.Success)
                     {
@@ -527,10 +533,14 @@
                         message.Message = "There was a problem updating the Global Admin Password!";
                     }
                 }
+                else
+                {
+                    displaymessage = false;
+                }
                 break;
             case "identityheadernamesave":
-                bool confirmIdentityHeaderNameSave = await JsRuntime.InvokeAsync<bool>("confirm", "This will update the current Identity Header Name. Are you sure?");
-                if (confirmIdentityHeaderNameSave)
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the Identity Header Name.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                if (confirm)
                 {
                     serviceResponse = await AdminService.UpdateIdentityHeaderName(currentidentityheadername);
                     if (serviceResponse.Success)
@@ -546,10 +556,14 @@
                         message.Message = "There was a problem updating the Identity Header Name!";
                     }
                 }
+                else
+                {
+                    displaymessage = false;
+                }
                 break;
             case "apikeysave":
-                bool confrimAPIKeySave = await JsRuntime.InvokeAsync<bool>("confirm", "This will update the current API Key. Are you sure?");
-                if (confrimAPIKeySave)
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the API Key.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                if (confirm)
                 {
                     serviceResponse = await AdminService.UpdateAPIKey(currentapikey);
                     if (serviceResponse.Success)
@@ -565,18 +579,31 @@
                         message.Message = "There was a problem updating the API Key!";
                     }
                 }
+                else
+                {
+                    displaymessage = false;
+                }
                 break;
             case "apikeygenerate":
-                bool confrimAPIKeyGenerate = await JsRuntime.InvokeAsync<bool>("confirm", "This will generate a new API Key. Are you sure?");
-                if (confrimAPIKeyGenerate)
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will generate a new API Key.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                if (confirm)
                 {
                     serviceResponse = await AdminService.GenerateAPIKey();
                     if (serviceResponse.Success)
                     {
-                        currentapikey = serviceResponse.ResponseObject;
-                        message.Type = MessageTypesEnum.SUCCESS;
-                        message.Header = "SUCCESS";
-                        message.Message = "API Key updated!";
+                        if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                        {
+                            currentapikey = serviceResponse.ResponseObject!;
+                            message.Type = MessageTypesEnum.SUCCESS;
+                            message.Header = "SUCCESS";
+                            message.Message = "API Key updated!";
+                        }
+                        else
+                        {
+                            message.Type = MessageTypesEnum.ERROR;
+                            message.Header = "ERROR";
+                            message.Message = "There was a problem generating the API Key!";
+                        }
                     }
                     else
                     {
@@ -585,10 +612,14 @@
                         message.Message = "There was a problem generating the API Key!";
                     }
                 }
+                else
+                {
+                    displaymessage = false;
+                }
                 break;
             case "generationwebhooksave":
-                bool confirmGenerationWebhook = await JsRuntime.InvokeAsync<bool>("confirm", "This will update the current Generation Webhook. Are you sure?");
-                if (confirmGenerationWebhook)
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the Generation Webhook.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                if (confirm)
                 {
                     if (!String.IsNullOrEmpty(currentgenerationwebhook))
                     {
@@ -605,6 +636,10 @@
                     message.Header = "SUCCESS";
                     message.Message = "Generation Webhook configuration saved!";
                 }
+                else
+                {
+                    displaymessage = false;
+                }
                 break;
             case "clearcache":
                 CacheHelper.ClearAllCache();
@@ -614,18 +649,29 @@
                 break;
             case "viewcachedata":
                 string cachedata = CacheHelper.GetAllCacheData();
-                await ShowInformationModal("bg-navcolor", "Cache Data", "<p>This is the current cache data.</p>" + cachedata);
+                ModalHelper.ShowInformationModal(Modal!, theme, "bg-navcolor", "Cache Data", "<p>This is the current cache data.</p>" + cachedata, "", admin);
+                displaymessage = false;
                 break;
             case "samplepost":
                 string webhookdata = await FileSystemHelper.ReadFile("samplewebhookdata.json", "");
-                await ShowInformationModal("bg-navcolor", "Sample Post", "<p>This is a sample Generation Webhook post.</p><code style=\"display: block; white-space: pre-wrap;\">" + webhookdata + "</code>");
+                ModalHelper.ShowInformationModal(Modal!, theme, "bg-navcolor", "Sample Post", "<p>This is a sample Generation Webhook post.</p><code style=\"display: block; white-space: pre-wrap;\">" + webhookdata + "</code>", "", admin);
+                displaymessage = false;
                 break;
-
             case "adminuseradd":
-                ShowAddModal(id, "AdminUser", "Add Admin User", "<p>Add an Admin User.</p>");
+                bool added = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Admin User", "<p>Add an Admin User.</p>", id, "AdminUser", admin, "");
+                if (added)
+                {
+                    servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                    state.SetNavReload(true);
+                    StateHasChanged();
+                }
+                else
+                {
+                    displaymessage = false;
+                }
                 break;
             case "adminuserdelete":
-                confirm = await JsRuntime.InvokeAsync<bool>("confirm", "Are you sure?");
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will delete the Admin User.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                 if (confirm)
                 {
                     serviceResponse = await AdminUserService.DeleteItem(Convert.ToInt32(id));
@@ -641,29 +687,36 @@
                         message.MessageDetails = serviceResponse.ResponseMessage;
                     }
                 }
+                else
+                {
+                    displaymessage = false;
+                }
                 break;
         }
 
         config = ConfigurationHelper.GetConfigurationData();
 
-        if (message.Message != null)
+        if ((GeneralHelper.IsNotNull(message.Message)) && (displaymessage))
         {
-            switch (message.Type)
+            if (!String.IsNullOrEmpty(message.Message))
             {
-                case MessageTypesEnum.INFORMATION:
-                    toastService.ShowInfo(message.Message);
-                    break;
-                case MessageTypesEnum.SUCCESS:
-                    toastService.ShowSuccess(message.Message);
-                    break;
-                case MessageTypesEnum.WARNING:
-                    toastService.ShowWarning(message.Message);
-                    break;
-                case MessageTypesEnum.ERROR:
-                    toastService.ShowError(message.Message);
-                    break;
+                switch (message.Type)
+                {
+                    case MessageTypesEnum.INFORMATION:
+                        toastService.ShowInfo(message.Message);
+                        break;
+                    case MessageTypesEnum.SUCCESS:
+                        toastService.ShowSuccess(message.Message);
+                        break;
+                    case MessageTypesEnum.WARNING:
+                        toastService.ShowWarning(message.Message);
+                        break;
+                    case MessageTypesEnum.ERROR:
+                        toastService.ShowError(message.Message);
+                        break;
+                }
+                AdminLogService.PostItem(new AdminLogMessage() { Title = message.Type.ToString(), Message = message.Message, Source = currentuser });
             }
-            AdminLogService.PostItem(new AdminLogMessage() { Title = message.Type.ToString(), Message = message.Message, Source = currentuser });
         }
 
 
@@ -728,12 +781,12 @@
                 switch (setting)
                 {
                     case "duplicatenamesallowed":
-                        ConfigurationHelper.SetAppSetting("DuplicateNamesAllowed", e.Value.ToString());
-                        message.Message = "Duplicate Names Allowed setting updated to " + e.Value.ToString().ToUpper() + "!";
+                        ConfigurationHelper.SetAppSetting("DuplicateNamesAllowed", e.Value.ToString()!);
+                        message.Message = "Duplicate Names Allowed setting updated to " + e.Value.ToString()!.ToUpper() + "!";
                         break;
                     case "connectivitycheckenabled":
-                        ConfigurationHelper.SetAppSetting("ConnectivityCheckEnabled", e.Value.ToString());
-                        message.Message = "Connectivity Check Enabled setting updated to " + e.Value.ToString().ToUpper() + "!";
+                        ConfigurationHelper.SetAppSetting("ConnectivityCheckEnabled", e.Value.ToString()!);
+                        message.Message = "Connectivity Check Enabled setting updated to " + e.Value.ToString()!.ToUpper() + "!";
                         // Update the tool connection setting to true, if the connecvity check is disabled. This will cause the stie to always assume there is connectivity and attempt external connections.
                         if (!(bool)e.Value)
                         {
@@ -745,18 +798,18 @@
                         }
                         if (!(bool)e.Value)
                         {
-                            await ShowInformationModal("bg-danger", "ATTENTION", "<p>Disabling this setting may result in connectivity errors being logged to the Admin Log.<p>");
+                            ModalHelper.ShowInformationModal(Modal!, theme, "bg-danger", "ATTENTION", "<p>Disabling this setting may result in connectivity errors being logged to the Admin Log.<p>", "", admin);
                         }
 
                         break;
                     case "resourcetypeeditingallowed":
                         if (GeneralHelper.IsNotNull(e.Value))
                         {
-                            ConfigurationHelper.SetAppSetting("ResourceTypeEditingAllowed", e.Value?.ToString() ?? "");
-                            message.Message = "Resource Type Editing Allowed setting updated to " + e.Value?.ToString().ToUpper() ?? "" + "!";
-                            if ((bool)e.Value)
+                            ConfigurationHelper.SetAppSetting("ResourceTypeEditingAllowed", e.Value!.ToString() ?? "");
+                            message.Message = "Resource Type Editing Allowed setting updated to " + e.Value?.ToString()!.ToUpper() ?? "" + "!";
+                            if ((bool)e.Value!)
                             {
-                                await ShowInformationModal("bg-danger", "ATTENTION", "<p>Disabling this setting may result in name generation that will fail regex validation for the resource type.</p><p>Please use caution when editing Resource Type validation settings.");
+                                ModalHelper.ShowInformationModal(Modal!, theme, "bg-danger", "ATTENTION", "<p>Disabling this setting may result in name generation that will fail regex validation for the resource type.</p><p>Please use caution when editing Resource Type validation settings.", "", admin);
                             }
                         }
                         break;
@@ -811,99 +864,22 @@
         }
     }
 
-    async Task ShowInformationModal(string headerstyle, string title, string message)
+    private async void SubmitIssue(string type)
     {
-        var parameters = new ModalParameters();
-        parameters.Add(nameof(InformationModal.message), message);
-        parameters.Add(nameof(InformationModal.title), title);
-        parameters.Add(nameof(InformationModal.headerstyle), headerstyle);
-        parameters.Add("theme", theme);
-
-        var options = new ModalOptions()
-            {
-                HideCloseButton = true,
-                UseCustomLayout = true
-            };
-
-        var modal = Modal.Show<InformationModal>(title, parameters, options);
-        var result = await modal.Result;
-        if (!result.Cancelled)
+        string issueURL = "";
+        switch (type)
         {
-            StateHasChanged();
-        }
-    }
+            case "bug":
+                issueURL = "https://github.com/mspnp/AzureNamingTool/issues/new?assignees=&labels=&projects=&template=bug_report.md&title=";
+                break;
+            case "feature":
+                issueURL = "https://github.com/mspnp/AzureNamingTool/issues/new?assignees=&labels=&projects=&template=feature_request.md&title=";
+                break;
 
-    private void ShowInstructionsModal()
-    {
-        try
+        }
+        if (!String.IsNullOrEmpty(issueURL))
         {
-            var parameters = new ModalParameters();
-            parameters.Add(nameof(InformationModal.message), String.Empty);
-            parameters.Add(nameof(InformationModal.title), "Admin");
-            parameters.Add(nameof(InformationModal.headerstyle), "bg-navcolor");
-            parameters.Add(nameof(InformationModal.component), "adminconfigurationinstructions");
-            parameters.Add(nameof(InformationModal.admin), admin);
-            parameters.Add("theme", theme);
-
-            var options = new ModalOptions()
-                {
-                    HideCloseButton = true,
-                    UseCustomLayout = true
-                };
-
-            var modal = Modal.Show<InformationModal>("Instructions", parameters, options);
+            await JsRuntime.InvokeVoidAsync("open", issueURL, "_blank");
         }
-        catch (Exception ex)
-        {
-            AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
-        }
-    }
-
-    async void ShowAddModal(int id, string type, string title, string message, string parentcomponent = "")
-    {
-        var parameters = new ModalParameters();
-        parameters.Add(nameof(AddModal.id), id);
-        parameters.Add(nameof(AddModal.type), type);
-        parameters.Add(nameof(AddModal.message), message);
-        parameters.Add(nameof(AddModal.title), title);
-        if (parentcomponent != null)
-        {
-            parameters.Add(nameof(AddModal.parentcomponent), parentcomponent);
-        }
-        parameters.Add(nameof(AddModal.servicesData), servicesData);
-        parameters.Add("theme", theme);
-
-        var options = new ModalOptions()
-            {
-                HideCloseButton = true,
-                UseCustomLayout = true
-            };
-
-        var modal = Modal.Show<AddModal>(title, parameters, options);
-        var result = await modal.Result;
-        if (!result.Cancelled)
-        {
-            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
-            state.SetNavReload(true);
-            StateHasChanged();
-        }
-    }
-    			private async void SubmitIssue(string type)
-			    {
-			        string issueURL = "";
-			        switch(type)
-			        {
-			            case "bug":
-			                issueURL = "https://github.com/mspnp/AzureNamingTool/issues/new?assignees=&labels=&projects=&template=bug_report.md&title=";
-			                break;
-			            case "feature":
-			                issueURL = "https://github.com/mspnp/AzureNamingTool/issues/new?assignees=&labels=&projects=&template=feature_request.md&title=";
-			                break;
-			
-			        }
-			        if (!String.IsNullOrEmpty(issueURL))
-			        {
-			            await JsRuntime.InvokeVoidAsync("open", issueURL, "_blank");
-			        }
     }
 }

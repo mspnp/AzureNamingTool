@@ -16,12 +16,15 @@ namespace AzureNamingTool.Helpers
                 ServiceResponse serviceResponse = await AdminUserService.GetItems();
                 if (serviceResponse.Success)
                 {
-                    List<AdminUser> adminusers = serviceResponse.ResponseObject;
-                    if (adminusers.Exists(x => x.Name.ToLower() == name.ToLower()))
+                    if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                     {
-                        state.SetAdmin(true);
-                        await session.SetAsync("admin", true);
-                        result = true;
+                        List<AdminUser> adminusers = serviceResponse.ResponseObject!;
+                        if (adminusers.Exists(x => x.Name.ToLower() == name.ToLower()))
+                        {
+                            state.SetAdmin(true);
+                            await session.SetAsync("admin", true);
+                            result = true;
+                        }
                     }
                 }
             }

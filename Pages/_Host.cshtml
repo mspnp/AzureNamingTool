@@ -13,9 +13,9 @@
 
     var identityProviderDetails = new IdentityProviderDetails();
     // Check if there is an HttpContext object
-    if (this.HttpContext != null)
+    if (GeneralHelper.IsNotNull(this.HttpContext))
     {
-        if (this.HttpContext.Request.Headers != null)
+        if (GeneralHelper.IsNotNull(this.HttpContext.Request.Headers))
         {
             // Get the Identity provider, if using Azure App Service Authentication
             if (this.HttpContext.Request.Headers.ContainsKey("X-MS-CLIENT-PRINCIPAL-IDP"))
@@ -30,10 +30,19 @@
         {
             string headername = ConfigurationHelper.GetAppSetting("IdentityHeaderName", true);
             // Check if the IdentityHeaderName header is present
-            if (this.HttpContext.Request.Headers.ContainsKey(headername))
+            if(GeneralHelper.IsNotNull(this.HttpContext))
             {
-                // Set the current user
-                identityProviderDetails.CurrentUser = this.HttpContext.Request.Headers[headername];
+                if(GeneralHelper.IsNotNull(this.HttpContext.Request))
+                {
+                    if (GeneralHelper.IsNotNull(this.HttpContext.Request.Headers))
+                    {
+                        if (this.HttpContext.Request.Headers.ContainsKey(headername))
+                        {
+                            // Set the current user
+                            identityProviderDetails.CurrentUser = this.HttpContext.Request.Headers[headername];
+                        }
+                    }
+                }
             }
         }
     }
@@ -98,7 +107,7 @@
             var row = [], cols = rows[i].querySelectorAll("td, th");
 
             for (var j = 0; j < cols.length; j++) {
-                row.push(cols[j].innerText);
+                row.push(cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "|"));
             }
 
             data.push(row.join(","));
@@ -153,9 +162,5 @@
                 checkbox.checked = false;
             };
         }
-    }
-
-    function expandMultiSelectParent(sender) {
-        console.log("test!");
     }
 </script>

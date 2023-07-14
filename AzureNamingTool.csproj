@@ -78,6 +78,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="Properties\ServiceDependencies\" />
     <Folder Include="VersionNotes\" />
   </ItemGroup>
 

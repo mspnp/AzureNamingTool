@@ -1,5 +1,7 @@
 ﻿@using AzureNamingTool.Helpers
 @using AzureNamingTool.Models
+@using AzureNamingTool.Shared.Components
+@using AzureNamingTool.Shared.Modals;
 @inherits LayoutComponentBase
 @implements IDisposable
 @inject StateContainer state
@@ -82,7 +84,7 @@
 @code {
     [CascadingParameter]
     private IdentityProviderDetails? identityProviderDetails { get; set; }
-    [CascadingParameter] public IModalService Modal { get; set; }
+    [CascadingParameter] public IModalService? Modal { get; set; }
     private ThemeInfo theme = new() { ThemeName = "Light", ThemeStyle = "bg-default text-dark" };
     private bool isdarktheme = false;
     private bool admin;
@@ -93,18 +95,16 @@
     private string? details = String.Empty;
 
     public bool PasswordModalOpen { get; set; }
-    public Type PageType { get; set; }
+    public Type? PageType { get; set; }
 
     protected override void OnParametersSet()
     {
-        PageType = (this.Body.Target as RouteView)?.RouteData.PageType;
+        PageType = (this.Body!.Target as RouteView)?.RouteData.PageType!;
     }
 
-    private string? message;
-
-    protected override async void OnInitialized()
+    protected override void OnInitialized()
     {
-        // Check that the admin password is set
+        // Check that the Global admin password is set
         if (!state.Password)
         {
             OpenPasswordModal();
@@ -128,40 +128,46 @@
             if (!(bool)logout.Value)
             {
                 // Check if site is using an identity provider
-                if (!String.IsNullOrEmpty(identityProviderDetails.CurrentUser))
+                if (GeneralHelper.IsNotNull(identityProviderDetails))
                 {
-                    if (identityProviderDetails.CurrentUser != "System")
+                    if (!String.IsNullOrEmpty(identityProviderDetails.CurrentUser))
                     {
-                        // Show working modal
-                        var workingmodalparameters = new ModalParameters();
-                        workingmodalparameters.Add("message", "Authentication sync in progress...");
+                        if (identityProviderDetails.CurrentUser != "System")
+                        {
+                            // Show working modal
+                            var workingmodalparameters = new ModalParameters();
+                            workingmodalparameters.Add("message", "Authentication sync in progress...");
 
-                        var workingmodaloptions = new ModalOptions()
+                            var workingmodaloptions = new ModalOptions()
+                                {
+                                    HideCloseButton = true,
+                                    UseCustomLayout = true
+                                };
+
+                            if (GeneralHelper.IsNotNull(Modal))
                             {
-                                HideCloseButton = true,
-                                UseCustomLayout = true
-                            };
+                                var workingmodal = Modal.Show<WorkingModal>("Working", workingmodalparameters, workingmodaloptions);
 
-                        var workingmodal = Modal.Show<WorkingModal>("Working", workingmodalparameters, workingmodaloptions);
+                                // Get the current user value from the passed parameter (hosts.cshtml)
+                                currentuser = identityProviderDetails.CurrentUser;
+                                await session.SetAsync("currentuser", currentuser);
 
-                        // Get the current user value from the passed parameter (hosts.cshtml)
-                        currentuser = identityProviderDetails.CurrentUser;
-                        await session.SetAsync("currentuser", currentuser);
+                                // Log the user access
+                                AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "User accessed the site.", Source = currentuser });
 
-                        // Log the user access
-                        AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "User accessed the site.", Source = currentuser });
-
-                        // CHeck if the user is an admin
-                        admin = await IdentityHelper.IsAdminUser(state, session, currentuser);
-                        // Close modal
-                        workingmodal.Close();
+                                // CHeck if the user is an admin
+                                admin = await IdentityHelper.IsAdminUser(state, session, currentuser);
+                                // Close modal
+                                workingmodal.Close();
+                            }
+                        }
                     }
                 }
             }
             try
             {
                 var themeresult = await storage.GetAsync<string>("apptheme");
-                theme.ThemeStyle = themeresult.Success ? themeresult.Value : "bg-default text-dark";
+                theme.ThemeStyle = themeresult.Success ? themeresult.Value! : "bg-default text-dark";
             }
             catch
             {
@@ -177,7 +183,7 @@
                 theme.ThemeName = "Dark";
                 isdarktheme = true;
             }
-            state.AppTheme = theme.ThemeStyle;
+            state.AppTheme = theme.ThemeStyle!;
 
             // Check if Feedback is enabled
             if (admin)
@@ -199,7 +205,7 @@
         StateHasChanged();
     }
 
-    private async Task OnPasswordModalClose(bool accepted)
+    private void OnPasswordModalClose(bool accepted)
     {
         PasswordModalOpen = false;
     }
@@ -215,7 +221,7 @@
             config.AdminPassword = "";
             config.APIKey = "";
 
-            ConfigurationHelper.UpdateSettings(config);
+            await ConfigurationHelper.UpdateSettings(config);
             ConfigurationHelper.ResetState(state);
             ConfigurationHelper.VerifySecurity(state);
 
@@ -227,7 +233,7 @@
 
     private async void ThemeChanged(ChangeEventArgs e)
     {
-        isdarktheme = (bool)e.Value;
+        isdarktheme = (bool)e.Value!;
         if (!isdarktheme)
         {
             theme.ThemeName = "Dark";

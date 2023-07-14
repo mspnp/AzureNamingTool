@@ -13,8 +13,11 @@ namespace AzureNamingTool.Services
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<CustomComponent>();
-                serviceResponse.ResponseObject = items.OrderBy(x => x.SortOrder).ToList();
-                serviceResponse.Success = true;
+                if (GeneralHelper.IsNotNull(items))
+                {
+                    serviceResponse.ResponseObject = items.OrderBy(x => x.SortOrder).ToList();
+                    serviceResponse.Success = true;
+                }
             }
             catch (Exception ex)
             {
@@ -31,8 +34,11 @@ namespace AzureNamingTool.Services
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<CustomComponent>();
-                serviceResponse.ResponseObject = items.Where(x => x.ParentComponent == parenttype).OrderBy(x => x.SortOrder).ToList();
-                serviceResponse.Success = true;
+                if (GeneralHelper.IsNotNull(items))
+                {
+                    serviceResponse.ResponseObject = items.Where(x => x.ParentComponent == parenttype).OrderBy(x => x.SortOrder).ToList();
+                    serviceResponse.Success = true;
+                }
             }
             catch (Exception ex)
             {
@@ -48,10 +54,13 @@ namespace AzureNamingTool.Services
             try
             {
                 // Get list of items
-                var data = await ConfigurationHelper.GetList<CustomComponent>();
-                var item = data.Find(x => x.Id == id);
-                serviceResponse.ResponseObject = item;
-                serviceResponse.Success = true;
+                var items = await ConfigurationHelper.GetList<CustomComponent>();
+                if (GeneralHelper.IsNotNull(items))
+                {
+                    var item = items.Find(x => x.Id == id);
+                    serviceResponse.ResponseObject = item;
+                    serviceResponse.Success = true;
+                }
             }
             catch (Exception ex)
             {
@@ -79,74 +88,78 @@ namespace AzureNamingTool.Services
 
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<CustomComponent>();
-
-                // Set the new id
-                if (item.Id == 0)
+                if (GeneralHelper.IsNotNull(items))
                 {
-                    item.Id = items.Count + 1;
-                }
+                    // Set the new id
+                    if (item.Id == 0)
+                    {
+                        item.Id = items.Count + 1;
+                    }
 
-                int position = 1;
-                items = items.OrderBy(x => x.SortOrder).ToList();
+                    int position = 1;
+                    items = items.OrderBy(x => x.SortOrder).ToList();
 
-                if (item.SortOrder == 0)
-                {
+                    if (item.SortOrder == 0)
+                    {
+                        if (items.Count > 0)
+                        {
+                            item.Id = items.Max(t => t.Id) + 1;
+                        }
+                    }
+
+                    // Determine new item id
                     if (items.Count > 0)
                     {
-                        item.Id = items.Max(t => t.Id) + 1;
+                        // Check if the item already exists
+                        if (items.Exists(x => x.Id == item.Id))
+                        {
+                            // Remove the updated item from the list
+                            var existingitem = items.Find(x => x.Id == item.Id);
+                            if (GeneralHelper.IsNotNull(existingitem))
+                            {
+                                int index = items.IndexOf(existingitem);
+                                items.RemoveAt(index);
+                            }
+                        }
+
+                        // Reset the sort order of the list
+                        foreach (CustomComponent thisitem in items.OrderBy(x => x.SortOrder).ToList())
+                        {
+                            thisitem.SortOrder = position;
+                            position += 1;
+                        }
+
+                        // Check for the new sort order
+                        if (items.Exists(x => x.SortOrder == item.SortOrder))
+                        {
+                            // Remove the updated item from the list
+                            items.Insert(items.IndexOf(items.FirstOrDefault(x => x.SortOrder == item.SortOrder)!), item);
+                        }
+                        else
+                        {
+                            // Put the item at the end
+                            items.Add(item);
+                        }
                     }
-                }
-
-                // Determine new item id
-                if (items.Count > 0)
-
-                {
-                    // Check if the item already exists
-                    if (items.Exists(x => x.Id == item.Id))
+                    else
                     {
-                        // Remove the updated item from the list
-                        var existingitem = items.Find(x => x.Id == item.Id);
-                        int index = items.IndexOf(existingitem);
-                        items.RemoveAt(index);
+                        item.Id = 1;
+                        item.SortOrder = 1;
+                        items.Add(item);
                     }
 
-                    // Reset the sort order of the list
+                    position = 1;
                     foreach (CustomComponent thisitem in items.OrderBy(x => x.SortOrder).ToList())
                     {
                         thisitem.SortOrder = position;
                         position += 1;
                     }
 
-                    // Check for the new sort order
-                    if (items.Exists(x => x.SortOrder == item.SortOrder))
-                    {
-                        // Remove the updated item from the list
-                        items.Insert(items.IndexOf(items.FirstOrDefault(x => x.SortOrder == item.SortOrder)), item);
-                    }
-                    else
-                    {
-                        // Put the item at the end
-                        items.Add(item);
-                    }
+                    // Write items to file
+                    await ConfigurationHelper.WriteList<CustomComponent>(items);
+                    serviceResponse.ResponseObject = "Item added!";
+                    serviceResponse.Success = true;
                 }
-                else
-                {
-                    item.Id = 1;
-                    item.SortOrder = 1;
-                    items.Add(item);
-                }
-
-                position = 1;
-                foreach (CustomComponent thisitem in items.OrderBy(x => x.SortOrder).ToList())
-                {
-                    thisitem.SortOrder = position;
-                    position += 1;
-                }
-
-                // Write items to file
-                await ConfigurationHelper.WriteList<CustomComponent>(items);
-                serviceResponse.ResponseObject = "Item added!";
-                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
@@ -163,22 +176,28 @@ namespace AzureNamingTool.Services
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<CustomComponent>();
-                // Get the specified item
-                var item = items.Find(x => x.Id == id);
-                // Remove the item from the collection
-                items.Remove(item);
-
-                // Update all the sort order values to reflect the removal
-                int position = 1;
-                foreach (CustomComponent thisitem in items.OrderBy(x => x.SortOrder).ToList())
+                if (GeneralHelper.IsNotNull(items))
                 {
-                    thisitem.SortOrder = position;
-                    position += 1;
-                }
+                    // Get the specified item
+                    var item = items.Find(x => x.Id == id);
+                    if (GeneralHelper.IsNotNull(item))
+                    {
+                        // Remove the item from the collection
+                        items.Remove(item);
 
-                // Write items to file
-                await ConfigurationHelper.WriteList<CustomComponent>(items);
-                serviceResponse.Success = true;
+                        // Update all the sort order values to reflect the removal
+                        int position = 1;
+                        foreach (CustomComponent thisitem in items.OrderBy(x => x.SortOrder).ToList())
+                        {
+                            thisitem.SortOrder = position;
+                            position += 1;
+                        }
+
+                        // Write items to file
+                        await ConfigurationHelper.WriteList<CustomComponent>(items);
+                        serviceResponse.Success = true;
+                    }
+                }
             }
             catch (Exception ex)
             {

@@ -35,30 +35,30 @@ namespace AzureNamingTool.Helpers
             try
             {
                 // Check if the data is cached
-                var data = CacheHelper.GetCacheObject(key);
-                if (data == null)
+                var items = CacheHelper.GetCacheObject(key);
+                if (items == null)
                 {
                     var config = GetConfigurationData();
 
                     // Check if the app setting is already set
-                    if (config.GetType().GetProperty(key) != null)
+                    if (GeneralHelper.IsNotNull(config.GetType().GetProperty(key)))
                     {
-                        value = config.GetType().GetProperty(key).GetValue(config, null).ToString();
+                        value = config!.GetType()!.GetProperty(key)!.GetValue(config, null)!.ToString()!;
 
                         // Verify the value is encrypted, and should be decrypted
                         if ((decrypt) && (!String.IsNullOrEmpty(value)) && (GeneralHelper.IsBase64Encoded(value)))
                         {
-                            value = GeneralHelper.DecryptString(value, config.SALTKey);
+                            value = GeneralHelper.DecryptString(value, config.SALTKey!);
                         }
 
                         // Set the result to cache
-                        CacheHelper.SetCacheObject(key, value);
+                        CacheHelper.SetCacheObject(key, value!);
                     }
                     else
                     {
                         // Create a new configuration object and get the default for the property
                         SiteConfiguration newconfig = new();
-                        value = newconfig.GetType().GetProperty(key).GetValue(newconfig, null).ToString();
+                        value = newconfig!.GetType()!.GetProperty(key)!.GetValue(newconfig, null)!.ToString()!;
 
                         // Set the result to the app settings
                         SetAppSetting(key, value, decrypt);
@@ -69,7 +69,7 @@ namespace AzureNamingTool.Helpers
                 }
                 else
                 {
-                    value = data.ToString();
+                    value = items.ToString()!;
                 }
             }
             catch (Exception ex)
@@ -87,10 +87,10 @@ namespace AzureNamingTool.Helpers
                 string valueoriginal = value;
                 if (encrypt)
                 {
-                    value = GeneralHelper.EncryptString(value, config.SALTKey);
+                    value = GeneralHelper.EncryptString(value, config.SALTKey!);
                 }
                 Type? type = config.GetType();
-                System.Reflection.PropertyInfo propertyInfo = type.GetProperty(key);
+                System.Reflection.PropertyInfo propertyInfo = type.GetProperty(key)!;
                 propertyInfo.SetValue(config, value, null);
                 await UpdateSettings(config);
                 // Save the original value to the cache
@@ -155,7 +155,7 @@ namespace AzureNamingTool.Helpers
                             .Select(s => s[random.Next(s.Length)]).ToArray());
 
                         config.SALTKey = salt.ToString();
-                        config.APIKey = GeneralHelper.EncryptString(config.APIKey, salt.ToString());
+                        config.APIKey = GeneralHelper.EncryptString(config.APIKey!, salt.ToString());
 
                         if (!String.IsNullOrEmpty(config.AdminPassword))
                         {
@@ -182,7 +182,7 @@ namespace AzureNamingTool.Helpers
                 state.SetVerified(true);
 
                 // Set the site theme
-                state.SetAppTheme(config.AppTheme);
+                state.SetAppTheme(config.AppTheme!);
             }
             catch (Exception ex)
             {
@@ -197,8 +197,8 @@ namespace AzureNamingTool.Helpers
             try
             {
                 // Check if the data is cached
-                var data = CacheHelper.GetCacheObject("isconnected");
-                if (data == null)
+                var items = CacheHelper.GetCacheObject("isconnected");
+                if (items == null)
                 {
                     // Check if the connectivity check is enabled
                     if (Convert.ToBoolean(ConfigurationHelper.GetAppSetting("ConnectivityCheckEnabled")))
@@ -229,7 +229,7 @@ namespace AzureNamingTool.Helpers
                             // Atempt to download a file
                             var client = new HttpClient(new HttpClientHandler() { UseDefaultCredentials = true });
                             //using var response = await client.GetAsync("https://github.com/mspnp/AzureNamingTool/blob/main/connectiontest.png");
-                            using var response = await client.GetAsync("https://github.com/aznamingtool/AzureNamingTool/blob/main/connectiontest.png");                        
+                            using var response = await client.GetAsync("https://github.com/aznamingtool/AzureNamingTool/blob/main/connectiontest.png");
                             if (response.StatusCode == HttpStatusCode.OK)
                             {
                                 result = true;
@@ -247,7 +247,7 @@ namespace AzureNamingTool.Helpers
                 }
                 else
                 {
-                    result = (bool)data;
+                    result = (bool)items;
                 }
             }
             catch (Exception ex)
@@ -260,13 +260,13 @@ namespace AzureNamingTool.Helpers
             return result;
         }
 
-        public async static Task<List<T>> GetList<T>()
+        public async static Task<List<T>?> GetList<T>()
         {
             var items = new List<T>();
             try
             {
                 // Check if the data is cached
-                String data = (string)CacheHelper.GetCacheObject(typeof(T).Name);
+                String data = (string)CacheHelper.GetCacheObject(typeof(T).Name)!;
                 // Load the data from the file system.
                 if (String.IsNullOrEmpty(data))
                 {
@@ -357,7 +357,7 @@ namespace AzureNamingTool.Helpers
                         break;
                 }
 
-                String data =  String.Empty;
+                String data = String.Empty;
                 data = typeof(T).Name switch
                 {
                     nameof(ResourceComponent) => await FileSystemHelper.ReadFile("resourcecomponents.json"),
@@ -457,22 +457,25 @@ namespace AzureNamingTool.Helpers
                 var currentdatajson = await GetCurrentConfigFileVersionData();
 
                 // Determine if the version data is different
-                if ((officialdatajson != null) && (currentdatajson != null))
+                if ((GeneralHelper.IsNotNull(officialdatajson)) && (GeneralHelper.IsNotNull(currentdatajson)))
                 {
                     officialversiondata = JsonSerializer.Deserialize<ConfigurationFileVersionData>(officialdatajson);
                     currentversiondata = JsonSerializer.Deserialize<ConfigurationFileVersionData>(currentdatajson);
 
-                    // Compare the versions
-                    // Resource Types
-                    if (officialversiondata.resourcetypes != currentversiondata.resourcetypes)
+                    if ((GeneralHelper.IsNotNull(officialversiondata)) && (GeneralHelper.IsNotNull(currentversiondata)))
                     {
-                        versiondata.Add("<h5>Resource Types</h5><hr /><div>Your resource types configuration is out of date!<br /><br />It is recommended that you refresh your resource types to the latest configuration.<br /><br /><strong>To Refresh:</strong><ul><li>Expand the <strong>Types</strong> section</li><li>Expand the <strong>Configuration</strong> section</li><li>Select the <strong>Refresh</strong> option</li></ul></div><br />");
-                    }
+                        // Compare the versions
+                        // Resource Types
+                        if (officialversiondata.resourcetypes != currentversiondata.resourcetypes)
+                        {
+                            versiondata.Add("<h5>Resource Types</h5><hr /><div>The Resource Types Configuration is out of date!<br /><br />It is recommended that you refresh your resource types to the latest configuration.<br /><br /><strong>To Refresh:</strong><ul><li>Expand the <strong>Types</strong> section</li><li>Expand the <strong>Configuration</strong> section</li><li>Select the <strong>Refresh</strong> option</li></ul></div><br />");
+                        }
 
-                    // Resource Locations
-                    if (officialversiondata.resourcelocations != currentversiondata.resourcelocations)
-                    {
-                        versiondata.Add("<h5>Resource Locations</h5><hr /><div>Your resource locations configuration is out of date!<br /><br />It is recommended that you refresh your resource locations to the latest configuration.<br /><br /><strong>To Refresh:</strong><ul><li>Expand the <strong>Locations</strong> section</li><li>Expand the <strong>Configuration</strong> section</li><li>Select the <strong>Refresh</strong> option</li></ul></div><br />");
+                        // Resource Locations
+                        if (officialversiondata.resourcelocations != currentversiondata.resourcelocations)
+                        {
+                            versiondata.Add("<h5>Resource Locations</h5><hr /><div>The Resource Locations Configuration is out of date!<br /><br />It is recommended that you refresh your resource locations to the latest configuration.<br /><br /><strong>To Refresh:</strong><ul><li>Expand the <strong>Locations</strong> section</li><li>Expand the <strong>Configuration</strong> section</li><li>Select the <strong>Refresh</strong> option</li></ul></div><br />");
+                        }
                     }
                 }
             }
@@ -498,22 +501,25 @@ namespace AzureNamingTool.Helpers
                     var currentdatajson = await GetCurrentConfigFileVersionData();
 
                     // Determine if the version data is different
-                    if ((officialdatajson != null) && (currentdatajson != null))
+                    if ((GeneralHelper.IsNotNull(officialdatajson)) && (GeneralHelper.IsNotNull(currentdatajson)))
                     {
                         officialversiondata = JsonSerializer.Deserialize<ConfigurationFileVersionData>(officialdatajson);
                         currentversiondata = JsonSerializer.Deserialize<ConfigurationFileVersionData>(currentdatajson);
 
-                        switch (fileName)
+                        if ((GeneralHelper.IsNotNull(officialversiondata)) && (GeneralHelper.IsNotNull(currentversiondata)))
                         {
-                            case "resourcetypes":
-                                currentversiondata.resourcetypes = officialversiondata.resourcetypes;
-                                break;
-                            case "resourcelocations":
-                                currentversiondata.resourcelocations = officialversiondata.resourcelocations;
-                                break;
+                            switch (fileName)
+                            {
+                                case "resourcetypes":
+                                    currentversiondata.resourcetypes = officialversiondata.resourcetypes;
+                                    break;
+                                case "resourcelocations":
+                                    currentversiondata.resourcelocations = officialversiondata.resourcelocations;
+                                    break;
+                            }
+                            //  Update the current configuration file version data
+                            await FileSystemHelper.WriteFile("configurationfileversions.json", JsonSerializer.Serialize(currentversiondata), "settings/");
                         }
-                        //  Update the current configuration file version data
-                        await FileSystemHelper.WriteFile("configurationfileversions.json", JsonSerializer.Serialize(currentversiondata), "settings/");
                     }
                 }
                 catch (Exception ex)
@@ -561,7 +567,7 @@ namespace AzureNamingTool.Helpers
             state.SetAppTheme("bg-default text-dark");
         }
 
-        public static async Task<string> GetToolVersion()
+        public static async Task<string?> GetToolVersion()
         {
             try
             {
@@ -589,11 +595,11 @@ namespace AzureNamingTool.Helpers
             {
                 VersionAlert versionalert = new();
                 bool dismissed = false;
-                string appversion = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+                string appversion = Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
 
                 // Check if version alert has been dismissed
                 var dismissedalerts = GetAppSetting("DismissedAlerts").Split(',');
-                if (dismissedalerts != null)
+                if (GeneralHelper.IsNotNull(dismissedalerts))
                 {
                     if (dismissedalerts.Contains(appversion))
                     {
@@ -610,7 +616,7 @@ namespace AzureNamingTool.Helpers
                         // Get the alert 
                         List<VersionAlert> versionAlerts = new();
                         string data = await FileSystemHelper.ReadFile("versionalerts.json", "");
-                        if (data != null)
+                        if (GeneralHelper.IsNotNull(data))
                         {
                             var items = new List<VersionAlert>();
                             var options = new JsonSerializerOptions
@@ -618,10 +624,10 @@ namespace AzureNamingTool.Helpers
                                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                                 PropertyNameCaseInsensitive = true
                             };
-                            items = JsonSerializer.Deserialize<List<VersionAlert>>(data, options).ToList();
-                            versionalert = items.Where(x => x.Version == appversion).FirstOrDefault();
+                            items = JsonSerializer.Deserialize<List<VersionAlert>>(data, options)!.ToList();
+                            versionalert = items.Where(x => x.Version == appversion).FirstOrDefault()!;
 
-                            if (versionalert != null)
+                            if (GeneralHelper.IsNotNull(versionalert))
                             {
                                 alert = versionalert.Alert;
                                 // Set the result to cache
@@ -646,7 +652,7 @@ namespace AzureNamingTool.Helpers
         {
             try
             {
-                string appversion = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+                string appversion = Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
                 List<string> dismissedalerts = new(GetAppSetting("DismissedAlerts").Split(','));
                 if (!dismissedalerts.Contains(appversion))
                 {
@@ -719,10 +725,10 @@ namespace AzureNamingTool.Helpers
         }
         public static async Task<string> GetProgramSetting(string programSetting)
         {
-            string result =  String.Empty;
+            string result = String.Empty;
             try
             {
-                string data = (string)CacheHelper.GetCacheObject(programSetting);
+                string data = (string)CacheHelper.GetCacheObject(programSetting)!;
                 if (String.IsNullOrEmpty(data))
                 {
                     //V3TESTvar response = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/programsettings.json");
@@ -763,60 +769,63 @@ namespace AzureNamingTool.Helpers
                         serviceResponse = await ResourceComponentService.GetItems(true);
                         if (serviceResponse.Success)
                         {
-                            currentComponents = serviceResponse.ResponseObject;
-                            // Get the default component data
-                            List<ResourceComponent> defaultComponents = new();
-                            string data = await FileSystemHelper.ReadFile("resourcecomponents.json", "repository/");
-                            if (!String.IsNullOrEmpty(data))
+                            if (GeneralHelper.IsNotNull(serviceResponse))
                             {
-                                var options = new JsonSerializerOptions
-                                {
-                                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                                    PropertyNameCaseInsensitive = true
-                                };
-
+                                currentComponents = serviceResponse.ResponseObject!;
+                                // Get the default component data
+                                List<ResourceComponent> defaultComponents = new();
+                                string data = await FileSystemHelper.ReadFile("resourcecomponents.json", "repository/");
                                 if (!String.IsNullOrEmpty(data))
                                 {
-                                    defaultComponents = JsonSerializer.Deserialize<List<ResourceComponent>>(data, options);
-                                }
-
-                                // Loop over the existing components to verify the data is complete
-                                foreach (ResourceComponent currentComponent in currentComponents)
-                                {
-                                    // Create a new component for any updates
-                                    ResourceComponent newComponent = currentComponent;
-                                    // Get the matching default component for the current component
-                                    ResourceComponent? defaultcomponent = defaultComponents.Find(x => x.Name == currentComponent.Name);
-                                    // Check the data to see if it's been configured
-                                    if (String.IsNullOrEmpty(currentComponent.MinLength))
+                                    var options = new JsonSerializerOptions
                                     {
-                                        if (defaultcomponent != null)
-                                        {
-                                            newComponent.MinLength = defaultcomponent.MinLength;
-                                        }
-                                        else
-                                        {
-                                            newComponent.MinLength = "1";
-                                        }
-                                        update = true;
+                                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                                        PropertyNameCaseInsensitive = true
+                                    };
+
+                                    if (!String.IsNullOrEmpty(data))
+                                    {
+                                        defaultComponents = JsonSerializer.Deserialize<List<ResourceComponent>>(data, options)!;
                                     }
 
-                                    // Check the data to see if it's been configured
-                                    if (String.IsNullOrEmpty(currentComponent.MaxLength))
+                                    // Loop over the existing components to verify the data is complete
+                                    foreach (ResourceComponent currentComponent in currentComponents)
                                     {
-                                        if (defaultcomponent != null)
+                                        // Create a new component for any updates
+                                        ResourceComponent newComponent = currentComponent;
+                                        // Get the matching default component for the current component
+                                        ResourceComponent? defaultcomponent = defaultComponents.Find(x => x.Name == currentComponent.Name);
+                                        // Check the data to see if it's been configured
+                                        if (String.IsNullOrEmpty(currentComponent.MinLength))
                                         {
-                                            newComponent.MaxLength = defaultcomponent.MaxLength;
+                                            if (GeneralHelper.IsNotNull(defaultcomponent))
+                                            {
+                                                newComponent.MinLength = defaultcomponent.MinLength;
+                                            }
+                                            else
+                                            {
+                                                newComponent.MinLength = "1";
+                                            }
+                                            update = true;
                                         }
-                                        else
+
+                                        // Check the data to see if it's been configured
+                                        if (String.IsNullOrEmpty(currentComponent.MaxLength))
                                         {
-                                            newComponent.MaxLength = "10";
+                                            if (GeneralHelper.IsNotNull(defaultcomponent))
+                                            {
+                                                newComponent.MaxLength = defaultcomponent.MaxLength;
+                                            }
+                                            else
+                                            {
+                                                newComponent.MaxLength = "10";
+                                            }
+                                            update = true;
                                         }
-                                        update = true;
-                                    }
-                                    if (update)
-                                    {
-                                        await ResourceComponentService.PostItem(newComponent);
+                                        if (update)
+                                        {
+                                            await ResourceComponentService.PostItem(newComponent);
+                                        }
                                     }
                                 }
                             }

@@ -21,19 +21,17 @@ namespace AzureNamingTool.Attributes
             }
 
             var config = ConfigurationHelper.GetConfigurationData();
-
-            //var appSettings = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
-
-            //var apiKey = appSettings.GetValue<string>(APIKEYNAME);
-
-            if (!GeneralHelper.DecryptString(config.APIKey, config.SALTKey).Equals(extractedApiKey))
+            if (GeneralHelper.IsNotNull(config))
             {
-                context.Result = new ContentResult()
+                if (!GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!).Equals(extractedApiKey))
                 {
-                    StatusCode = 401,
-                    Content = "Api Key is not valid"
-                };
-                return;
+                    context.Result = new ContentResult()
+                    {
+                        StatusCode = 401,
+                        Content = "Api Key is not valid"
+                    };
+                    return;
+                }
             }
 
             await next();

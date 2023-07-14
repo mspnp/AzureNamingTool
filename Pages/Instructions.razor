@@ -2,10 +2,11 @@
 @using AzureNamingTool.Helpers
 @using AzureNamingTool.Models
 @using AzureNamingTool.Shared.Components
+@using AzureNamingTool.Shared.Instructions
 @inject StateContainer state
 @inject ProtectedSessionStorage session
 
-<div class="card @theme.ThemeStyle">
+<div class="card @theme!.ThemeStyle">
     <div class="card-body">
         <h1>Instructions</h1>
         <div class="mb-3">This page provides instructions on how to configure and use the Azure Naming Tool.</div>
@@ -14,10 +15,10 @@
             <div class="card mb-3">
                 <h5 class="card-header bg-secondary text-white" id="adminpasswordcontainer">
                     <a id="ResourceComponent" class="link-light text-decoration-none" data-bs-toggle="collapse" style="display:block;" href="#adminpassword" role="button" aria-expanded="true" aria-controls="adminpassword">
-                        <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Admin Password
+                        <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Global Admin Password
                     </a>
                 </h5>
-                <div class="card card-body collapse show @theme.ThemeStyle" id="adminpassword">
+                <div class="card card-body collapse show @theme!.ThemeStyle" id="adminpassword">
                     <AdminPasswordInstructions theme="@theme" admin="@admin" />
                 </div>
             </div>

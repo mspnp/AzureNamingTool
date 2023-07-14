@@ -12,7 +12,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddMvcCore().AddApiExplorer();
 builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor().AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000);
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddServerSideBlazor().AddCircuitOptions(x => x.DetailedErrors = true).AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000);
+}
+else
+{
+    builder.Services.AddServerSideBlazor().AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000);
+}
 builder.Services.AddBlazorDownloadFile();
 builder.Services.AddBlazoredToast();
 builder.Services.AddBlazoredModal();
@@ -25,7 +32,7 @@ builder.Services.AddSwaggerGen(c =>
     c.OperationFilter<CustomHeaderSwaggerAttribute>();
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Version = "v" + Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion,
+        Version = "v" + Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion,
         Title = "Azure Naming Tool API",
         Description = "An ASP.NET Core Web API for managing the Azure Naming tool configuration. All API requests require the configured API Key (found in the site Admin configuration). You can find more details in the <a href=\"https://github.com/mspnp/AzureNamingTool/USINGTHEAPI.md\" target=\"_new\">Azure Naming Tool API documentation</a>."
     });
@@ -46,7 +53,6 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddMemoryCache();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

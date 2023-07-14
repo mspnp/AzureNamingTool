@@ -7,7 +7,7 @@ namespace AzureNamingTool.Helpers
 {
     public class CacheHelper
     {
-        public static object GetCacheObject(string cachekey)
+        public static object? GetCacheObject(string cachekey)
         {
             try
             {

@@ -1,6 +1,11 @@
 using AzureNamingTool.Models;
+using AzureNamingTool.Pages;
 using AzureNamingTool.Services;
+using AzureNamingTool.Shared;
+using Blazored.Modal;
+using Blazored.Modal.Services;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -13,7 +18,7 @@ namespace AzureNamingTool.Helpers
         {
             try
             {
-                return SourceData.GetType().GetProperty(propName).GetValue(SourceData, null);
+                return SourceData!.GetType()!.GetProperty(propName)!.GetValue(SourceData, null);
             }
             catch (Exception ex)
             {

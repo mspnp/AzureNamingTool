@@ -19,8 +19,11 @@ namespace AzureNamingTool.Services
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<AdminLogMessage>();
-                serviceResponse.ResponseObject = items.OrderByDescending(x => x.CreatedOn).ToList();
-                serviceResponse.Success = true;
+                if (GeneralHelper.IsNotNull(items))
+                {
+                    serviceResponse.ResponseObject = items.OrderByDescending(x => x.CreatedOn).ToList();
+                    serviceResponse.Success = true;
+                }
             }
             catch (Exception ex)
             {
@@ -41,17 +44,16 @@ namespace AzureNamingTool.Services
             {
                 // Log the created name
                 var items = await ConfigurationHelper.GetList<AdminLogMessage>();
-                if (items != null)
+                if (GeneralHelper.IsNotNull(items))
                 {
                     if (items.Count > 0)
                     {
                         adminlogMessage.Id = items.Max(x => x.Id) + 1;
                     }
+                    items.Add(adminlogMessage);
+                    // Write items to file
+                    await ConfigurationHelper.WriteList<AdminLogMessage>(items);
                 }
-
-                items.Add(adminlogMessage);
-                // Write items to file
-                await ConfigurationHelper.WriteList<AdminLogMessage>(items);
             }
             catch (Exception)
             {

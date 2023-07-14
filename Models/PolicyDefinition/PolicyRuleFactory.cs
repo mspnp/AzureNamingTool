@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AzureNamingTool.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,24 +29,27 @@ namespace AzureNamingTool.Models
             var list = policyGroups.Where(x => x.Key.StartsWith($"{level},{startIndex}")).ToList();
             foreach (var levelConditions in list)
             {
-                var header = "{\"allOf\": [";
-                var mainCondition = GetMainCondition(levelConditions.ToList());
-                var insideConditions =  String.Empty;
-                var fullLength = levelConditions.FirstOrDefault().FullLength;
-                var startIndexes = policyGroups.Where(x => x.Key.StartsWith($"{level + 1}")).Select(x => Convert.ToInt32(x.Key.Split(',')[1])).Where(x => x == fullLength).Distinct().ToList();
-                foreach (var nextStartIndex in startIndexes)
+                if (GeneralHelper.IsNotNull(levelConditions))
                 {
-                    insideConditions += GenerateConditions(policyGroups, level + 1, nextStartIndex);
-                    if (startIndexes.Last() != nextStartIndex)
-                        insideConditions += ",";
+                    var header = "{\"allOf\": [";
+                    var mainCondition = GetMainCondition(levelConditions.ToList());
+                    var insideConditions = String.Empty;
+                    var fullLength = levelConditions.FirstOrDefault()!.FullLength;
+                    var startIndexes = policyGroups.Where(x => x.Key.StartsWith($"{level + 1}")).Select(x => Convert.ToInt32(x.Key.Split(',')[1])).Where(x => x == fullLength).Distinct().ToList();
+                    foreach (var nextStartIndex in startIndexes)
+                    {
+                        insideConditions += GenerateConditions(policyGroups, level + 1, nextStartIndex);
+                        if (startIndexes.Last() != nextStartIndex)
+                            insideConditions += ",";
+                    }
+
+                    var footer = "]}";
+
+                    if (list.Last().Key != levelConditions.Key)
+                        footer += ",";
+
+                    result += header + mainCondition + (insideConditions == String.Empty ? String.Empty : "," + insideConditions) + footer;
                 }
-
-                var footer = "]}";
-
-                if (list.Last().Key != levelConditions.Key)
-                    footer += ",";
-
-                result += header + mainCondition + (insideConditions ==  String.Empty ?  String.Empty : "," + insideConditions) + footer;
             }
 
             return result;

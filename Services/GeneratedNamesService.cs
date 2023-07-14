@@ -12,19 +12,22 @@ namespace AzureNamingTool.Services
         /// This function gets the generated names log. 
         /// </summary>
         /// <returns>List of GeneratedNames - List of generated names</returns>
-        public static async Task<ServiceResponse> GetItems() 
+        public static async Task<ServiceResponse> GetItems()
         {
             List<GeneratedName> lstGeneratedNames = new();
             try
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<GeneratedName>();
-                serviceResponse.ResponseObject = items.OrderByDescending(x => x.CreatedOn).ToList();
-                serviceResponse.Success = true;
+                if (GeneralHelper.IsNotNull(items))
+                {
+                    serviceResponse.ResponseObject = items.OrderByDescending(x => x.CreatedOn).ToList();
+                    serviceResponse.Success = true;
+                }
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage{ Title = "ERROR", Message = ex.Message });
+                AdminLogService.PostItem(new AdminLogMessage { Title = "ERROR", Message = ex.Message });
                 serviceResponse.Success = false;
             }
             return serviceResponse;
@@ -35,10 +38,16 @@ namespace AzureNamingTool.Services
             try
             {
                 // Get list of items
-                var data = await ConfigurationHelper.GetList<GeneratedName>();
-                var item = data.Find(x => x.Id == id);
-                serviceResponse.ResponseObject = item;
-                serviceResponse.Success = true;
+                var items = await ConfigurationHelper.GetList<GeneratedName>();
+                if (GeneralHelper.IsNotNull(items))
+                {
+                    var item = items.Find(x => x.Id == id);
+                    if (GeneralHelper.IsNotNull(item))
+                    {
+                        serviceResponse.ResponseObject = item;
+                        serviceResponse.Success = true;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -60,23 +69,26 @@ namespace AzureNamingTool.Services
             {
                 // Get the previously generated names
                 var items = await ConfigurationHelper.GetList<GeneratedName>();
-                if ((items != null) && (items.Count > 0))
+                if (GeneralHelper.IsNotNull(items))
                 {
-                    generatedName.Id = items.Max(x => x.Id) + 1;
+                    if (items.Count > 0)
+                    {
+                        generatedName.Id = items.Max(x => x.Id) + 1;
+                    }
+                    else
+                    {
+                        generatedName.Id = 1;
+                    }
+
+                    items.Add(generatedName);
+
+                    // Write items to file
+                    await ConfigurationHelper.WriteList<GeneratedName>(items);
+
+                    CacheHelper.InvalidateCacheObject("generatednames.json");
+
+                    serviceReponse.Success = true;
                 }
-                else
-                {
-                    generatedName.Id = 1;
-                }
-                
-                items.Add(generatedName);
-
-                // Write items to file
-                await ConfigurationHelper.WriteList<GeneratedName>(items);
-
-                CacheHelper.InvalidateCacheObject("generatednames.json");
-
-                serviceReponse.Success = true;
             }
             catch (Exception ex)
             {
@@ -92,14 +104,20 @@ namespace AzureNamingTool.Services
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<GeneratedName>();
-                // Get the specified item
-                var item = items.Find(x => x.Id == id);
-                // Remove the item from the collection
-                items.Remove(item);
+                if (GeneralHelper.IsNotNull(items))
+                {
+                    // Get the specified item
+                    var item = items.Find(x => x.Id == id);
+                    if (GeneralHelper.IsNotNull(item))
+                    {
+                        // Remove the item from the collection
+                        items.Remove(item);
 
-                // Write items to file
-                await ConfigurationHelper.WriteList<GeneratedName>(items);
-                serviceResponse.Success = true;
+                        // Write items to file
+                        await ConfigurationHelper.WriteList<GeneratedName>(items);
+                        serviceResponse.Success = true;
+                    }
+                }
             }
             catch (Exception ex)
             {

@@ -14,15 +14,18 @@ namespace AzureNamingTool.Services
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<ResourceLocation>();
-                if (!admin)
+                if (GeneralHelper.IsNotNull(items))
                 {
-                    serviceResponse.ResponseObject = items.Where(x => x.Enabled == true).OrderBy(x => x.Name).ToList();
+                    if (!admin)
+                    {
+                        serviceResponse.ResponseObject = items.Where(x => x.Enabled == true).OrderBy(x => x.Name).ToList();
+                    }
+                    else
+                    {
+                        serviceResponse.ResponseObject = items.OrderBy(x => x.Name).ToList();
+                    }
+                    serviceResponse.Success = true;
                 }
-                else
-                {
-                    serviceResponse.ResponseObject = items.OrderBy(x => x.Name).ToList();
-                }
-                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
@@ -38,10 +41,16 @@ namespace AzureNamingTool.Services
             try
             {
                 // Get list of items
-                var data = await ConfigurationHelper.GetList<ResourceLocation>();
-                var item = data.Find(x => x.Id == id);
-                serviceResponse.ResponseObject = item;
-                serviceResponse.Success = true;
+                var items = await ConfigurationHelper.GetList<ResourceLocation>();
+                if (GeneralHelper.IsNotNull(items))
+                {
+                    var item = items.Find(x => x.Id == id);
+                    if (GeneralHelper.IsNotNull(item))
+                    {
+                        serviceResponse.ResponseObject = item;
+                        serviceResponse.Success = true;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -69,44 +78,49 @@ namespace AzureNamingTool.Services
 
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<ResourceLocation>();
-
-                // Set the new id
-                if (item.Id == 0)
+                if (GeneralHelper.IsNotNull(items))
                 {
+                    // Set the new id
+                    if (item.Id == 0)
+                    {
+                        if (items.Count > 0)
+                        {
+                            item.Id = items.Max(t => t.Id) + 1;
+                        }
+                        else
+                        {
+                            item.Id = 1;
+                        }
+                    }
+
+                    // Determine new item id
                     if (items.Count > 0)
                     {
-                        item.Id = items.Max(t => t.Id) + 1;
+                        // Check if the item already exists
+                        if (items.Exists(x => x.Id == item.Id))
+                        {
+                            // Remove the updated item from the list
+                            var existingitem = items.Find(x => x.Id == item.Id);
+                            if (GeneralHelper.IsNotNull(existingitem))
+                            {
+                                int index = items.IndexOf(existingitem);
+                                items.RemoveAt(index);
+                            }
+                        }
+
+                        // Put the item at the end
+                        items.Add(item);
                     }
                     else
                     {
                         item.Id = 1;
+                        items.Add(item);
                     }
-                }
 
-                // Determine new item id
-                if (items.Count > 0)
-                {
-                    // Check if the item already exists
-                    if (items.Exists(x => x.Id == item.Id))
-                    {
-                        // Remove the updated item from the list
-                        var existingitem = items.Find(x => x.Id == item.Id);
-                        int index = items.IndexOf(existingitem);
-                        items.RemoveAt(index);
-                    }
-                    
-                        // Put the item at the end
-                        items.Add(item);                    
+                    // Write items to file
+                    await ConfigurationHelper.WriteList<ResourceLocation>(items);
+                    serviceResponse.Success = true;
                 }
-                else
-                {
-                    item.Id = 1;
-                    items.Add(item);
-                }
-
-                // Write items to file
-                await ConfigurationHelper.WriteList<ResourceLocation>(items);
-                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
@@ -123,14 +137,20 @@ namespace AzureNamingTool.Services
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<ResourceLocation>();
-                // Get the specified item
-                var item = items.Find(x => x.Id == id);
-                // Remove the item from the collection
-                items.Remove(item);
+                if (GeneralHelper.IsNotNull(items))
+                {
+                    // Get the specified item
+                    var item = items.Find(x => x.Id == id);
+                    if (GeneralHelper.IsNotNull(item))
+                    {
+                        // Remove the item from the collection
+                        items.Remove(item);
 
-                // Write items to file
-                await ConfigurationHelper.WriteList<ResourceLocation>(items);
-                serviceResponse.Success = true;
+                        // Write items to file
+                        await ConfigurationHelper.WriteList<ResourceLocation>(items);
+                        serviceResponse.Success = true;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -188,60 +208,68 @@ namespace AzureNamingTool.Services
                 // Get the existing Resource location items
                 ServiceResponse serviceResponse;
                 serviceResponse = await ResourceLocationService.GetItems();
-                List<ResourceLocation> locations = (List<ResourceLocation>)serviceResponse.ResponseObject;
-                string url = "https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/repository/resourcelocations.json";
-
-                string refreshdata = await GeneralHelper.DownloadString(url);
-                if (!String.IsNullOrEmpty(refreshdata))
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                 {
-                    var newlocations = new List<ResourceLocation>();
-                    var options = new JsonSerializerOptions
+                    List<ResourceLocation> locations = (List<ResourceLocation>)serviceResponse.ResponseObject!;
+                    if (GeneralHelper.IsNotNull(locations))
                     {
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                        PropertyNameCaseInsensitive = true
-                    };
+                        string url = "https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/repository/resourcelocations.json";
 
-                    newlocations = JsonSerializer.Deserialize<List<ResourceLocation>>(refreshdata, options);
-
-                    // Loop through the new items
-                    // Add any new resource location and update any existing locations
-                    foreach (ResourceLocation newlocation in newlocations)
-                    {
-                        // Check if the existing locations contain the current location
-                        int i = locations.FindIndex(x => x.Name == newlocation.Name);
-                        if (i > -1)
+                        string refreshdata = await GeneralHelper.DownloadString(url);
+                        if (!String.IsNullOrEmpty(refreshdata))
                         {
-                            // Update the Resource location Information
-                            ResourceLocation oldlocation = locations[i];
-                            newlocation.Enabled = oldlocation.Enabled;
-                            
-                            if ((!shortNameReset) || (String.IsNullOrEmpty(oldlocation.ShortName)))
+                            var newlocations = new List<ResourceLocation>();
+                            var options = new JsonSerializerOptions
                             {
-                                newlocation.ShortName = oldlocation.ShortName;
+                                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                                PropertyNameCaseInsensitive = true
+                            };
+
+                            newlocations = JsonSerializer.Deserialize<List<ResourceLocation>>(refreshdata, options);
+                            if (GeneralHelper.IsNotNull(newlocations))
+                            {
+                                // Loop through the new items
+                                // Add any new resource location and update any existing locations
+                                foreach (ResourceLocation newlocation in newlocations)
+                                {
+                                    // Check if the existing locations contain the current location
+                                    int i = locations.FindIndex(x => x.Name == newlocation.Name);
+                                    if (i > -1)
+                                    {
+                                        // Update the Resource location Information
+                                        ResourceLocation oldlocation = locations[i];
+                                        newlocation.Enabled = oldlocation.Enabled;
+
+                                        if ((!shortNameReset) || (String.IsNullOrEmpty(oldlocation.ShortName)))
+                                        {
+                                            newlocation.ShortName = oldlocation.ShortName;
+                                        }
+                                        // Remove the old location
+                                        locations.RemoveAt(i);
+                                        // Add the new location
+                                        locations.Add(newlocation);
+                                    }
+                                    else
+                                    {
+                                        // Add a new resource location
+                                        locations.Add(newlocation);
+                                    }
+                                }
+
+                                // Update the settings file
+                                serviceResponse = await PostConfig(locations);
+
+                                // Update the repository file
+                                await FileSystemHelper.WriteFile("resourcelocations.json", refreshdata, "repository/");
+
+                                // Clear cached data
+                                CacheHelper.InvalidateCacheObject("ResourceLocation");
+
+                                // Update the current configuration file version data information
+                                await ConfigurationHelper.UpdateConfigurationFileVersion("resourcelocations");
                             }
-                            // Remove the old location
-                            locations.RemoveAt(i);
-                            // Add the new location
-                            locations.Add(newlocation);
-                        }
-                        else
-                        {
-                            // Add a new resource location
-                            locations.Add(newlocation);
                         }
                     }
-
-                    // Update the settings file
-                    serviceResponse = await PostConfig(locations);
-
-                    // Update the repository file
-                    await FileSystemHelper.WriteFile("resourcelocations.json", refreshdata, "repository/");
-
-                    // Clear cached data
-                    CacheHelper.InvalidateCacheObject("ResourceLocation");
-
-                    // Update the current configuration file version data information
-                    await ConfigurationHelper.UpdateConfigurationFileVersion("resourcelocations");
                 }
                 else
                 {

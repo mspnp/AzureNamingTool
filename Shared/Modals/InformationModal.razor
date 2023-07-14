@@ -1,6 +1,7 @@
 ﻿@using AzureNamingTool.Helpers
 @using AzureNamingTool.Models
 @using AzureNamingTool.Shared.Components
+@using AzureNamingTool.Shared.Instructions
 @inject StateContainer state
 @inject ProtectedSessionStorage session
 @inject IToastService toastService
@@ -15,9 +16,9 @@
                 <h3 class="modal-title">@title</h3>
             </div>
             <div class="modal-body">
-                @if (message != null)
+                @if (GeneralHelper.IsNotNull(message))
                 {
-                    <div class="mb-3">
+                    <div class="my-3">
                         @(
                             (MarkupString)message
                             )

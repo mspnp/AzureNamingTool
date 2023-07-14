@@ -13,8 +13,11 @@ namespace AzureNamingTool.Services
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<AdminUser>();
-                serviceResponse.ResponseObject = items.OrderBy(x => x.Name).ToList();
-                serviceResponse.Success = true;
+                if (GeneralHelper.IsNotNull(items))
+                {
+                    serviceResponse.ResponseObject = items.OrderBy(x => x.Name).ToList();
+                    serviceResponse.Success = true;
+                }
             }
             catch (Exception ex)
             {
@@ -30,10 +33,13 @@ namespace AzureNamingTool.Services
             try
             {
                 // Get list of items
-                var data = await ConfigurationHelper.GetList<AdminUser>();
-                var item = data.Find(x => x.Name == name);
-                serviceResponse.ResponseObject = item;
-                serviceResponse.Success = true;
+                var items = await ConfigurationHelper.GetList<AdminUser>();
+                if (GeneralHelper.IsNotNull(items))
+                {
+                    var item = items.Find(x => x.Name == name);
+                    serviceResponse.ResponseObject = item;
+                    serviceResponse.Success = true;
+                }
             }
             catch (Exception ex)
             {
@@ -50,57 +56,61 @@ namespace AzureNamingTool.Services
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<AdminUser>();
-
-                // Set the new id
-                if (item.Id == 0)
+                if (GeneralHelper.IsNotNull(items))
                 {
+                    // Set the new id
+                    if (item.Id == 0)
+                    {
+                        if (items.Count > 0)
+                        {
+                            item.Id = items.Max(t => t.Id) + 1;
+                        }
+                        else
+                        {
+                            item.Id = 1;
+                        }
+                    }
+
+                    items = items.OrderBy(x => x.Name).ToList();
+
+                    // Determine new item id
                     if (items.Count > 0)
                     {
-                        item.Id = items.Max(t => t.Id) + 1;
+                        // Check if the item already exists
+                        if (items.Exists(x => x.Id == item.Id))
+                        {
+                            // Remove the updated item from the list
+                            var existingitem = items.Find(x => x.Id == item.Id);
+                            if (GeneralHelper.IsNotNull(existingitem))
+                            {
+                                int index = items.IndexOf(existingitem);
+                                items.RemoveAt(index);
+                            }
+                        }
+
+                        // Check for the new sort order
+                        if (items.Exists(x => x.Id == item.Id))
+                        {
+                            // Remove the updated item from the list
+                            items.Insert(items.IndexOf(items.FirstOrDefault(x => x.Id == item.Id)!), item);
+                        }
+                        else
+                        {
+                            // Put the item at the end
+                            items.Add(item);
+                        }
                     }
                     else
                     {
                         item.Id = 1;
-                    }
-                }
-
-                items = items.OrderBy(x => x.Name).ToList();
-
-                // Determine new item id
-                if (items.Count > 0)
-                {
-                    // Check if the item already exists
-                    if (items.Exists(x => x.Id == item.Id))
-                    {
-                        // Remove the updated item from the list
-                        var existingitem = items.Find(x => x.Id == item.Id);
-                        int index = items.IndexOf(existingitem);
-                        items.RemoveAt(index);
-                    }
-
-
-                    // Check for the new sort order
-                    if (items.Exists(x => x.Id == item.Id))
-                    {
-                        // Remove the updated item from the list
-                        items.Insert(items.IndexOf(items.FirstOrDefault(x => x.Id == item.Id)), item);
-                    }
-                    else
-                    {
-                        // Put the item at the end
                         items.Add(item);
                     }
-                }
-                else
-                {
-                    item.Id = 1;
-                    items.Add(item);
-                }
 
-                // Write items to file
-                await ConfigurationHelper.WriteList<AdminUser>(items);
-                serviceResponse.ResponseObject = "Item added!";
-                serviceResponse.Success = true;
+                    // Write items to file
+                    await ConfigurationHelper.WriteList<AdminUser>(items);
+                    serviceResponse.ResponseObject = "Item added!";
+                    serviceResponse.Success = true;
+                }
             }
             catch (Exception ex)
             {
@@ -117,14 +127,20 @@ namespace AzureNamingTool.Services
             {
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<AdminUser>();
-                // Get the specified item
-                var item = items.Find(x => x.Id == id);
-                // Remove the item from the collection
-                items.Remove(item);
+                if (GeneralHelper.IsNotNull(items))
+                {
+                    // Get the specified item
+                    var item = items.Find(x => x.Id == id);
+                    if (GeneralHelper.IsNotNull(item))
+                    {
+                        // Remove the item from the collection
+                        items.Remove(item);
 
-                // Write items to file
-                await ConfigurationHelper.WriteList<AdminUser>(items);
-                serviceResponse.Success = true;
+                        // Write items to file
+                        await ConfigurationHelper.WriteList<AdminUser>(items);
+                        serviceResponse.Success = true;
+                    }
+                }
             }
             catch (Exception ex)
             {
