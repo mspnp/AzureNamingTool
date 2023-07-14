@@ -16,7 +16,7 @@ namespace AzureNamingTool.Attributes
 
                 var minRequestRateFeature = context.HttpContext.Features.Get<IHttpMinRequestBodyDataRateFeature>();
                 var minResponseRateFeature = context.HttpContext.Features.Get<IHttpMinResponseDataRateFeature>();
-                //Default Bytes/s = 240, Default TimeOut = 5s
+                //Default Bytes/s = 240, Default TimeOut = 5s 
 
                 if (GeneralHelper.IsNotNull(minRequestRateFeature))
                 {
