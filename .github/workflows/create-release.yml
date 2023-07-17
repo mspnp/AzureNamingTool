@@ -1,5 +1,8 @@
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        required: true
   
 defaults:
   run:
@@ -20,7 +23,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: v3.0.0
-          release_name: v3.0.0
+          tag_name: ${{ github.event.inputs.version }}
+          release_name: ${{ github.event.inputs.version }}
+          body: |
+            (${{ github.event.inputs.version }} Release Notes)[https://github.com/mspnp/AzureNamingTool/wiki/${{ github.event.inputs.version }}]
           draft: false
           prerelease: false
