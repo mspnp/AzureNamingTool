@@ -4,9 +4,6 @@ on:
 defaults:
   run:
     working-directory: src
-    
-permissions:
-  contents: read
 
 name: Create Release
 
