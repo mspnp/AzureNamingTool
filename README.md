@@ -1,6 +1,6 @@
 # Azure Naming Tool
 
-<img src="./wwwroot/images/AzureNamingToolLogo.png?raw=true" alt="Image representing the Azure Naming Tool" title="Azure Naming Tool" height="150"/>
+<img src="./src/wwwroot/images/AzureNamingToolLogo.png?raw=true" alt="Image representing the Azure Naming Tool" title="Azure Naming Tool" height="150"/>
 
 ## Overview
 
