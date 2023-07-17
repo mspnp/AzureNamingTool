@@ -26,6 +26,15 @@ jobs:
           tag_name: ${{ github.event.inputs.version }}
           release_name: ${{ github.event.inputs.version }}
           body: |
-            (${{ github.event.inputs.version }} Release Notes)[https://github.com/mspnp/AzureNamingTool/wiki/${{ github.event.inputs.version }}]
+            https://github.com/mspnp/AzureNamingTool/wiki/${{ github.event.inputs.version }}
           draft: false
           prerelease: false
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: ./src
+          asset_name: ${{ github.event.inputs.version }}
+          asset_content_type: application/octet-stream
