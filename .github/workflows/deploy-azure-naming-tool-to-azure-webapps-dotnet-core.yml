@@ -25,12 +25,12 @@ env:
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   workflow_dispatch:
   
 defaults:
   run:
-    working-directory: ready/AzNamingTool
+    working-directory: src
     
 permissions:
   contents: read
