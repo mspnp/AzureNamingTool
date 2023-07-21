@@ -84,7 +84,7 @@ namespace AzureNamingTool.Controllers
 
         // POST api/<ResourceNamingRequestsController>
         /// <summary>
-        /// This function will validate the name for the specified resource type and delimiter.  
+        /// This function will validate the name for the specified resource type.  
         /// </summary>
         /// <param name="validateNameRequest">ValidateNameRequest (json) - Validate Name Request data</param>
         /// <returns>ValidateNameResponse - Name validation response</returns>
