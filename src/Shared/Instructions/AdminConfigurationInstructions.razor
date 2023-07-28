@@ -87,11 +87,21 @@
                             </p>
                         </li>
                         <li>
+                            <strong>Resource Type Editing</strong>
+                            <p>
+                                By default, the Azure Naming Tool uses managed configuration data for Resource Types. Use this setting to override this functionality and edit Resource Type values.
+                            </p>
+                            <p class="alert alert-danger">
+                                <strong>NOTE</strong><br />
+                                Disabling this setting may result in name generation that will fail regex validation for the resource type.
+                            </p>
+                        </li>
+                        <li>
                             <strong>Connectivity Check</strong>
                             <p>
                                 The Azure Naming Tool will verify the tool has internet connectivity to enable update features. Use this setting to disable the connectivity check functionality.
                             </p>
-                            <p class="alert alert-danger">
+                            <p class="alert alert-warning">
                                 <strong>NOTE</strong><br />
                                 Disabling this setting may result in connectivity errors being logged to the Admin Log.
                             </p>
