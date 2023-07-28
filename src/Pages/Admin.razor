@@ -67,6 +67,27 @@
                                     </div>
                                 </div>
                             }
+                            @if (GeneralHelper.IsNotNull(environmentvariables))
+                            {
+                                <div class="card mb-3" style="width:auto;">
+                                    <div class="card-header bg-default text-dark">
+                                        <a id="environmentvariableslink" class="link-dark text-decoration-none" data-bs-toggle="collapse" href="#environmentvariables" role="button" aria-expanded="false" aria-controls="environmentvariables">
+                                            <span class="oi oi-chevron-bottom" aria-hidden="true"></span> <strong>Environment Details</strong>
+                                        </a>
+                                    </div>
+                                    <div class="collapse card card-body @theme.ThemeStyle" id="environmentvariables">
+                                        <div class="mb-3">
+                                            <ul>
+                                            @foreach(var variable in environmentvariables)
+                                            {
+                                                <li>@variable.Key: @variable.Value</li>
+                                            }
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            }
                             <div class="mb-3">
                                 <button type="button" class="btn btn-success" @onclick="@(e => SubmitIssue("feature"))" title="Feature Request">Feature Request</button>
                                 <button type="button" class="btn btn-danger" @onclick="@(e => SubmitIssue("bug"))" title="Submit a bug">Submit a bug</button>
@@ -427,6 +448,7 @@
     private string appversion = String.Empty;
     private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
     private string currentuser = String.Empty;
+    private List<KeyValuePair<string, string>> environmentvariables = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -461,6 +483,7 @@
                         currentidentityprovider = identityProviderDetails.CurrentIdentityProvider;
                     }
                 }
+                environmentvariables = ConfigurationHelper.GetEnvironmentVariables();
             }
 
             await storage.SetAsync("apptheme", theme.ThemeStyle);

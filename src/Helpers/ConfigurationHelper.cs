@@ -14,6 +14,8 @@ using System.Net.Http.Headers;
 using System;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace AzureNamingTool.Helpers
 {
@@ -837,7 +839,24 @@ namespace AzureNamingTool.Helpers
             {
                 AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
+        }
 
+        public static List<KeyValuePair<string,string>> GetEnvironmentVariables()
+        {
+            List<KeyValuePair<string, string>> result = new();
+            try
+            {
+                var entries = Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
+                              .Select(x => KeyValuePair.Create((string)x.Key, (string)x.Value!));
+                var sortedEntries = entries.OrderBy(x => x.Key);
+                result = sortedEntries.ToList<KeyValuePair<string, string>>();
+                return result;
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            }
+            return result;
         }
     }
 }
