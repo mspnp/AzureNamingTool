@@ -28,7 +28,7 @@ namespace AzureNamingTool.Helpers
                     .AddJsonFile("settings/appsettings.json")
                     .Build()
                     .Get<SiteConfiguration>();
-            return config;
+            return config!;
         }
 
         public static string GetAppSetting(string key, bool decrypt = false)

@@ -21,7 +21,7 @@
             if (this.HttpContext.Request.Headers.ContainsKey("X-MS-CLIENT-PRINCIPAL-IDP"))
             {
                 // Set the identity provider
-                identityProviderDetails.CurrentIdentityProvider = this.HttpContext.Request.Headers["X-MS-CLIENT-PRINCIPAL-IDP"];
+                identityProviderDetails.CurrentIdentityProvider = this.HttpContext.Request.Headers["X-MS-CLIENT-PRINCIPAL-IDP"]!;
             }
         }
 
@@ -39,7 +39,7 @@
                         if (this.HttpContext.Request.Headers.ContainsKey(headername))
                         {
                             // Set the current user
-                            identityProviderDetails.CurrentUser = this.HttpContext.Request.Headers[headername];
+                            identityProviderDetails.CurrentUser = this.HttpContext.Request.Headers[headername]!;
                         }
                     }
                 }
