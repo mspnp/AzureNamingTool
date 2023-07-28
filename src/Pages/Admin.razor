@@ -67,7 +67,7 @@
                                     </div>
                                 </div>
                             }
-                            @if (GeneralHelper.IsNotNull(environmentvariables))
+                            @if ((currentuser == "GlobalAdmin") && (GeneralHelper.IsNotNull(environmentvariables)))
                             {
                                 <div class="card mb-3" style="width:auto;">
                                     <div class="card-header bg-default text-dark">
