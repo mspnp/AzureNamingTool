@@ -57,7 +57,7 @@
                         </div>
                         <div class="collapse show card card-body @theme.ThemeStyle" id="versiondetails">
                             <div class="mb-3">
-                                <strong>Current version:</strong> @appversion
+                                <strong>Current version:</strong> @appversion (<a href="@releasenotesurl" target="_blank">Release Notes</a>)
                             </div>
                             @if (!String.IsNullOrEmpty(versionalert))
                             {
@@ -78,10 +78,10 @@
                                     <div class="collapse card card-body @theme.ThemeStyle" id="environmentvariables">
                                         <div class="mb-3">
                                             <ul>
-                                            @foreach(var variable in environmentvariables)
-                                            {
-                                                <li>@variable.Key: @variable.Value</li>
-                                            }
+                                                @foreach (var variable in environmentvariables)
+                                                {
+                                                    <li>@variable.Key: @variable.Value</li>
+                                                }
                                             </ul>
                                         </div>
 
@@ -449,6 +449,7 @@
     private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
     private string currentuser = String.Empty;
     private List<KeyValuePair<string, string>> environmentvariables = new();
+    private string releasenotesurl = String.Empty;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -459,6 +460,7 @@
             if (GeneralHelper.IsNotNull(Assembly.GetEntryAssembly()))
             {
                 appversion = Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
+                releasenotesurl = "https://github.com/mspnp/AzureNamingTool/wiki/v" + appversion;
             }
 
             servicesData = await ServicesHelper.LoadServicesData(servicesData, true);

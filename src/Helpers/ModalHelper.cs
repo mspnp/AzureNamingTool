@@ -44,7 +44,7 @@ namespace AzureNamingTool.Helpers
             return response;
         }
 
-        public static void ShowInformationModal(IModalService modal, ThemeInfo theme, string headerstyle, string title, string message, object component, bool admin)
+        public static void ShowInformationModal(IModalService modal, ThemeInfo theme, string headerstyle, string title, string message, object component, bool admin, string? externalurl = null)
         {
             try
             {
@@ -55,6 +55,7 @@ namespace AzureNamingTool.Helpers
                     { nameof(InformationModal.headerstyle), headerstyle },
                     { nameof(InformationModal.component), component },
                     { nameof(InformationModal.admin), admin },
+                    { nameof(InformationModal.externalurl), externalurl! },
                     { "theme", theme }
                 };
 
