@@ -1,5 +1,7 @@
 {
   "FeedbackURL": "https://forms.office.com/r/M2EZLg6zKq",  
   "latestNewsEnabled": "false",
-  "toolVersion":"3.0.0"
+  "toolVersion":"3.0.0",
+  "resourcetypes": "1.0.1",
+  "resourcelocations": "1.0.0"
 }
