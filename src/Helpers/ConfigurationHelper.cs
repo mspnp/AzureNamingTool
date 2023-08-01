@@ -413,8 +413,7 @@ namespace AzureNamingTool.Helpers
             string versiondata = String.Empty;
             try
             {
-                //V3TESTversiondata = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/configurationfileversions.json");
-                versiondata = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/microsoft/CloudAdoptionFramework/master/ready/AzNamingTool/configurationfileversions.json");
+                versiondata = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/src/configurationfileversions.json");
             }
             catch (Exception ex)
             {
@@ -573,15 +572,10 @@ namespace AzureNamingTool.Helpers
         {
             try
             {
-                //V3TESTvar response = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/AzureNamingTool.csproj");
-                var response = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/microsoft/CloudAdoptionFramework/master/ready/AzNamingTool/AzureNamingTool.csproj");
-                XDocument xdoc = XDocument.Parse(response);
-                string result = xdoc
-                    .Descendants("PropertyGroup")
-                    .Descendants("Version")
-                    .First()
-                    .Value;
-                return result;
+                string versiondata = String.Empty;
+                versiondata = await GetProgramSetting("toolVersion");
+                return versiondata;
+
             }
             catch (Exception ex)
             {
@@ -733,8 +727,7 @@ namespace AzureNamingTool.Helpers
                 string data = (string)CacheHelper.GetCacheObject(programSetting)!;
                 if (String.IsNullOrEmpty(data))
                 {
-                    //V3TESTvar response = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/programsettings.json");
-                    var response = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/aznamingtool/AzureNamingTool/main/programsettings.json");
+                    var response = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/src/programsettings.json");
                     var setting = JsonDocument.Parse(response);
                     result = setting.RootElement.GetProperty(programSetting).ToString();
                     CacheHelper.SetCacheObject(programSetting, result);
