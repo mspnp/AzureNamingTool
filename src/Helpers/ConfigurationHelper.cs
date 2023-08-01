@@ -230,8 +230,7 @@ namespace AzureNamingTool.Helpers
                         {
                             // Atempt to download a file
                             var client = new HttpClient(new HttpClientHandler() { UseDefaultCredentials = true });
-                            //using var response = await client.GetAsync("https://github.com/mspnp/AzureNamingTool/blob/main/connectiontest.png");
-                            using var response = await client.GetAsync("https://github.com/aznamingtool/AzureNamingTool/blob/main/connectiontest.png");
+                            using var response = await client.GetAsync("https://github.com/mspnp/AzureNamingTool/blob/main/src/connectiontest.png");
                             if (response.StatusCode == HttpStatusCode.OK)
                             {
                                 result = true;
