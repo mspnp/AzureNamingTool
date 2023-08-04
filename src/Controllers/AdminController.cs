@@ -218,7 +218,7 @@ namespace AzureNamingTool.Controllers
             }
         }
 
-        // GET api/<AdminController>/GeneratedName/5
+        // GET api/<AdminController>/GetGeneratedName/5
         /// <summary>
         /// This function will return the generated names data by ID.
         /// </summary>
@@ -226,7 +226,7 @@ namespace AzureNamingTool.Controllers
         /// <returns>json - Current generated name data by ID</returns>
         [HttpGet]
         [Route("[action]/{id}")]
-        public async Task<IActionResult> GeneratedName(int id)
+        public async Task<IActionResult> GetGeneratedName(int id)
         {
             try
             {
@@ -247,7 +247,7 @@ namespace AzureNamingTool.Controllers
             }
         }
 
-        // DELETE api/<AdminController>/GeneratedName/5
+        // DELETE api/<AdminController>/DeleteGeneratedName/5
         /// <summary>
         /// This function will delete the generated names data by ID.
         /// </summary>
@@ -255,7 +255,7 @@ namespace AzureNamingTool.Controllers
         /// <returns>bool - PASS/FAIL</returns>
         [HttpDelete]
         [Route("[action]/{id}")]
-        public async Task<IActionResult> GeneratedName(int id)
+        public async Task<IActionResult> DeleteGeneratedName(int id)
         {
             try
             {
