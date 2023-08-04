@@ -219,6 +219,33 @@ namespace AzureNamingTool.Controllers
         }
 
         /// <summary>
+        /// This function will return the generated names data by ID.
+        /// </summary>
+        /// <returns>json - Current generated names data by ID</returns>
+        [HttpGet]
+        [Route("[action]/{id}")]
+        public async Task<IActionResult> GetGeneratedName(string id)
+        {
+            try
+            {
+                serviceResponse = await GeneratedNamesService.GetItem(id: int.Parse(id));
+                if (serviceResponse.Success)
+                {
+                    return Ok(serviceResponse.ResponseObject);
+                }
+                else
+                {
+                    return BadRequest(serviceResponse.ResponseObject);
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                return BadRequest(ex);
+            }
+        }
+
+        /// <summary>
         /// This function will purge the generated names data.
         /// </summary>
         /// <returns>dttring - Successful operation</returns>
