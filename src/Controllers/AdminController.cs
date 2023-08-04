@@ -224,11 +224,11 @@ namespace AzureNamingTool.Controllers
         /// <returns>json - Current generated names data by ID</returns>
         [HttpGet]
         [Route("[action]/{id}")]
-        public async Task<IActionResult> GetGeneratedName(string id)
+        public async Task<IActionResult> GetGeneratedName(int id)
         {
             try
             {
-                serviceResponse = await GeneratedNamesService.GetItem(id: int.Parse(id));
+                serviceResponse = await GeneratedNamesService.GetItem(id: id);
                 if (serviceResponse.Success)
                 {
                     return Ok(serviceResponse.ResponseObject);
