@@ -218,17 +218,19 @@ namespace AzureNamingTool.Controllers
             }
         }
 
+        // GET api/<AdminController>/GetGeneratedName/5
         /// <summary>
         /// This function will return the generated names data by ID.
         /// </summary>
-        /// <returns>json - Current generated names data by ID</returns>
+        /// <param name="id">int - Generated Name id</param>
+        /// <returns>json - Current generated name data by ID</returns>
         [HttpGet]
         [Route("[action]/{id}")]
         public async Task<IActionResult> GetGeneratedName(int id)
         {
             try
             {
-                serviceResponse = await GeneratedNamesService.GetItem(id: id);
+                serviceResponse = await GeneratedNamesService.GetItem(id);
                 if (serviceResponse.Success)
                 {
                     return Ok(serviceResponse.ResponseObject);
