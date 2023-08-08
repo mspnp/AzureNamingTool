@@ -77,15 +77,19 @@ namespace AzureNamingTool.Helpers
             {
                 bool valid = true;
                 StringBuilder sbMessage = new();
-
                 // Check regex
                 // Validate the name against the resource type regex
                 Regex regx = new(resourceType.Regx);
                 Match match = regx.Match(name);
+                bool delimitervalid = false;
+                // Check to see if the delimiter has been set
+                if (!String.IsNullOrEmpty(delimiter))
+                {
+                    delimitervalid = true;
+                }
                 if (!match.Success)
                 {
-                    // Strip the delimiter in case that is causing the issue
-                    if (!String.IsNullOrEmpty(delimiter))
+                    if (delimitervalid)
                     {
                         // Strip the delimiter in case that is causing the issue
                         name = name.Replace(delimiter, "");
@@ -109,140 +113,148 @@ namespace AzureNamingTool.Helpers
                         sbMessage.Append(Environment.NewLine);
                     }
                 }
+                else
+                {
+                    sbMessage.Append("Regex failed - Please review the Resource Type Naming Guidelines.");
+                    sbMessage.Append(Environment.NewLine);
+                    valid = false;
+                }
+            }
+                }
 
                 // Check min length
                 if (int.TryParse(resourceType.LengthMin, out _))
                 {
-                    if (name.Length < int.Parse(resourceType.LengthMin))
+                    if (name.Length<int.Parse(resourceType.LengthMin))
                     {
                         sbMessage.Append("Generated name is less than the minimum length for the selected resource type.");
                         sbMessage.Append(Environment.NewLine);
                         valid = false;
                     }
-                }
+}
 
-                // Check max length
-                if (int.TryParse(resourceType.LengthMax, out _))
-                {
-                    if (name.Length > int.Parse(resourceType.LengthMax))
-                    {
-                        // Strip the delimiter in case that is causing the issue
-                        name = name.Replace(delimiter, "");
-                        if (name.Length > int.Parse(resourceType.LengthMax))
-                        {
-                            sbMessage.Append("Generated name is more than the maximum length for the selected resource type.");
-                            sbMessage.Append(Environment.NewLine);
-                            sbMessage.Append("Please remove any optional components or contact your admin to update the required components for this resource type.");
-                            sbMessage.Append(Environment.NewLine);
-                            valid = false;
-                        }
-                        else
-                        {
-                            sbMessage.Append("Generated name with the selected delimiter is more than the maximum length for the selected resource type. The delimiter has been removed.");
-                            sbMessage.Append(Environment.NewLine);
-                        }
-                    }
-                }
+// Check max length
+if (int.TryParse(resourceType.LengthMax, out _))
+{
+    if (name.Length > int.Parse(resourceType.LengthMax))
+    {
+        // Strip the delimiter in case that is causing the issue
+        name = name.Replace(delimiter, "");
+        if (name.Length > int.Parse(resourceType.LengthMax))
+        {
+            sbMessage.Append("Generated name is more than the maximum length for the selected resource type.");
+            sbMessage.Append(Environment.NewLine);
+            sbMessage.Append("Please remove any optional components or contact your admin to update the required components for this resource type.");
+            sbMessage.Append(Environment.NewLine);
+            valid = false;
+        }
+        else
+        {
+            sbMessage.Append("Generated name with the selected delimiter is more than the maximum length for the selected resource type. The delimiter has been removed.");
+            sbMessage.Append(Environment.NewLine);
+        }
+    }
+}
 
-                // Check invalid characters
-                if (!String.IsNullOrEmpty(resourceType.InvalidCharacters))
-                {
-                    // Loop through each character
-                    foreach (char c in resourceType.InvalidCharacters)
-                    {
-                        // Check if the name contains the character
-                        if (name.Contains(c))
-                        {
-                            sbMessage.Append("Name cannot contain the following character: " + c);
-                            sbMessage.Append(Environment.NewLine);
-                            valid = false;
-                        }
-                    }
-                }
+// Check invalid characters
+if (!String.IsNullOrEmpty(resourceType.InvalidCharacters))
+{
+    // Loop through each character
+    foreach (char c in resourceType.InvalidCharacters)
+    {
+        // Check if the name contains the character
+        if (name.Contains(c))
+        {
+            sbMessage.Append("Name cannot contain the following character: " + c);
+            sbMessage.Append(Environment.NewLine);
+            valid = false;
+        }
+    }
+}
 
-                // Check start character
-                if (!String.IsNullOrEmpty(resourceType.InvalidCharactersStart))
-                {
-                    // Loop through each character
-                    foreach (char c in resourceType.InvalidCharactersStart)
-                    {
-                        // Check if the name contains the character
-                        if (name.StartsWith(c))
-                        {
-                            sbMessage.Append("Name cannot start with the following character: " + c);
-                            sbMessage.Append(Environment.NewLine);
-                            valid = false;
-                        }
-                    }
-                }
+// Check start character
+if (!String.IsNullOrEmpty(resourceType.InvalidCharactersStart))
+{
+    // Loop through each character
+    foreach (char c in resourceType.InvalidCharactersStart)
+    {
+        // Check if the name contains the character
+        if (name.StartsWith(c))
+        {
+            sbMessage.Append("Name cannot start with the following character: " + c);
+            sbMessage.Append(Environment.NewLine);
+            valid = false;
+        }
+    }
+}
 
-                // Check start character
-                if (!String.IsNullOrEmpty(resourceType.InvalidCharactersEnd))
-                {
-                    // Loop through each character
-                    foreach (char c in resourceType.InvalidCharactersEnd)
-                    {
-                        // Check if the name contains the character
-                        if (name.EndsWith(c))
-                        {
-                            sbMessage.Append("Name cannot end with the following character: " + c);
-                            sbMessage.Append(Environment.NewLine);
-                            valid = false;
-                        }
-                    }
-                }
+// Check start character
+if (!String.IsNullOrEmpty(resourceType.InvalidCharactersEnd))
+{
+    // Loop through each character
+    foreach (char c in resourceType.InvalidCharactersEnd)
+    {
+        // Check if the name contains the character
+        if (name.EndsWith(c))
+        {
+            sbMessage.Append("Name cannot end with the following character: " + c);
+            sbMessage.Append(Environment.NewLine);
+            valid = false;
+        }
+    }
+}
 
-                // Check consecutive character
-                if (!String.IsNullOrEmpty(resourceType.InvalidCharactersConsecutive))
-                {
-                    // Loop through each character
-                    foreach (char c in resourceType.InvalidCharactersConsecutive)
-                    {
-                        // Check if the name contains the character
-                        char current = name[0];
-                        for (int i = 1; i < name.Length; i++)
-                        {
-                            char next = name[i];
-                            if ((current == next) && (current == c))
-                            {
-                                sbMessage.Append("Name cannot contain the following consecutive character: " + next);
-                                sbMessage.Append(Environment.NewLine);
-                                valid = false;
-                                break;
-                            }
-                            current = next;
-                        }
-                    }
-                }
+// Check consecutive character
+if (!String.IsNullOrEmpty(resourceType.InvalidCharactersConsecutive))
+{
+    // Loop through each character
+    foreach (char c in resourceType.InvalidCharactersConsecutive)
+    {
+        // Check if the name contains the character
+        char current = name[0];
+        for (int i = 1; i < name.Length; i++)
+        {
+            char next = name[i];
+            if ((current == next) && (current == c))
+            {
+                sbMessage.Append("Name cannot contain the following consecutive character: " + next);
+                sbMessage.Append(Environment.NewLine);
+                valid = false;
+                break;
+            }
+            current = next;
+        }
+    }
+}
 
 
-                response.Valid = valid;
-                response.Name = name;
-                response.Message = sbMessage.ToString();
+response.Valid = valid;
+response.Name = name;
+response.Message = sbMessage.ToString();
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
-                response.Valid = false;
-                response.Name = name;
-                response.Message = "There was a problem validating the name.";
-            }
+    AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+    response.Valid = false;
+    response.Name = name;
+    response.Message = "There was a problem validating the name.";
+}
 
-            return response;
+return response;
         }
 
         public static bool CheckNumeric(string value)
-        {
-            Regex regx = new("^[0-9]+$");
-            Match match = regx.Match(value);
-            return match.Success;
-        }
+{
+    Regex regx = new("^[0-9]+$");
+    Match match = regx.Match(value);
+    return match.Success;
+}
 
-        public static bool CheckAlphanumeric(string value)
-        {
-            Regex regx = new("^[a-zA-Z0-9]+$");
-            Match match = regx.Match(value);
-            return match.Success;
-        }
+public static bool CheckAlphanumeric(string value)
+{
+    Regex regx = new("^[a-zA-Z0-9]+$");
+    Match match = regx.Match(value);
+    return match.Success;
+}
     }
 }
