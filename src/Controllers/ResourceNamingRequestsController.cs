@@ -95,7 +95,6 @@ namespace AzureNamingTool.Controllers
             try
             {
                 // Get the current delimiter
-                serviceResponse = await ResourceDelimiterService.GetCurrentItem();
                 serviceResponse = await ResourceTypeService.ValidateResourceTypeName(validateNameRequest);
                 if (serviceResponse.Success)
                 {

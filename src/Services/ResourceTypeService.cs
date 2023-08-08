@@ -455,6 +455,7 @@ namespace AzureNamingTool.Services
         public static async Task<ServiceResponse> ValidateResourceTypeName(ValidateNameRequest validateNameRequest)
         {
             ServiceResponse serviceResponse = new();
+            ValidateNameResponse validateNameResponse = new();
             try
             {
                 ResourceDelimiter? resourceDelimiter = new();
@@ -489,17 +490,28 @@ namespace AzureNamingTool.Services
                             if (GeneralHelper.IsNotNull(resourceType))
                             {
                                 // Create a validate name request
-                                ValidateNameResponse validateNameResponse = ValidationHelper.ValidateGeneratedName(resourceType, validateNameRequest.Name!, resourceDelimiter!.Delimiter);
-                                serviceResponse.ResponseObject = validateNameResponse;
-                                serviceResponse.Success = true;
+                                validateNameResponse = ValidationHelper.ValidateGeneratedName(resourceType, validateNameRequest.Name!, resourceDelimiter!.Delimiter);
+                            }
+                            else
+                            {
+                                validateNameResponse.Message = "Resoruce Type is invalid!";
+                                validateNameResponse.Valid = false;
                             }
                         }
                         else
                         {
-                            serviceResponse.ResponseObject = "Resource Types not found!";
+                            validateNameResponse.Message = "Resoruce Type is invalid!";
+                            validateNameResponse.Valid = false;
                         }
                     }
+                    else
+                    {
+                        validateNameResponse.Message = "Resoruce Type is invalid!";
+                        validateNameResponse.Valid = false;
+                    }
                 }
+                serviceResponse.ResponseObject = validateNameResponse;
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {

@@ -8,10 +8,9 @@ namespace AzureNamingTool.Services
 {
     public class ImportExportService
     {
-        private static ServiceResponse serviceResponse = new();
-
         public static async Task<ServiceResponse> ExportConfig(bool includeadmin = false)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 ConfigurationData configdata = new();
@@ -142,6 +141,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> PostConfig(ConfigurationData configdata)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Write all the configurations

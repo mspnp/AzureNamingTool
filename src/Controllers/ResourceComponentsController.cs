@@ -17,7 +17,6 @@ namespace AzureNamingTool.Controllers
     [ApiKey]
     public class ResourceComponentsController : ControllerBase
     {
-        private ServiceResponse serviceResponse = new();
         // GET: api/<resourcecomponentsController>
         /// <summary>
         /// This function will return the components data.
@@ -27,6 +26,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> Get(bool admin = false)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceComponentService.GetItems(admin);
@@ -55,6 +55,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -84,11 +85,14 @@ namespace AzureNamingTool.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ResourceComponent item)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceComponentService.PostItem(item);
                 if (serviceResponse.Success)
                 {
+                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Component (" + item.Name + ") added/updated." });
+                    CacheHelper.InvalidateCacheObject("ResourceComponent");
                     return Ok(serviceResponse.ResponseObject);
                 }
                 else
@@ -103,7 +107,7 @@ namespace AzureNamingTool.Controllers
             }
         }
 
-        // POST api/<ResourceEnvironmentsController>
+        // POST api/<ResourceComponentsController>
         /// <summary>
         /// This function will update all components data.
         /// </summary>
@@ -113,11 +117,14 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<ResourceComponent> items)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceComponentService.PostConfig(items);
                 if (serviceResponse.Success)
                 {
+                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Components added/updated." });
+                    CacheHelper.InvalidateCacheObject("ResourceComponent");
                     return Ok(serviceResponse.ResponseObject);
                 }
                 else

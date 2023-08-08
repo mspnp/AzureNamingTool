@@ -6,10 +6,9 @@ namespace AzureNamingTool.Services
 {
     public class PolicyService
     {
-        private static ServiceResponse serviceResponse = new();
-
         public static async Task<ServiceResponse> GetPolicy()
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 var delimiter = '-';
