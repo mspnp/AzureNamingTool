@@ -13,10 +13,9 @@ namespace AzureNamingTool.Services
 {
     public class ResourceTypeService
     {
-        private static ServiceResponse serviceResponse = new();
-
         public static async Task<ServiceResponse> GetItems(bool admin = true)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -33,6 +32,10 @@ namespace AzureNamingTool.Services
                     }
                     serviceResponse.Success = true;
                 }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Types not found!";
+                }
             }
             catch (Exception ex)
             {
@@ -45,6 +48,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> GetItem(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -57,6 +61,14 @@ namespace AzureNamingTool.Services
                         serviceResponse.ResponseObject = item;
                         serviceResponse.Success = true;
                     }
+                    else
+                    {
+                        serviceResponse.ResponseObject = "Resource Type not found!";
+                    }
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Types not found!";
                 }
             }
             catch (Exception ex)
@@ -70,6 +82,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> PostItem(ResourceType item)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Make sure the new item short name only contains letters/numbers
@@ -119,8 +132,12 @@ namespace AzureNamingTool.Services
 
                     // Write items to file
                     await ConfigurationHelper.WriteList<ResourceType>(items.OrderBy(x => x.Id).ToList());
-                    serviceResponse.ResponseObject = "Item added!";
+                    serviceResponse.ResponseObject = "Resource Type added/updated!";
                     serviceResponse.Success = true;
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Types not found!";
                 }
             }
             catch (Exception ex)
@@ -134,6 +151,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> DeleteItem(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -151,6 +169,14 @@ namespace AzureNamingTool.Services
                         await ConfigurationHelper.WriteList<ResourceType>(items);
                         serviceResponse.Success = true;
                     }
+                    else
+                    {
+                        serviceResponse.ResponseObject = "Resource Type not found!";
+                    }
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Types not found!";
                 }
             }
             catch (Exception ex)
@@ -164,6 +190,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> PostConfig(List<ResourceType> items)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -195,6 +222,7 @@ namespace AzureNamingTool.Services
 
         public static List<string> GetTypeCategories(List<ResourceType> types)
         {
+            ServiceResponse serviceResponse = new();
             List<string> categories = new();
 
             foreach (ResourceType type in types)
@@ -213,6 +241,10 @@ namespace AzureNamingTool.Services
                         categories.Add(category);
                     }
                 }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Type Categories not found!";
+                }
             }
 
             return categories;
@@ -220,6 +252,7 @@ namespace AzureNamingTool.Services
 
         public static List<ResourceType> GetFilteredResourceTypes(List<ResourceType> types, string filter)
         {
+            ServiceResponse serviceResponse = new();
             List<ResourceType> currenttypes = new();
             // Filter out resource types that should have name generation
             if (!String.IsNullOrEmpty(filter))
@@ -235,12 +268,12 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> RefreshResourceTypes(bool shortNameReset = false)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get the existing Resource Type items
-                ServiceResponse serviceResponse;
                 serviceResponse = await ResourceTypeService.GetItems();
-                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                if (serviceResponse.Success)
                 {
                     List<ResourceType> types = (List<ResourceType>)serviceResponse.ResponseObject!;
                     if (GeneralHelper.IsNotNull(types))
@@ -300,12 +333,25 @@ namespace AzureNamingTool.Services
                                 // Update the current configuration file version data information
                                 await ConfigurationHelper.UpdateConfigurationFileVersion("resourcetypes");
                             }
+                            else
+                            {
+                                serviceResponse.ResponseObject = "Resource Types not found!";
+                            }
                         }
                         else
                         {
+                            serviceResponse.ResponseObject = "Refresh Resource Types not found!";
                             AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = "There was a problem refreshing the resource types configuration." });
                         }
                     }
+                    else
+                    {
+                        serviceResponse.ResponseObject = "Resource Types not found!";
+                    }
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Types not found!";
                 }
             }
             catch (Exception ex)
@@ -319,6 +365,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> UpdateTypeComponents(string operation, int componentid)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceComponentService.GetItem(componentid);
@@ -380,9 +427,18 @@ namespace AzureNamingTool.Services
                                                 break;
                                         }
                                     }
+                                    serviceResponse.ResponseObject = "Resource Types updated!";
                                     serviceResponse.Success = true;
                                 }
+                                else
+                                {
+                                    serviceResponse.ResponseObject = "Resource Types not found!";
+                                }
                             }
+                        }
+                        else
+                        {
+                            serviceResponse.ResponseObject = "Resource Types not found!";
                         }
                     }
                 }
@@ -398,9 +454,9 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> ValidateResourceTypeName(ValidateNameRequest validateNameRequest)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
-                ServiceResponse serviceResponse = new();
                 ResourceDelimiter? resourceDelimiter = new();
                 // Get the current delimiter
                 serviceResponse = await ResourceDelimiterService.GetCurrentItem();
@@ -437,6 +493,10 @@ namespace AzureNamingTool.Services
                                 serviceResponse.ResponseObject = validateNameResponse;
                                 serviceResponse.Success = true;
                             }
+                        }
+                        else
+                        {
+                            serviceResponse.ResponseObject = "Resource Types not found!";
                         }
                     }
                 }
