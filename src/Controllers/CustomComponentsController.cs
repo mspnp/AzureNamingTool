@@ -19,7 +19,6 @@ namespace AzureNamingTool.Controllers
     [ApiKey]
     public class CustomComponentsController : ControllerBase
     {
-        private ServiceResponse serviceResponse = new();
         // GET: api/<CustomComponentsController>
         /// <summary>
         /// This function will return the custom components data. 
@@ -28,6 +27,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -58,6 +58,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> GetByParentType(string parenttype)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -87,6 +88,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -116,11 +118,14 @@ namespace AzureNamingTool.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CustomComponent item)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await CustomComponentService.PostItem(item);
                 if (serviceResponse.Success)
                 {
+                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Custom Component (" + item.Name + ") updated." });
+                    CacheHelper.InvalidateCacheObject("CustomComponent");
                     return Ok(serviceResponse.ResponseObject);
                 }
                 else
@@ -145,11 +150,14 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<CustomComponent> items)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await CustomComponentService.PostConfig(items);
                 if (serviceResponse.Success)
                 {
+                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Custom Components updated." });
+                    CacheHelper.InvalidateCacheObject("CustomComponent");
                     return Ok(serviceResponse.ResponseObject);
                 }
                 else
@@ -174,6 +182,7 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfigWithParentData([FromBody] CustomComponmentConfig config)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 List<ResourceComponent> currentresourcecomponents = new();
@@ -238,7 +247,8 @@ namespace AzureNamingTool.Controllers
                             }
                         }
                     }
-
+                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Custom Components updated." });
+                    CacheHelper.InvalidateCacheObject("CustomComponent");
                     return Ok("Custom Component configuration updated!");
                 }
                 else
@@ -262,12 +272,25 @@ namespace AzureNamingTool.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
-                serviceResponse = await CustomComponentService.DeleteItem(id);
+                // Get the item details
+                serviceResponse = await CustomComponentService.GetItem(id);
                 if (serviceResponse.Success)
                 {
-                    return Ok(serviceResponse.ResponseObject);
+                    CustomComponent item = (CustomComponent)serviceResponse.ResponseObject!;
+                    serviceResponse = await CustomComponentService.DeleteItem(id);
+                    if (serviceResponse.Success)
+                    {
+                        AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Custom Component (" + item.Name + ") deleted." });
+                        CacheHelper.InvalidateCacheObject("GeneratedName");
+                        return Ok("Custom Component (" + item.Name + ") deleted.");
+                    }
+                    else
+                    {
+                        return BadRequest(serviceResponse.ResponseObject);
+                    }
                 }
                 else
                 {

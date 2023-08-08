@@ -19,7 +19,6 @@ namespace AzureNamingTool.Controllers
     [ApiKey]
     public class ResourceOrgsController : ControllerBase
     {
-        private ServiceResponse serviceResponse = new();
         // GET: api/<ResourceOrgsController>
         /// <summary>
         /// This function will return the orgs data. 
@@ -28,6 +27,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -57,6 +57,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -86,11 +87,14 @@ namespace AzureNamingTool.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ResourceOrg item)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceOrgService.PostItem(item);
                 if (serviceResponse.Success)
                 {
+                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Org (" + item.Name + ") added/updated." });
+                    CacheHelper.InvalidateCacheObject("ResourceOrg");
                     return Ok(serviceResponse.ResponseObject);
                 }
                 else
@@ -115,11 +119,14 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<ResourceOrg> items)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceOrgService.PostConfig(items);
                 if (serviceResponse.Success)
                 {
+                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Orgs added/updated." });
+                    CacheHelper.InvalidateCacheObject("ResourceOrg");
                     return Ok(serviceResponse.ResponseObject);
                 }
                 else
@@ -143,12 +150,25 @@ namespace AzureNamingTool.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
-                serviceResponse = await ResourceOrgService.DeleteItem(id);
+                // Get the item details
+                serviceResponse = await ResourceOrgService.GetItem(id);
                 if (serviceResponse.Success)
                 {
-                    return Ok(serviceResponse.ResponseObject);
+                    ResourceOrg item = (ResourceOrg)serviceResponse.ResponseObject!;
+                    serviceResponse = await ResourceOrgService.DeleteItem(id);
+                    if (serviceResponse.Success)
+                    {
+                        AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Org (" + item.Name + ") deleted." });
+                        CacheHelper.InvalidateCacheObject("ResourceOrg");
+                        return Ok("Resource Org (" + item.Name + ") deleted.");
+                    }
+                    else
+                    {
+                        return BadRequest(serviceResponse.ResponseObject);
+                    }
                 }
                 else
                 {

@@ -6,10 +6,9 @@ namespace AzureNamingTool.Services
 {
     public class ResourceLocationService
     {
-        private static ServiceResponse serviceResponse = new();
-
         public static async Task<ServiceResponse> GetItems(bool admin = true)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -26,6 +25,10 @@ namespace AzureNamingTool.Services
                     }
                     serviceResponse.Success = true;
                 }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Locations not found!";
+                }
             }
             catch (Exception ex)
             {
@@ -38,6 +41,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> GetItem(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -50,6 +54,14 @@ namespace AzureNamingTool.Services
                         serviceResponse.ResponseObject = item;
                         serviceResponse.Success = true;
                     }
+                    else
+                    {
+                        serviceResponse.ResponseObject = "Resource Location not found!";
+                    }
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Locations not found!";
                 }
             }
             catch (Exception ex)
@@ -63,6 +75,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> PostItem(ResourceLocation item)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Make sure the new item short name only contains letters/numbers
@@ -121,6 +134,10 @@ namespace AzureNamingTool.Services
                     await ConfigurationHelper.WriteList<ResourceLocation>(items);
                     serviceResponse.Success = true;
                 }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Locations not found!";
+                }
             }
             catch (Exception ex)
             {
@@ -133,6 +150,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> DeleteItem(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -150,6 +168,14 @@ namespace AzureNamingTool.Services
                         await ConfigurationHelper.WriteList<ResourceLocation>(items);
                         serviceResponse.Success = true;
                     }
+                    else
+                    {
+                        serviceResponse.ResponseObject = "Resource Location not found!";
+                    }
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Locations not found!";
                 }
             }
             catch (Exception ex)
@@ -163,6 +189,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> PostConfig(List<ResourceLocation> items)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -203,10 +230,10 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> RefreshResourceLocations(bool shortNameReset = false)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get the existing Resource location items
-                ServiceResponse serviceResponse;
                 serviceResponse = await ResourceLocationService.GetItems();
                 if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                 {
@@ -268,11 +295,24 @@ namespace AzureNamingTool.Services
                                 // Update the current configuration file version data information
                                 await ConfigurationHelper.UpdateConfigurationFileVersion("resourcelocations");
                             }
+                            else
+                            {
+                                serviceResponse.ResponseObject = "Resource Locations not found!";
+                            }
                         }
+                        else
+                        {
+                            serviceResponse.ResponseObject = "Refresh Resource Locations not found!";
+                        }
+                    }
+                    else
+                    {
+                        serviceResponse.ResponseObject = "Resource Locations not found!";
                     }
                 }
                 else
                 {
+                    serviceResponse.ResponseObject = "Resource Locations not found!";
                     AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = "There was a problem refreshing the resource locations configuration." });
                 }
             }

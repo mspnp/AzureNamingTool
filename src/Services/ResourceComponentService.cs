@@ -7,10 +7,10 @@ namespace AzureNamingTool.Services
 {
     public class ResourceComponentService
     {
-        private static ServiceResponse serviceResponse = new();
 
         public static async Task<ServiceResponse> GetItems(bool admin)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 var items = await ConfigurationHelper.GetList<ResourceComponent>();
@@ -26,6 +26,10 @@ namespace AzureNamingTool.Services
                     }
                     serviceResponse.Success = true;
                 }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Components not found!";
+                }
             }
             catch (Exception ex)
             {
@@ -38,6 +42,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> GetItem(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -50,6 +55,14 @@ namespace AzureNamingTool.Services
                         serviceResponse.ResponseObject = item;
                         serviceResponse.Success = true;
                     }
+                    else
+                    {
+                        serviceResponse.ResponseObject = "Resource Component not found!";
+                    }
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Component not found!";
                 }
             }
             catch (Exception ex)
@@ -63,6 +76,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> PostItem(ResourceComponent item)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -151,6 +165,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> DeleteItem(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -158,7 +173,7 @@ namespace AzureNamingTool.Services
                 if (GeneralHelper.IsNotNull(items))
                 {
                     // Get the specified item
-                    var item = items.Find(x => x.Id == id);
+                    var item = items.Find(x => x.Id == id && x.IsCustom == true);
                     if (GeneralHelper.IsNotNull(item))
                     {
                         // Delete any resource type settings for the component
@@ -210,9 +225,25 @@ namespace AzureNamingTool.Services
                                     await ConfigurationHelper.WriteList<ResourceComponent>(items);
                                     serviceResponse.Success = true;
                                 }
+                                else
+                                {
+                                    serviceResponse.ResponseObject = "Resource Components not found!";
+                                }
+                            }
+                            else
+                            {
+                                serviceResponse.ResponseObject = "Resource Types not found!";
                             }
                         }
                     }
+                    else
+                    {
+                        serviceResponse.ResponseObject = "Resource Component not found!";
+                    }
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Components not found!";
                 }
             }
             catch (Exception ex)
@@ -226,6 +257,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> PostConfig(List<ResourceComponent> items)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 string[] componentnames = new string[8] { "ResourceEnvironment", "ResourceInstance", "ResourceLocation", "ResourceOrg", "ResourceProjAppSvc", "ResourceType", "ResourceUnitDept", "ResourceFunction" };

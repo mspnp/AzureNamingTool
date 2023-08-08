@@ -5,38 +5,37 @@ namespace AzureNamingTool.Helpers
 {
     public class ServicesHelper
     {
-        private static ServiceResponse serviceReponse = new();
-
         public static async Task<ServicesData> LoadServicesData(ServicesData servicesData, bool admin)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
-                serviceReponse = await ResourceComponentService.GetItems(admin);
-                servicesData.ResourceComponents = (List<ResourceComponent>?)serviceReponse.ResponseObject;
-                serviceReponse = await ResourceDelimiterService.GetItems(admin);
-                servicesData.ResourceDelimiters = (List<ResourceDelimiter>?)serviceReponse.ResponseObject;
-                serviceReponse = await ResourceEnvironmentService.GetItems();
-                servicesData.ResourceEnvironments = (List<ResourceEnvironment>?)serviceReponse.ResponseObject;
-                serviceReponse = await ResourceLocationService.GetItems(admin);
-                servicesData.ResourceLocations = (List<ResourceLocation>?)serviceReponse.ResponseObject;
-                serviceReponse = await ResourceOrgService.GetItems();
-                servicesData.ResourceOrgs = (List<ResourceOrg>?)serviceReponse.ResponseObject;
-                serviceReponse = await ResourceProjAppSvcService.GetItems();
-                servicesData.ResourceProjAppSvcs = (List<ResourceProjAppSvc>?)serviceReponse.ResponseObject;
-                serviceReponse = await ResourceTypeService.GetItems(admin);
-                servicesData.ResourceTypes = (List<ResourceType>?)serviceReponse.ResponseObject;
-                serviceReponse = await ResourceUnitDeptService.GetItems();
-                servicesData.ResourceUnitDepts = (List<ResourceUnitDept>?)serviceReponse.ResponseObject;
-                serviceReponse = await ResourceFunctionService.GetItems();
-                servicesData.ResourceFunctions = (List<ResourceFunction>?)serviceReponse.ResponseObject;
-                serviceReponse = await CustomComponentService.GetItems();
-                servicesData.CustomComponents = (List<CustomComponent>?)serviceReponse.ResponseObject;
-                serviceReponse = await GeneratedNamesService.GetItems();
-                servicesData.GeneratedNames = (List<GeneratedName>?)serviceReponse.ResponseObject;
-                serviceReponse = await AdminLogService.GetItems();
-                servicesData.AdminLogMessages = (List<AdminLogMessage>?)serviceReponse.ResponseObject;
-                serviceReponse = await AdminUserService.GetItems();
-                servicesData.AdminUsers = (List<AdminUser>?)serviceReponse.ResponseObject;
+                serviceResponse = await ResourceComponentService.GetItems(admin);
+                servicesData.ResourceComponents = (List<ResourceComponent>?)serviceResponse.ResponseObject;
+                serviceResponse = await ResourceDelimiterService.GetItems(admin);
+                servicesData.ResourceDelimiters = (List<ResourceDelimiter>?)serviceResponse.ResponseObject;
+                serviceResponse = await ResourceEnvironmentService.GetItems();
+                servicesData.ResourceEnvironments = (List<ResourceEnvironment>?)serviceResponse.ResponseObject;
+                serviceResponse = await ResourceLocationService.GetItems(admin);
+                servicesData.ResourceLocations = (List<ResourceLocation>?)serviceResponse.ResponseObject;
+                serviceResponse = await ResourceOrgService.GetItems();
+                servicesData.ResourceOrgs = (List<ResourceOrg>?)serviceResponse.ResponseObject;
+                serviceResponse = await ResourceProjAppSvcService.GetItems();
+                servicesData.ResourceProjAppSvcs = (List<ResourceProjAppSvc>?)serviceResponse.ResponseObject;
+                serviceResponse = await ResourceTypeService.GetItems(admin);
+                servicesData.ResourceTypes = (List<ResourceType>?)serviceResponse.ResponseObject;
+                serviceResponse = await ResourceUnitDeptService.GetItems();
+                servicesData.ResourceUnitDepts = (List<ResourceUnitDept>?)serviceResponse.ResponseObject;
+                serviceResponse = await ResourceFunctionService.GetItems();
+                servicesData.ResourceFunctions = (List<ResourceFunction>?)serviceResponse.ResponseObject;
+                serviceResponse = await CustomComponentService.GetItems();
+                servicesData.CustomComponents = (List<CustomComponent>?)serviceResponse.ResponseObject;
+                serviceResponse = await GeneratedNamesService.GetItems();
+                servicesData.GeneratedNames = (List<GeneratedName>?)serviceResponse.ResponseObject;
+                serviceResponse = await AdminLogService.GetItems();
+                servicesData.AdminLogMessages = (List<AdminLogMessage>?)serviceResponse.ResponseObject;
+                serviceResponse = await AdminUserService.GetItems();
+                servicesData.AdminUsers = (List<AdminUser>?)serviceResponse.ResponseObject;
                 return servicesData;
             }
             catch(Exception ex)

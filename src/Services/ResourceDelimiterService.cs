@@ -5,10 +5,9 @@ namespace AzureNamingTool.Services
 {
     public class ResourceDelimiterService
     {
-        private static ServiceResponse serviceResponse = new();
-
         public static async Task<ServiceResponse> GetItems(bool admin)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -25,6 +24,10 @@ namespace AzureNamingTool.Services
                     }
                     serviceResponse.Success = true;
                 }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Delimiters not found!";
+                }
             }
             catch (Exception ex)
             {
@@ -37,6 +40,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> GetItem(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -49,6 +53,14 @@ namespace AzureNamingTool.Services
                         serviceResponse.ResponseObject = item;
                         serviceResponse.Success = true;
                     }
+                    else
+                    {
+                        serviceResponse.ResponseObject = "Resource Delimiter not found!";
+                    }
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Delimiters not found!";
                 }
             }
             catch (Exception ex)
@@ -62,6 +74,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> GetCurrentItem()
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -70,6 +83,10 @@ namespace AzureNamingTool.Services
                 {
                     serviceResponse.ResponseObject = items.OrderBy(y => y.SortOrder).OrderByDescending(y => y.Enabled).ToList()[0];
                     serviceResponse.Success = true;
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Delimiter not found!";
                 }
             }
             catch (Exception ex)
@@ -83,6 +100,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> PostItem(ResourceDelimiter item)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -155,9 +173,13 @@ namespace AzureNamingTool.Services
 
                         // Write items to file
                         await ConfigurationHelper.WriteList<ResourceDelimiter>(items);
-                        serviceResponse.ResponseObject = "Item added!";
+                        serviceResponse.ResponseObject = "Resource Delimiter added/updated!";
                         serviceResponse.Success = true;
                     }
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Delimiters not found!";
                 }
             }
             catch (Exception ex)
@@ -171,6 +193,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> PostConfig(List<ResourceDelimiter> items)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 string[,] delimiters = new string[4, 2] { { "dash", "-" }, { "underscore", "_" }, { "period", "." }, { "none", "" } };

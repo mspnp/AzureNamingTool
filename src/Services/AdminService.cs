@@ -7,11 +7,11 @@ namespace AzureNamingTool.Services
 {
     public class AdminService
     {
-        private static readonly ServiceResponse serviceResponse = new();
         private static readonly SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
 
         public static async Task<ServiceResponse> UpdatePassword(string password)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 if (ValidationHelper.ValidatePassword(password))
@@ -37,6 +37,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> GenerateAPIKey()
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Set the new api key
@@ -57,6 +58,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> UpdateAPIKey(string apikey)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 config.APIKey = GeneralHelper.EncryptString(apikey, config.SALTKey!);
@@ -73,9 +75,9 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
-
         public static async Task<ServiceResponse> UpdateIdentityHeaderName(string identityheadername)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 config.IdentityHeaderName = GeneralHelper.EncryptString(identityheadername, config.SALTKey!);

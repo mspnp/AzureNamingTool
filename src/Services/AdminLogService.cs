@@ -7,14 +7,13 @@ namespace AzureNamingTool.Services
 {
     public class AdminLogService
     {
-        private static readonly ServiceResponse serviceResponse = new();
-
         /// <summary>
         /// This function returns the Admin log. 
         /// </summary>
         /// <returns>List of AdminLogMessages - List of Adming Log messages.</returns>
         public static async Task<ServiceResponse> GetItems()
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -40,6 +39,7 @@ namespace AzureNamingTool.Services
         /// </summary>
         public static async void PostItem(AdminLogMessage adminlogMessage)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Log the created name
@@ -67,23 +67,24 @@ namespace AzureNamingTool.Services
         /// <returns>void</returns>
         public static async Task<ServiceResponse> DeleteAllItems()
         {
-            ServiceResponse serviceReponse = new();
+            ServiceResponse serviceResponse = new();
             try
             {
                 List<AdminLogMessage> lstAdminLogMessages = new();
                 await ConfigurationHelper.WriteList<AdminLogMessage>(lstAdminLogMessages);
-                serviceReponse.Success = true;
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
                 AdminLogService.PostItem(new AdminLogMessage { Title = "ERROR", Message = ex.Message });
                 serviceResponse.Success = false;
             }
-            return serviceReponse;
+            return serviceResponse;
         }
 
         public static async Task<ServiceResponse> PostConfig(List<AdminLogMessage> items)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
