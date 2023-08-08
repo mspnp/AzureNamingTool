@@ -19,7 +19,6 @@ namespace AzureNamingTool.Controllers
     [ApiKey]
     public class ResourceProjAppSvcsController : ControllerBase
     {
-        private ServiceResponse serviceResponse = new();
         // GET: api/<ResourceProjAppSvcsController>
         /// <summary>
         /// This function will return the projects/apps/services data. 
@@ -28,6 +27,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceProjAppSvcService.GetItems();
@@ -56,6 +56,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -85,11 +86,14 @@ namespace AzureNamingTool.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ResourceProjAppSvc item)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceProjAppSvcService.PostItem(item);
                 if (serviceResponse.Success)
                 {
+                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Project/App/Service (" + item.Name + ") added/updated." });
+                    CacheHelper.InvalidateCacheObject("ResourceProjAppSvc");
                     return Ok(serviceResponse.ResponseObject);
                 }
                 else
@@ -114,11 +118,14 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<ResourceProjAppSvc> items)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceProjAppSvcService.PostConfig(items);
                 if (serviceResponse.Success)
                 {
+                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Projects/Apps/Services added/updated." });
+                    CacheHelper.InvalidateCacheObject("ResourceProjAppSvc");
                     return Ok(serviceResponse.ResponseObject);
                 }
                 else
@@ -142,12 +149,25 @@ namespace AzureNamingTool.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
-                serviceResponse = await ResourceProjAppSvcService.DeleteItem(id);
+                // Get the item details
+                serviceResponse = await ResourceProjAppSvcService.GetItem(id);
                 if (serviceResponse.Success)
                 {
-                    return Ok(serviceResponse.ResponseObject);
+                    ResourceProjAppSvc item = (ResourceProjAppSvc)serviceResponse.ResponseObject!;
+                    serviceResponse = await ResourceProjAppSvcService.DeleteItem(id);
+                    if (serviceResponse.Success)
+                    {
+                        AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Project/App/Service (" + item.Name + ") deleted." });
+                        CacheHelper.InvalidateCacheObject("ResourceProjAppSvc");
+                        return Ok("Resource Project/App/Service (" + item.Name + ") deleted.");
+                    }
+                    else
+                    {
+                        return BadRequest(serviceResponse.ResponseObject);
+                    }
                 }
                 else
                 {

@@ -18,8 +18,6 @@ namespace AzureNamingTool.Controllers
     [ApiKey]
     public class ResourceDelimitersController : ControllerBase
     {
-        private ServiceResponse serviceResponse = new();
-
         // GET api/<ResourceDelimitersController>
         /// <summary>
         /// This function will return the delimiters data.
@@ -29,6 +27,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> Get(bool admin = false)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceDelimiterService.GetItems(admin);
@@ -57,6 +56,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -77,8 +77,6 @@ namespace AzureNamingTool.Controllers
             }
         }
 
-
-
         // POST api/<ResourceDelimitersController>
         /// <summary>
         /// This function will create/update the specified delimiter data.
@@ -88,11 +86,14 @@ namespace AzureNamingTool.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ResourceDelimiter item)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceDelimiterService.PostItem(item);
                 if (serviceResponse.Success)
                 {
+                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Delimiter (" + item.Name + ") added/updated." });
+                    CacheHelper.InvalidateCacheObject("ResourceDelimiter");
                     return Ok(serviceResponse.ResponseObject);
                 }
                 else
@@ -118,11 +119,14 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<ResourceDelimiter> items)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceDelimiterService.PostConfig(items);
                 if (serviceResponse.Success)
                 {
+                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Delimiters added/updated." });
+                    CacheHelper.InvalidateCacheObject("ResourceDelimiter");
                     return Ok(serviceResponse.ResponseObject);
                 }
                 else

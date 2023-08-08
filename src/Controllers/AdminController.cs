@@ -20,7 +20,6 @@ namespace AzureNamingTool.Controllers
     [ApiKey]
     public class AdminController : ControllerBase
     {
-        private ServiceResponse serviceResponse = new();
         private readonly SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
 
         // POST api/<AdminController>
@@ -34,14 +33,15 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> UpdatePassword([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword, [FromBody] string password)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
-                if (!String.IsNullOrEmpty(adminpassword))
+                if (GeneralHelper.IsNotNull(adminpassword))
                 {
                     if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
                     {
                         serviceResponse = await AdminService.UpdatePassword(password);
-                        return (serviceResponse.Success ? Ok("SUCCESS"): Ok("FAILURE - There was a problem updating the password."));
+                        return (serviceResponse.Success ? Ok("SUCCESS") : Ok("FAILURE - There was a problem updating the password."));
                     }
                     else
                     {
@@ -72,9 +72,10 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> UpdateAPIKey([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword, [FromBody] string apikey)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
-                if (!String.IsNullOrEmpty(adminpassword))
+                if (GeneralHelper.IsNotNull(adminpassword))
                 {
                     if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
                     {
@@ -110,9 +111,10 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> GenerateAPIKey([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
-                if (!String.IsNullOrEmpty(adminpassword))
+                if (GeneralHelper.IsNotNull(adminpassword))
                 {
                     if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
                     {
@@ -145,16 +147,32 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> GetAdminLog([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
-                serviceResponse = await AdminLogService.GetItems();
-                if (serviceResponse.Success)
+                if (GeneralHelper.IsNotNull(adminpassword))
                 {
-                    return Ok(serviceResponse.ResponseObject);
+                    if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
+                    {
+                        serviceResponse = await AdminLogService.GetItems();
+                        if (serviceResponse.Success)
+                        {
+                            return Ok(serviceResponse.ResponseObject);
+                        }
+                        else
+                        {
+                            return BadRequest(serviceResponse.ResponseObject);
+                        }
+                    }
+                    else
+                    {
+                        return Ok("FAILURE - Incorrect Global Admin Password.");
+                    }
+
                 }
                 else
                 {
-                    return BadRequest(serviceResponse.ResponseObject);
+                    return Ok("FAILURE - You must provide the Global Admin Password.");
                 }
             }
             catch (Exception ex)
@@ -172,16 +190,32 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PurgeAdminLog([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
-                serviceResponse = await AdminLogService.DeleteAllItems();
-                if (serviceResponse.Success)
+                if (GeneralHelper.IsNotNull(adminpassword))
                 {
-                    return Ok(serviceResponse.ResponseObject);
+                    if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
+                    {
+                        serviceResponse = await AdminLogService.DeleteAllItems();
+                        if (serviceResponse.Success)
+                        {
+                            return Ok(serviceResponse.ResponseObject);
+                        }
+                        else
+                        {
+                            return BadRequest(serviceResponse.ResponseObject);
+                        }
+                    }
+                    else
+                    {
+                        return Ok("FAILURE - Incorrect Global Admin Password.");
+                    }
+
                 }
                 else
                 {
-                    return BadRequest(serviceResponse.ResponseObject);
+                    return Ok("FAILURE - You must provide the Global Admin Password.");
                 }
             }
             catch (Exception ex)
@@ -199,6 +233,7 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> GetGeneratedNamesLog()
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await GeneratedNamesService.GetItems();
@@ -226,16 +261,32 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PurgeGeneratedNamesLog([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
-                serviceResponse = await GeneratedNamesService.DeleteAllItems();
-                if (serviceResponse.Success)
+                if (GeneralHelper.IsNotNull(adminpassword))
                 {
-                    return Ok(serviceResponse.ResponseObject);
+                    if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
+                    {
+                        serviceResponse = await GeneratedNamesService.DeleteAllItems();
+                        if (serviceResponse.Success)
+                        {
+                            return Ok(serviceResponse.ResponseObject);
+                        }
+                        else
+                        {
+                            return BadRequest(serviceResponse.ResponseObject);
+                        }
+                    }
+                    else
+                    {
+                        return Ok("FAILURE - Incorrect Global Admin Password.");
+                    }
+
                 }
                 else
                 {
-                    return BadRequest(serviceResponse.ResponseObject);
+                    return Ok("FAILURE - You must provide the Global Admin Password.");
                 }
             }
             catch (Exception ex)
@@ -253,16 +304,30 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public IActionResult ResetSiteConfiguration([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
-
-                if (ConfigurationHelper.ResetSiteConfiguration())
+                if (GeneralHelper.IsNotNull(adminpassword))
                 {
-                    return Ok("Site configuration reset suceeded!");
+                    if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
+                    {
+                        if (ConfigurationHelper.ResetSiteConfiguration())
+                        {
+                            return Ok("Site configuration reset suceeded!");
+                        }
+                        else
+                        {
+                            return BadRequest("Site configuration reset failed!");
+                        }
+                    }
+                    else
+                    {
+                        return Ok("FAILURE - Incorrect Global Admin Password.");
+                    }
                 }
                 else
                 {
-                    return BadRequest("Site configuration reset failed!");
+                    return Ok("FAILURE - You must provide the Global Admin Password.");
                 }
             }
             catch (Exception ex)

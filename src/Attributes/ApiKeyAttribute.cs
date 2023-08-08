@@ -15,7 +15,7 @@ namespace AzureNamingTool.Attributes
                 context.Result = new ContentResult()
                 {
                     StatusCode = 401,
-                    Content = "Api Key was not provided"
+                    Content = "Api Key was not provided!"
                 };
                 return;
             }
@@ -28,7 +28,7 @@ namespace AzureNamingTool.Attributes
                     context.Result = new ContentResult()
                     {
                         StatusCode = 401,
-                        Content = "Api Key is not valid"
+                        Content = "Api Key is not valid!"
                     };
                     return;
                 }

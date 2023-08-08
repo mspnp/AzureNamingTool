@@ -18,7 +18,6 @@ namespace AzureNamingTool.Controllers
     [ApiKey]
     public class ImportExportController : ControllerBase
     {
-        private ServiceResponse serviceResponse = new();
         // GET: api/<ImportExportController>
         /// <summary>
         /// This function will export the current configuration data (all components) as a single JSON file. 
@@ -28,6 +27,7 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> ExportConfiguration(bool includeAdmin = false)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ImportExportService.ExportConfig(includeAdmin);
@@ -57,6 +57,7 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> ImportConfiguration([FromBody] ConfigurationData configdata)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ImportExportService.PostConfig(configdata);

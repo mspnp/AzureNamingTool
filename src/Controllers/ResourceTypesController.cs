@@ -19,7 +19,6 @@ namespace AzureNamingTool.Controllers
     [ApiKey]
     public class ResourceTypesController : ControllerBase
     {
-        private ServiceResponse serviceResponse = new();
         // GET: api/<ResourceTypesController>
         /// <summary>
         /// This function will return the resource types data. 
@@ -28,6 +27,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> Get(bool admin = false)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -57,6 +57,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -77,28 +78,6 @@ namespace AzureNamingTool.Controllers
             }
         }
 
-        //// POST api/<ResourceTypesController>
-        //[HttpPost]
-        //public async Task<IActionResult> Post([FromBody] ResourceType item)
-        //{
-        //    try
-        //    {
-        //        serviceResponse = await ResourceTypeService.PostItem(item);
-        //        if (serviceResponse.Success)
-        //        {
-        //            return Ok(serviceResponse.ResponseObject);
-        //        }
-        //        else
-        //        {
-        //            return BadRequest(serviceResponse.ResponseObject);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex);
-        //    }
-        //}
-
         // POST api/<ResourceTypesController>
         /// <summary>
         /// This function will update all resource types data.
@@ -109,11 +88,14 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<ResourceType> items)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceTypeService.PostConfig(items);
                 if (serviceResponse.Success)
                 {
+                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Types updated." });
+                    CacheHelper.InvalidateCacheObject("ResourceType");
                     return Ok(serviceResponse.ResponseObject);
                 }
                 else
@@ -139,12 +121,15 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> UpdateTypeComponents(string operation, int componentid)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceTypeService.UpdateTypeComponents(operation, componentid);
                 if (serviceResponse.Success)
                 {
-                    return Ok("Resource Types updated!");
+                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Types updated." });
+                    CacheHelper.InvalidateCacheObject("ResourceType");
+                    return Ok(serviceResponse.ResponseObject);
                 }
                 else
                 {
@@ -157,27 +142,5 @@ namespace AzureNamingTool.Controllers
                 return BadRequest(ex);
             }
         }
-
-        //// DELETE api/<ResourceTypesController>/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    try
-        //    {
-        //        serviceResponse = await ResourceTypeService.DeleteItem(id);
-        //        if (serviceResponse.Success)
-        //        {
-        //            return Ok(serviceResponse.ResponseObject);
-        //        }
-        //        else
-        //        {
-        //            return BadRequest(serviceResponse.ResponseObject);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex);
-        //    }
-        //}
     }
 }

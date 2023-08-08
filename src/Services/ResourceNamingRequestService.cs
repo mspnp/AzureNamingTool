@@ -691,12 +691,12 @@ namespace AzureNamingTool.Services
                 }
 
                 // Validate the generated name for the resource type
-                ValidateNameRequest validateName = new ValidateNameRequest()
+                ValidateNameRequest validateNameRequest = new ValidateNameRequest()
                 {
                     ResourceType = resourceType.ShortName,
                     Name = name
                 };
-                serviceResponse = await ResourceTypeService.ValidateResourceTypeName(validateName);
+                serviceResponse = await ResourceTypeService.ValidateResourceTypeName(validateNameRequest);
                 if (serviceResponse.Success)
                 {
                     if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))

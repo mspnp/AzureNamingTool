@@ -65,7 +65,6 @@ namespace AzureNamingTool.Controllers
             {
                 request.CreatedBy = "API";
                 ResourceNameResponse resourceNameRequestResponse = await ResourceNamingRequestService.RequestName(request);
-
                 if (resourceNameRequestResponse.Success)
                 {
                     return Ok(resourceNameRequestResponse);
@@ -92,11 +91,10 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> ValidateName([FromBody] ValidateNameRequest validateNameRequest)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
-                ServiceResponse serviceResponse = new();
                 // Get the current delimiter
-                serviceResponse = await ResourceDelimiterService.GetCurrentItem();
                 serviceResponse = await ResourceTypeService.ValidateResourceTypeName(validateNameRequest);
                 if (serviceResponse.Success)
                 {

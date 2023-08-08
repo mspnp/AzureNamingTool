@@ -5,10 +5,9 @@ namespace AzureNamingTool.Services
 {
     public class ResourceFunctionService
     {
-        private static ServiceResponse serviceResponse = new();
-
         public static async Task<ServiceResponse> GetItems()
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -17,6 +16,10 @@ namespace AzureNamingTool.Services
                 {
                     serviceResponse.ResponseObject = items.OrderBy(x => x.SortOrder).ToList();
                     serviceResponse.Success = true;
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Functions not found!";
                 }
             }
             catch (Exception ex)
@@ -30,6 +33,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> GetItem(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -42,6 +46,14 @@ namespace AzureNamingTool.Services
                         serviceResponse.ResponseObject = item;
                         serviceResponse.Success = true;
                     }
+                    else
+                    {
+                        serviceResponse.ResponseObject = "Resource Function not found!";
+                    }
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Functions not found!";
                 }
             }
             catch (Exception ex)
@@ -55,6 +67,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> PostItem(ResourceFunction item)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Make sure the new item short name only contains letters/numbers
@@ -143,8 +156,12 @@ namespace AzureNamingTool.Services
 
                     // Write items to file
                     await ConfigurationHelper.WriteList<ResourceFunction>(items);
-                    serviceResponse.ResponseObject = "Item added!";
+                    serviceResponse.ResponseObject = "Resource Function added/updated!";
                     serviceResponse.Success = true;
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Functions not found!";
                 }
             }
             catch (Exception ex)
@@ -158,6 +175,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> DeleteItem(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -183,6 +201,14 @@ namespace AzureNamingTool.Services
                         await ConfigurationHelper.WriteList<ResourceFunction>(items);
                         serviceResponse.Success = true;
                     }
+                    else
+                    {
+                        serviceResponse.ResponseObject = "Resource Function not found!";
+                    }
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Functions not found!";
                 }
             }
             catch (Exception ex)
@@ -196,6 +222,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> PostConfig(List<ResourceFunction> items)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items

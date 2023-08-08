@@ -5,10 +5,9 @@ namespace AzureNamingTool.Services
 {
     public class CustomComponentService
     {
-        private static ServiceResponse serviceResponse = new();
-
         public static async Task<ServiceResponse> GetItems()
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -17,6 +16,10 @@ namespace AzureNamingTool.Services
                 {
                     serviceResponse.ResponseObject = items.OrderBy(x => x.SortOrder).ToList();
                     serviceResponse.Success = true;
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Custom Components not found!";
                 }
             }
             catch (Exception ex)
@@ -30,6 +33,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> GetItemsByParentType(string parenttype)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -38,6 +42,10 @@ namespace AzureNamingTool.Services
                 {
                     serviceResponse.ResponseObject = items.Where(x => x.ParentComponent == parenttype).OrderBy(x => x.SortOrder).ToList();
                     serviceResponse.Success = true;
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Custom Components not found!";
                 }
             }
             catch (Exception ex)
@@ -51,6 +59,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> GetItem(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -58,8 +67,19 @@ namespace AzureNamingTool.Services
                 if (GeneralHelper.IsNotNull(items))
                 {
                     var item = items.Find(x => x.Id == id);
-                    serviceResponse.ResponseObject = item;
-                    serviceResponse.Success = true;
+                    if (GeneralHelper.IsNotNull(item))
+                    {
+                        serviceResponse.ResponseObject = item;
+                        serviceResponse.Success = true;
+                    }
+                    else
+                    {
+                        serviceResponse.ResponseObject = "Custom Component not found!";
+                    }
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Custom Components not found!";
                 }
             }
             catch (Exception ex)
@@ -73,6 +93,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> PostItem(CustomComponent item)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Make sure the new item short name only contains letters/numbers
@@ -157,7 +178,7 @@ namespace AzureNamingTool.Services
 
                     // Write items to file
                     await ConfigurationHelper.WriteList<CustomComponent>(items);
-                    serviceResponse.ResponseObject = "Item added!";
+                    serviceResponse.ResponseObject = "Custom Component added/updated!";
                     serviceResponse.Success = true;
                 }
             }
@@ -172,6 +193,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> DeleteItem(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -197,6 +219,14 @@ namespace AzureNamingTool.Services
                         await ConfigurationHelper.WriteList<CustomComponent>(items);
                         serviceResponse.Success = true;
                     }
+                    else
+                    {
+                        serviceResponse.ResponseObject = "Custom Component not found!";
+                    }
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Custom Component not found!";
                 }
             }
             catch (Exception ex)
@@ -210,6 +240,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> PostConfig(List<CustomComponent> items)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items

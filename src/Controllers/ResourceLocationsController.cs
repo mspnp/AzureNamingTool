@@ -18,7 +18,6 @@ namespace AzureNamingTool.Controllers
     [ApiKey]
     public class ResourceLocationsController : ControllerBase
     {
-        private ServiceResponse serviceResponse = new();
         // GET: api/<ResourceLocationsController>
         /// <summary>
         /// This function will return the locations data. 
@@ -27,6 +26,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> Get(bool admin = false)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceLocationService.GetItems(admin);
@@ -55,6 +55,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceLocationService.GetItem(id);
@@ -74,28 +75,6 @@ namespace AzureNamingTool.Controllers
             }
         }
 
-        //// POST api/<ResourceLocationsController>
-        //[HttpPost]
-        //public async Task<IActionResult> Post([FromBody] ResourceLocation item)
-        //{
-        //    try
-        //    {
-        //        serviceResponse = await ResourceLocationService.PostItem(item);
-        //        if (serviceResponse.Success)
-        //        {
-        //            return Ok(serviceResponse.ResponseObject);
-        //        }
-        //        else
-        //        {
-        //            return BadRequest(serviceResponse.ResponseObject);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex);
-        //    }
-        //}
-
         // POST api/<ResourceLocationsController>
         /// <summary>
         /// This function will update all locations data.
@@ -106,11 +85,14 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<ResourceLocation> items)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceLocationService.PostConfig(items);
                 if (serviceResponse.Success)
                 {
+                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Locations added/updated." });
+                    CacheHelper.InvalidateCacheObject("ResourceLocation");
                     return Ok(serviceResponse.ResponseObject);
                 }
                 else
@@ -124,27 +106,5 @@ namespace AzureNamingTool.Controllers
                 return BadRequest(ex);
             }
         }
-
-        //// DELETE api/<ResourceLocationsController>/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    try
-        //    {
-        //        serviceResponse = await ResourceLocationService.DeleteItem(id);
-        //        if (serviceResponse.Success)
-        //        {
-        //            return Ok(serviceResponse.ResponseObject);
-        //        }
-        //        else
-        //        {
-        //            return BadRequest(serviceResponse.ResponseObject);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex);
-        //    }
-        //}
     }
 }

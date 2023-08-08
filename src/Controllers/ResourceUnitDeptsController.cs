@@ -18,7 +18,6 @@ namespace AzureNamingTool.Controllers
     [ApiKey]
     public class ResourceUnitDeptsController : ControllerBase
     {
-        private ServiceResponse serviceResponse = new();
         // GET: api/<ResourceUnitDeptsController>
         /// <summary>
         /// This function will return the units/depts data. 
@@ -27,6 +26,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -56,6 +56,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -85,11 +86,14 @@ namespace AzureNamingTool.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ResourceUnitDept item)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceUnitDeptService.PostItem(item);
                 if (serviceResponse.Success)
                 {
+                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Unit/Department (" + item.Name + ") added/updated." });
+                    CacheHelper.InvalidateCacheObject("ResourceUnitDept");
                     return Ok(serviceResponse.ResponseObject);
                 }
                 else
@@ -114,11 +118,14 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<ResourceUnitDept> items)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceUnitDeptService.PostConfig(items);
                 if (serviceResponse.Success)
                 {
+                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Units/Departments added/updated." });
+                    CacheHelper.InvalidateCacheObject("ResourceUnitDept");
                     return Ok(serviceResponse.ResponseObject);
                 }
                 else
@@ -142,12 +149,25 @@ namespace AzureNamingTool.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
-                serviceResponse = await ResourceUnitDeptService.DeleteItem(id);
+                // Get the item details
+                serviceResponse = await ResourceUnitDeptService.GetItem(id);
                 if (serviceResponse.Success)
                 {
-                    return Ok(serviceResponse.ResponseObject);
+                    ResourceUnitDept item = (ResourceUnitDept)serviceResponse.ResponseObject!;
+                    serviceResponse = await ResourceUnitDeptService.DeleteItem(id);
+                    if (serviceResponse.Success)
+                    {
+                        AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Unit/Department (" + item.Name + ") deleted." });
+                        CacheHelper.InvalidateCacheObject("ResourceUnitDept");
+                        return Ok("Resource Unit/Department (" + item.Name + ") deleted.");
+                    }
+                    else
+                    {
+                        return BadRequest(serviceResponse.ResponseObject);
+                    }
                 }
                 else
                 {

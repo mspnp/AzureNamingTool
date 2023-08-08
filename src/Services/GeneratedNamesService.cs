@@ -6,14 +6,13 @@ namespace AzureNamingTool.Services
 {
     public class GeneratedNamesService
     {
-        private static readonly ServiceResponse serviceResponse = new();
-
         /// <summary>
         /// This function gets the generated names log. 
         /// </summary>
         /// <returns>List of GeneratedNames - List of generated names</returns>
         public static async Task<ServiceResponse> GetItems()
         {
+            ServiceResponse serviceResponse = new();
             List<GeneratedName> lstGeneratedNames = new();
             try
             {
@@ -35,6 +34,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> GetItem(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -47,6 +47,14 @@ namespace AzureNamingTool.Services
                         serviceResponse.ResponseObject = item;
                         serviceResponse.Success = true;
                     }
+                    else
+                    {
+                        serviceResponse.ResponseObject = "Generated Name not found!";
+                    }
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Generated Names not found!";
                 }
             }
             catch (Exception ex)
@@ -64,7 +72,7 @@ namespace AzureNamingTool.Services
         /// <param name="generatedName">GeneratedName - Generated name and components.</param>
         public static async Task<ServiceResponse> PostItem(GeneratedName generatedName)
         {
-            ServiceResponse serviceReponse = new();
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get the previously generated names
@@ -87,19 +95,20 @@ namespace AzureNamingTool.Services
 
                     CacheHelper.InvalidateCacheObject("generatednames.json");
 
-                    serviceReponse.Success = true;
+                    serviceResponse.Success = true;
                 }
             }
             catch (Exception ex)
             {
                 AdminLogService.PostItem(new AdminLogMessage { Title = "ERROR", Message = ex.Message });
-                serviceReponse.Success = false;
+                serviceResponse.Success = false;
             }
-            return serviceReponse;
+            return serviceResponse;
         }
 
         public static async Task<ServiceResponse> DeleteItem(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -117,6 +126,14 @@ namespace AzureNamingTool.Services
                         await ConfigurationHelper.WriteList<GeneratedName>(items);
                         serviceResponse.Success = true;
                     }
+                    else
+                    {
+                        serviceResponse.ResponseObject = "Generated Name not found!";
+                    }
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Generated Name not found!";
                 }
             }
             catch (Exception ex)
@@ -134,23 +151,24 @@ namespace AzureNamingTool.Services
         /// <returns>void</returns>
         public static async Task<ServiceResponse> DeleteAllItems()
         {
-            ServiceResponse serviceReponse = new();
+            ServiceResponse serviceResponse = new();
             try
             {
                 List<GeneratedName> items = new();
                 await ConfigurationHelper.WriteList<GeneratedName>(items);
-                serviceReponse.Success = true;
+                serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
                 AdminLogService.PostItem(new AdminLogMessage { Title = "Error", Message = ex.Message });
                 serviceResponse.Success = false;
             }
-            return serviceReponse;
+            return serviceResponse;
         }
 
         public static async Task<ServiceResponse> PostConfig(List<GeneratedName> items)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items

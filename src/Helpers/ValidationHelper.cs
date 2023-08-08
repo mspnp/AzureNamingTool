@@ -82,11 +82,16 @@ namespace AzureNamingTool.Helpers
                 // Validate the name against the resource type regex
                 Regex regx = new(resourceType.Regx);
                 Match match = regx.Match(name);
+                bool delimitervalid = false;
+                // Check to see if the delimiter has been set
+                if (!String.IsNullOrEmpty(delimiter))
+                {
+                    delimitervalid = true;
+                }
                 if (!match.Success)
                 {
-                    // Strip the delimiter in case that is causing the issue
-                    if (!String.IsNullOrEmpty(delimiter))
-                    {
+                    if (delimitervalid)
+                        {
                         // Strip the delimiter in case that is causing the issue
                         name = name.Replace(delimiter, "");
 
@@ -105,10 +110,12 @@ namespace AzureNamingTool.Helpers
                     }
                     else
                     {
-                        sbMessage.Append("The specified delimiter is not allowed for this resource type and has been removed.");
+                        sbMessage.Append("Regex failed - Please review the Resource Type Naming Guidelines.");
                         sbMessage.Append(Environment.NewLine);
+                        valid = false;
                     }
                 }
+
 
                 // Check min length
                 if (int.TryParse(resourceType.LengthMin, out _))

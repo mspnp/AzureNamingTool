@@ -5,10 +5,9 @@ namespace AzureNamingTool.Services
 {
     public class AdminUserService
     {
-        private static readonly ServiceResponse serviceResponse = new();
-
         public static async Task<ServiceResponse> GetItems()
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -30,6 +29,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> GetItem(string name)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -52,6 +52,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> PostItem(AdminUser item)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -123,6 +124,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> DeleteItem(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -153,6 +155,7 @@ namespace AzureNamingTool.Services
 
         public static async Task<ServiceResponse> PostConfig(List<AdminUser> items)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items

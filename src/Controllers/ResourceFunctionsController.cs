@@ -18,7 +18,6 @@ namespace AzureNamingTool.Controllers
     [ApiKey]
     public class ResourceFunctionsController : ControllerBase
     {
-        private ServiceResponse serviceResponse = new();
         // GET: api/<ResourceFunctionsController>
         /// <summary>
         /// This function will return the functions data. 
@@ -27,6 +26,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -58,6 +58,7 @@ namespace AzureNamingTool.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceFunctionService.GetItem(id);
@@ -86,11 +87,14 @@ namespace AzureNamingTool.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ResourceFunction item)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceFunctionService.PostItem(item);
                 if (serviceResponse.Success)
                 {
+                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Function (" + item.Name + ") added/updated." });
+                    CacheHelper.InvalidateCacheObject("ResourceFunction");
                     return Ok(serviceResponse.ResponseObject);
                 }
                 else
@@ -115,11 +119,14 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<ResourceFunction> items)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceFunctionService.PostConfig(items);
                 if (serviceResponse.Success)
                 {
+                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Functions added/updated." });
+                    CacheHelper.InvalidateCacheObject("ResourceFunction");
                     return Ok(serviceResponse.ResponseObject);
                 }
                 else
@@ -143,12 +150,25 @@ namespace AzureNamingTool.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            ServiceResponse serviceResponse = new();
             try
             {
-                serviceResponse = await ResourceFunctionService.DeleteItem(id);
+                // Get the item details
+                serviceResponse = await ResourceFunctionService.GetItem(id);
                 if (serviceResponse.Success)
                 {
-                    return Ok(serviceResponse.ResponseObject);
+                    ResourceFunction item = (ResourceFunction)serviceResponse.ResponseObject!;
+                    serviceResponse = await ResourceFunctionService.DeleteItem(id);
+                    if (serviceResponse.Success)
+                    {
+                        AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Function (" + item.Name + ") deleted." });
+                        CacheHelper.InvalidateCacheObject("ResourceFunction");
+                        return Ok("Resource Function (" + item.Name + ") deleted.");
+                    }
+                    else
+                    {
+                        return BadRequest(serviceResponse.ResponseObject);
+                    }
                 }
                 else
                 {
