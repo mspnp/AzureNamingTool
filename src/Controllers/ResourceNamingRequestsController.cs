@@ -65,7 +65,6 @@ namespace AzureNamingTool.Controllers
             {
                 request.CreatedBy = "API";
                 ResourceNameResponse resourceNameRequestResponse = await ResourceNamingRequestService.RequestName(request);
-
                 if (resourceNameRequestResponse.Success)
                 {
                     return Ok(resourceNameRequestResponse);
