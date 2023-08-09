@@ -40,6 +40,9 @@ namespace AzureNamingTool.Services
             ServiceResponse serviceResponse = new();
             try
             {
+                // Get the old api key
+                string oldapikey = config.APIKey!;
+
                 // Set the new api key
                 Guid guid = Guid.NewGuid();
                 config.APIKey = GeneralHelper.EncryptString(guid.ToString(), config.SALTKey!);

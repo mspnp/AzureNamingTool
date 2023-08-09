@@ -192,9 +192,11 @@
     public string filterData { get; set; } = String.Empty;
     public DateTime startdate { get; set; } = DateTime.Today.AddDays(-30);
     public DateTime enddate { get; set; } = DateTime.Today;
+    private string currentuser = String.Empty;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        currentuser = await IdentityHelper.GetCurrentUser(session);
         if (firstRender)
         {
             var result = await session.GetAsync<bool>("admin");
@@ -254,7 +256,7 @@
                             message.Type = MessageTypesEnum.SUCCESS;
                             message.Message = "Generated name deleted!";
                             toastService.ShowSuccess(message.Message);
-                            AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "Generated Name (" + generatedname.ResourceName + ") deleted." });
+                            AdminLogService.PostItem(new AdminLogMessage() { Source = currentuser, Title = "INFORMATION", Message = "Generated Name (" + generatedname.ResourceName + ") deleted." });
                             CacheHelper.InvalidateCacheObject("GeneratedName");
                             await LoadData();
                             state.SetNavReload(true);
@@ -296,7 +298,7 @@
         {
             await LogHelper.PurgeGeneratedNames();
             toastService.ShowSuccess("Generated Log purged!");
-            AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "Generated Names log purged." });
+            AdminLogService.PostItem(new AdminLogMessage() { Source = currentuser, Title = "INFORMATION", Message = "Generated Names log purged." });
             await LoadData();
             StateHasChanged();
         }
