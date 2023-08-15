@@ -83,7 +83,7 @@ namespace AzureNamingTool.Controllers
 
         // POST api/<ResourceNamingRequestsController>
         /// <summary>
-        /// This function will validate the name for the specified resource type.  
+        /// This function will validate the name for the specified resource type. NOTE: This function does not validate using the tool configuration, only the regex for the specified resource type. Use the RequestName function to validate using the tool configuration. 
         /// </summary>
         /// <param name="validateNameRequest">ValidateNameRequest (json) - Validate Name Request data</param>
         /// <returns>ValidateNameResponse - Name validation response</returns>
