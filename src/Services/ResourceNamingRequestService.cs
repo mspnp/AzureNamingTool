@@ -747,6 +747,13 @@ namespace AzureNamingTool.Services
                             ResourceTypeName = resourceType.Resource,
                             User = request.CreatedBy
                         };
+
+                        // Check if the property should be appended to name
+                        if(!String.IsNullOrEmpty(resourceType.Property))
+                        {
+                            generatedName.ResourceTypeName += " - " + resourceType.Property;
+                        }
+
                         ServiceResponse responseGenerateName = await GeneratedNamesService.PostItem(generatedName);
                         if (responseGenerateName.Success)
                         {

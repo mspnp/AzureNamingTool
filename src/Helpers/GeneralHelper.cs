@@ -121,27 +121,39 @@ namespace AzureNamingTool.Helpers
 
         public static bool IsNotNull([NotNullWhen(true)] object? obj) => obj != null;
 
-        public static string FormatResoureType(string type)
+        public static string[] FormatResoureType(string type)
         {
+            String[] returntype = new String[3];
+            // Make sure it is a full resource type name
+            if (type.Contains("("))
+            {
+                returntype[0] = type.Substring(0, type.IndexOf("(")).Trim();
+            }
             try
             {
-                // trim any details out of the value
-                if (type.Contains("-"))
+                if ((GeneralHelper.IsNotNull(type)) && (GeneralHelper.IsNotNull(returntype[0])))
                 {
-                    type = type.Substring(0, type.IndexOf("-")).Trim();
-                }
+                    // trim any details out of the value
+                    if (returntype[0].Contains(" -"))
+                    {
+                        returntype[1] = returntype[0].Substring(0, returntype[0].IndexOf(" -")).Trim();
+                    }
 
-                // trim any details out of the value
-                if (type.Contains("("))
-                {
-                    type = type.Substring(0, type.IndexOf("(")).Trim();
+                    // trim any details out of the value
+                    if ((type.Contains("(")) && (type.Contains(")")))
+                    {
+                        {
+                            int intstart = type.IndexOf("(") + 1;
+                            returntype[2] = String.Concat(type.Substring(intstart).TakeWhile(x => x != ')'));
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
                 AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
-            return type;
+            return returntype;
         }
     }
 }
