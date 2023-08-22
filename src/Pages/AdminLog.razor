@@ -149,9 +149,11 @@
     public string filterData { get; set; } = String.Empty;
     public DateTime startdate { get; set; } = DateTime.Today.AddDays(-30);
     public DateTime enddate { get; set; } = DateTime.Today;
+    private string currentuser = String.Empty;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        currentuser = await IdentityHelper.GetCurrentUser(session);
         if (firstRender)
         {
             var result = await session.GetAsync<bool>("admin");
@@ -195,7 +197,7 @@
         {
             await LogHelper.PurgeAdminLog();
             toastService.ShowSuccess("Admin Log purged!");
-            AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "Admin Log purged." });
+            AdminLogService.PostItem(new AdminLogMessage() { Source = currentuser, Title = "INFORMATION", Message = "Admin Log purged." });
             CacheHelper.InvalidateCacheObject("AdminLogMessage");
             serviceResponse = await AdminLogService.GetItems();
             if (serviceResponse.Success)

@@ -253,6 +253,94 @@ namespace AzureNamingTool.Controllers
             }
         }
 
+        // GET api/<AdminController>/GetGeneratedName/5
+        /// <summary>
+        /// This function will return the generated names data by ID.
+        /// </summary>
+        /// <param name="id">int - Generated Name id</param>
+        /// <returns>json - Current generated name data by ID</returns>
+        [HttpGet]
+        [Route("[action]/{id}")]
+        public async Task<IActionResult> GetGeneratedName(int id)
+        {
+            ServiceResponse serviceResponse = new();
+            try
+            {
+                serviceResponse = await GeneratedNamesService.GetItem(id);
+                if (serviceResponse.Success)
+                {
+                    return Ok(serviceResponse.ResponseObject);
+                }
+                else
+                {
+                    return BadRequest(serviceResponse.ResponseObject);
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                return BadRequest(ex);
+            }
+        }
+
+        // DELETE api/<AdminController>/DeleteGeneratedName/5
+        /// <summary>
+        /// This function will delete the generated names data by ID.
+        /// </summary>
+        /// <param name="adminpassword">string - Admin password</param>
+        /// <param name="id">int - Generated Name id</param>
+        /// <returns>bool - PASS/FAIL</returns>
+        [HttpDelete]
+        [Route("[action]/{id}")]
+        public async Task<IActionResult> DeleteGeneratedName([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword, int id)
+        {
+            ServiceResponse serviceResponse = new();
+            try
+            {
+                if (GeneralHelper.IsNotNull(adminpassword))
+                {
+                    if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
+                    {
+                        // Get the item details
+                        serviceResponse = await GeneratedNamesService.GetItem(id);
+                        if (serviceResponse.Success)
+                        {
+                            GeneratedName item = (GeneratedName)serviceResponse.ResponseObject!;
+                            serviceResponse = await GeneratedNamesService.DeleteItem(id);
+                            if (serviceResponse.Success)
+                            {
+                                AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Generated Name (" + item.ResourceName + ") deleted." });
+                                CacheHelper.InvalidateCacheObject("GeneratedName");
+                                return Ok("Generated Name (" + item.ResourceName + ") deleted.");
+                            }
+                            else
+                            {
+                                return BadRequest(serviceResponse.ResponseObject);
+                            }
+                        }
+                        else
+                        {
+                            return BadRequest(serviceResponse.ResponseObject);
+                        }
+                    }
+                    else
+                    {
+                        return Ok("FAILURE - Incorrect Global Admin Password.");
+                    }
+
+                }
+                else
+                {
+                    return Ok("FAILURE - You must provide the Global Admin Password.");
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                return BadRequest(ex);
+            }
+        }
+
         /// <summary>
         /// This function will purge the generated names data.
         /// </summary>

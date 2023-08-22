@@ -107,7 +107,7 @@
                                     <span class="input-group-text" id="addon-wrapping">
                                         <span class="oi oi-magnifying-glass" id="addon-wrapping"></span>
                                     </span>
-                                    <input @bind-value="@selectedResourceType" @oninput="(EventArgs) => { OnTypeChanged(EventArgs.Value!.ToString()!);}" class="@GetControlStyle()" list="typeslist" id="generatetypes" placeholder="Type to search resource types..." autocomplete="off">
+                                    <input @bind-value="@selectedResourceTypeDisplayName" @oninput="(EventArgs) => { OnTypeChanged(EventArgs.Value!.ToString()!);}" class="@GetControlStyle()" list="typeslist" id="generatetypes" placeholder="Type to search resource types..." autocomplete="off">
                                     <datalist id="typeslist">
                                         @foreach (var type in @ResourceTypeService.GetFilteredResourceTypes(servicesData.ResourceTypes, selectedResourceTypeCategory))
                                         {
@@ -492,8 +492,11 @@
     private string selectedResourceLocation = String.Empty;
     private string selectedResourceOrg = String.Empty;
     private string selectedResourceProjAppSvc = String.Empty;
+    private String[] selectedResourceTypeFull = new String[2];
     private string selectedResourceTypeCategory = String.Empty;
     private string selectedResourceType = String.Empty;
+    private string selectedResourceTypeShortName = String.Empty;
+    private string selectedResourceTypeDisplayName = String.Empty;
     private string selectedResourceTypeExclude = String.Empty;
     private string selectedResourceTypeOptional = String.Empty;
     private Dictionary<string, string> selectedCustomComponents = new();
@@ -607,8 +610,24 @@
                 {
                     // Single type generation
                     StringBuilder sbName = new();
-                    selectedResourceType = GeneralHelper.FormatResoureType(selectedResourceType);
-                    resourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType)!;
+                    selectedResourceTypeFull = GeneralHelper.FormatResoureType(selectedResourceTypeDisplayName);
+                    if (GeneralHelper.IsNotNull(selectedResourceTypeFull[1]))
+                    {
+                        selectedResourceType = selectedResourceTypeFull[1];
+                    }
+                    else
+                    {
+                        selectedResourceType = selectedResourceTypeFull[0];
+                    }
+                    selectedResourceTypeShortName = selectedResourceTypeFull[2];
+                    if (GeneralHelper.IsNotNull(selectedResourceTypeShortName))
+                    {
+                        resourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType && x.ShortName == selectedResourceTypeShortName)!;
+                    }
+                    else
+                    {
+                        resourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType)!;
+                    }
                     if (GeneralHelper.IsNotNull(resourceType))
                     {
                         resourceNameRequest.ResourceType = resourceType.ShortName;
@@ -805,14 +824,29 @@
             }
             resourceNameRequestResponse = new();
             // Assign the selected value to the Model
-            selectedResourceType = value;
+            selectedResourceTypeDisplayName = value;
 
-            if (!String.IsNullOrEmpty(selectedResourceType))
+            if (!String.IsNullOrEmpty(selectedResourceTypeDisplayName))
             {
-                selectedResourceType = GeneralHelper.FormatResoureType(selectedResourceType);
+                selectedResourceTypeFull = GeneralHelper.FormatResoureType(selectedResourceTypeDisplayName);
+                if(GeneralHelper.IsNotNull(selectedResourceTypeFull[1]))
+                {
+                    selectedResourceType = selectedResourceTypeFull[1];
+                }
+                else
+                {
+                    selectedResourceType = selectedResourceTypeFull[0];
+                }
+                selectedResourceTypeShortName = selectedResourceTypeFull[2];
+                if (GeneralHelper.IsNotNull(selectedResourceTypeShortName))
+                {
+                    currentResourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType && x.ShortName == selectedResourceTypeShortName)!;
+                }
+                else
+                {
+                    currentResourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType)!;
+                }
 
-                // Find the selected resoruce type
-                currentResourceType = servicesData.ResourceTypes!.Find((t) => t.Resource == selectedResourceType);
                 if (GeneralHelper.IsNotNull(currentResourceType))
                 {
                     // Set the optional components
@@ -1107,6 +1141,9 @@
     private void ResetForm(bool clearselection)
     {
         selectedResourceTypeCategory = String.Empty;
+        Array.Clear(selectedResourceTypeFull);
+        selectedResourceTypeShortName = String.Empty;
+        selectedResourceTypeDisplayName = String.Empty;
         selectedResourceType = String.Empty;
         componentsVisible = "collapse show";
         currentResourceType = null;
