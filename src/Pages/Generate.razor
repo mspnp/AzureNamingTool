@@ -209,7 +209,7 @@
                         </div>
                     </div>
 
-                    @if ((!String.IsNullOrEmpty(selectedResourceType)) && (GeneralHelper.IsNotNull(currentResourceType)))
+                    @if (((!String.IsNullOrEmpty(selectedResourceType)) && (GeneralHelper.IsNotNull(currentResourceType))) || (multiselectedResourceTypes.Count > 0))
                     {
                         @if (componentsVisible == "collapse")
                         {
