@@ -124,6 +124,7 @@ namespace AzureNamingTool.Helpers
         public static string[] FormatResoureType(string type)
         {
             String[] returntype = new String[3];
+            returntype[0] = type;
             // Make sure it is a full resource type name
             if (type.Contains("("))
             {
