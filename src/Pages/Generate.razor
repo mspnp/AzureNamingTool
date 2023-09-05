@@ -781,21 +781,18 @@
                         multiselectedResourceTypes = (List<string>)result.Data;
                         if (GeneralHelper.IsNotNull(multiselectedResourceTypes))
                         {
-                            if (GeneralHelper.IsNotNull(multiselectedResourceTypes))
+                            if (multiselectedResourceTypes.Count > 0)
                             {
-                                if (multiselectedResourceTypes.Count > 0)
+                                ResourceType currentmultiresourcertype = servicesData.ResourceTypes!.Find((t) => t.Id == Convert.ToInt32(multiselectedResourceTypes![0].ToString()))!;
+                                if (GeneralHelper.IsNotNull(currentmultiresourcertype))
                                 {
-                                    ResourceType currentmultiresourcertpe = servicesData.ResourceTypes!.Find((t) => t.Id == Convert.ToInt32(multiselectedResourceTypes![0].ToString()))!;
-                                    if (GeneralHelper.IsNotNull(currentmultiresourcertpe))
-                                    {
-                                        OnTypeChanged(currentmultiresourcertpe.Resource);
-                                    }
-                                    componentsVisible = "";
+                                    await OnTypeChanged(currentmultiresourcertype.Resource);
                                 }
-                                else
-                                {
-                                    componentsVisible = "collapse";
-                                }
+                                componentsVisible = "";
+                            }
+                            else
+                            {
+                                componentsVisible = "collapse";
                             }
                         }
                     }
@@ -814,7 +811,7 @@
         componentsVisible = "collapse show";
     }
 
-    private async void OnTypeChanged(string value)
+    private async Task OnTypeChanged(string value)
     {
         try
         {
@@ -829,7 +826,7 @@
             if (!String.IsNullOrEmpty(selectedResourceTypeDisplayName))
             {
                 selectedResourceTypeFull = GeneralHelper.FormatResoureType(selectedResourceTypeDisplayName);
-                if(GeneralHelper.IsNotNull(selectedResourceTypeFull[1]))
+                if (GeneralHelper.IsNotNull(selectedResourceTypeFull[1]))
                 {
                     selectedResourceType = selectedResourceTypeFull[1];
                 }
