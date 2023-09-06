@@ -537,10 +537,15 @@ namespace AzureNamingTool.Helpers
                 // Get all the files in the repository folder
                 DirectoryInfo repositoryDir = new("repository");
                 // Filter out the appsettings.json to retain admin credentials
-                foreach (FileInfo file in repositoryDir.GetFiles().Where(x => x.Name != "appsettings.json"))
+                string[] protectedfilenames = { "adminusers.json", "appsettings.json" };
+                foreach (FileInfo file in repositoryDir.GetFiles())
                 {
-                    // Copy the repository file to the settings folder
-                    file.CopyTo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "settings/" + file.Name), true);
+                    //Only copy non-admin files
+                    if (!protectedfilenames.Contains(file.Name.ToLower()))
+                    {
+                        // Copy the repository file to the settings folder
+                        file.CopyTo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "settings/" + file.Name), true);
+                    }
                 }
 
                 // Clear the cache
