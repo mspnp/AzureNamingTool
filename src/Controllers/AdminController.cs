@@ -79,7 +79,7 @@ namespace AzureNamingTool.Controllers
                 {
                     if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
                     {
-                        serviceResponse = await AdminService.UpdateAPIKey(apikey);
+                        serviceResponse = await AdminService.UpdateAPIKey(apikey, "fullaccess");
                         return (serviceResponse.Success ? Ok("SUCCESS") : Ok("FAILURE - There was a problem updating the API Key."));
                     }
                     else
@@ -118,7 +118,84 @@ namespace AzureNamingTool.Controllers
                 {
                     if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
                     {
-                        serviceResponse = await AdminService.GenerateAPIKey();
+                        serviceResponse = await AdminService.GenerateAPIKey("fullaccess");
+                        return (serviceResponse.Success ? Ok("SUCCESS") : Ok("FAILURE - There was a problem generating the API Key."));
+                    }
+                    else
+                    {
+                        return Ok("FAILURE - Incorrect Global Admin Password.");
+                    }
+
+                }
+                else
+                {
+                    return Ok("FAILURE - You must provide the Global Admin Password.");
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                return BadRequest(ex);
+            }
+        }
+
+        // POST api/<AdminController>
+        /// <summary>
+        /// This function will update the API Key. 
+        /// </summary>
+        /// <param name="apikey">string - New API Key</param>
+        /// <param name="adminpassword">string - Current Global Admin Password</param>
+        /// <returns>dttring - Successful update</returns>
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> UpdateReadOnlyAPIKey([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword, [FromBody] string apikey)
+        {
+            ServiceResponse serviceResponse = new();
+            try
+            {
+                if (GeneralHelper.IsNotNull(adminpassword))
+                {
+                    if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
+                    {
+                        serviceResponse = await AdminService.UpdateAPIKey(apikey, "readonly");
+                        return (serviceResponse.Success ? Ok("SUCCESS") : Ok("FAILURE - There was a problem updating the API Key."));
+                    }
+                    else
+                    {
+                        return Ok("FAILURE - Incorrect Global Admin Password.");
+                    }
+
+                }
+                else
+                {
+                    return Ok("FAILURE - You must provide the Global Admin Password.");
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                return BadRequest(ex);
+            }
+        }
+
+        // POST api/<AdminController>
+        /// <summary>
+        /// This function will generate a new API Key. 
+        /// </summary>
+        /// <param name="adminpassword">string - Current Global Admin Password</param>
+        /// <returns>string - Successful update / Generated API Key</returns>
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> GenerateReadOnlyAPIKey([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword)
+        {
+            ServiceResponse serviceResponse = new();
+            try
+            {
+                if (GeneralHelper.IsNotNull(adminpassword))
+                {
+                    if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
+                    {
+                        serviceResponse = await AdminService.GenerateAPIKey("readonly");
                         return (serviceResponse.Success ? Ok("SUCCESS") : Ok("FAILURE - There was a problem generating the API Key."));
                     }
                     else

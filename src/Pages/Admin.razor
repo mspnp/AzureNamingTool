@@ -133,12 +133,35 @@
                                     </div>
                                     <div class="collapse show  card card-body @theme.ThemeStyle" id="updateapikey">
                                         <p>
-                                            The current API key is displayed. Click <strong>Generate</strong> to generate a new random API Key, or update the text to the desired value.
+                                            The current <strong>API Key</strong> is displayed. This key provides <strong>full access</strong> to the API.
+                                        </p>
+                                        <p>
+                                            Click <strong>Generate</strong> to create a new random <strong>API Key</strong>, or update the text to the desired value.
                                         </p>
                                         <div class="form-group">
                                             <input title="API Key" id="currentapikey" class="form-control mb-3" type="text" @onchange="@((ui) => { SetFormValue("apikey",(string)ui.Value!);})" value="@currentapikey" />
                                             <button type="button" class="btn btn-success" @onclick="@(e => AdminFormAction("apikeysave"))" title="Save API Key">Save</button>
                                             <button type="button" class="btn btn-success" @onclick="@(e => AdminFormAction("apikeygenerate"))" title="Generate API Key">Generate</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card mb-3">
+                                    <div class="card-header bg-default text-dark">
+                                        <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#updatereadonlyapikey" role="button" aria-expanded="false" aria-controls="updatereadonlyapikey">
+                                            <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Read-Only API Key
+                                        </a>
+                                    </div>
+                                    <div class="collapse show  card card-body @theme.ThemeStyle" id="updatereadonlyapikey">
+                                        <p>
+                                            The current <strong>Read-Only API Key</strong> is displayed. This key provides <strong>read-only</strong> access to the API (GET operations only).                                            
+                                        </p>
+                                        <p>
+                                            Click <strong>Generate</strong> to create a new random <strong>Read-Only API Key</strong>, or update the text to the desired value.
+                                        </p>
+                                        <div class="form-group">
+                                            <input title="Read-Only API Key" id="currentreadonlyapikey" class="form-control mb-3" type="text" @onchange="@((ui) => { SetFormValue("readonlyapikey",(string)ui.Value!);})" value="@currentreadonlyapikey" />
+                                            <button type="button" class="btn btn-success" @onclick="@(e => AdminFormAction("readonlyapikeysave"))" title="Save Read-Only API Key">Save</button>
+                                            <button type="button" class="btn btn-success" @onclick="@(e => AdminFormAction("readonlyapikeygenerate"))" title="Generate Read-Only API Key">Generate</button>
                                         </div>
                                     </div>
                                 </div>
@@ -453,6 +476,7 @@
     private string currentpassword = String.Empty;
     private string newpassword = String.Empty;
     private string currentapikey = String.Empty;
+    private string currentreadonlyapikey = String.Empty;
     private string currentidentityheadername = String.Empty;
     private string currentidentityprovider = String.Empty;
     private ResponseMessage message = new();
@@ -490,6 +514,7 @@
             if (admin)
             {
                 currentapikey = GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!);
+                currentreadonlyapikey = GeneralHelper.DecryptString(config.ReadOnlyAPIKey!, config.SALTKey!);
                 // Determine if the version notification has been dismissed
                 var resultVersionAlert = await session.GetAsync<bool>("versionalert-" + appversion + "-shown");
                 versionalertshown = resultVersionAlert.Success ? resultVersionAlert.Value : false;
@@ -538,6 +563,7 @@
                     await session.SetAsync("currentuser", "GlobalAdmin");
                     // Load the current API Key
                     currentapikey = GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!);
+                    currentreadonlyapikey = GeneralHelper.DecryptString(config.ReadOnlyAPIKey!, config.SALTKey!);
                     message.Type = MessageTypesEnum.INFORMATION;
                     message.Header = "INFORMATION";
                     message.Message = "Global Admin logged in.";
@@ -612,7 +638,7 @@
                 confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the API Key.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                 if (confirm)
                 {
-                    serviceResponse = await AdminService.UpdateAPIKey(currentapikey);
+                    serviceResponse = await AdminService.UpdateAPIKey(currentapikey, "fullaccess");
                     if (serviceResponse.Success)
                     {
                         message.Type = MessageTypesEnum.SUCCESS;
@@ -635,7 +661,7 @@
                 confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will generate a new API Key.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                 if (confirm)
                 {
-                    serviceResponse = await AdminService.GenerateAPIKey();
+                    serviceResponse = await AdminService.GenerateAPIKey("fullaccess");
                     if (serviceResponse.Success)
                     {
                         if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
@@ -657,6 +683,62 @@
                         message.Type = MessageTypesEnum.ERROR;
                         message.Header = "ERROR";
                         message.Message = "There was a problem generating the API Key!";
+                    }
+                }
+                else
+                {
+                    displaymessage = false;
+                }
+                break;
+            case "readonlyapikeysave":
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the Read-Only API Key.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                if (confirm)
+                {
+                    serviceResponse = await AdminService.UpdateAPIKey(currentreadonlyapikey, "readonly");
+                    if (serviceResponse.Success)
+                    {
+                        message.Type = MessageTypesEnum.SUCCESS;
+                        message.Header = "SUCCESS";
+                        message.Message = "Read-Only API Key updated!";
+                    }
+                    else
+                    {
+                        message.Type = MessageTypesEnum.ERROR;
+                        message.Header = "ERROR";
+                        message.Message = "There was a problem updating the Read-Only API Key!";
+                    }
+                }
+                else
+                {
+                    displaymessage = false;
+                }
+                break;
+            case "readonlyapikeygenerate":
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will generate a new Read-Only API Key.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                if (confirm)
+                {
+                    serviceResponse = await AdminService.GenerateAPIKey("readonly");
+                    if (serviceResponse.Success)
+                    {
+                        if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                        {
+                            currentreadonlyapikey = serviceResponse.ResponseObject!;
+                            message.Type = MessageTypesEnum.SUCCESS;
+                            message.Header = "SUCCESS";
+                            message.Message = "Read-Only API Key updated!";
+                        }
+                        else
+                        {
+                            message.Type = MessageTypesEnum.ERROR;
+                            message.Header = "ERROR";
+                            message.Message = "There was a problem generating the Read-Only API Key!";
+                        }
+                    }
+                    else
+                    {
+                        message.Type = MessageTypesEnum.ERROR;
+                        message.Header = "ERROR";
+                        message.Message = "There was a problem generating the Read-Only API Key!";
                     }
                 }
                 else
@@ -809,6 +891,9 @@
                 break;
             case "apikey":
                 currentapikey = value;
+                break;
+            case "readonlyapikey":
+                currentreadonlyapikey = value;
                 break;
             case "generationwebhook":
                 currentgenerationwebhook = value;

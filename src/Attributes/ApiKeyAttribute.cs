@@ -23,14 +23,31 @@ namespace AzureNamingTool.Attributes
             var config = ConfigurationHelper.GetConfigurationData();
             if (GeneralHelper.IsNotNull(config))
             {
-                if (!GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!).Equals(extractedApiKey))
+                // Determine if the request is read-only
+                if (context.HttpContext.Request.Method == "GET")
                 {
-                    context.Result = new ContentResult()
+                    if ((!GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!).Equals(extractedApiKey)) && (!GeneralHelper.DecryptString(config.ReadOnlyAPIKey!, config.SALTKey!).Equals(extractedApiKey)))
                     {
-                        StatusCode = 401,
-                        Content = "Api Key is not valid!"
-                    };
-                    return;
+                        context.Result = new ContentResult()
+                        {
+                            StatusCode = 401,
+                            Content = "Api Key is not valid!"
+                        };
+                        return;
+                    }
+                }
+                else
+                { 
+                    // Request is a POST. Make sure the provided API Key is for full access
+                    if (!GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!).Equals(extractedApiKey))
+                    {
+                        context.Result = new ContentResult()
+                        {
+                            StatusCode = 401,
+                            Content = "Api Key is not valid!"
+                        };
+                        return;
+                    }
                 }
             }
 

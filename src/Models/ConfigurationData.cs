@@ -23,6 +23,7 @@ namespace AzureNamingTool.Models
         public string? SALTKey { get; set; }
         public string? AdminPassword { get; set; }
         public string? APIKey { get; set; }
+        public string? ReadOnlyAPIKey { get; set; }
         public string? DismissedAlerts { get; set; }
         public string? DuplicateNamesAllowed { get; set; } = "False";
         public string? GenerationWebhook { get; set; }
