@@ -436,7 +436,7 @@
                                 </button>
                             </div>
                         </div>
-                        @if (@resourceNameRequestResponse.Success)
+                        @if (@namerequested)
                         {
                             <div class="card @resultClass text-white mt-3">
                                 <div class="card-header">@resultHeader</div>
@@ -515,6 +515,7 @@
     private string[] filteredscopes = new string[] { "resource group", "resource group & region", "region", "global", "subscription", "tenant" };
     private ResourceNameRequest resourceNameRequest = new();
     private ResourceNameResponse resourceNameRequestResponse = new();
+    private bool namerequested = false;
     private ResourceType? currentResourceType = null;
     private List<string> multiselectedResourceTypes = new();
     private string currentuser = String.Empty;
@@ -562,6 +563,7 @@
 
     private async Task HandleValidSubmit()
     {
+        namerequested = false;
         var workingmodaloptions = new ModalOptions()
             {
                 HideCloseButton = true,
@@ -633,6 +635,7 @@
                         resourceNameRequest.ResourceType = resourceType.ShortName;
                         resourceNameRequest.ResourceId = resourceType.Id;
                         resourceNameRequestResponse = await ResourceNamingRequestService.RequestName(resourceNameRequest);
+                        namerequested = true;
 
                         // Prepare the response
                         sbNames.Append("<tr>");

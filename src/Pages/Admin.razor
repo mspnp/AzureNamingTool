@@ -339,7 +339,27 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="card mb-3" style="width:auto;">
+                                <div class="card-header bg-default text-dark">
+                                    <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#autoincrementresourceinstance" role="button" aria-expanded="false" aria-controls="resourcetypeediting">
+                                        <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Auto-Increment Resource Instance
+                                    </a>
+                                </div>
+                                <div class="collapse show card card-body @theme.ThemeStyle" id="autoincrementresourceinstance">
+                                    <div class="mb-3">
+                                        <p>
+                                            If enabled, this setting will increment the Resource Instance value to next number for the generated resource type name.
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <label class="switch" title="Auto-Increment Resource Instance">
+                                            <input type="checkbox" checked="@autoincrementresourceinstance" @oninput='args => SettingChanged(args, "autoincrementresourceinstance")'>
+                                            <span class="slider round"></span>
+                                        </label>
+                                        <span class="align-text-top"> Enable</span>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="card mb-3" style="width:auto;">
                                 <div class="card-header bg-default text-dark">
                                     <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#resourcetypeediting" role="button" aria-expanded="false" aria-controls="resourcetypeediting">
@@ -443,6 +463,7 @@
     private bool duplicatenamesallowed = false;
     private bool connectivitycheckenabled = true;
     private bool resourcetypeeditingallowed = false;
+    private bool autoincrementresourceinstance = false;
     private string currentgenerationwebhook = String.Empty;
     private string versionalert = String.Empty;
     private string appversion = String.Empty;
@@ -476,6 +497,7 @@
                 duplicatenamesallowed = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("DuplicateNamesAllowed"));
                 connectivitycheckenabled = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("ConnectivityCheckEnabled"));
                 resourcetypeeditingallowed = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("ResourceTypeEditingAllowed"));
+                autoincrementresourceinstance = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("AutoIncrementResourceInstance"));
                 currentgenerationwebhook = ConfigurationHelper.GetAppSetting("GenerationWebhook", true);
                 currentidentityheadername = ConfigurationHelper.GetAppSetting("IdentityHeaderName", true);
                 if (GeneralHelper.IsNotNull(identityProviderDetails))
@@ -836,6 +858,13 @@
                             {
                                 ModalHelper.ShowInformationModal(Modal!, theme, "bg-danger", "ATTENTION", "<p>Disabling this setting may result in name generation that will fail regex validation for the resource type.</p><p>Please use caution when editing Resource Type validation settings.", "", admin);
                             }
+                        }
+                        break;
+                    case "autoincrementresourceinstance":
+                        if (GeneralHelper.IsNotNull(e.Value))
+                        {
+                            ConfigurationHelper.SetAppSetting("AutoIncrementResourceInstance", e.Value!.ToString() ?? "");
+                            message.Message = "Auto Increment Resource Instance setting updated to " + e.Value?.ToString()!.ToUpper() ?? "" + "!";
                         }
                         break;
                 }

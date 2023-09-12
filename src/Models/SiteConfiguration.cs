@@ -8,10 +8,11 @@
         public string? AppTheme { get; set; }
         public bool? DevMode { get; set; } = false;
         public string? DismissedAlerts { get; set; }
-        public string? DuplicateNamesAllowed { get; set; }
+        public string? DuplicateNamesAllowed { get; set; } = "False";
         public string? GenerationWebhook { get; set; }
-        public string? ConnectivityCheckEnabled { get; set; }
+        public string? ConnectivityCheckEnabled { get; set; } = "True";
         public string? IdentityHeaderName { get; set; }
-        public string? ResourceTypeEditingAllowed { get; set; }
+        public string? ResourceTypeEditingAllowed { get; set; } = "False";
+        public string? AutoIncrementResourceInstance { get; set; } = "False";
     }
 }

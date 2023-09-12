@@ -121,14 +121,15 @@ namespace AzureNamingTool.Helpers
 
         public static bool IsNotNull([NotNullWhen(true)] object? obj) => obj != null;
 
+
         public static string[] FormatResoureType(string type)
         {
             String[] returntype = new String[3];
             returntype[0] = type;
             // Make sure it is a full resource type name
-            if (type.Contains("("))
+            if (type.Contains('('))
             {
-                returntype[0] = type.Substring(0, type.IndexOf("(")).Trim();
+                returntype[0] = type[..type.IndexOf("(")].Trim();
             }
             try
             {
@@ -137,15 +138,15 @@ namespace AzureNamingTool.Helpers
                     // trim any details out of the value
                     if (returntype[0].Contains(" -"))
                     {
-                        returntype[1] = returntype[0].Substring(0, returntype[0].IndexOf(" -")).Trim();
+                        returntype[1] = returntype[0][..returntype[0].IndexOf(" -")].Trim();
                     }
 
                     // trim any details out of the value
-                    if ((type.Contains("(")) && (type.Contains(")")))
+                    if (type.Contains('(') && type.Contains(')'))
                     {
                         {
                             int intstart = type.IndexOf("(") + 1;
-                            returntype[2] = String.Concat(type.Substring(intstart).TakeWhile(x => x != ')'));
+                            returntype[2] = String.Concat(type[intstart..].TakeWhile(x => x != ')'));
                         }
                     }
                 }

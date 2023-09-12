@@ -8,5 +8,6 @@
         public string ResourceTypeName { get; set; } =  String.Empty;
         public List<string[]> Components { get; set; } = new();
         public string User { get; set; } = "General";
+        public string? Message { get; set; }
     }
 }

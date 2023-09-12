@@ -1,21 +1,13 @@
 ﻿using AzureNamingTool.Models;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 using AzureNamingTool.Services;
-using System.Xml.Linq;
-using System.Net.NetworkInformation;
-using System.Net;
-using System.Runtime.Caching;
-using System.Reflection;
-using System.Net.Http;
-using System.Text;
-using System.Net.Http.Json;
-using System.Net.Http.Headers;
-using System;
-using Blazored.Toast.Services;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Collections;
+using System.Data.SqlTypes;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Reflection;
+using System.Runtime.Caching;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace AzureNamingTool.Helpers
 {
@@ -670,33 +662,6 @@ namespace AzureNamingTool.Helpers
             }
         }
 
-        public static bool VerifyDuplicateNamesAllowed()
-        {
-            bool result = false;
-            try
-            {
-                // Check if the data is cached
-                var cacheddata = CacheHelper.GetCacheObject("duplicatenamesallowed");
-                if (cacheddata == null)
-                {
-                    // Check if version alert has been dismissed
-                    var allowed = GetAppSetting("DuplicateNamesAllowed");
-                    result = Convert.ToBoolean(allowed);
-                    // Set the result to cache
-                    CacheHelper.SetCacheObject("duplicatenamesallowed", result);
-                }
-                else
-                {
-                    result = Convert.ToBoolean(cacheddata);
-                }
-            }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
-            }
-            return result;
-        }
-
         public static async Task<bool> PostToGenerationWebhook(string URL, GeneratedName generatedName)
         {
             bool result = false;
@@ -854,6 +819,37 @@ namespace AzureNamingTool.Helpers
                 AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
             return result;
+        }
+
+
+        public static async Task<bool> CheckIfGeneratedNameExists(string name)
+        {
+            bool nameexists = false;
+            // Check if the name already exists
+            ServiceResponse serviceResponse = new();
+            serviceResponse = await GeneratedNamesService.GetItems();
+            if (serviceResponse.Success)
+            {
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                {
+                    var names = (List<GeneratedName>)serviceResponse.ResponseObject!;
+                    if (GeneralHelper.IsNotNull(names))
+                    {
+                        if (names.Where(x => x.ResourceName == name).Any())
+                        {
+                            nameexists = true;
+                        }
+                    }
+                }
+            }
+            return nameexists;
+        }
+
+        public static string AutoIncremenetResourceInstance(string resourcetype)
+        {
+            string resourcetypeupdated = String.Empty;
+
+            return resourcetypeupdated;
         }
     }
 }

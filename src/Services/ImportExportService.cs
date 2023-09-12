@@ -102,12 +102,14 @@ namespace AzureNamingTool.Services
                     configdata.AdminLogs = serviceResponse.ResponseObject;
                 }
 
-                    // Get the current settings
-                    var config = ConfigurationHelper.GetConfigurationData();
+                // Get the current settings
+                var config = ConfigurationHelper.GetConfigurationData();
                 configdata.DismissedAlerts = config.DismissedAlerts;
                 configdata.DuplicateNamesAllowed = config.DuplicateNamesAllowed;
                 configdata.ConnectivityCheckEnabled = config.ConnectivityCheckEnabled;
-                configdata.GenerationWebhook = config.GenerationWebhook;
+                configdata.GenerationWebhook = config.GenerationWebhook;                    
+                configdata.ResourceTypeEditingAllowed = config.ResourceTypeEditingAllowed;
+                configdata.AutoIncrementResourceInstance = config.AutoIncrementResourceInstance;
 
                 // Get the security settings
                 if (includeadmin)
@@ -123,8 +125,6 @@ namespace AzureNamingTool.Services
                     {
                         configdata.AdminUsers = serviceResponse.ResponseObject!;
                     }
-                    // ResourceTypeEditing
-                    configdata.ResourceTypeEditingAllowed = config.ResourceTypeEditingAllowed;
                 }
 
                 serviceResponse.ResponseObject = configdata;
@@ -190,6 +190,10 @@ namespace AzureNamingTool.Services
                 if (GeneralHelper.IsNotNull(configdata.ResourceTypeEditingAllowed))
                 {
                     config.ResourceTypeEditingAllowed = configdata.ResourceTypeEditingAllowed;
+                }
+                if (GeneralHelper.IsNotNull(configdata.AutoIncrementResourceInstance))
+                {
+                    config.AutoIncrementResourceInstance = configdata.AutoIncrementResourceInstance;
                 }
                 var jsonWriteOptions = new JsonSerializerOptions()
                 {
