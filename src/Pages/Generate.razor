@@ -43,7 +43,7 @@
                         Select the component options
                     </li>
                     <li>
-                        Click <strong>Generate</strong> to generate the Azure resource name(s)
+                        Click <span class="fw-bold">Generate</span> to generate the Azure resource name(s)
                     </li>
                     <li>
                         View generated names in the <a href="/generatednameslog">Generated Names Log</a>
@@ -71,13 +71,13 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="generateselect" id="singleselect" value="single" checked @onclick="@(e => OnGenerateModeChange("single"))">
                                 <label class="form-check-label" for="singleselect">
-                                    <strong>Generate Single Resouce Type Name</strong><br />This option will allow the generation of a single resource type name using the selected components.
+                                    <span class="fw-bold">Generate Single Resouce Type Name</span><br />This option will allow the generation of a single resource type name using the selected components.
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="generateselect" id="multiselect" value="multi" @onclick="@(e => OnGenerateModeChange("multi"))">
                                 <label class="form-check-label" for="multiselect">
-                                    <strong>Generate Multiple Resource Type Names</strong><br />This option will allow the generatation of names for multiple resource types using the selected components. <span class="warning-message">All components will be required.</span>
+                                    <span class="fw-bold">Generate Multiple Resource Type Names</span><br />This option will allow the generatation of names for multiple resource types using the selected components. <span class="warning-message">All components will be required.</span>
                                 </label>
                             </div>
                         </div>
@@ -134,7 +134,7 @@
                                         <tbody>
                                             <tr>
                                                 <td>
-                                                    <strong>This resource has a lower-level scope and does not require a unique name.</strong><a id="@currentResourceType.Id"></a>
+                                                    <span class="fw-bold">This resource has a lower-level scope and does not require a unique name.</span><a id="@currentResourceType.Id"></a>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -149,27 +149,27 @@
                                     <div class="collapse card card-body @theme.ThemeStyle" id="namingguidelines">
                                         @if (!String.IsNullOrEmpty(currentResourceType.LengthMin))
                                         {
-                                            <div><strong>Minimum Length:</strong> @currentResourceType.LengthMin</div>
+                                            <div><span class="fw-bold">Minimum Length:</span> @currentResourceType.LengthMin</div>
                                         }
                                         @if (!String.IsNullOrEmpty(currentResourceType.LengthMax))
                                         {
-                                            <div><strong>Maximum Length:</strong> @currentResourceType.LengthMax</div>
+                                            <div><span class="fw-bold">Maximum Length:</span> @currentResourceType.LengthMax</div>
                                         }
                                         @if (!String.IsNullOrEmpty(currentResourceType.ValidText))
                                         {
-                                            <div><strong>Valid Text:</strong> @currentResourceType.ValidText</div>
+                                            <div><span class="fw-bold">Valid Text:</span> @currentResourceType.ValidText</div>
                                         }
                                         @if (!String.IsNullOrEmpty(currentResourceType.Optional))
                                         {
-                                            <div><strong>Optional:</strong> @currentResourceType.Optional</div>
+                                            <div><span class="fw-bold">Optional:</span> @currentResourceType.Optional</div>
                                         }
                                         @if (!String.IsNullOrEmpty(currentResourceType.Exclude))
                                         {
-                                            <div><strong>Excluded:</strong> @currentResourceType.Exclude</div>
+                                            <div><span class="fw-bold">Excluded:</span> @currentResourceType.Exclude</div>
                                         }
                                         @if (!String.IsNullOrEmpty(currentResourceType.Regx))
                                         {
-                                            <div><strong>Regx:</strong> @currentResourceType.Regx</div>
+                                            <div><span class="fw-bold">Regx:</span> @currentResourceType.Regx</div>
                                         }
                                     </div>
                                 </div>
@@ -446,7 +446,7 @@
                                         @if (!String.IsNullOrEmpty(@generatedName))
                                         {
                                             <div>
-                                                <strong>Generated Name(s): </strong>
+                                                <span class="fw-bold">Generated Name(s): </span>
                                                 @((MarkupString)generatedName)
 
                                                 <button class="btn btn-primary" title="Export Generated Names" @onclick="@(e => OnExportGeneratedNames())">
@@ -460,7 +460,7 @@
                                         @if (!String.IsNullOrEmpty(@message))
                                         {
                                             <div>
-                                                <strong>Message: </strong>
+                                                <span class="fw-bold">Message: </span>
 
                                                 @foreach (var sub in message.Split('\n'))
                                                 {

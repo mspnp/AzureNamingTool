@@ -52,12 +52,12 @@
                     <div class="card mb-3" style="width:auto;">
                         <div class="card-header bg-default text-dark">
                             <a id="versiondetailslink" class="link-dark text-decoration-none" data-bs-toggle="collapse" href="#versiondetails" role="button" aria-expanded="false" aria-controls="versiondetails">
-                                <span class="oi oi-chevron-bottom" aria-hidden="true"></span> <strong>Version Details</strong>
+                                <span class="oi oi-chevron-bottom" aria-hidden="true"></span> <span class="fw-bold">Version Details</span>
                             </a>
                         </div>
                         <div class="collapse show card card-body @theme.ThemeStyle" id="versiondetails">
                             <div class="mb-3">
-                                <strong>Current version:</strong> @appversion (<a href="@releasenotesurl" target="_blank">Release Notes</a>)
+                                <span class="fw-bold">Current version:</span> @appversion (<a href="@releasenotesurl" target="_blank">Release Notes</a>)
                             </div>
                             @if (!String.IsNullOrEmpty(versionalert))
                             {
@@ -72,7 +72,7 @@
                                 <div class="card mb-3" style="width:auto;">
                                     <div class="card-header bg-default text-dark">
                                         <a id="environmentvariableslink" class="link-dark text-decoration-none" data-bs-toggle="collapse" href="#environmentvariables" role="button" aria-expanded="false" aria-controls="environmentvariables">
-                                            <span class="oi oi-chevron-bottom" aria-hidden="true"></span> <strong>Environment Details</strong>
+                                            <span class="oi oi-chevron-bottom" aria-hidden="true"></span> <span class="fw-bold">Environment Details</span>
                                         </a>
                                     </div>
                                     <div class="collapse card card-body @theme.ThemeStyle" id="environmentvariables">
@@ -80,7 +80,7 @@
                                             <ul>
                                                 @foreach (var variable in environmentvariables)
                                                 {
-                                                    <li>@variable.Key: @variable.Value</li>
+                                                    <li><span class="fw-bold">@variable.Key:</span> @variable.Value</li>
                                                 }
                                             </ul>
                                         </div>
@@ -111,9 +111,9 @@
                                     </div>
                                     <div class="collapse show card card-body @theme.ThemeStyle" id="updatepassword">
                                         <p>
-                                            Enter a new <strong>Global Admin</strong> password for the site.
+                                            Enter a new <span class="fw-bold">Global Admin</span> password for the site.
                                         </p>
-                                        <p><strong>Requirements</strong></p>
+                                        <p class="fw-bold">Requirements</p>
                                         <ul>
                                             <li>Contain a number</li>
                                             <li>Contain one upper case letter</li>
@@ -133,10 +133,10 @@
                                     </div>
                                     <div class="collapse show  card card-body @theme.ThemeStyle" id="updateapikey">
                                         <p>
-                                            The current <strong>API Key</strong> is displayed. This key provides <strong>full access</strong> to the API.
+                                            The current <span class="fw-bold">API Key</span> is displayed. This key provides <span class="fw-bold">full access</span> to the API.
                                         </p>
                                         <p>
-                                            Click <strong>Generate</strong> to create a new random <strong>API Key</strong>, or update the text to the desired value.
+                                            Click <span class="fw-bold">Generate</span> to create a new random <span class="fw-bold">API Key</span>, or update the text to the desired value.
                                         </p>
                                         <div class="form-group">
                                             <input title="API Key" id="currentapikey" class="form-control mb-3" type="text" @onchange="@((ui) => { SetFormValue("apikey",(string)ui.Value!);})" value="@currentapikey" />
@@ -153,10 +153,10 @@
                                     </div>
                                     <div class="collapse show  card card-body @theme.ThemeStyle" id="updatereadonlyapikey">
                                         <p>
-                                            The current <strong>Read-Only API Key</strong> is displayed. This key provides <strong>read-only</strong> access to the API (GET operations only).                                            
+                                            The current <span class="fw-bold">Read-Only API Key</span> is displayed. This key provides <span class="fw-bold">read-only</span> access to the API (GET operations only).
                                         </p>
                                         <p>
-                                            Click <strong>Generate</strong> to create a new random <strong>Read-Only API Key</strong>, or update the text to the desired value.
+                                            Click <span class="fw-bold">Generate</span> to create a new random <span class="fw-bold">Read-Only API Key</span>, or update the text to the desired value.
                                         </p>
                                         <div class="form-group">
                                             <input title="Read-Only API Key" id="currentreadonlyapikey" class="form-control mb-3" type="text" @onchange="@((ui) => { SetFormValue("readonlyapikey",(string)ui.Value!);})" value="@currentreadonlyapikey" />
@@ -184,18 +184,18 @@
                             @if (currentuser == "GlobalAdmin")
                             {
                                 <p>
-                                    This section is used to configure the <strong>Identity Provider</strong> settings for the site if authentication is implemented. The Azure Naming Tool is designed to work with <strong><a href="https://learn.microsoft.com/en-us/azure/app-service/overview-authentication-authorization" target="_blank">Azure App Service Authentication</a></strong>, by default. If the Azure Naming Tool is configured to identify users, the site will track user activity. Users can also be designated as Admins using the <strong>Admin Users</strong> configuration.
+                                    This section is used to configure the <span class="fw-bold">Identity Provider</span> settings for the site if authentication is implemented. The Azure Naming Tool is designed to work with <span class="fw-bold"><a href="https://learn.microsoft.com/en-us/azure/app-service/overview-authentication-authorization" target="_blank">Azure App Service Authentication</a></span>, by default. If the Azure Naming Tool is configured to identify users, the site will track user activity. Users can also be designated as Admins using the <span class="fw-bold">Admin Users</span> configuration.
                                 </p>
                                 <p>
-                                    You can learn more about the new Identity Provider Integration <a href="https://soltisweb.com/blog/detail/2023-06-azurenamingtool-identityproviderintegrationdeepdive" target="_blank"><strong>HERE</strong></a>.
+                                    You can learn more about the new Identity Provider Integration <a href="https://soltisweb.com/blog/detail/2023-06-azurenamingtool-identityproviderintegrationdeepdive" target="_blank"><span class="fw-bold">HERE</span></a>.
                                 </p>
                                 @if (!String.IsNullOrEmpty(currentidentityprovider))
                                 {
                                     <div class="mb-3">
                                         <p class="alert alert-success alert-dismissible fade show" role="alert">
-                                            <strong>Azure App Service Authentication Enabled!</strong><br /><br />
-                                            <strong>Current Identity provider:</strong> @currentidentityprovider.ToUpper()<br /><br />
-                                            <strong>Default Idenitty Header Name:</strong> X-MS-CLIENT-PRINCIPAL-NAME
+                                            <span class="fw-bold">Azure App Service Authentication Enabled!</span><br /><br />
+                                            <span class="fw-bold">Current Identity provider:</span> @currentidentityprovider.ToUpper()<br /><br />
+                                            <span class="fw-bold">Default Idenitty Header Name:</span> X-MS-CLIENT-PRINCIPAL-NAME
                                         </p>
                                     </div>
                                 }
@@ -214,8 +214,8 @@
                                             <button type="button" class="btn btn-success" @onclick="@(e => AdminFormAction("identityheadernamesave"))" title="Save Identity Header Name">Save</button>
                                         </div>
                                         <p class="alert alert-info" role="alert">
-                                            <strong>NOTE</strong><br />
-                                            The Azure Naming Tool is configured for <strong><a href="https://learn.microsoft.com/en-us/azure/app-service/overview-authentication-authorization" target="_blank">Azure App Service Authentication</a></strong> using the <a href="https://learn.microsoft.com/en-us/azure/app-service/configure-authentication-user-identities#access-user-claims-in-app-code" target="_blank"><strong>X-MS-CLIENT-PRINCIPAL-NAME</strong></a> header name. If using a different Identity provider, update the setting to the header name that contains the user's id.
+                                            <span class="fw-bold">NOTE</span><br />
+                                            The Azure Naming Tool is configured for <span class="fw-bold"><a href="https://learn.microsoft.com/en-us/azure/app-service/overview-authentication-authorization" target="_blank">Azure App Service Authentication</a></span> using the <a href="https://learn.microsoft.com/en-us/azure/app-service/configure-authentication-user-identities#access-user-claims-in-app-code" target="_blank"><span class="fw-bold">X-MS-CLIENT-PRINCIPAL-NAME</span></a> header name. If using a different Identity provider, update the setting to the header name that contains the user's id.
                                         </p>
                                     </div>
                                 </div>
@@ -228,7 +228,7 @@
                                     <div class="collapse show card card-body @theme.ThemeStyle" id="adminusers">
                                         <div class="mb-3">
                                             <p>
-                                                When authenticating users with an Identity provider, the <strong>Identity Header Name</strong> setting can be used to idenity site users. Enter the user id below to assign the user as an <strong>Admin</strong> for the Azure Naming Tool.
+                                                When authenticating users with an Identity provider, the <span class="fw-bold">Identity Header Name</span> setting can be used to idenity site users. Enter the user id below to assign the user as an <span class="fw-bold">Admin</span> for the Azure Naming Tool.
                                             </p>
                                             @if (!String.IsNullOrEmpty(currentidentityprovider))
                                             {
@@ -236,17 +236,17 @@
                                                 {
                                                     case "aad":
                                                         <p class="alert alert-info alert-dismissible fade show" role="alert">
-                                                            When using <strong>@currentidentityprovider.ToUpper()</strong> for Azure App Service Authentication, the <strong>X-MS-CLIENT-PRINCIPAL-NAME</strong> header value will be the user's email address.<br /><br /><strong>Example:</strong> example@xyz.com<br /><br />This value should be used to designate the user as an <strong>Admin</strong>.
+                                                            When using <span class="fw-bold">@currentidentityprovider.ToUpper()</span> for Azure App Service Authentication, the <span class="fw-bold">X-MS-CLIENT-PRINCIPAL-NAME</span> header value will be the user's email address.<br /><br /><span class="fw-bold">Example:</span> example@xyz.com<br /><br />This value should be used to designate the user as an <span class="fw-bold">Admin</span>.
                                                         </p>
                                                         break;
                                                     case "github":
                                                         <p class="alert alert-info alert-dismissible fade show" role="alert">
-                                                            When using <strong>@currentidentityprovider.ToUpper()</strong> for Azure App Service Authentication, the <strong>X-MS-CLIENT-PRINCIPAL-NAME</strong> header value will be the user's name.<br /><br /><strong>Example:</strong> John Smith)<br /><br />This value should be used to designate the user as an <strong>Admin</strong>.
+                                                            When using <span class="fw-bold">@currentidentityprovider.ToUpper()</span> for Azure App Service Authentication, the <span class="fw-bold">X-MS-CLIENT-PRINCIPAL-NAME</span> header value will be the user's name.<br /><br /><span class="fw-bold">Example:</span> John Smith)<br /><br />This value should be used to designate the user as an <span class="fw-bold">Admin</span>.
                                                         </p>
                                                         break;
                                                     case "google":
                                                         <p class="alert alert-info alert-dismissible fade show" role="alert">
-                                                            When using <strong>@currentidentityprovider.ToUpper()</strong> for Azure App Service Authentication, the <strong>X-MS-CLIENT-PRINCIPAL-NAME</strong> header value will be the user's email address.<br /><br /><strong>Example:</strong>: example@gmail.com<br /><br />This value should be used to designate the user as an <strong>Admin</strong>.
+                                                            When using <span class="fw-bold">@currentidentityprovider.ToUpper()</span> for Azure App Service Authentication, the <span class="fw-bold">X-MS-CLIENT-PRINCIPAL-NAME</span> header value will be the user's email address.<br /><br /><span class="fw-bold">Example:</span>: example@gmail.com<br /><br />This value should be used to designate the user as an <span class="fw-bold">Admin</span>.
                                                         </p>
                                                         break;
                                                 }
@@ -301,7 +301,7 @@
                                             <p style="font-style:italic;">There currently no assigned admin users.</p>
                                         }
                                         <p class="alert alert-warning">
-                                            <strong>NOTE</strong><br />
+                                            <span class="fw-bold">NOTE</span><br />
                                             Added users will need to close their browser and re-open the site for the change to take effect.
                                         </p>
 
@@ -324,7 +324,7 @@
                         </h5>
                         <div class="collapse show  card card-body @theme.ThemeStyle" id="cache">
                             <p>
-                                The tool uses caching for data to improve performance. Click <strong>Clear</strong> to clear all cached data.
+                                The tool uses caching for data to improve performance. Click <span class="fw-bold">Clear</span> to clear all cached data.
                             </p>
                             <div class="form-group">
                                 <p>
@@ -371,7 +371,7 @@
                                 <div class="collapse show card card-body @theme.ThemeStyle" id="autoincrementresourceinstance">
                                     <div class="mb-3">
                                         <p>
-                                            If enabled, this setting will increment the Resource Instance value to next number for the generated resource type name.
+                                            If enabled, this setting will increment the <span class="fw-bold">Resource Instance</span> value to next number for the generated resource type name.
                                         </p>
                                     </div>
                                     <div>
@@ -392,7 +392,7 @@
                                 <div class="collapse show card card-body @theme.ThemeStyle" id="resourcetypeediting">
                                     <div class="mb-3">
                                         <p>
-                                            By default, Resource Type Validation is configured to match the Azure portal. These values can be overriden by enabling the following setting.
+                                            By default, <span class="fw-bold">Resource Type Validation</span> is configured to match the Azure portal. These values can be overriden by enabling the following setting.
                                         </p>
                                     </div>
                                     <div>
@@ -437,13 +437,14 @@
                                             The Azure Naming Tool can post generated names to a webhook. This can be used to integrate with other systems. Enter a valid URL below to save the webhook setting.
                                         </p>
                                         <p>
-                                            Generated names will be posted using the <strong><a href="https://github.com/mspnp/AzureNamingTool/blob/main/src/Models/GeneratedName.cs" target="_blank">GeneratedName</a></strong> JSON format.
+                                            Generated names will be posted using the <span class="fw-bold"><a href="https://github.com/mspnp/AzureNamingTool/blob/main/src/Models/GeneratedName.cs" target="_blank">GeneratedName</a></span> JSON format.
                                         </p>
                                         <p>
                                             <button type="button" class="btn btn-primary" @onclick="@(e => AdminFormAction("samplepost"))" title="Sample Post">Sample Post</button>
                                         </p>
                                     </div>
                                     <div class="mb-3">
+                                        <div class="fw-bold">URL</div>
                                         <input title="Generation Webhook" id="currentgenerationwebhook" class="form-control" type="text" @onchange="@((ui) => { SetFormValue("generationwebhook",(string)ui.Value!);})" value="@currentgenerationwebhook" />
                                     </div>
                                     <div>
