@@ -124,7 +124,7 @@ namespace AzureNamingTool.Helpers
 
         public static string[] FormatResoureType(string type)
         {
-            String[] returntype = new String[3];
+            String[] returntype = new String[4];
             returntype[0] = type;
             // Make sure it is a full resource type name
             if (type.Contains('('))
@@ -136,9 +136,13 @@ namespace AzureNamingTool.Helpers
                 if ((GeneralHelper.IsNotNull(type)) && (GeneralHelper.IsNotNull(returntype[0])))
                 {
                     // trim any details out of the value
+                    // Get the base resource type name
                     if (returntype[0].Contains(" -"))
                     {
+                        // Get all text before the dash
                         returntype[1] = returntype[0][..returntype[0].IndexOf(" -")].Trim();
+                        // Get all text after the dash
+                        returntype[3] = returntype[0].Substring(returntype[0].IndexOf("-") + 1).Trim();
                     }
 
                     // trim any details out of the value

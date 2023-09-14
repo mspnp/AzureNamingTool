@@ -492,9 +492,10 @@
     private string selectedResourceLocation = String.Empty;
     private string selectedResourceOrg = String.Empty;
     private string selectedResourceProjAppSvc = String.Empty;
-    private String[] selectedResourceTypeFull = new String[2];
+    private String[] selectedResourceTypeFull = new String[3];
     private string selectedResourceTypeCategory = String.Empty;
     private string selectedResourceType = String.Empty;
+    private string selectedResourceTypeProperty = String.Empty;
     private string selectedResourceTypeShortName = String.Empty;
     private string selectedResourceTypeDisplayName = String.Empty;
     private string selectedResourceTypeExclude = String.Empty;
@@ -574,7 +575,6 @@
             var workingmodal = Modal!.Show<WorkingModal>("Working", workingmodaloptions);
             try
             {
-
                 if (!GeneralHelper.IsNotNull(servicesData))
                 {
                     await SetServicesData();
@@ -621,14 +621,33 @@
                     {
                         selectedResourceType = selectedResourceTypeFull[0];
                     }
+                    // Deternine if a property was returned
+                    if (GeneralHelper.IsNotNull(selectedResourceTypeFull[3]))
+                    {
+                        selectedResourceTypeProperty = selectedResourceTypeFull[3];
+                    }
                     selectedResourceTypeShortName = selectedResourceTypeFull[2];
                     if (GeneralHelper.IsNotNull(selectedResourceTypeShortName))
                     {
-                        resourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType && x.ShortName == selectedResourceTypeShortName)!;
+                        if (!String.IsNullOrEmpty(selectedResourceTypeProperty))
+                        {
+                            resourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType && x.ShortName == selectedResourceTypeShortName && x.Property == selectedResourceTypeProperty)!;
+                        }
+                        else
+                        {
+                            resourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType && x.ShortName == selectedResourceTypeShortName)!;
+                        }
                     }
                     else
                     {
-                        resourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType)!;
+                        if (!String.IsNullOrEmpty(selectedResourceTypeProperty))
+                        {
+                            resourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType && x.Property == selectedResourceTypeProperty)!;
+                        }
+                        else
+                        {
+                            resourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType)!;
+                        }
                     }
                     if (GeneralHelper.IsNotNull(resourceType))
                     {
@@ -718,6 +737,7 @@
 
                 // Always show the response
                 generatedName = sbNames.ToString();
+                namerequested = true;
             }
 
             catch (Exception ex)
@@ -837,14 +857,32 @@
                 {
                     selectedResourceType = selectedResourceTypeFull[0];
                 }
+                if (GeneralHelper.IsNotNull(selectedResourceTypeFull[3]))
+                {
+                    selectedResourceTypeProperty = selectedResourceTypeFull[3];
+                }
                 selectedResourceTypeShortName = selectedResourceTypeFull[2];
                 if (GeneralHelper.IsNotNull(selectedResourceTypeShortName))
                 {
-                    currentResourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType && x.ShortName == selectedResourceTypeShortName)!;
+                    if (!String.IsNullOrEmpty(selectedResourceTypeProperty))
+                    {
+                        currentResourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType && x.ShortName == selectedResourceTypeShortName && x.Property == selectedResourceTypeProperty)!;
+                    }
+                    else
+                    {
+                        currentResourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType && x.ShortName == selectedResourceTypeShortName)!;
+                    }
                 }
                 else
                 {
-                    currentResourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType)!;
+                    if (!String.IsNullOrEmpty(selectedResourceTypeProperty))
+                    {
+                        currentResourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType && x.Property == selectedResourceTypeProperty)!;
+                    }
+                    else
+                    {
+                        currentResourceType = servicesData.ResourceTypes!.Find(x => x.Resource == selectedResourceType)!;
+                    }
                 }
 
                 if (GeneralHelper.IsNotNull(currentResourceType))
@@ -1142,6 +1180,7 @@
     {
         selectedResourceTypeCategory = String.Empty;
         Array.Clear(selectedResourceTypeFull);
+        selectedResourceTypeProperty = String.Empty;
         selectedResourceTypeShortName = String.Empty;
         selectedResourceTypeDisplayName = String.Empty;
         selectedResourceType = String.Empty;
