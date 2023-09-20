@@ -2,12 +2,14 @@
 using AzureNamingTool.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AzureNamingTool.Services
 {
@@ -168,7 +170,7 @@ namespace AzureNamingTool.Services
 
                 // Validate the generated name for the resource type
                 // CALL VALIDATION FUNCTION
-                ValidateNameRequest validateNameRequest = new ValidateNameRequest()
+                ValidateNameRequest validateNameRequest = new()
                 {
                     ResourceType = resourceType.ShortName,
                     Name = name
@@ -691,7 +693,7 @@ namespace AzureNamingTool.Services
                 }
 
                 // Validate the generated name for the resource type
-                ValidateNameRequest validateNameRequest = new ValidateNameRequest()
+                ValidateNameRequest validateNameRequest = new()
                 {
                     ResourceType = resourceType.ShortName,
                     Name = name
@@ -717,26 +719,69 @@ namespace AzureNamingTool.Services
                 if (valid)
                 {
                     bool nameallowed = true;
-                    // Check if duplicate names are allowed
-                    if (!ConfigurationHelper.VerifyDuplicateNamesAllowed())
+                    bool nameexists = await ConfigurationHelper.CheckIfGeneratedNameExists(name);
+                    if (nameexists)
                     {
-                        // Check if the name already exists
-                        serviceResponse = await GeneratedNamesService.GetItems();
-                        if (serviceResponse.Success)
+                        // Check if the request contains Resource Instance is a selected componoent
+                        if (!String.IsNullOrEmpty(GeneralHelper.GetPropertyValue(request, "ResourceInstance")?.ToString()))
                         {
-                            if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                            // CHeck if the name should be auto-incremented
+                            if (Convert.ToBoolean(ConfigurationHelper.GetAppSetting("AutoIncrementResourceInstance")))
                             {
-                                var names = (List<GeneratedName>)serviceResponse.ResponseObject!;
-                                if (GeneralHelper.IsNotNull(names))
+                                // Check if there was a ResourceInstance value supplied
+                                if (GeneralHelper.IsNotNull(GeneralHelper.GetPropertyValue(request, "ResourceInstance")))
                                 {
-                                    if (names.Where(x => x.ResourceName == name).Any())
+                                    // Attempt to auto-increement the instance 
+                                    // Get the instance value
+                                    string originalinstance = GeneralHelper.GetPropertyValue(request, "ResourceInstance")?.ToString() ?? "";
+                                    // Increase the instance by 1
+                                    string newinstance = (Convert.ToInt32(originalinstance) + 1).ToString();
+                                    // Make sure the instance pattern matches the entered values (leading zeros)
+                                    while (newinstance.Length < originalinstance.Length)
+                                    {
+                                        newinstance = "0" + newinstance;
+                                    }
+                                    // Update the generated name with the new instance
+                                    string newname = name.Replace(originalinstance, newinstance);
+                                    // Check to make sure the new name is unique
+                                    while (await ConfigurationHelper.CheckIfGeneratedNameExists(newname))
+                                    {
+                                        newinstance = (Convert.ToInt32(newinstance) + 1).ToString();
+                                        newname = name.Replace(originalinstance, newinstance);
+                                    }
+                                    name = newname;
+                                    sbMessage.Append("The resource instance has been auto-incremented to the next value.");
+                                    sbMessage.Append(Environment.NewLine);
+                                }
+                                else
+                                {
+                                    // Check if duplicate names are allowed
+                                    if (!Convert.ToBoolean(ConfigurationHelper.GetAppSetting("DuplicateNamesAllowed")))
                                     {
                                         nameallowed = false;
                                     }
                                 }
                             }
+                            else
+                            {
+                                // Check if duplicate names are allowed
+                                if (!Convert.ToBoolean(ConfigurationHelper.GetAppSetting("DuplicateNamesAllowed")))
+                                {
+                                    nameallowed = false;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // Request does not contain an instance component
+                            // Check if duplicate names are allowed
+                            if (!Convert.ToBoolean(ConfigurationHelper.GetAppSetting("DuplicateNamesAllowed")))
+                            {
+                                nameallowed = false;
+                            }
                         }
                     }
+
                     if (nameallowed)
                     {
                         GeneratedName generatedName = new()
@@ -745,11 +790,12 @@ namespace AzureNamingTool.Services
                             ResourceName = name.ToLower(),
                             Components = lstComponents,
                             ResourceTypeName = resourceType.Resource,
-                            User = request.CreatedBy
+                            User = request.CreatedBy,
+                            Message = sbMessage.ToString()
                         };
 
                         // Check if the property should be appended to name
-                        if(!String.IsNullOrEmpty(resourceType.Property))
+                        if (!String.IsNullOrEmpty(resourceType.Property))
                         {
                             generatedName.ResourceTypeName += " - " + resourceType.Property;
                         }
