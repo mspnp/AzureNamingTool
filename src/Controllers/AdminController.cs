@@ -63,9 +63,9 @@ namespace AzureNamingTool.Controllers
 
         // POST api/<AdminController>
         /// <summary>
-        /// This function will update the API Key. 
+        /// This function will update the Full Access API Key. 
         /// </summary>
-        /// <param name="apikey">string - New API Key</param>
+        /// <param name="apikey">string - New Full Access API Key</param>
         /// <param name="adminpassword">string - Current Global Admin Password</param>
         /// <returns>dttring - Successful update</returns>
         [HttpPost]
@@ -79,8 +79,8 @@ namespace AzureNamingTool.Controllers
                 {
                     if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
                     {
-                        serviceResponse = await AdminService.UpdateAPIKey(apikey);
-                        return (serviceResponse.Success ? Ok("SUCCESS") : Ok("FAILURE - There was a problem updating the API Key."));
+                        serviceResponse = await AdminService.UpdateAPIKey(apikey, "fullaccess");
+                        return (serviceResponse.Success ? Ok("SUCCESS") : Ok("FAILURE - There was a problem updating the Full Access API Key."));
                     }
                     else
                     {
@@ -102,10 +102,10 @@ namespace AzureNamingTool.Controllers
 
         // POST api/<AdminController>
         /// <summary>
-        /// This function will generate a new API Key. 
+        /// This function will generate a new Full Access API Key. 
         /// </summary>
         /// <param name="adminpassword">string - Current Global Admin Password</param>
-        /// <returns>string - Successful update / Generated API Key</returns>
+        /// <returns>string - Successful update / Generated Full Access API Key</returns>
 
         [HttpPost]
         [Route("[action]")]
@@ -118,8 +118,85 @@ namespace AzureNamingTool.Controllers
                 {
                     if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
                     {
-                        serviceResponse = await AdminService.GenerateAPIKey();
-                        return (serviceResponse.Success ? Ok("SUCCESS") : Ok("FAILURE - There was a problem generating the API Key."));
+                        serviceResponse = await AdminService.GenerateAPIKey("fullaccess");
+                        return (serviceResponse.Success ? Ok("SUCCESS") : Ok("FAILURE - There was a problem generating the Full Access API Key."));
+                    }
+                    else
+                    {
+                        return Ok("FAILURE - Incorrect Global Admin Password.");
+                    }
+
+                }
+                else
+                {
+                    return Ok("FAILURE - You must provide the Global Admin Password.");
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                return BadRequest(ex);
+            }
+        }
+
+        // POST api/<AdminController>
+        /// <summary>
+        /// This function will update the Read-Only API Key. 
+        /// </summary>
+        /// <param name="apikey">string - New Read-Only API Key</param>
+        /// <param name="adminpassword">string - Current Global Admin Password</param>
+        /// <returns>dttring - Successful update</returns>
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> UpdateReadOnlyAPIKey([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword, [FromBody] string apikey)
+        {
+            ServiceResponse serviceResponse = new();
+            try
+            {
+                if (GeneralHelper.IsNotNull(adminpassword))
+                {
+                    if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
+                    {
+                        serviceResponse = await AdminService.UpdateAPIKey(apikey, "readonly");
+                        return (serviceResponse.Success ? Ok("SUCCESS") : Ok("FAILURE - There was a problem updating the Read-Only API Key."));
+                    }
+                    else
+                    {
+                        return Ok("FAILURE - Incorrect Global Admin Password.");
+                    }
+
+                }
+                else
+                {
+                    return Ok("FAILURE - You must provide the Global Admin Password.");
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                return BadRequest(ex);
+            }
+        }
+
+        // POST api/<AdminController>
+        /// <summary>
+        /// This function will generate a new Read-Only API Key. 
+        /// </summary>
+        /// <param name="adminpassword">string - Current Global Admin Password</param>
+        /// <returns>string - Successful update / Generated Read-Only API Key</returns>
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> GenerateReadOnlyAPIKey([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword)
+        {
+            ServiceResponse serviceResponse = new();
+            try
+            {
+                if (GeneralHelper.IsNotNull(adminpassword))
+                {
+                    if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
+                    {
+                        serviceResponse = await AdminService.GenerateAPIKey("readonly");
+                        return (serviceResponse.Success ? Ok("SUCCESS") : Ok("FAILURE - There was a problem generating the Read-Only API Key."));
                     }
                     else
                     {

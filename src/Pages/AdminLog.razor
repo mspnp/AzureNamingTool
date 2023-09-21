@@ -49,9 +49,12 @@
                         <button class="btn btn-primary" title="Export Admin Log" @onclick="@(e => OnExportLogClick())">
                             Export Admin Log
                         </button>
-                        <button class="btn btn-danger" title="Purge Admin Log" @onclick="@(e => OnPurgeLogClick())">
-                            Purge Admin Log
-                        </button>
+                        @if (currentuser == "GlobalAdmin")
+                        {
+                            <button class="btn btn-danger mx-1" title="Purge Admin Log" @onclick="@(e => OnPurgeLogClick())">
+                                Purge Admin Log
+                            </button>
+                        }
                     </div>
                     <div class="card mb-3">
                         <div class="card-header bg-default text-dark">

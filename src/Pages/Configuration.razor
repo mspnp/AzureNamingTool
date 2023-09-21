@@ -42,7 +42,7 @@
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <h4>ATTENTION</h4>
                         <div class="mb-3">
-                            <p>The Azure Naming Tool cannot verify intenternet connectivity, so some features have been disabled. This includes the ability to <strong>Refresh</strong> resource types and locations.</p>
+                            <p>The Azure Naming Tool cannot verify intenternet connectivity, so some features have been disabled. This includes the ability to <span class="fw-bold">Refresh</span> resource types and locations.</p>
                             <p>Please check the <a href="/adminlog" class="fw-bold">Admin Log</a> for additional details.</p>
                             <p>You can disable the connectivity check in the <span class="fw-bold">Site Settings</span> section in the <a href="/admin" class="fw-bold">Admin</a> utility.</p>
                         </div>
@@ -262,7 +262,7 @@
                                             </div>
                                             <div class="card card-body @theme.ThemeStyle">
                                                 <p>
-                                                    Click <strong>Export</strong> to export the current Components Configuration.
+                                                    Click <span class="fw-bold">Export</span> to export the current Components Configuration.
                                                 </p>
                                                 <p>
                                                     <button type="button" class="btn btn-primary" @onclick=@(e => FormAction("ResourceComponent",0,"download")) title="Export">
@@ -277,10 +277,10 @@
                                             </div>
                                             <div class="card card-body @theme.ThemeStyle">
                                                 <p>
-                                                    Click <strong>Reset</strong> to reset the Components Configuration back to the default values at the time of installation.
+                                                    Click <span class="fw-bold">Reset</span> to reset the Components Configuration back to the default values at the time of installation.
                                                 </p>
                                                 <p>
-                                                    <strong>NOTE:</strong> This will reset the current Components Configuration and cannot be undone!
+                                                    <span class="fw-bold">NOTE:</span> This will reset the current Components Configuration and cannot be undone!
                                                 </p>
                                                 <p>
                                                     <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("ResourceComponent",0,"reset")) title="Reset">
@@ -295,7 +295,7 @@
                                             </div>
                                             <div class="card card-body">
                                                 <p>
-                                                    Enter the new Components Configuration JSON below and click <strong>Import</strong> to import the Components Configuration.</p><p><strong>NOTE:</strong> This will update the existing Components Configuration and cannot be undone!
+                                                    Enter the new Components Configuration JSON below and click <span class="fw-bold">Import</span> to import the Components Configuration.</p><p><span class="fw-bold">NOTE:</span> This will update the existing Components Configuration and cannot be undone!
                                                 </p>
                                                 <p>
                                                     <textarea title="Configuration" class="form-control" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newComponentConfig",(string)ui.Value);})">@newComponentConfig</textarea>
@@ -388,7 +388,7 @@
                                             </div>
                                             <div class="card card-body @theme.ThemeStyle">
                                                 <p>
-                                                    Click <strong>Export</strong> to export the current Delimiters Configuration.
+                                                    Click <span class="fw-bold">Export</span> to export the current Delimiters Configuration.
                                                 </p>
                                                 <p>
                                                     <button type="button" class="btn btn-primary" @onclick=@(e => FormAction("ResourceDelimiter",0,"download")) title="Export">
@@ -403,10 +403,10 @@
                                             </div>
                                             <div class="card card-body @theme.ThemeStyle">
                                                 <p>
-                                                    Click <strong>Reset</strong> to reset the Delimiters Configuration back to the default values at the time of installation.
+                                                    Click <span class="fw-bold">Reset</span> to reset the Delimiters Configuration back to the default values at the time of installation.
                                                 </p>
                                                 <p>
-                                                    <strong>NOTE:</strong> This will reset the current Delimiters Configuration and cannot be undone!
+                                                    <span class="fw-bold">NOTE:</span> This will reset the current Delimiters Configuration and cannot be undone!
                                                 </p>
                                                 <p>
                                                     <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("ResourceDelimiter",0,"reset")) title="Reset">
@@ -421,9 +421,9 @@
                                             </div>
                                             <div class="card card-body @theme.ThemeStyle">
                                                 <p>
-                                                    Enter the new Delimiters Configuration JSON below and click <strong>Import</strong> to import the Delimiters Configuration.
+                                                    Enter the new Delimiters Configuration JSON below and click <span class="fw-bold">Import</span> to import the Delimiters Configuration.
                                                 </p><p>
-                                                    <strong>NOTE:</strong> This will update the existing Delimiters Configuration and cannot be undone!
+                                                    <span class="fw-bold">NOTE:</span> This will update the existing Delimiters Configuration and cannot be undone!
                                                 </p>
                                                 <p>
                                                     <textarea title="Configuration" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newDelimiterConfig",(string)ui.Value!);})">@newDelimiterConfig</textarea>
@@ -556,10 +556,10 @@
                                             </div>
                                             <div class="card card-body @theme.ThemeStyle">
                                                 <p>
-                                                    Click <strong>Export</strong> to export the current Custom Components Configuration.
+                                                    Click <span class="fw-bold">Export</span> to export the current Custom Components Configuration.
                                                 </p>
                                                 <p>
-                                                    <strong>NOTE:</strong> All custom component types and values will be exported to a single file.
+                                                    <span class="fw-bold">NOTE:</span> All custom component types and values will be exported to a single file.
                                                 </p>
                                                 <p>
                                                     <button type="button" class="btn btn-primary" @onclick=@(e => FormAction("CustomComponent",0,"download")) title="Export">
@@ -574,10 +574,10 @@
                                             </div>
                                             <div class="card card-body @theme.ThemeStyle">
                                                 <p>
-                                                    Enter the new Custom Components Configuration JSON below and click <strong>Import</strong> to import the Custom Components Configuration.
+                                                    Enter the new Custom Components Configuration JSON below and click <span class="fw-bold">Import</span> to import the Custom Components Configuration.
                                                 </p>
                                                 <p>
-                                                    <strong>NOTE:</strong> This will update the existing Custom Components Configuration and cannot be undone!
+                                                    <span class="fw-bold">NOTE:</span> This will update the existing Custom Components Configuration and cannot be undone!
                                                 </p>
                                                 <p>
                                                     <textarea title="Configuration" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newCustomComponentConfig",(string)ui.Value!);})">@newCustomComponentConfig</textarea>
@@ -686,7 +686,7 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Click <strong>Export</strong> to export the current Environments Configuration.
+                                                                Click <span class="fw-bold">Export</span> to export the current Environments Configuration.
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-primary" @onclick=@(e => FormAction("ResourceEnvironment",0,"download")) title="Export">
@@ -701,10 +701,10 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Click <strong>Reset</strong> to reset the Environments Configuration back to the default values at the time of installation.
+                                                                Click <span class="fw-bold">Reset</span> to reset the Environments Configuration back to the default values at the time of installation.
                                                             </p>
                                                             <p>
-                                                                <strong>NOTE:</strong> This will reset the current Environments Configuration and cannot be undone!
+                                                                <span class="fw-bold">NOTE:</span> This will reset the current Environments Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("ResourceEnvironment",0,"reset")) title="Reset">
@@ -719,9 +719,9 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Enter the new Environments Configuration JSON below and click <strong>Import</strong> to import the Environments Configuration.
+                                                                Enter the new Environments Configuration JSON below and click <span class="fw-bold">Import</span> to import the Environments Configuration.
                                                             </p><p>
-                                                                <strong>NOTE:</strong> This will update the existing Environments Configuration and cannot be undone!
+                                                                <span class="fw-bold">NOTE:</span> This will update the existing Environments Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <textarea title="Configuration" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newEnvironmentConfig",(string)ui.Value!);})">@newEnvironmentConfig</textarea>
@@ -828,7 +828,7 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Click <strong>Export</strong> to export the current Function Configuration.
+                                                                Click <span class="fw-bold">Export</span> to export the current Function Configuration.
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-primary" @onclick=@(e => FormAction("ResourceFunction",0,"download")) title="Export">
@@ -843,10 +843,10 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Click <strong>Reset</strong> to reset the Functions Configuration back to the default values at the time of installation.
+                                                                Click <span class="fw-bold">Reset</span> to reset the Functions Configuration back to the default values at the time of installation.
                                                             </p>
                                                             <p>
-                                                                <strong>NOTE:</strong> This will reset the current Functions configuration and cannot be undone!
+                                                                <span class="fw-bold">NOTE:</span> This will reset the current Functions configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("ResourceFunction",0,"reset")) title="Reset">
@@ -861,9 +861,9 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Enter the new Functions Configuration JSON below and click <strong>Import</strong> to import the Functions Configuration.
+                                                                Enter the new Functions Configuration JSON below and click <span class="fw-bold">Import</span> to import the Functions Configuration.
                                                             </p><p>
-                                                                <strong>NOTE:</strong> This will update the existing Functions Configuration and cannot be undone!
+                                                                <span class="fw-bold">NOTE:</span> This will update the existing Functions Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <textarea title="New Function Config" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newFunctionConfig",(string)ui.Value!);})">@newFunctionConfig</textarea>
@@ -999,7 +999,7 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Click <strong>Export</strong> to export the current Locations Configuration.
+                                                                Click <span class="fw-bold">Export</span> to export the current Locations Configuration.
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-primary" @onclick=@(e => FormAction("ResourceLocation",0,"download")) title="Export">
@@ -1016,10 +1016,10 @@
                                                             </div>
                                                             <div class="card card-body @theme.ThemeStyle">
                                                                 <p>
-                                                                    Click <strong>Refresh</strong> to download the latest Resource Locations Configuration file from the Azure Naming Tool GitHub repository.
+                                                                    Click <span class="fw-bold">Refresh</span> to download the latest Resource Locations Configuration file from the Azure Naming Tool GitHub repository.
                                                                 </p>
                                                                 <p>
-                                                                    <strong>NOTES:</strong>
+                                                                    <span class="fw-bold">NOTES:</span>
                                                                     <ul>
                                                                         <li>This will refresh the current Locations Configuration and cannot be undone!</li>
                                                                         <li>New location configurations will be added.</li>
@@ -1051,10 +1051,10 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Click <strong>Reset</strong> to reset the Locations Configuration back to the default values at the time of installation.
+                                                                Click <span class="fw-bold">Reset</span> to reset the Locations Configuration back to the default values at the time of installation.
                                                             </p>
                                                             <p>
-                                                                <strong>NOTE:</strong> This will reset the current Locations Configuration and cannot be undone!
+                                                                <span class="fw-bold">NOTE:</span> This will reset the current Locations Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("ResourceLocation",0,"reset")) title="Reset">
@@ -1069,9 +1069,10 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Enter the new Locations Configuration JSON below and click <strong>Import</strong> to import the Locations Configuration.
-                                                            </p><p>
-                                                                <strong>NOTE:</strong> This will update the existing Locations Configuration and cannot be undone!
+                                                                Enter the new Locations Configuration JSON below and click <span class="fw-bold">Import</span> to import the Locations Configuration.
+                                                            </p>
+                                                            <p>
+                                                                <span class="fw-bold">NOTE:</span> This will update the existing Locations Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <textarea title="Configuration" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newLocationConfig",(string)ui.Value!);})">@newLocationConfig</textarea>
@@ -1177,7 +1178,7 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Click <strong>Export</strong> to export the current Orgs Configuration.
+                                                                Click <span class="fw-bold">Export</span> to export the current Orgs Configuration.
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-primary" @onclick=@(e => FormAction("ResourceOrg",0,"download")) title="Export">
@@ -1192,10 +1193,10 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Click <strong>Reset</strong> to reset the Orgs Configuration back to the default values at the time of installation.
+                                                                Click <span class="fw-bold">Reset</span> to reset the Orgs Configuration back to the default values at the time of installation.
                                                             </p>
                                                             <p>
-                                                                <strong>NOTE:</strong> This will reset the current Orgs Configuration and cannot be undone!
+                                                                <span class="fw-bold">NOTE:</span> This will reset the current Orgs Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("ResourceOrg",0,"reset")) title="Reset">
@@ -1210,10 +1211,10 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Enter the new Orgs Configuration JSON below and click <strong>Import</strong> to import the Orgs Configuration.
+                                                                Enter the new Orgs Configuration JSON below and click <span class="fw-bold">Import</span> to import the Orgs Configuration.
                                                             </p>
                                                             <p>
-                                                                <strong>NOTE:</strong> This will update the existing Orgs Configuration and cannot be undone!
+                                                                <span class="fw-bold">NOTE:</span> This will update the existing Orgs Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <textarea title="Configuration" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newOrgConfig",(string)ui.Value!);})">@newOrgConfig</textarea>
@@ -1319,7 +1320,7 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Click <strong>Export</strong> to export the current Projects/Apps/Services Configuration.
+                                                                Click <span class="fw-bold">Export</span> to export the current Projects/Apps/Services Configuration.
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-primary" @onclick=@(e => FormAction("ResourceProjAppSvc",0,"download")) title="Export">
@@ -1334,10 +1335,10 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Click <strong>Reset</strong> to reset the Project/App/Services Configuration back to the default values at the time of installation.
+                                                                Click <span class="fw-bold">Reset</span> to reset the Project/App/Services Configuration back to the default values at the time of installation.
                                                             </p>
                                                             <p>
-                                                                <strong>NOTE:</strong> This will reset the current Project/App/Services Configuration and cannot be undone!
+                                                                <span class="fw-bold">NOTE:</span> This will reset the current Project/App/Services Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("ResourceProjAppSvc",0,"reset")) title="Reset">
@@ -1352,9 +1353,9 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Enter the new Projects/Apps/Services Configuration JSON below and click <strong>Import</strong> to import the Projects/Apps/Services Configuration.
+                                                                Enter the new Projects/Apps/Services Configuration JSON below and click <span class="fw-bold">Import</span> to import the Projects/Apps/Services Configuration.
                                                             </p><p>
-                                                                <strong>NOTE:</strong> This will update the existing Projects/Apps/Services Configuration and cannot be undone!
+                                                                <span class="fw-bold">NOTE:</span> This will update the existing Projects/Apps/Services Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <textarea title="Configuration" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newProjAppSvcConfig",(string)ui.Value!);})">@newProjAppSvcConfig</textarea>
@@ -1532,7 +1533,7 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Click <strong>Export</strong> to export the current Resource Types Configuration.
+                                                                Click <span class="fw-bold">Export</span> to export the current Resource Types Configuration.
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-primary" @onclick=@(e => FormAction("ResourceType",0,"download")) title="Export">
@@ -1549,10 +1550,10 @@
                                                             </div>
                                                             <div class="card card-body @theme.ThemeStyle">
                                                                 <p>
-                                                                    Click <strong>Refresh</strong> to download the latest Resource Types Configuration file from the Azure Naming Tool GitHub repository.
+                                                                    Click <span class="fw-bold">Refresh</span> to download the latest Resource Types Configuration file from the Azure Naming Tool GitHub repository.
                                                                 </p>
                                                                 <p>
-                                                                    <strong>NOTES:</strong>
+                                                                    <span class="fw-bold">NOTES:</span>
                                                                     <ul>
                                                                         <li>This will refresh the current Resource Types Configuration and cannot be undone!</li>
                                                                         <li>New resource type configurations will be added.</li>
@@ -1588,10 +1589,10 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Click <strong>Reset</strong> to reset the Resource Types Configuration back to the default values at the time of installation.
+                                                                Click <span class="fw-bold">Reset</span> to reset the Resource Types Configuration back to the default values at the time of installation.
                                                             </p>
                                                             <p>
-                                                                <strong>NOTE:</strong> This will reset the current Resource Types Configuration and cannot be undone!
+                                                                <span class="fw-bold">NOTE:</span> This will reset the current Resource Types Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("ResourceType",0,"reset")) title="Reset">
@@ -1606,9 +1607,9 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Enter the new Resource Types Configuration JSON below and click <strong>Import</strong> to import the Resource Types Configuration.
+                                                                Enter the new Resource Types Configuration JSON below and click <span class="fw-bold">Import</span> to import the Resource Types Configuration.
                                                             </p><p>
-                                                                <strong>NOTE:</strong> This will update the existing Resource Types Configuration and cannot be undone!
+                                                                <span class="fw-bold">NOTE:</span> This will update the existing Resource Types Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <textarea title="Configuration" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newTypeConfig",(string)ui.Value!);})">@newTypeConfig</textarea>
@@ -1715,7 +1716,7 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Click <strong>Export</strong> to export the current Units/Depts Configuration.
+                                                                Click <span class="fw-bold">Export</span> to export the current Units/Depts Configuration.
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-primary" @onclick=@(e => FormAction("ResourceUnitDept",0,"download")) title="Export">
@@ -1730,10 +1731,10 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Click <strong>Reset</strong> to reset the Units/Depts Configuration back to the default values at the time of installation.
+                                                                Click <span class="fw-bold">Reset</span> to reset the Units/Depts Configuration back to the default values at the time of installation.
                                                             </p>
                                                             <p>
-                                                                <strong>NOTE:</strong> This will reset the current Units/Depts configuration and cannot be undone!
+                                                                <span class="fw-bold">NOTE:</span> This will reset the current Units/Depts configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("ResourceUnitDept",0,"reset")) title="Reset">
@@ -1748,9 +1749,9 @@
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <p>
-                                                                Enter the new Units/Depts Configuration JSON below and click <strong>Import</strong> to import the Units/Depts Configuration.
+                                                                Enter the new Units/Depts Configuration JSON below and click <span class="fw-bold">Import</span> to import the Units/Depts Configuration.
                                                             </p><p>
-                                                                <strong>NOTE:</strong> This will update the existing Units/Depts Configuration and cannot be undone!
+                                                                <span class="fw-bold">NOTE:</span> This will update the existing Units/Depts Configuration and cannot be undone!
                                                             </p>
                                                             <p>
                                                                 <textarea title="Configuration" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newUnitDeptConfig",(string)ui.Value!);})">@newUnitDeptConfig</textarea>
@@ -1789,7 +1790,7 @@
                                 </div>
                                 <div class="card card-body @theme.ThemeStyle">
                                     <p>
-                                        Click <strong>Export</strong> to export the current Global Configuration. This includes all components, options, and tool settings.
+                                        Click <span class="fw-bold">Export</span> to export the current Global Configuration. This includes all components, options, and tool settings.
                                     </p>
                                     <p>
                                         <button type="button" class="btn btn-primary" @onclick=@(e => FormAction("Global",0,"download")) title="Export">
@@ -1811,10 +1812,10 @@
                                 </div>
                                 <div class="card card-body @theme.ThemeStyle">
                                     <p>
-                                        Click <strong>Reset</strong> to reset the Global Configuration back to the default values at the time of installation. This will apply to all component configurations.
+                                        Click <span class="fw-bold">Reset</span> to reset the Global Configuration back to the default values at the time of installation. This will apply to all component configurations.
                                     </p>
                                     <p>
-                                        <strong>NOTE:</strong> This will reset the current Global Configuration and cannot be undone!
+                                        <span class="fw-bold">NOTE:</span> This will reset the current Global Configuration and cannot be undone!
                                     </p>
                                     <p>
                                         <button type="button" class="btn btn-danger" @onclick=@(e => FormAction("Global",0,"reset")) title="Reset">
@@ -1829,10 +1830,10 @@
                                 </div>
                                 <div class="card card-body @theme.ThemeStyle">
                                     <p>
-                                        Enter the new Global Configuration JSON below and click <strong>Import</strong> to import the Global Configuration.
+                                        Enter the new Global Configuration JSON below and click <span class="fw-bold">Import</span> to import the Global Configuration.
                                     </p>
                                     <p>
-                                        <strong>NOTE:</strong> This will update all existing configurations and cannot be undone!
+                                        <span class="fw-bold">NOTE:</span> This will update all existing configurations and cannot be undone!
                                     </p>
                                     <p>
                                         <textarea title="Configuration" class="form-control @theme.ThemeStyle" rows="8" type="text" @onchange="@((ui) => { SetFormValue("newGlobalConfig",(string)ui.Value!);})" />
@@ -1861,7 +1862,7 @@
             </div>
             <div class="card card-body @theme.ThemeStyle">
             <p>
-            Click <strong>Export Azure Policy Definition</strong> to export an Azure Policy definition to use within your subscription.
+            Click <span class="fw-bold">Export Azure Policy Definition</span> to export an Azure Policy definition to use within your subscription.
             </p>
             <p>
             <button type="button" class="btn btn-primary" @onclick=@(e => FormAction("Policy",0,"download")) title="Export Azure Policy Definition">
@@ -2452,7 +2453,7 @@
                                 case "edit":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Environment", "<p>Edit the Environment.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceEnvironment", false);
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Environment", "<p>Edit the Environment.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceEnvironment", false);
                                         if (confirm)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -2494,7 +2495,7 @@
                                 case "add":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Environment", "<p>Add an Environment.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceEnvironment", admin, "");
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Environment", "<p>Add an Environment.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceEnvironment", admin, "");
                                         if (response)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -2629,7 +2630,7 @@
                                 case "edit":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Function", "<p>Edit the Function.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceFunction", false);
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Function", "<p>Edit the Function.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceFunction", false);
                                         if (confirm)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -2671,7 +2672,7 @@
                                 case "add":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Function", "<p>Add a Function.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceFunction", admin, "");
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Function", "<p>Add a Function.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceFunction", admin, "");
                                         if (response)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -2799,7 +2800,7 @@
                                 case "edit":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Location", "<p>Edit the Location.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceLocation", true);
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Location", "<p>Edit the Location.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceLocation", true);
                                         if (confirm)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -2972,7 +2973,7 @@
                                 case "edit":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Org", "<p>Edit the Org.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceOrg", false);
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Org", "<p>Edit the Org.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceOrg", false);
                                         if (confirm)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -3014,7 +3015,7 @@
                                 case "add":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Org", "<p>Add an Org.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceOrg", admin, "");
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Org", "<p>Add an Org.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceOrg", admin, "");
                                         if (response)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -3149,7 +3150,7 @@
                                 case "edit":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Org", "<p>Edit the Project/App/Service.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceProjAppSvc", false);
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Org", "<p>Edit the Project/App/Service.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceProjAppSvc", false);
                                         if (confirm)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -3191,7 +3192,7 @@
                                 case "add":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Project/App/Service", "<p>Add an Project/App/Service.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceProjAppSvc", admin, "");
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Project/App/Service", "<p>Add an Project/App/Service.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceProjAppSvc", admin, "");
                                         if (response)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -3320,7 +3321,7 @@
                                     resourceType = servicesData.ResourceTypes!.Find(x => x.Id == id)!;
                                     if (GeneralHelper.IsNotNull(resourceType))
                                     {
-                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Resource Type", "<p>Edit the Resource Type.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + resourceType.LengthMin + "-" + resourceType.LengthMax + " characters.</li></ul>", (int)id, "ResourceType", true);
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Resource Type", "<p>Edit the Resource Type.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + resourceType.LengthMin + "-" + resourceType.LengthMax + " characters.</li></ul>", (int)id, "ResourceType", true);
                                         if (confirm)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -3473,7 +3474,7 @@
                                 case "edit":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Unit/Dept", "<p>Edit the Unit/Dept.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceUnitDept", false);
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Unit/Dept", "<p>Edit the Unit/Dept.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceUnitDept", false);
                                         if (confirm)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -3516,7 +3517,7 @@
                                 case "add":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Unit/Dept", "<p>Add a Unit/Dept.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceUnitDept", admin, "");
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Unit/Dept", "<p>Add a Unit/Dept.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceUnitDept", admin, "");
                                         if (response)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -3652,7 +3653,7 @@
                                     // Get the component in the list
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Custom Component", "<p>Add a Custom Component.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "CustomComponent", admin, parentcomponent);
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Custom Component", "<p>Add a Custom Component.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "CustomComponent", admin, parentcomponent);
                                         if (response)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -3670,7 +3671,7 @@
                                     customComponent = servicesData.CustomComponents!.Find(x => x.Id == id)!;
                                     if (GeneralHelper.IsNotNull(customComponent))
                                     {
-                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Custom Component", "<p>Edit the Custom Component.</p><p><strong>NOTES</strong></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "CustomComponent", false, customComponent.ParentComponent);
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Custom Component", "<p>Edit the Custom Component.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "CustomComponent", false, customComponent.ParentComponent);
                                         if (confirm)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -3896,7 +3897,7 @@
                                     confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will reset the current Global Configuration for all settings and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)
                                     {
-                                        bool confirmglobalreset = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\"><strong>Every setting of the site will be reset if you continue!</strong></div><div class=\"my-4\">It is recommended you take a backup of the configuration before proceeding!</div><div class=\"my-4\">Continue?</div>", "bg-danger", theme);
+                                        bool confirmglobalreset = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\"><span class=\"fw-bold\">Every setting of the site will be reset if you continue!</span></div><div class=\"my-4\">It is recommended you take a backup of the configuration before proceeding!</div><div class=\"my-4\">Continue?</div>", "bg-danger", theme);
                                         if (confirmglobalreset)
                                         {
                                             if (ConfigurationHelper.ResetSiteConfiguration())
@@ -3918,7 +3919,7 @@
                                         confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the current Global Configuration and cannot be undone!!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                         if (confirm)
                                         {
-                                            bool confirmglobalupdate = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\"><strong>Every setting of the site will be updated if you continue!</strong></div><div class=\"my-4\">It is recommended you take a backup of the configuration before proceeding!</div><div class=\"my-4\">Continue?</div>", "bg-danger", theme);
+                                            bool confirmglobalupdate = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\"><span class=\"fw-bold\">Every setting of the site will be updated if you continue!</span></div><div class=\"my-4\">It is recommended you take a backup of the configuration before proceeding!</div><div class=\"my-4\">Continue?</div>", "bg-danger", theme);
                                             if (confirmglobalupdate)
                                             {
                                                 serviceResponse = await ImportExportService.PostConfig(JsonSerializer.Deserialize<ConfigurationData>(newGlobalConfig, options)!);
