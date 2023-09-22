@@ -1,21 +1,13 @@
 ﻿using AzureNamingTool.Models;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 using AzureNamingTool.Services;
-using System.Xml.Linq;
-using System.Net.NetworkInformation;
-using System.Net;
-using System.Runtime.Caching;
-using System.Reflection;
-using System.Net.Http;
-using System.Text;
-using System.Net.Http.Json;
-using System.Net.Http.Headers;
-using System;
-using Blazored.Toast.Services;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Collections;
+using System.Data.SqlTypes;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Reflection;
+using System.Runtime.Caching;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace AzureNamingTool.Helpers
 {
@@ -158,6 +150,7 @@ namespace AzureNamingTool.Helpers
 
                         config.SALTKey = salt.ToString();
                         config.APIKey = GeneralHelper.EncryptString(config.APIKey!, salt.ToString());
+                        config.ReadOnlyAPIKey = GeneralHelper.EncryptString(config.ReadOnlyAPIKey!, salt.ToString());
 
                         if (!String.IsNullOrEmpty(config.AdminPassword))
                         {
@@ -468,13 +461,13 @@ namespace AzureNamingTool.Helpers
                         // Resource Types
                         if (officialversiondata.resourcetypes != currentversiondata.resourcetypes)
                         {
-                            versiondata.Add("<h5>Resource Types</h5><hr /><div>The Resource Types Configuration is out of date!<br /><br />It is recommended that you refresh your resource types to the latest configuration.<br /><br /><strong>To Refresh:</strong><ul><li>Expand the <strong>Types</strong> section</li><li>Expand the <strong>Configuration</strong> section</li><li>Select the <strong>Refresh</strong> option</li></ul></div><br />");
+                            versiondata.Add("<h5>Resource Types</h5><hr /><div>The Resource Types Configuration is out of date!<br /><br />It is recommended that you refresh your resource types to the latest configuration.<br /><br /><span class=\"fw-bold\">To Refresh:</span><ul><li>Expand the <span class=\"fw-bold\">Types</span> section</li><li>Expand the <span class=\"fw-bold\">Configuration</span> section</li><li>Select the <span class=\"fw-bold\">Refresh</span> option</li></ul></div><br />");
                         }
 
                         // Resource Locations
                         if (officialversiondata.resourcelocations != currentversiondata.resourcelocations)
                         {
-                            versiondata.Add("<h5>Resource Locations</h5><hr /><div>The Resource Locations Configuration is out of date!<br /><br />It is recommended that you refresh your resource locations to the latest configuration.<br /><br /><strong>To Refresh:</strong><ul><li>Expand the <strong>Locations</strong> section</li><li>Expand the <strong>Configuration</strong> section</li><li>Select the <strong>Refresh</strong> option</li></ul></div><br />");
+                            versiondata.Add("<h5>Resource Locations</h5><hr /><div>The Resource Locations Configuration is out of date!<br /><br />It is recommended that you refresh your resource locations to the latest configuration.<br /><br /><span class=\"fw-bold\">To Refresh:</span><ul><li>Expand the <span class=\"fw-bold\">Locations</span> section</li><li>Expand the <span class=\"fw-bold\">Configuration</span> section</li><li>Select the <span class=\"fw-bold\">Refresh</span> option</li></ul></div><br />");
                         }
                     }
                 }
@@ -670,33 +663,6 @@ namespace AzureNamingTool.Helpers
             }
         }
 
-        public static bool VerifyDuplicateNamesAllowed()
-        {
-            bool result = false;
-            try
-            {
-                // Check if the data is cached
-                var cacheddata = CacheHelper.GetCacheObject("duplicatenamesallowed");
-                if (cacheddata == null)
-                {
-                    // Check if version alert has been dismissed
-                    var allowed = GetAppSetting("DuplicateNamesAllowed");
-                    result = Convert.ToBoolean(allowed);
-                    // Set the result to cache
-                    CacheHelper.SetCacheObject("duplicatenamesallowed", result);
-                }
-                else
-                {
-                    result = Convert.ToBoolean(cacheddata);
-                }
-            }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
-            }
-            return result;
-        }
-
         public static async Task<bool> PostToGenerationWebhook(string URL, GeneratedName generatedName)
         {
             bool result = false;
@@ -854,6 +820,37 @@ namespace AzureNamingTool.Helpers
                 AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
             return result;
+        }
+
+
+        public static async Task<bool> CheckIfGeneratedNameExists(string name)
+        {
+            bool nameexists = false;
+            // Check if the name already exists
+            ServiceResponse serviceResponse = new();
+            serviceResponse = await GeneratedNamesService.GetItems();
+            if (serviceResponse.Success)
+            {
+                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                {
+                    var names = (List<GeneratedName>)serviceResponse.ResponseObject!;
+                    if (GeneralHelper.IsNotNull(names))
+                    {
+                        if (names.Where(x => x.ResourceName == name).Any())
+                        {
+                            nameexists = true;
+                        }
+                    }
+                }
+            }
+            return nameexists;
+        }
+
+        public static string AutoIncremenetResourceInstance(string resourcetype)
+        {
+            string resourcetypeupdated = String.Empty;
+
+            return resourcetypeupdated;
         }
     }
 }

@@ -35,17 +35,22 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
-        public static async Task<ServiceResponse> GenerateAPIKey()
+        public static async Task<ServiceResponse> GenerateAPIKey(string type)
         {
             ServiceResponse serviceResponse = new();
             try
             {
-                // Get the old api key
-                string oldapikey = config.APIKey!;
-
                 // Set the new api key
                 Guid guid = Guid.NewGuid();
-                config.APIKey = GeneralHelper.EncryptString(guid.ToString(), config.SALTKey!);
+                switch(type)
+                {
+                    case "fullaccess":
+                        config.APIKey = GeneralHelper.EncryptString(guid.ToString(), config.SALTKey!);
+                        break;
+                    case "readonly":
+                        config.ReadOnlyAPIKey = GeneralHelper.EncryptString(guid.ToString(), config.SALTKey!);
+                        break;
+                }
                 await ConfigurationHelper.UpdateSettings(config);
                 serviceResponse.ResponseObject = guid.ToString();
                 serviceResponse.Success = true;
@@ -59,12 +64,22 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
-        public static async Task<ServiceResponse> UpdateAPIKey(string apikey)
+        public static async Task<ServiceResponse> UpdateAPIKey(string apikey, string type)
         {
             ServiceResponse serviceResponse = new();
             try
             {
-                config.APIKey = GeneralHelper.EncryptString(apikey, config.SALTKey!);
+                switch(type)
+                {
+                    case "fullaccess":
+                        config.APIKey = GeneralHelper.EncryptString(apikey, config.SALTKey!);
+                        break;
+
+                    case "readonly":
+                        config.ReadOnlyAPIKey = GeneralHelper.EncryptString(apikey, config.SALTKey!);
+                        break;
+
+                }
                 await ConfigurationHelper.UpdateSettings(config);
                 serviceResponse.ResponseObject = apikey;
                 serviceResponse.Success = true;

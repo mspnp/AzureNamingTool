@@ -70,13 +70,13 @@ namespace AzureNamingTool.Helpers
                 var cacheKeys = memoryCache.Select(kvp => kvp.Key).ToList();
                 foreach (var key in cacheKeys.OrderBy(x => x))
                 {
-                    data.Append("<p><strong>" + key + "</strong></p><div class=\"alert alert-secondary\" style=\"word-wrap:break-word;\">" + MemoryCache.Default[key].ToString() + "</div>");
+                    data.Append("<p><span class=\"fw-bold\">" + key + "</span></p><div class=\"alert alert-secondary\" style=\"word-wrap:break-word;\">" + MemoryCache.Default[key].ToString() + "</div>");
                 }
             }
             catch (Exception ex)
             {
                 AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
-                data.Append("<p><strong>No data currently cached.</strong></p>");
+                data.Append("<p><span class=\"fw-bold\">No data currently cached.</span></p>");
             }
             return data.ToString();
         }
