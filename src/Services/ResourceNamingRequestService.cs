@@ -518,35 +518,36 @@ namespace AzureNamingTool.Services
                                             {
                                                 if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                                                 {
-                                                    if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                                                    var customcomponents = (List<CustomComponent>)serviceResponse.ResponseObject!;
+                                                    if (GeneralHelper.IsNotNull(customcomponents))
                                                     {
-                                                        var customcomponents = (List<CustomComponent>)serviceResponse.ResponseObject!;
-                                                        if (GeneralHelper.IsNotNull(customcomponents))
+                                                        // Make sure the custom component has values
+                                                        if (customcomponents.Where(x => x.ParentComponent == normalizedcomponentname).Any())
                                                         {
-                                                            // Make sure the custom component has values
-                                                            if (customcomponents.Where(x => x.ParentComponent == normalizedcomponentname).Any())
+                                                            // Make sure the CustomComponents property was provided
+                                                            if (!resourceType.Exclude.ToLower().Split(',').Contains(normalizedcomponentname))
                                                             {
-                                                                // Make sure the CustomComponents property was provided
-                                                                if (!resourceType.Exclude.ToLower().Split(',').Contains(normalizedcomponentname))
+                                                                // Add property value to name, if exists
+                                                                if (GeneralHelper.IsNotNull(request.CustomComponents))
                                                                 {
-                                                                    // Add property value to name, if exists
-                                                                    if (GeneralHelper.IsNotNull(request.CustomComponents))
+                                                                    // Check if the custom compoment value was provided in the request
+                                                                    if (request.CustomComponents.ContainsKey(normalizedcomponentname))
                                                                     {
-                                                                        // Check if the custom compoment value was provided in the request
-                                                                        if (request.CustomComponents.ContainsKey(normalizedcomponentname))
+                                                                        // Get the value from the provided custom components
+                                                                        var componentvalue = request.CustomComponents[normalizedcomponentname];
+                                                                        if (!GeneralHelper.IsNotNull(componentvalue))
                                                                         {
-                                                                            // Get the value from the provided custom components
-                                                                            var componentvalue = request.CustomComponents[normalizedcomponentname];
-                                                                            if (!GeneralHelper.IsNotNull(componentvalue))
+                                                                            // Check if the prop is optional
+                                                                            if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
                                                                             {
-                                                                                // Check if the prop is optional
-                                                                                if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
-                                                                                {
-                                                                                    valid = false;
-                                                                                    sbMessage.Append(component.Name + " value was not provided. ");
-                                                                                }
+                                                                                valid = false;
+                                                                                sbMessage.Append(component.Name + " value was not provided. ");
                                                                             }
-                                                                            else
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            // Check if the custom component is empty
+                                                                            if (!String.IsNullOrEmpty(componentvalue))
                                                                             {
                                                                                 // Check to make sure it is a valid custom component
                                                                                 var customComponents = await ConfigurationHelper.GetList<CustomComponent>();
@@ -572,14 +573,14 @@ namespace AzureNamingTool.Services
                                                                                     }
                                                                                 }
                                                                             }
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            // Check if the prop is optional
-                                                                            if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
+                                                                            else
                                                                             {
-                                                                                valid = false;
-                                                                                sbMessage.Append(component.Name + " value was not provided. ");
+                                                                                // Check if the prop is optional
+                                                                                if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
+                                                                                {
+                                                                                    valid = false;
+                                                                                    sbMessage.Append(component.Name + " value was not provided. ");
+                                                                                }
                                                                             }
                                                                         }
                                                                     }
@@ -593,9 +594,19 @@ namespace AzureNamingTool.Services
                                                                         }
                                                                     }
                                                                 }
+                                                                else
+                                                                {
+                                                                    // Check if the prop is optional
+                                                                    if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
+                                                                    {
+                                                                        valid = false;
+                                                                        sbMessage.Append(component.Name + " value was not provided. ");
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }
+
                                                 }
                                             }
                                         }
