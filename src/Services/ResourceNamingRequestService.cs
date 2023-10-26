@@ -172,6 +172,7 @@ namespace AzureNamingTool.Services
                 // CALL VALIDATION FUNCTION
                 ValidateNameRequest validateNameRequest = new()
                 {
+                    ResourceTypeId = resourceType.Id,
                     ResourceType = resourceType.ShortName,
                     Name = name
                 };
@@ -706,6 +707,7 @@ namespace AzureNamingTool.Services
                 // Validate the generated name for the resource type
                 ValidateNameRequest validateNameRequest = new()
                 {
+                    ResourceTypeId = resourceType.Id,
                     ResourceType = resourceType.ShortName,
                     Name = name
                 };
