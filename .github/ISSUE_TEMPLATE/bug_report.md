@@ -7,6 +7,9 @@ assignees: ''
 
 ---
 
+**Tool version**
+Current version of the Azure Naming Tool you are running.
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
