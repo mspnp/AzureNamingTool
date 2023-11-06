@@ -3974,10 +3974,8 @@
                     message.Type = MessageTypesEnum.ERROR;
                     message.Message = "There was a problem with the request.";
                 }
-                finally
-                {
-                    workingmodal.Close();
-                }
+
+                workingmodal.Close();
             }
 
             if (!generalerror)
