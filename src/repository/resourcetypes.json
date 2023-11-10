@@ -5173,7 +5173,7 @@
     "optional": "UnitDept",
     "exclude": "Org,Function",
     "property": "",
-    "ShortName": "deloy",
+    "ShortName": "deploy",
     "scope": "resource group",
     "lengthMin": "1",
     "lengthMax": "64",
