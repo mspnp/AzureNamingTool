@@ -3,7 +3,6 @@ using BlazorDownloadFile;
 using Blazored.Toast;
 using Microsoft.OpenApi.Models;
 using Blazored.Modal;
-using Swashbuckle.AspNetCore.Swagger;
 using System.Reflection;
 using AzureNamingTool.Models;
 
@@ -12,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddMvcCore().AddApiExplorer();
 builder.Services.AddRazorPages();
+builder.Services.AddHealthChecks();
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddServerSideBlazor().AddCircuitOptions(x => x.DetailedErrors = true).AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000);
@@ -54,6 +54,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddMemoryCache();
 var app = builder.Build();
+
+app.MapHealthChecks("/healthcheck/ping");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

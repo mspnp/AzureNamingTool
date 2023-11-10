@@ -485,8 +485,17 @@ namespace AzureNamingTool.Services
                         List<ResourceType> resourceTypes = (List<ResourceType>)serviceResponse.ResponseObject!;
                         if (GeneralHelper.IsNotNull(resourceTypes))
                         {
-                            // Get the specified resoure type
-                            ResourceType resourceType = resourceTypes.FirstOrDefault(x => x.ShortName == validateNameRequest.ResourceType)!;
+                            ResourceType resourceType = null;
+                            if (GeneralHelper.IsNotNull(validateNameRequest.ResourceTypeId))
+                            {
+                                // Get the specified resoure type by id
+                                resourceType = resourceTypes.FirstOrDefault(x => x.Id == validateNameRequest.ResourceTypeId)!;
+                            }
+                            else
+                            {
+                                // Get the specified resoure type by short name
+                                resourceType = resourceTypes.FirstOrDefault(x => x.ShortName == validateNameRequest.ResourceType)!;
+                            }
                             if (GeneralHelper.IsNotNull(resourceType))
                             {
                                 // Create a validate name request
