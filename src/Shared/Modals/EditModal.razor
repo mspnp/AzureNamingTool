@@ -523,7 +523,7 @@
                             confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the custom component to free text and remove the current component options! This cannot be un-done!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                             if (confirm)
                             {
-                                serviceResponse = await CustomComponentService.DeleteComponentItems((int)resourceComponent.Id);
+                                serviceResponse = await CustomComponentService.DeleteByParentComponentId((int)resourceComponent.Id);
                                 serviceResponse = await ResourceComponentService.PostItem(resourceComponent);
                             }
                             else

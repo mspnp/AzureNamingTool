@@ -203,31 +203,10 @@ namespace AzureNamingTool.Services
                                 }
 
                                 // Delete any custom components for this resource component
-                                var components = await ConfigurationHelper.GetList<CustomComponent>();
-                                if (GeneralHelper.IsNotNull(components))
-                                {
-                                    components.RemoveAll(x => x.ParentComponent == GeneralHelper.NormalizeName(item.Name, true));
-                                    await ConfigurationHelper.WriteList<CustomComponent>(components);
-
-                                    // Remove the item from the collection
-                                    items.Remove(item);
-
-                                    // Update all the sort order values to reflect the removal
-                                    int position = 1;
-                                    foreach (ResourceComponent thisitem in items.OrderBy(x => x.SortOrder).ToList())
-                                    {
-                                        thisitem.SortOrder = position;
-                                        thisitem.Id = position;
-                                        position += 1;
-                                    }
-
-                                    // Write items to file
-                                    await ConfigurationHelper.WriteList<ResourceComponent>(items);
-                                    serviceResponse.Success = true;
-                                }
-                                else
-                                {
-                                    serviceResponse.ResponseObject = "Resource Components not found!";
+                                serviceResponse = await CustomComponentService.DeleteByParentComponentId(id);
+                                if(!serviceResponse.Success)
+                                { 
+                                    serviceResponse.ResponseObject = "Custom Component deletion failed! Please check the Admin log for details.";
                                 }
                             }
                             else

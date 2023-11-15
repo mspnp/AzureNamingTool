@@ -31,6 +31,43 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        public static async Task<ServiceResponse> GetItemsByParentComponentId(int parentcomponetid)
+        {
+            ServiceResponse serviceResponse = new();
+            try
+            {
+                // Get the parent component details
+                serviceResponse = await ResourceComponentService.GetItem(parentcomponetid);
+                if(serviceResponse.Success)
+                {
+                    var component = (ResourceComponent)serviceResponse.ResponseObject!;
+
+                    // Get list of items
+                    var items = await ConfigurationHelper.GetList<CustomComponent>();
+                    if (GeneralHelper.IsNotNull(items))
+                    {
+                        serviceResponse.ResponseObject = items.Where(x => x.ParentComponent == GeneralHelper.NormalizeName(component.Name, true)).OrderBy(x => x.SortOrder).ToList();
+                        serviceResponse.Success = true;
+                    }
+                    else
+                    {
+                        serviceResponse.ResponseObject = "Custom Components not found!";
+                    }
+                }
+                else
+                {
+                    serviceResponse.ResponseObject = "Resource Component not found!";
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                serviceResponse.Success = false;
+                serviceResponse.ResponseObject = ex;
+            }
+            return serviceResponse;
+        }
+
         public static async Task<ServiceResponse> GetItemsByParentType(string parenttype)
         {
             ServiceResponse serviceResponse = new();
@@ -280,7 +317,7 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
-        public static async Task<ServiceResponse> DeleteComponentItems(int componentid)
+        public static async Task<ServiceResponse> DeleteByParentComponentId(int componentid)
         {
             ServiceResponse serviceResponse = new();
             try
