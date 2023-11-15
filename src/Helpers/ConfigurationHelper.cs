@@ -567,19 +567,27 @@ namespace AzureNamingTool.Helpers
 
         public static string GetAssemblyVersion()
         {
+            string result = String.Empty;
             try
             {
-                string versiondata = String.Empty;
-                Version version = Assembly.GetExecutingAssembly().GetName().Version!;
-                versiondata = version.Major + "." + version.Minor + "." + version.Revision;
-                return versiondata;
-
+                string data = (string)CacheHelper.GetCacheObject("assemblyversion")!;
+                if (String.IsNullOrEmpty(data))
+                {
+                    Version version = Assembly.GetExecutingAssembly().GetName().Version!;
+                    result = version.Major + "." + version.Minor + "." + version.Revision;
+                    CacheHelper.SetCacheObject("assemblyversion", result);
+                }
+                else
+                {
+                    result = data;
+                }
+                return result;
             }
             catch (Exception ex)
             {
                 AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
-                return null;
             }
+            return result;
         }
 
         public static async Task<string?> GetToolVersion()
