@@ -203,8 +203,24 @@ namespace AzureNamingTool.Services
                                 }
 
                                 // Delete any custom components for this resource component
-                                serviceResponse = await CustomComponentService.DeleteByParentComponentId(id);
-                                if(!serviceResponse.Success)
+                                await CustomComponentService.DeleteByParentComponentId(id);
+
+                                // Remove the item from the collection
+                                items.Remove(item);
+
+                                // Update all the sort order values to reflect the removal
+                                int position = 1;
+                                foreach (ResourceComponent thisitem in items.OrderBy(x => x.SortOrder).ToList())
+                                {
+                                    thisitem.SortOrder = position;
+                                    thisitem.Id = position;
+                                    position += 1;
+                                }
+
+                                // Write items to file
+                                await ConfigurationHelper.WriteList<ResourceComponent>(items);
+                                serviceResponse.Success = true;
+                                if (!serviceResponse.Success)
                                 { 
                                     serviceResponse.ResponseObject = "Custom Component deletion failed! Please check the Admin log for details.";
                                 }
