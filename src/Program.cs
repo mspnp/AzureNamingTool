@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using Blazored.Modal;
 using System.Reflection;
 using AzureNamingTool.Models;
+using AzureNamingTool.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +33,7 @@ builder.Services.AddSwaggerGen(c =>
     c.OperationFilter<CustomHeaderSwaggerAttribute>();
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Version = "v" + Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion,
+        Version = "v" + ConfigurationHelper.GetAssemblyVersion(),
         Title = "Azure Naming Tool API",
         Description = "An ASP.NET Core Web API for managing the Azure Naming tool configuration. All API requests require the configured API Keys (found in the site Admin configuration). You can find more details in the <a href=\"https://github.com/mspnp/AzureNamingTool/wiki/Using-the-API\" target=\"_new\">Azure Naming Tool API documentation</a>."
     });

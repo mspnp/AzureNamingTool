@@ -1882,7 +1882,7 @@
     private bool versionalertshown = false;
     private bool dismissalert = false;
     private bool configurationfilealertshown = false;
-    private string appversion = Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
+    private string appversion = ConfigurationHelper.GetAssemblyVersion();
 
     public string filterData { get; set; } = String.Empty;
 

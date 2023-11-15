@@ -62,7 +62,7 @@
     public IModalService? Modal { get; set; }
     private bool admin;
 
-    private string appversion = Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
+    private string appversion = ConfigurationHelper.GetAssemblyVersion();
     private string updateurl = "https://github.com/mspnp/AzureNamingTool/wiki/Updating";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
