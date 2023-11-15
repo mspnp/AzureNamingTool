@@ -279,5 +279,68 @@ namespace AzureNamingTool.Services
             }
             return serviceResponse;
         }
+
+        public static async Task<ServiceResponse> DeleteComponentItems(int componentid)
+        {
+            ServiceResponse serviceResponse = new();
+            try
+            {
+                // Get the resource component
+                serviceResponse = await ResourceComponentService.GetItem(componentid);
+                if (serviceResponse.Success)
+                {
+                    var component = serviceResponse.ResponseObject as ResourceComponent;
+                    if (GeneralHelper.IsNotNull(component))
+                    {
+                        // Get list of items
+                        var items = await ConfigurationHelper.GetList<CustomComponent>();
+                        if (GeneralHelper.IsNotNull(items))
+                        {
+                            // Get the custom component options
+                            List<CustomComponent> customcomponents = items.Where(x => GeneralHelper.NormalizeName(component.Name, true) == x.ParentComponent).ToList();
+                            if (GeneralHelper.IsNotNull(customcomponents))
+                            {
+                                foreach (CustomComponent customcomponent in customcomponents)
+                                {
+                                    // Remove the item from the collection
+                                    items.Remove(customcomponent);
+
+                                    // Update all the sort order values to reflect the removal
+                                    int position = 1;
+                                    foreach (CustomComponent thisitem in items.OrderBy(x => x.SortOrder).ToList())
+                                    {
+                                        thisitem.SortOrder = position;
+                                        position += 1;
+                                    }
+                                }
+
+                                // Write items to file
+                                await ConfigurationHelper.WriteList<CustomComponent>(items);
+                                serviceResponse.Success = true;
+                            }
+                            else
+                            {
+                                serviceResponse.ResponseObject = "Custom Component not found!";
+                            }
+                        }
+                        else
+                        {
+                            serviceResponse.ResponseObject = "Custom Component not found!";
+                        }
+                    }
+                    else
+                    {
+                        serviceResponse.ResponseObject = "Custom Component not found!";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                serviceResponse.ResponseObject = ex;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
     }
 }
