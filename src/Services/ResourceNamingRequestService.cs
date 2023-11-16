@@ -622,6 +622,7 @@ namespace AzureNamingTool.Services
                                                     // Check if the custom compoment value was provided in the request
                                                     if (request.CustomComponents.ContainsKey(normalizedcomponentname))
                                                     {
+
                                                         // Get the value from the provided custom components
                                                         var componentvalue = request.CustomComponents[normalizedcomponentname];
                                                         if (!GeneralHelper.IsNotNull(componentvalue))
@@ -635,15 +636,28 @@ namespace AzureNamingTool.Services
                                                         }
                                                         else
                                                         {
-                                                            if (!String.IsNullOrEmpty(name))
+                                                            // CHeck if the free text has a value
+                                                            if (!String.IsNullOrEmpty(componentvalue))
                                                             {
-                                                                name += resourceDelimiter.Delimiter;
+                                                                if (!String.IsNullOrEmpty(name))
+                                                                {
+                                                                    name += resourceDelimiter.Delimiter;
+                                                                }
+
+                                                                name += componentvalue;
+
+                                                                // Add property to array for individual component validation
+                                                                lstComponents.Add(new string[] { component.Name, componentvalue });
                                                             }
-
-                                                            name += componentvalue;
-
-                                                            // Add property to array for individual component validation
-                                                            lstComponents.Add(new string[] { component.Name, componentvalue });
+                                                            else
+                                                            {
+                                                                // Check if the prop is optional
+                                                                if (!resourceType.Optional.ToLower().Split(',').Contains(normalizedcomponentname))
+                                                                {
+                                                                    valid = false;
+                                                                    sbMessage.Append(component.Name + " value was not provided. ");
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                     else

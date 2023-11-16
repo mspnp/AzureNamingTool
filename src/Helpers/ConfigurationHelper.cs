@@ -565,6 +565,31 @@ namespace AzureNamingTool.Helpers
             state.SetAppTheme("bg-default text-dark");
         }
 
+        public static string GetAssemblyVersion()
+        {
+            string result = String.Empty;
+            try
+            {
+                string data = (string)CacheHelper.GetCacheObject("assemblyversion")!;
+                if (String.IsNullOrEmpty(data))
+                {
+                    Version version = Assembly.GetExecutingAssembly().GetName().Version!;
+                    result = version.Major + "." + version.Minor + "." + version.Revision;
+                    CacheHelper.SetCacheObject("assemblyversion", result);
+                }
+                else
+                {
+                    result = data;
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            }
+            return result;
+        }
+
         public static async Task<string?> GetToolVersion()
         {
             try
@@ -588,7 +613,7 @@ namespace AzureNamingTool.Helpers
             {
                 VersionAlert versionalert = new();
                 bool dismissed = false;
-                string appversion = Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
+                string appversion = GetAssemblyVersion();
 
                 // Check if version alert has been dismissed
                 var dismissedalerts = GetAppSetting("DismissedAlerts").Split(',');
@@ -645,7 +670,7 @@ namespace AzureNamingTool.Helpers
         {
             try
             {
-                string appversion = Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
+                string appversion = GetAssemblyVersion();
                 List<string> dismissedalerts = new(GetAppSetting("DismissedAlerts").Split(','));
                 if (!dismissedalerts.Contains(appversion))
                 {

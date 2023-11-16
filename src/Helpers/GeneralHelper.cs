@@ -4,6 +4,7 @@ using AzureNamingTool.Services;
 using AzureNamingTool.Shared;
 using Blazored.Modal;
 using Blazored.Modal.Services;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -121,7 +122,6 @@ namespace AzureNamingTool.Helpers
 
         public static bool IsNotNull([NotNullWhen(true)] object? obj) => obj != null;
 
-
         public static string[] FormatResoureType(string type)
         {
             String[] returntype = new String[4];
@@ -160,6 +160,27 @@ namespace AzureNamingTool.Helpers
                 AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
             return returntype;
+        }
+
+        public static string GenerateRandomString(int maxLength, bool alphanumeric)
+        {
+            var chars = "abcdefghijklmnopqrstuvwxyz";
+            if (alphanumeric)
+            {
+                chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+            }
+
+            var Charsarr = new char[maxLength];
+            var random = new Random();
+
+            for (int i = 0; i < Charsarr.Length; i++)
+            {
+                Charsarr[i] = chars[random.Next(chars.Length)];
+            }
+
+            var result = new String(Charsarr);
+
+            return result;
         }
     }
 }

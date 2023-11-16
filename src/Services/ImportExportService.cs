@@ -117,6 +117,7 @@ namespace AzureNamingTool.Services
                     configdata.SALTKey = config.SALTKey;
                     configdata.AdminPassword = config.AdminPassword;
                     configdata.APIKey = config.APIKey;
+                    configdata.ReadOnlyAPIKey = config.ReadOnlyAPIKey;
                     //IdentityHeaderName
                     configdata.IdentityHeaderName = config.IdentityHeaderName;
                     //AdminUsers
@@ -182,6 +183,10 @@ namespace AzureNamingTool.Services
                 if (GeneralHelper.IsNotNull(configdata.APIKey))
                 {
                     config.APIKey = configdata.APIKey;
+                }
+                if (GeneralHelper.IsNotNull(configdata.ReadOnlyAPIKey))
+                {
+                    config.ReadOnlyAPIKey = configdata.ReadOnlyAPIKey;
                 }
                 if (GeneralHelper.IsNotNull(configdata.IdentityHeaderName))
                 {
