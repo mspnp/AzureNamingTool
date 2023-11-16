@@ -411,15 +411,7 @@
                                                             }
                                                         </h5>
                                                         <div class="card card-body @theme.ThemeStyle">
-                                                            <input title="@resourceComponent.DisplayName" class="@GetControlStyle()" type="text" value="@customcomponentvalues[GeneralHelper.NormalizeName(resourceComponent.Name, true)]" @onchange="@((ui) => { OnCustomComponentChanged(ui, GeneralHelper.NormalizeName(resourceComponent.Name, true));})" />
-                                                            @if (resourceComponent.AllowRandom)
-                                                            {
-                                                                <div class="mt-3">
-                                                                    <button type="button" class="btn btn-primary" title="Randomize" @onclick="@(e => GenerateRandomValue(GeneralHelper.NormalizeName(resourceComponent.Name, true), resourceComponent.MaxLength, resourceComponent.Alphanumeric))">
-                                                                        Randomize
-                                                                    </button>
-                                                                </div>
-                                                            }
+                                                            <input title="@resourceComponent.DisplayName" readonly="@resourceComponent.EnforceRandom" class="@GetControlStyle()" type="text" value="@selectedCustomComponents[GeneralHelper.NormalizeName(resourceComponent.Name, true)]" @onchange="@((ui) => { OnCustomComponentChanged(ui, GeneralHelper.NormalizeName(resourceComponent.Name, true));})" />
                                                         </div>
                                                     </div>
                                                 }
@@ -528,7 +520,7 @@
     private ResourceType? currentResourceType = null;
     private List<string> multiselectedResourceTypes = new();
     private string currentuser = String.Empty;
-    private Dictionary<string, string> customcomponentvalues = new();
+    //private Dictionary<string, string> customcomponentvalues = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -563,16 +555,6 @@
             categories = ResourceTypeService.GetTypeCategories(servicesData.ResourceTypes);
             resourceDelimiter = (ResourceDelimiter)servicesData.ResourceDelimiters![0];
             componentsVisible = "collapse show";
-
-            // Create the custom coponents dictionary items
-            customcomponentvalues.Clear();
-            if (GeneralHelper.IsNotNull(servicesData.ResourceComponents))
-            {
-                foreach (ResourceComponent component in servicesData.ResourceComponents.Where(x => x.IsFreeText))
-                {
-                    customcomponentvalues.Add(GeneralHelper.NormalizeName(component.Name, true), String.Empty);
-                }
-            }
         }
         catch (Exception ex)
         {
@@ -929,7 +911,14 @@
                     {
                         if (component.IsCustom)
                         {
-                            selectedCustomComponents.Add(GeneralHelper.NormalizeName(component.Name, true), String.Empty);
+                            if (component.EnforceRandom)
+                            {
+                                GenerateRandomValue(GeneralHelper.NormalizeName(component.Name, true), component.MaxLength, component.Alphanumeric);
+                            }
+                            else
+                            {
+                                selectedCustomComponents.Add(GeneralHelper.NormalizeName(component.Name, true), String.Empty);
+                            }
                         }
                     }
 
@@ -1198,8 +1187,7 @@
     private void GenerateRandomValue(string customcomponentname, string maxlength, bool alphanumeric)
     {
         string value = GeneralHelper.GenerateRandomString(Convert.ToInt32(maxlength), alphanumeric);
-        customcomponentvalues[customcomponentname] = value;
-        OnComponentChanged("cc", value!, customcomponentname);
+        OnComponentChanged("cc", value, customcomponentname);
     }
 
     private void ResetForm(bool clearselection)

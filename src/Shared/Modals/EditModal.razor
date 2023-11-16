@@ -71,7 +71,7 @@
                                     </div>
                                     <select @bind="itemComponentType" class="form-control @theme.ThemeStyle">
                                         <option value="standard">Standard - User selects an option from a pre-defined list</option>
-                                        <option value="freetext">Free Form Text - User inputs custom value</option>
+                                        <option value="freetext">Free Form / Random</option>
                                     </select>
                                 </div>
                                 @if (itemComponentType == "freetext")
@@ -79,20 +79,20 @@
                                     <div class="card card-body @theme.ThemeStyle mb-3">
                                         <div>
                                             <div class="fw-bold">
-                                                Allow Random Value Generation
+                                                Generate Random Value
                                             </div>
                                             <div class="mb-3">
-                                                This setting allows the user to generate a random value for the component.
+                                                By default, Free Form allows any value. If enabled, this setting to generate a random value for the component.
                                             </div>
                                             <div>
                                                 <label class="switch" title="Allow Random Value Generation">
-                                                    <input type="checkbox" checked="@itemAllowRandom" @oninput='args => ComponentSettingChanged(args, "allowrandom")'>
+                                                    <input type="checkbox" checked="@itemEnforceRandom" @oninput='args => ComponentSettingChanged(args, "enforcerandom")'>
                                                     <span class="slider round"></span>
                                                 </label>
                                                 <span class="align-text-top"> Enable</span>
                                             </div>
                                         </div>
-                                        @if (itemAllowRandom)
+                                        @if (itemEnforceRandom)
                                         {
                                             <div class="mt-3">
                                                 <div class="fw-bold">
@@ -376,7 +376,7 @@
     private string itemComponentType = "standard";
     private bool itemIsFreeText = false;
     private bool itemOriginalStandard = false;
-    private bool itemAllowRandom = false;
+    private bool itemEnforceRandom = false;
     private bool itemAlphanumeric = true;
     private List<ResourceComponent> resourceComponents = new();
     private string optional = String.Empty;
@@ -409,7 +409,7 @@
                     itemComponentType = "freetext";
                 }
                 itemOriginalStandard = !resourceComponent.IsFreeText;
-                itemAllowRandom = resourceComponent.AllowRandom;
+                itemEnforceRandom = resourceComponent.EnforceRandom;
                 itemAlphanumeric = resourceComponent.Alphanumeric;
                 break;
             case "ResourceEnvironment":
@@ -506,7 +506,7 @@
                             {
                                 resourceComponent.IsFreeText = false;
                             }
-                            resourceComponent.AllowRandom = itemAllowRandom;
+                            resourceComponent.EnforceRandom = itemEnforceRandom;
                             resourceComponent.Alphanumeric = itemAlphanumeric;
                         }
                         else
@@ -803,7 +803,7 @@
     {
         if (GeneralHelper.IsNotNull(e.Value))
         {
-            itemAllowRandom = bool.Parse(e.Value.ToString()!);
+            itemEnforceRandom = bool.Parse(e.Value.ToString()!);
         }
     }
 
@@ -823,8 +823,8 @@
             {
                 switch (setting)
                 {
-                    case "allowrandom":
-                        itemAllowRandom = (bool)e.Value;
+                    case "enforcerandom":
+                        itemEnforceRandom = (bool)e.Value;
                         break;
                     case "alphanumeric":
                         itemAlphanumeric = (bool)e.Value;
