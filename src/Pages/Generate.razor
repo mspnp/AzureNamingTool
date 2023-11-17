@@ -411,7 +411,7 @@
                                                             }
                                                         </h5>
                                                         <div class="card card-body @theme.ThemeStyle">
-                                                            <input title="@resourceComponent.DisplayName" class="@GetControlStyle()" type="text" @onchange="@((ui) => { OnCustomComponentChanged(ui, GeneralHelper.NormalizeName(resourceComponent.Name, true));})" />
+                                                            <input title="@resourceComponent.DisplayName" readonly="@resourceComponent.EnforceRandom" class="@GetControlStyle()" type="text" value="@selectedCustomComponents[GeneralHelper.NormalizeName(resourceComponent.Name, true)]" @onchange="@((ui) => { OnCustomComponentChanged(ui, GeneralHelper.NormalizeName(resourceComponent.Name, true));})" />
                                                         </div>
                                                     </div>
                                                 }
@@ -520,6 +520,7 @@
     private ResourceType? currentResourceType = null;
     private List<string> multiselectedResourceTypes = new();
     private string currentuser = String.Empty;
+    //private Dictionary<string, string> customcomponentvalues = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -910,7 +911,14 @@
                     {
                         if (component.IsCustom)
                         {
-                            selectedCustomComponents.Add(GeneralHelper.NormalizeName(component.Name, true), String.Empty);
+                            if (component.EnforceRandom)
+                            {
+                                GenerateRandomValue(GeneralHelper.NormalizeName(component.Name, true), component.MaxLength, component.Alphanumeric);
+                            }
+                            else
+                            {
+                                selectedCustomComponents.Add(GeneralHelper.NormalizeName(component.Name, true), String.Empty);
+                            }
                         }
                     }
 
@@ -1174,6 +1182,12 @@
     private async Task OnExportGeneratedNames()
     {
         await JsRuntime.InvokeVoidAsync("htmlToCSV", "generatednames.csv", "generatednames");
+    }
+
+    private void GenerateRandomValue(string customcomponentname, string maxlength, bool alphanumeric)
+    {
+        string value = GeneralHelper.GenerateRandomString(Convert.ToInt32(maxlength), alphanumeric);
+        OnComponentChanged("cc", value, customcomponentname);
     }
 
     private void ResetForm(bool clearselection)

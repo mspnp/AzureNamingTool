@@ -16,5 +16,7 @@ namespace AzureNamingTool.Models
         public bool IsFreeText { get; set; } = false;
         public string MinLength { get; set; } = "1";
         public string MaxLength { get; set; } = "10";
+        public bool EnforceRandom { get; set; } = false;
+        public bool Alphanumeric { get; set; } = true;
     }
 }
