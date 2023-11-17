@@ -222,14 +222,33 @@
                                                                                 default:
                                                                                     if (resourceComponent.IsCustom)
                                                                                     {
-                                                                                        if (servicesData.CustomComponents!.Where(x => x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)).Count() > 0)
+                                                                                        @if (!resourceComponent.IsFreeText)
+                                                                                        {
+                                                                                            if (servicesData.CustomComponents!.Where(x => x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)).Count() > 0)
+                                                                                            {
+                                                                                                <tr>
+                                                                                                    <td class="align-top w-25">
+                                                                                                        @resourceComponent.Name:
+                                                                                                    </td>
+                                                                                                    <td style="word-wrap:anywhere;overflow-wrap:anywhere;white-space: normal;" class="align-top">
+                                                                                                        <span>
+                                                                                                            @servicesData.CustomComponents!.Where(x => x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)).FirstOrDefault()!.Name
+                                                                                                            (@servicesData.CustomComponents!.Where(x => x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)).FirstOrDefault()!.ShortName)
+                                                                                                        </span>
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                            }
+                                                                                        }
+                                                                                        else
                                                                                         {
                                                                                             <tr>
                                                                                                 <td class="align-top w-25">
                                                                                                     @resourceComponent.Name:
                                                                                                 </td>
                                                                                                 <td style="word-wrap:anywhere;overflow-wrap:anywhere;white-space: normal;" class="align-top">
-                                                                                                    @servicesData.CustomComponents!.Where(x=>x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)).FirstOrDefault()!.Name (@servicesData.CustomComponents!.Where(x=>x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)).FirstOrDefault()!.ShortName)
+                                                                                                    <span>
+                                                                                                        [Free Form / Random]
+                                                                                                    </span>
                                                                                                 </td>
                                                                                             </tr>
                                                                                         }
@@ -311,7 +330,7 @@
                                                                     </td>
                                                                 </tr>
                                                             }
-                                                @if (!String.IsNullOrEmpty(@resourcetype.InvalidCharacters))
+                                                            @if (!String.IsNullOrEmpty(@resourcetype.InvalidCharacters))
                                                             {
                                                                 <tr>
                                                                     <td class="align-top w-25">
@@ -421,53 +440,51 @@
                         {
                             name += resourceDelimiter!.Delimiter;
                         }
-                        if (resourceComponent.Name != "ResourceType" && resourceComponent.Name != "ResourceInstance")
+                        switch (resourceComponent.Name)
                         {
-                            switch (resourceComponent.Name)
-                            {
-                                case "ResourceEnvironment":
-                                    name += servicesData.ResourceEnvironments![0].ShortName;
-                                    break;
-                                case "ResourceFunction":
-                                    name += servicesData.ResourceFunctions![0].ShortName;
-                                    break;
-                                case "ResourceLocation":
-                                    name += servicesData.ResourceLocations![0].ShortName;
-                                    break;
-                                case "ResourceOrg":
-                                    name += servicesData.ResourceOrgs![0].ShortName;
-                                    break;
-                                case "ResourceProjAppSvc":
-                                    name += servicesData.ResourceProjAppSvcs![0].ShortName;
-                                    break;
-                                case "ResourceUnitDept":
-                                    name += servicesData.ResourceUnitDepts![0].ShortName;
-                                    break;
-                                default:
-                                    if (resourceComponent.IsCustom)
+                            case "ResourceEnvironment":
+                                name += servicesData.ResourceEnvironments![0].ShortName;
+                                break;
+                            case "ResourceFunction":
+                                name += servicesData.ResourceFunctions![0].ShortName;
+                                break;
+                            case "ResourceInstance":
+                                name += "1";
+                                break;
+                            case "ResourceLocation":
+                                name += servicesData.ResourceLocations![0].ShortName;
+                                break;
+                            case "ResourceOrg":
+                                name += servicesData.ResourceOrgs![0].ShortName;
+                                break;
+                            case "ResourceProjAppSvc":
+                                name += servicesData.ResourceProjAppSvcs![0].ShortName;
+                                break;
+                            case "ResourceType":
+                                name += shortName;
+                                break;
+                            case "ResourceUnitDept":
+                                name += servicesData.ResourceUnitDepts![0].ShortName;
+                                break;
+                            default:
+                                if (resourceComponent.IsCustom)
+                                {
+                                    if (!resourceComponent.IsFreeText)
                                     {
                                         if (servicesData.CustomComponents!.Where(x => x.ParentComponent == normalizedcomponentname).Count() > 0)
                                         {
                                             name += servicesData.CustomComponents!.Where(x => x.ParentComponent == normalizedcomponentname).FirstOrDefault()!.ShortName;
                                         }
                                     }
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            if (resourceComponent.Name != "ResourceInstance")
-                            {
-                                name += shortName;
-                            }
+                                    else
+                                    {
+                                        name += GeneralHelper.GenerateRandomString(Convert.ToInt32(resourceComponent.MaxLength), resourceComponent.Alphanumeric);
+                                    }
+                                }
+                                break;
                         }
                     }
                 }
-            }
-
-            if (name != "")
-            {
-                name += "1";
             }
 
             // Apply the regex to the generate name

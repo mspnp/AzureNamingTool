@@ -409,6 +409,10 @@
                                                             {
                                                                 @((MarkupString)optional)
                                                             }
+                                                            @if(resourceComponent.EnforceRandom)
+                                                            {
+                                                                <span class="fst-italic fw-normal"> - GENERATED</span>
+                                                            }
                                                         </h5>
                                                         <div class="card card-body @theme.ThemeStyle">
                                                             <input title="@resourceComponent.DisplayName" readonly="@resourceComponent.EnforceRandom" class="@GetControlStyle()" type="text" value="@selectedCustomComponents[GeneralHelper.NormalizeName(resourceComponent.Name, true)]" @onchange="@((ui) => { OnCustomComponentChanged(ui, GeneralHelper.NormalizeName(resourceComponent.Name, true));})" />
