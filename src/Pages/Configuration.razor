@@ -898,6 +898,14 @@
                                             </div>
                                             <div class="card card-body @theme.ThemeStyle">
                                                 <p>The current Locations.</p>
+                                                @if (admin)
+                                                {
+                                                    <p>
+                                                        <button type="button" class="btn btn-success" @onclick="@(e => FormAction("ResourceLocation",0,"add"))" title="Add Location">
+                                                            <span class="oi oi-plus" aria-hidden="true"></span> Add Location
+                                                        </button>
+                                                    </p>
+                                                }
                                                 <div class="table-responsive">
                                                     <table class="table @theme.ThemeStyle">
                                                         <thead>
@@ -943,6 +951,10 @@
                                                                                         <span class="oi oi-plus" aria-hidden="true"></span>
                                                                                     </button>
                                                                                 }
+                                                                                <span> </span>
+                                                                                <button type="button" class="btn btn-danger" @onclick="@(e => FormAction("ResourceLocation",item.Id,"delete"))" title="Delete">
+                                                                                    <span class="oi oi-x" aria-hidden="true"></span>
+                                                                                </button>
                                                                             }
                                                                         </td>
                                                                     }
@@ -955,37 +967,6 @@
                                         </div>
                                         @if (admin)
                                         {
-                                            @* <div class="card">
-                    <div class="card card-header bg-default" style="font-weight:bold;">
-                    New Location
-                    </div>
-                    <div class="card card-body">
-                    <p>Add a new Location.</p>
-                    <table class="table table-striped">
-                    <tbody>
-                    <tr>
-                    <td>Name</td>
-                    <td>
-                    <input class="form-control" type="text" value="@newLocationName" @onchange="@((ui) => { SetFormValue("newLocationName",(string)ui.Value);})" />
-                    </td>
-                    </tr>
-                    <tr>
-                    <td>Short Name</td>
-                    <td>
-                    <input class="form-control" type="text" value="@newLocationShortName" @onchange="@((ui) => { SetFormValue("newLocationShortName",(string)ui.Value);})" />
-                    </td>
-                    </tr>
-                    <tr>
-                    <td colspan="2">
-                    <button type="button" class="btn btn-success" @onclick="@(e => FormAction("ResourceLocation",0,"add"))" title="Add">
-                    <span class="oi oi-plus" aria-hidden="true"></span>
-                    </button>
-                    </td>
-                    </tr>
-                    </tbody>
-                    </table>
-                    </div>
-                    </div>*@
                                             <div class="card mb-3">
                                                 <div class="card-header bg-default text-dark">
                                                     <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#locationsconfig" role="button" aria-expanded="false" aria-controls="locationsconfig">
@@ -1035,6 +1016,12 @@
                                                                             </li>
                                                                         }
                                                                     </ul>
+                                                                    <div class="alert alert-warning" role="alert">
+                                                                        <div>
+                                                                            <span class="fw-bold">NOTE</span><br />
+                                                                            This action may result in duplicate locations if you have added a custom location that matches the incoming values.
+                                                                        </div>
+                                                                    </div>
                                                                 </p>
                                                                 <p>
                                                                     <button type="button" class="btn btn-success" @onclick=@(e => FormAction("ResourceLocation",0,"refresh")) title="Refresh">
@@ -1895,7 +1882,7 @@
     private bool versionalertshown = false;
     private bool dismissalert = false;
     private bool configurationfilealertshown = false;
-    private string appversion = Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
+    private string appversion = ConfigurationHelper.GetAssemblyVersion();
 
     public string filterData { get; set; } = String.Empty;
 
@@ -2802,6 +2789,22 @@
                                     {
                                         confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Location", "<p>Edit the Location.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceLocation", true);
                                         if (confirm)
+                                        {
+                                            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                                            state.SetNavReload(true);
+                                            StateHasChanged();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        generalerror = true;
+                                    }
+                                    break;
+                                case "add":
+                                    if (GeneralHelper.IsNotNull(thisresourceComponent))
+                                    {
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Location", "<p>Add a Location.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceLocation", admin, "");
+                                        if (response)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
                                             state.SetNavReload(true);
@@ -3974,10 +3977,8 @@
                     message.Type = MessageTypesEnum.ERROR;
                     message.Message = "There was a problem with the request.";
                 }
-                finally
-                {
-                    workingmodal.Close();
-                }
+
+                workingmodal.Close();
             }
 
             if (!generalerror)

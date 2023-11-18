@@ -50,7 +50,38 @@ namespace AzureNamingTool.Controllers
 
         // GET api/<CustomComponentsController>/sample
         /// <summary>
-        /// This function will return the custom components data for the specifc parent component type.
+        /// This function will return the custom components data for the specifc parent component id.
+        /// </summary>
+        /// <param name="parentcomponentid">int - Parent Component Id</param>
+        /// <returns>json - Current custom components data</returns>
+        [Route("[action]/{parentcomponentid}")]
+        [HttpGet]
+        public async Task<IActionResult> GetByParentComponentId(int parentcomponentid)
+        {
+            ServiceResponse serviceResponse = new();
+            try
+            {
+                // Get list of items
+                serviceResponse = await CustomComponentService.GetItemsByParentComponentId(parentcomponentid);
+                if (serviceResponse.Success)
+                {
+                    return Ok(serviceResponse.ResponseObject);
+                }
+                else
+                {
+                    return BadRequest(serviceResponse.ResponseObject);
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                return BadRequest(ex);
+            }
+        }
+
+        // GET api/<CustomComponentsController>/sample
+        /// <summary>
+        /// This function will return the custom components data for the specifc parent component type (name).
         /// </summary>
         /// <param name="parenttype">string - Parent Component Type Name</param>
         /// <returns>json - Current custom components data</returns>
@@ -284,8 +315,48 @@ namespace AzureNamingTool.Controllers
                     if (serviceResponse.Success)
                     {
                         AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Custom Component (" + item.Name + ") deleted." });
-                        CacheHelper.InvalidateCacheObject("GeneratedName");
+                        CacheHelper.InvalidateCacheObject("CustomComponent");
                         return Ok("Custom Component (" + item.Name + ") deleted.");
+                    }
+                    else
+                    {
+                        return BadRequest(serviceResponse.ResponseObject);
+                    }
+                }
+                else
+                {
+                    return BadRequest(serviceResponse.ResponseObject);
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                return BadRequest(ex);
+            }
+        }
+        // DELETE api/<CustomComponentsController>/5
+        /// <summary>
+        /// This function will delete the custom component data for the specifed parent component id.
+        /// </summary>
+        /// <param name="parentcomponentid">int - Parent component id</param>
+        /// <returns>bool - PASS/FAIL</returns>
+        [HttpDelete("[action]/{parentcomponentid}")]
+        public async Task<IActionResult> DeleteByParentComponentId(int parentcomponentid)
+        {
+            ServiceResponse serviceResponse = new();
+            try
+            {
+                // Get the item details
+                serviceResponse = await ResourceComponentService.GetItem(parentcomponentid);
+                if (serviceResponse.Success)
+                {
+                    var component = (ResourceComponent)serviceResponse.ResponseObject!;
+                    serviceResponse = await CustomComponentService.DeleteByParentComponentId(parentcomponentid);
+                    if (serviceResponse.Success)
+                    {
+                        AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Custom Component data for component (" + component.Name + ") deleted." });
+                        CacheHelper.InvalidateCacheObject("CustomComponent");
+                        return Ok("Custom Component data for component (" + component.Name + ") deleted.");
                     }
                     else
                     {

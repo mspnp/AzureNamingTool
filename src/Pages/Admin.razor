@@ -511,12 +511,8 @@
         currentuser = await IdentityHelper.GetCurrentUser(session);
         if (firstRender)
         {
-            // Get the version
-            if (GeneralHelper.IsNotNull(Assembly.GetEntryAssembly()))
-            {
-                appversion = Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
-                releasenotesurl = "https://github.com/mspnp/AzureNamingTool/wiki/v" + appversion;
-            }
+            appversion = ConfigurationHelper.GetAssemblyVersion();
+            releasenotesurl = "https://github.com/mspnp/AzureNamingTool/wiki/v" + appversion;
 
             servicesData = await ServicesHelper.LoadServicesData(servicesData, true);
             var result = await session.GetAsync<bool>("admin");
@@ -1031,4 +1027,4 @@
             await JsRuntime.InvokeVoidAsync("open", issueURL, "_blank");
         }
     }
-    }
+}
