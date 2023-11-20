@@ -33,6 +33,7 @@ namespace AzureNamingTool.Services
                 bool valid = true;
                 bool ignoredelimeter = false;
                 List<string[]> lstComponents = new();
+                bool previousdelimiterappliedafter = true;
 
                 // Get the specified resource type
                 //var resourceTypes = await ConfigurationHelper.GetList<ResourceType>();
@@ -94,7 +95,11 @@ namespace AzureNamingTool.Services
                                         {
                                             if (!String.IsNullOrEmpty(name))
                                             {
-                                                name += request.ResourceDelimiter.Delimiter;
+                                                // Check if the component should apply the delimiter
+                                                if ((component.ApplyDelimiterBefore) && (previousdelimiterappliedafter))
+                                                {
+                                                    name += request.ResourceDelimiter.Delimiter;
+                                                }
                                             }
                                         }
                                         else
@@ -110,7 +115,11 @@ namespace AzureNamingTool.Services
                                         // Deliemeter is valid so add it
                                         if (!String.IsNullOrEmpty(name))
                                         {
-                                            name += request.ResourceDelimiter.Delimiter;
+                                            // Check if the component should apply the delimiter
+                                            if ((component.ApplyDelimiterBefore) && (previousdelimiterappliedafter))
+                                            {
+                                                name += request.ResourceDelimiter.Delimiter;
+                                            }
                                         }
                                     }
                                 }
@@ -144,6 +153,7 @@ namespace AzureNamingTool.Services
                                 }
                             }
                         }
+                        previousdelimiterappliedafter = component.ApplyDelimiterAfter;
                     }
                 }
                 // Check if the required component were supplied
@@ -245,6 +255,7 @@ namespace AzureNamingTool.Services
                 ResourceType resourceType = new();
                 string name = "";
                 StringBuilder sbMessage = new();
+                bool previousdelimiterappliedafter = true;
 
                 // Get the current delimiter
                 serviceResponse = await ResourceDelimiterService.GetCurrentItem();
@@ -448,19 +459,22 @@ namespace AzureNamingTool.Services
                                                             }
                                                             break;
                                                     }
-                                                    //var items = await ConfigurationHelper.GetList<ResourceComponent>();
 
-                                                    // Check if the delimeter is already ignored
+                                                    // Check if the delimiter is already ignored
                                                     if ((!ignoredelimeter) && (!String.IsNullOrEmpty(resourceDelimiter.Delimiter)))
                                                     {
-                                                        // Check if delimeter is an invalid character
+                                                        // Check if delimiter is an invalid character
                                                         if (!String.IsNullOrEmpty(resourceType.InvalidCharacters))
                                                         {
                                                             if (!resourceType.InvalidCharacters.Contains(resourceDelimiter.Delimiter))
                                                             {
                                                                 if (name != "")
                                                                 {
-                                                                    name += resourceDelimiter.Delimiter;
+                                                                    // Check if the component should apply the delimiter
+                                                                    if ((component.ApplyDelimiterBefore) && (previousdelimiterappliedafter))
+                                                                    {
+                                                                        name += resourceDelimiter.Delimiter;
+                                                                    }
                                                                 }
                                                             }
                                                             else
@@ -472,10 +486,14 @@ namespace AzureNamingTool.Services
                                                         }
                                                         else
                                                         {
-                                                            // Deliemeter is valid so add it
+                                                            // Delimiter is valid so add it
                                                             if (!String.IsNullOrEmpty(name))
                                                             {
-                                                                name += resourceDelimiter.Delimiter;
+                                                                // Check if the component should apply the delimiter
+                                                                if ((component.ApplyDelimiterBefore) && (previousdelimiterappliedafter))
+                                                                {
+                                                                    name += resourceDelimiter.Delimiter;
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -622,7 +640,6 @@ namespace AzureNamingTool.Services
                                                     // Check if the custom compoment value was provided in the request
                                                     if (request.CustomComponents.ContainsKey(normalizedcomponentname))
                                                     {
-
                                                         // Get the value from the provided custom components
                                                         var componentvalue = request.CustomComponents[normalizedcomponentname];
                                                         if (!GeneralHelper.IsNotNull(componentvalue))
@@ -641,7 +658,11 @@ namespace AzureNamingTool.Services
                                                             {
                                                                 if (!String.IsNullOrEmpty(name))
                                                                 {
-                                                                    name += resourceDelimiter.Delimiter;
+                                                                    // Check if the component should apply the delimiter
+                                                                    if ((component.ApplyDelimiterBefore) && (previousdelimiterappliedafter))
+                                                                    {
+                                                                        name += resourceDelimiter.Delimiter;
+                                                                    }
                                                                 }
 
                                                                 name += componentvalue;
@@ -682,6 +703,8 @@ namespace AzureNamingTool.Services
                                             }
                                         }
                                     }
+                                    // Set the previous apply deimiter flag
+                                    previousdelimiterappliedafter = component.ApplyDelimiterAfter;
                                 }
                             }
                         }
