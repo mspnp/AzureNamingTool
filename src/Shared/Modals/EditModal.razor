@@ -177,6 +177,24 @@
                                     </div>
                                 </div>
                             }
+                            if(type == "ResourceType")
+                            {
+                                <div class="mb-3">
+                                    <div class="fw-bold">
+                                        Apply Delimiter
+                                    </div>
+                                    <div class="mb-3">
+                                        If disabled, the current delimiter will not be used for name generation.
+                                    </div>
+                                    <div>
+                                        <label class="switch" title="Apply Delimiter">
+                                            <input type="checkbox" checked="@itemApplyDelimiter" @oninput='args => ComponentSettingChanged(args, "applydelimiter")'>
+                                            <span class="slider round"></span>
+                                        </label>
+                                        <span class="align-text-top"> Enable</span>
+                                    </div>
+                                </div>                                
+                            }
                         }
                         else
                         {
@@ -411,8 +429,9 @@
     private bool itemOriginalStandard = false;
     private bool itemEnforceRandom = false;
     private bool itemAlphanumeric = true;
-    private bool itemApplyDelimiterBefore = true;
-    private bool itemApplyDelimiterAfter = true;
+    private bool itemApplyDelimiterBefore = true;  // Used to determine if the delimiter will be added before the component
+    private bool itemApplyDelimiterAfter = true;   // Used to determine if the delimiter will be added after the component
+    private bool itemApplyDelimiter = true; // Used to determine if the delimiter is applied to the resource type (all components)
     private List<ResourceComponent> resourceComponents = new();
     private string optional = String.Empty;
     private string exclude = String.Empty;
@@ -481,6 +500,7 @@
                 itemMinLengthOriginal = itemMinLength;
                 itemMaxLength = resourceType.LengthMax;
                 itemMaxLengthOriginal = itemMaxLength;
+                itemApplyDelimiter = resourceType.ApplyDelimiter;
                 resourceComponents = servicesData.ResourceComponents!.OrderBy(x => x.Name).ToList();
                 break;
             case "ResourceUnitDept":
@@ -622,6 +642,7 @@
                                 resourceType.ShortName = itemShortName;
                                 resourceType.Optional = "";
                                 resourceType.Exclude = "";
+                                resourceType.ApplyDelimiter = itemApplyDelimiter;
                                 if (!String.IsNullOrEmpty(itemMinLength.ToString()))
                                 {
                                     if (ValidationHelper.CheckNumeric(itemMinLength.ToString()))
@@ -873,6 +894,9 @@
                         break;
                     case "applydelimiterafter":
                         itemApplyDelimiterAfter = (bool)e.Value;
+                        break;
+                    case "applydelimiter":
+                        itemApplyDelimiter = (bool)e.Value;
                         break;
                 }
             }
