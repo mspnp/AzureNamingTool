@@ -228,6 +228,24 @@
                                         <input title="Maximum Length" value="@itemMaxLength" type="text" disabled class="form-control @theme.ThemeStyle" id="maxlength" @onchange="@((ui) => { itemMaxLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
                                     </div>
                                 </div>
+                                <div class="mb-3">
+                                    <div class="fw-bold">
+                                        Apply Delimiter
+                                    </div>
+                                    <div class="mb-3">
+                                        If disabled, the current delimiter will not be used for name generation.
+                                    </div>
+                                    <div>
+                                        @if (itemApplyDelimiter)
+                                        {
+                                         <span class="fst-italic">ENABLED</span>   
+                                        }
+                                        else
+                                        {
+                                            <span class="fst-italic">DISABLED</span>
+                                        }
+                                    </div>
+                                </div>
                             }
                         }
                     </div>
