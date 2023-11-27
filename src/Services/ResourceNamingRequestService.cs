@@ -562,10 +562,10 @@ namespace AzureNamingTool.Services
                                                                 if (GeneralHelper.IsNotNull(request.CustomComponents))
                                                                 {
                                                                     // Check if the custom compoment value was provided in the request
-                                                                    if (request.CustomComponents.ContainsKey(normalizedcomponentname))
+                                                                    if (request.CustomComponents.TryGetValue(normalizedcomponentname, out string? value))
                                                                     {
                                                                         // Get the value from the provided custom components
-                                                                        var componentvalue = request.CustomComponents[normalizedcomponentname];
+                                                                        var componentvalue = value;
                                                                         if (!GeneralHelper.IsNotNull(componentvalue))
                                                                         {
                                                                             // Check if the prop is optional
@@ -650,10 +650,10 @@ namespace AzureNamingTool.Services
                                                 if (GeneralHelper.IsNotNull(request.CustomComponents))
                                                 {
                                                     // Check if the custom compoment value was provided in the request
-                                                    if (request.CustomComponents.ContainsKey(normalizedcomponentname))
+                                                    if (request.CustomComponents.TryGetValue(normalizedcomponentname, out string? value))
                                                     {
                                                         // Get the value from the provided custom components
-                                                        var componentvalue = request.CustomComponents[normalizedcomponentname];
+                                                        var componentvalue = value;
                                                         if (!GeneralHelper.IsNotNull(componentvalue))
                                                         {
                                                             // Check if the prop is optional
