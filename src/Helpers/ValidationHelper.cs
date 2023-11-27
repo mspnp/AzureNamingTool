@@ -104,7 +104,7 @@ namespace AzureNamingTool.Helpers
                         }
                         else
                         {
-                            sbMessage.Append("The specified delimiter is not allowed for this resource type and has been removed.");
+                            sbMessage.Append("The specified delimiter was removed. This is often caused by the length of the name exceeding the max length and the delimiter removed to shorten the value.");
                             sbMessage.Append(Environment.NewLine);
                         }
                     }
