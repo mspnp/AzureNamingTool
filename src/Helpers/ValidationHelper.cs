@@ -251,5 +251,18 @@ namespace AzureNamingTool.Helpers
             Match match = regx.Match(value);
             return match.Success;
         }
+
+        public static bool CheckComponentLength(ResourceComponent component, string value)
+        {
+            // Check if the component value length is valid
+            if ((value.Length < int.Parse(component.MinLength)) || (value.Length > int.Parse(component.MaxLength)))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
     }
 }

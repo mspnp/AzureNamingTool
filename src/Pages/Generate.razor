@@ -409,7 +409,7 @@
                                                             {
                                                                 @((MarkupString)optional)
                                                             }
-                                                            @if(resourceComponent.EnforceRandom)
+                                                            @if (resourceComponent.EnforceRandom)
                                                             {
                                                                 <span class="fst-italic fw-normal"> - GENERATED</span>
                                                             }
@@ -1034,6 +1034,14 @@
                                     {
                                         boolFormDisabled = true;
                                     }
+                                    else
+                                    {
+                                        // Check of the component value length is valid
+                                        if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceEnvironment))
+                                        {
+                                            boolFormDisabled = true;
+                                        }
+                                    }
                                     break;
 
                                 case "ResourceInstance":
@@ -1041,11 +1049,27 @@
                                     {
                                         boolFormDisabled = true;
                                     }
+                                    else
+                                    {
+                                        // Check of the component value length is valid
+                                        if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceInstance))
+                                        {
+                                            boolFormDisabled = true;
+                                        }
+                                    }
                                     break;
                                 case "ResourceLocation":
                                     if (String.IsNullOrEmpty(selectedResourceLocation))
                                     {
                                         boolFormDisabled = true;
+                                    }
+                                    else
+                                    {
+                                        // Check of the component value length is valid
+                                        if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceLocation))
+                                        {
+                                            boolFormDisabled = true;
+                                        }
                                     }
                                     break;
                                 case "ResourceOrg":
@@ -1053,11 +1077,27 @@
                                     {
                                         boolFormDisabled = true;
                                     }
+                                    else
+                                    {
+                                        // Check of the component value length is valid
+                                        if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceOrg))
+                                        {
+                                            boolFormDisabled = true;
+                                        }
+                                    }
                                     break;
                                 case "ResourceProjAppSvc":
                                     if (String.IsNullOrEmpty(selectedResourceProjAppSvc))
                                     {
                                         boolFormDisabled = true;
+                                    }
+                                    else
+                                    {
+                                        // Check of the component value length is valid
+                                        if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceProjAppSvc))
+                                        {
+                                            boolFormDisabled = true;
+                                        }
                                     }
                                     break;
                                 case "ResourceUnitDept":
@@ -1065,11 +1105,27 @@
                                     {
                                         boolFormDisabled = true;
                                     }
+                                    else
+                                    {
+                                        // Check of the component value length is valid
+                                        if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceUnitDept))
+                                        {
+                                            boolFormDisabled = true;
+                                        }
+                                    }
                                     break;
                                 case "ResourceFunction":
                                     if (String.IsNullOrEmpty(selectedResourceFunction))
                                     {
                                         boolFormDisabled = true;
+                                    }
+                                    else
+                                    {
+                                        // Check of the component value length is valid
+                                        if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceFunction))
+                                        {
+                                            boolFormDisabled = true;
+                                        }
                                     }
                                     break;
                                 default:
@@ -1084,6 +1140,14 @@
                                                 {
                                                     boolFormDisabled = true;
                                                 }
+                                                else
+                                                {
+                                                    // Check of the component value length is valid
+                                                    if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedCustomComponents[nomalizedcomponentname]))
+                                                    {
+                                                        boolFormDisabled = true;
+                                                    }
+                                                }
                                             }
                                         }
                                         else
@@ -1092,6 +1156,14 @@
                                             if (String.IsNullOrEmpty(selectedCustomComponents[nomalizedcomponentname]))
                                             {
                                                 boolFormDisabled = true;
+                                            }
+                                            else
+                                            {
+                                                // Check of the component value length is valid
+                                                if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedCustomComponents[nomalizedcomponentname]))
+                                                {
+                                                    boolFormDisabled = true;
+                                                }
                                             }
                                         }
                                     }
@@ -1110,6 +1182,14 @@
                             {
                                 boolFormDisabled = true;
                             }
+                            else
+                            {
+                                // Check of the component value length is valid
+                                if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceEnvironment))
+                                {
+                                    boolFormDisabled = true;
+                                }
+                            }
                             break;
 
                         case "ResourceInstance":
@@ -1117,11 +1197,27 @@
                             {
                                 boolFormDisabled = true;
                             }
+                            else
+                            {
+                                // Check of the component value length is valid
+                                if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceInstance))
+                                {
+                                    boolFormDisabled = true;
+                                }
+                            }
                             break;
                         case "ResourceLocation":
                             if (String.IsNullOrEmpty(selectedResourceLocation))
                             {
                                 boolFormDisabled = true;
+                            }
+                            else
+                            {
+                                // Check of the component value length is valid
+                                if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceLocation))
+                                {
+                                    boolFormDisabled = true;
+                                }
                             }
                             break;
                         case "ResourceOrg":
@@ -1129,11 +1225,27 @@
                             {
                                 boolFormDisabled = true;
                             }
+                            else
+                            {
+                                // Check of the component value length is valid
+                                if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceOrg))
+                                {
+                                    boolFormDisabled = true;
+                                }
+                            }
                             break;
                         case "ResourceProjAppSvc":
                             if (String.IsNullOrEmpty(selectedResourceProjAppSvc))
                             {
                                 boolFormDisabled = true;
+                            }
+                            else
+                            {
+                                // Check of the component value length is valid
+                                if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceProjAppSvc))
+                                {
+                                    boolFormDisabled = true;
+                                }
                             }
                             break;
                         case "ResourceUnitDept":
@@ -1141,11 +1253,27 @@
                             {
                                 boolFormDisabled = true;
                             }
+                            else
+                            {
+                                // Check of the component value length is valid
+                                if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceUnitDept))
+                                {
+                                    boolFormDisabled = true;
+                                }
+                            }
                             break;
                         case "ResourceFunction":
                             if (String.IsNullOrEmpty(selectedResourceFunction))
                             {
                                 boolFormDisabled = true;
+                            }
+                            else
+                            {
+                                // Check of the component value length is valid
+                                if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceFunction))
+                                {
+                                    boolFormDisabled = true;
+                                }
                             }
                             break;
                         default:
@@ -1161,6 +1289,14 @@
                                             if (String.IsNullOrEmpty(selectedCustomComponents[nomalizedcomponentname]))
                                             {
                                                 boolFormDisabled = true;
+                                            }
+                                            else
+                                            {
+                                                // Check of the component value length is valid
+                                                if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedCustomComponents[nomalizedcomponentname]))
+                                                {
+                                                    boolFormDisabled = true;
+                                                }
                                             }
                                         }
                                     }
