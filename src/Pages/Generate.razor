@@ -273,6 +273,14 @@
                                             <div class="card @theme.ThemeStyle mb-3">
                                                 <h5 class="card-header text-white bg-secondary">
                                                     @resourceComponent.DisplayName
+                                                    @if (int.Parse(resourceComponent.MinLength) == int.Parse(resourceComponent.MaxLength))
+                                                    {
+                                                        <span> (@resourceComponent.MinLength digits) </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>(@resourceComponent.MinLength - @resourceComponent.MaxLength digits) </span>
+                                                    }
                                                     @if (((selectedResourceTypeOptional.ToLower().Split(',').Contains("instance")) && (multiselectedResourceTypes.Count == 0)))
                                                     {
                                                         @((MarkupString)optional)
@@ -405,6 +413,14 @@
                                                     <div class="card @theme.ThemeStyle mb-3">
                                                         <h5 class="card-header text-white bg-secondary">
                                                             @resourceComponent.Name
+                                                            @if (int.Parse(resourceComponent.MinLength) == int.Parse(resourceComponent.MaxLength))
+                                                            {
+                                                                <span> (@resourceComponent.MinLength characters) </span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span> (@resourceComponent.MinLength - @resourceComponent.MaxLength characters) </span>
+                                                            }
                                                             @if (((selectedResourceTypeOptional.ToLower().Split(',').Contains(GeneralHelper.NormalizeName(resourceComponent.Name, true))) && (multiselectedResourceTypes.Count == 0)))
                                                             {
                                                                 @((MarkupString)optional)
@@ -433,17 +449,17 @@
                     @resourceDelimiter.Name: @resourceDelimiter.Delimiter
                     </div>
                     </div>*@
-                            @if(validationErrors.Count > 0)
+                            @if (validationErrors.Count > 0)
                             {
-                            <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
-                                <h4>NOTE</h4>
-                                <ul>
-                                    @foreach (string validationError in validationErrors)
-                                    {
-                                        <li>@validationError</li>
-                                    }
-                                </ul>
-                            </div>
+                                <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
+                                    <h4>NOTE</h4>
+                                    <ul>
+                                        @foreach (string validationError in validationErrors)
+                                        {
+                                            <li>@validationError</li>
+                                        }
+                                    </ul>
+                                </div>
                             }
                             <div class="mb-3">
                                 <br />
@@ -528,7 +544,7 @@
     private string componentsVisible = "collapse in";
     private string resourcetypeVisible = "";
     private string resourcetypesVisible = "collapse";
-    private string optional = " (OPTIONAL)";
+    private string optional = " <span class=\"fst-italic\">** OPTIONAL **</span>";
     private string[] filteredscopes = new string[] { "resource group", "resource group & region", "region", "global", "subscription", "tenant" };
     private ResourceNameRequest resourceNameRequest = new();
     private ResourceNameResponse resourceNameRequestResponse = new();
@@ -829,6 +845,7 @@
                                     await OnTypeChanged(currentmultiresourcertype.Resource);
                                 }
                                 componentsVisible = "";
+                                optional = String.Empty;
                             }
                             else
                             {
@@ -1348,6 +1365,24 @@
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    // Make sure each component has a value
+                                    if (String.IsNullOrEmpty(selectedCustomComponents[nomalizedcomponentname]))
+                                    {
+                                        validationErrors.Add(resourceComponent.Name + " component is required.");
+                                        boolFormDisabled = true;
+                                    }
+                                    else
+                                    {
+                                        // Check of the component value length is valid
+                                        if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedCustomComponents[nomalizedcomponentname]))
+                                        {
+                                            validationErrors.Add(resourceComponent.Name + " component length is not valid.");
+                                            boolFormDisabled = true;
+                                        }
+                                    }
+                                }
                             }
                             break;
                     }
@@ -1391,5 +1426,6 @@
         {
             multiselectedResourceTypes.Clear();
         }
+        optional = " <span class=\"fst-italic\">** OPTIONAL **</span>";
     }
 }
