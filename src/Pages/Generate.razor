@@ -77,7 +77,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="generateselect" id="multiselect" value="multi" @onclick="@(e => OnGenerateModeChange("multi"))">
                                 <label class="form-check-label" for="multiselect">
-                                    <span class="fw-bold">Generate Multiple Resource Type Names</span><br />This option will allow the generatation of names for multiple resource types using the selected components. <span class="warning-message">All components will be required.</span>
+                                    <span class="fw-bold">Generate Multiple Resource Type Names</span><br />This option will allow the generatation of names for multiple resource types using the selected components. <span class="warning-message">All components will be required (Optional and Excluded Components).</span>
                                 </label>
                             </div>
                         </div>
@@ -1205,6 +1205,124 @@
                                                 boolFormDisabled = true;
                                             }
                                             else
+                                            {
+                                                // Check of the component value length is valid
+                                                if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedCustomComponents[nomalizedcomponentname]))
+                                                {
+                                                    validationErrors.Add(resourceComponent.Name + " component length is not valid.");
+                                                    boolFormDisabled = true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            switch (resourceComponent.Name)
+                            {
+                                case "ResourceEnvironment":
+                                    if (!String.IsNullOrEmpty(selectedResourceEnvironment))
+                                    {
+                                        // Check of the component value length is valid
+                                        if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceEnvironment))
+                                        {
+                                            validationErrors.Add("Environment component length is not valid.");
+                                            boolFormDisabled = true;
+                                        }
+                                    }
+                                    break;
+
+                                case "ResourceInstance":
+                                    if (!String.IsNullOrEmpty(selectedResourceInstance))
+                                    {
+                                        // Check of the component value length is valid
+                                        if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceInstance))
+                                        {
+                                            validationErrors.Add("Instance component length is not valid.");
+                                            boolFormDisabled = true;
+                                        }
+                                    }
+                                    break;
+                                case "ResourceLocation":
+                                    if (!String.IsNullOrEmpty(selectedResourceLocation))
+                                    {
+                                        // Check of the component value length is valid
+                                        if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceLocation))
+                                        {
+                                            validationErrors.Add("Location component length is not valid.");
+                                            boolFormDisabled = true;
+                                        }
+                                    }
+                                    break;
+                                case "ResourceOrg":
+                                    if (!String.IsNullOrEmpty(selectedResourceOrg))
+                                    {
+                                        // Check of the component value length is valid
+                                        if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceOrg))
+                                        {
+                                            validationErrors.Add("Org component length is not valid.");
+                                            boolFormDisabled = true;
+                                        }
+                                    }
+                                    break;
+                                case "ResourceProjAppSvc":
+                                    if (!String.IsNullOrEmpty(selectedResourceProjAppSvc))
+                                    {
+                                        // Check of the component value length is valid
+                                        if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceProjAppSvc))
+                                        {
+                                            validationErrors.Add("Project/App/Service component length is not valid.");
+                                            boolFormDisabled = true;
+                                        }
+                                    }
+                                    break;
+                                case "ResourceUnitDept":
+                                    if (!String.IsNullOrEmpty(selectedResourceUnitDept))
+                                    {
+                                        // Check of the component value length is valid
+                                        if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceUnitDept))
+                                        {
+                                            validationErrors.Add("Unit/Dept component length is not valid.");
+                                            boolFormDisabled = true;
+                                        }
+                                    }
+                                    break;
+                                case "ResourceFunction":
+                                    if (!String.IsNullOrEmpty(selectedResourceFunction))
+                                    {
+                                        // Check of the component value length is valid
+                                        if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedResourceFunction))
+                                        {
+                                            validationErrors.Add("Function component length is not valid.");
+                                            boolFormDisabled = true;
+                                        }
+                                    }
+                                    break;
+                                default:
+                                    if (resourceComponent.IsCustom)
+                                    {
+                                        if (!resourceComponent.IsFreeText)
+                                        {
+                                            if (servicesData.CustomComponents!.Where(x => x.ParentComponent == nomalizedcomponentname).Count() > 0)
+                                            {
+                                                // Make sure each component has a value
+                                                if (!String.IsNullOrEmpty(selectedCustomComponents[nomalizedcomponentname]))
+                                                {
+                                                    // Check of the component value length is valid
+                                                    if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedCustomComponents[nomalizedcomponentname]))
+                                                    {
+                                                        validationErrors.Add(resourceComponent.Name + " component length is not valid.");
+                                                        boolFormDisabled = true;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // Make sure each component has a value
+                                            if (!String.IsNullOrEmpty(selectedCustomComponents[nomalizedcomponentname]))
                                             {
                                                 // Check of the component value length is valid
                                                 if (!ValidationHelper.CheckComponentLength(resourceComponent, selectedCustomComponents[nomalizedcomponentname]))
