@@ -144,6 +144,57 @@
                                     <input title="Maximum Length" value="@itemMaxLength" type="text" class="form-control @theme.ThemeStyle" id="maxlength" @onchange="@((ui) => { itemMaxLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
                                 </div>
                             </div>
+                            @if (type == "ResourceComponent")
+                            {
+                                <div class="mb-3">
+                                    <div class="fw-bold">
+                                        Apply Delimiter Before
+                                    </div>
+                                    <div class="mb-3">
+                                        If disabled, this setting will not add the current delimiter BEFORE the component value.
+                                    </div>
+                                    <div>
+                                        <label class="switch" title="Apply Delimiter">
+                                            <input type="checkbox" checked="@itemApplyDelimiterBefore" @oninput='args => ComponentSettingChanged(args, "applydelimiterbefore")'>
+                                            <span class="slider round"></span>
+                                        </label>
+                                        <span class="align-text-top"> Enable</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="fw-bold">
+                                        Apply Delimiter After
+                                    </div>
+                                    <div class="mb-3">
+                                        If disabled, this setting will not add the current delimiter AFTER the component value.
+                                    </div>
+                                    <div>
+                                        <label class="switch" title="Apply Delimiter">
+                                            <input type="checkbox" checked="@itemApplyDelimiterAfter" @oninput='args => ComponentSettingChanged(args, "applydelimiterafter")'>
+                                            <span class="slider round"></span>
+                                        </label>
+                                        <span class="align-text-top"> Enable</span>
+                                    </div>
+                                </div>
+                            }
+                            if(type == "ResourceType")
+                            {
+                                <div class="mb-3">
+                                    <div class="fw-bold">
+                                        Apply Delimiter
+                                    </div>
+                                    <div class="mb-3">
+                                        If disabled, the current delimiter will not be used for name generation.
+                                    </div>
+                                    <div>
+                                        <label class="switch" title="Apply Delimiter">
+                                            <input type="checkbox" checked="@itemApplyDelimiter" @oninput='args => ComponentSettingChanged(args, "applydelimiter")'>
+                                            <span class="slider round"></span>
+                                        </label>
+                                        <span class="align-text-top"> Enable</span>
+                                    </div>
+                                </div>                                
+                            }
                         }
                         else
                         {
@@ -175,6 +226,24 @@
                                     </div>
                                     <div>
                                         <input title="Maximum Length" value="@itemMaxLength" type="text" disabled class="form-control @theme.ThemeStyle" id="maxlength" @onchange="@((ui) => { itemMaxLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="fw-bold">
+                                        Apply Delimiter
+                                    </div>
+                                    <div class="mb-3">
+                                        If disabled, the current delimiter will not be used for name generation.
+                                    </div>
+                                    <div>
+                                        @if (itemApplyDelimiter)
+                                        {
+                                         <span class="fst-italic">ENABLED</span>   
+                                        }
+                                        else
+                                        {
+                                            <span class="fst-italic">DISABLED</span>
+                                        }
                                     </div>
                                 </div>
                             }
@@ -378,6 +447,9 @@
     private bool itemOriginalStandard = false;
     private bool itemEnforceRandom = false;
     private bool itemAlphanumeric = true;
+    private bool itemApplyDelimiterBefore = true;  // Used to determine if the delimiter will be added before the component
+    private bool itemApplyDelimiterAfter = true;   // Used to determine if the delimiter will be added after the component
+    private bool itemApplyDelimiter = true; // Used to determine if the delimiter is applied to the resource type (all components)
     private List<ResourceComponent> resourceComponents = new();
     private string optional = String.Empty;
     private string exclude = String.Empty;
@@ -411,6 +483,8 @@
                 itemOriginalStandard = !resourceComponent.IsFreeText;
                 itemEnforceRandom = resourceComponent.EnforceRandom;
                 itemAlphanumeric = resourceComponent.Alphanumeric;
+                itemApplyDelimiterBefore = resourceComponent.ApplyDelimiterBefore;
+                itemApplyDelimiterAfter = resourceComponent.ApplyDelimiterAfter;
                 break;
             case "ResourceEnvironment":
                 ResourceEnvironment resourceEnvironment = servicesData.ResourceEnvironments!.Find(x => x.Id == id)!;
@@ -444,6 +518,7 @@
                 itemMinLengthOriginal = itemMinLength;
                 itemMaxLength = resourceType.LengthMax;
                 itemMaxLengthOriginal = itemMaxLength;
+                itemApplyDelimiter = resourceType.ApplyDelimiter;
                 resourceComponents = servicesData.ResourceComponents!.OrderBy(x => x.Name).ToList();
                 break;
             case "ResourceUnitDept":
@@ -515,6 +590,8 @@
                         }
                         resourceComponent.MinLength = itemMinLength;
                         resourceComponent.MaxLength = itemMaxLength;
+                        resourceComponent.ApplyDelimiterBefore = itemApplyDelimiterBefore;
+                        resourceComponent.ApplyDelimiterAfter = itemApplyDelimiterAfter;
 
                         // Check if the user is changing from Standard to Free Text.
                         if ((itemOriginalStandard) && (resourceComponent.IsFreeText))
@@ -583,6 +660,7 @@
                                 resourceType.ShortName = itemShortName;
                                 resourceType.Optional = "";
                                 resourceType.Exclude = "";
+                                resourceType.ApplyDelimiter = itemApplyDelimiter;
                                 if (!String.IsNullOrEmpty(itemMinLength.ToString()))
                                 {
                                     if (ValidationHelper.CheckNumeric(itemMinLength.ToString()))
@@ -828,6 +906,15 @@
                         break;
                     case "alphanumeric":
                         itemAlphanumeric = (bool)e.Value;
+                        break;
+                    case "applydelimiterbefore":
+                        itemApplyDelimiterBefore = (bool)e.Value;
+                        break;
+                    case "applydelimiterafter":
+                        itemApplyDelimiterAfter = (bool)e.Value;
+                        break;
+                    case "applydelimiter":
+                        itemApplyDelimiter = (bool)e.Value;
                         break;
                 }
             }

@@ -95,6 +95,36 @@
                                             <input title="Maximum Length" value="@itemMaxLength" type="text" class="form-control @theme.ThemeStyle" id="maxlength" @onchange="@((ui) => { itemMaxLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
                                         </div>
                                     </div>
+                                    <div class="mb-3">
+                                        <div class="fw-bold">
+                                            Apply Before
+                                        </div>
+                                        <div class="mb-3">
+                                            If disabled, this setting will not add the current delimiter BEFORE the component value.
+                                        </div>
+                                        <div>
+                                            <label class="switch" title="Apply Delimiter">
+                                                <input type="checkbox" checked="@itemApplyDelimiterBefore" @oninput='args => ComponentSettingChanged(args, "applydelimiterbefore")'>
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span class="align-text-top"> Enable</span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="fw-bold">
+                                            Apply Delimiter After
+                                        </div>
+                                        <div class="mb-3">
+                                            If disabled, this setting will not add the current delimiter AFTER the component value.
+                                        </div>
+                                        <div>
+                                            <label class="switch" title="Apply Delimiter">
+                                                <input type="checkbox" checked="@itemApplyDelimiterAfter" @oninput='args => ComponentSettingChanged(args, "applydelimiterafter")'>
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span class="align-text-top"> Enable</span>
+                                        </div>
+                                    </div>
                                 </div>
                                 break;
                             case "AdminUser":
@@ -142,6 +172,8 @@
     private bool itemEnforceRandom = false;
     private bool itemAlphanumeric = true;
     private bool itemIsFreeText = false;
+    private bool itemApplyDelimiterBefore = true;
+    private bool itemApplyDelimiterAfter = true;
     private string currentuser = String.Empty;
 
     protected override async void OnInitialized()
@@ -187,7 +219,9 @@
                                     MinLength = itemMinLength,
                                     MaxLength = itemMaxLength,
                                     EnforceRandom = itemEnforceRandom,
-                                    Alphanumeric = itemAlphanumeric
+                                    Alphanumeric = itemAlphanumeric,
+                                    ApplyDelimiterBefore = itemApplyDelimiterBefore,
+                                    ApplyDelimiterAfter = itemApplyDelimiterAfter
                                 };
                             serviceResponse = await ResourceComponentService.PostItem(resourceComponent);
                         }
@@ -423,6 +457,12 @@
                         break;
                     case "alphanumeric":
                         itemAlphanumeric = (bool)e.Value;
+                        break;
+                    case "applydelimiterbefore":
+                        itemApplyDelimiterBefore = (bool)e.Value;
+                        break;
+                    case "applydelimiterafter":
+                        itemApplyDelimiterAfter = (bool)e.Value;
                         break;
                 }
             }

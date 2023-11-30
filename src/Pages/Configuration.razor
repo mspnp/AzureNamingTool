@@ -3153,7 +3153,7 @@
                                 case "edit":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Org", "<p>Edit the Project/App/Service.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceProjAppSvc", false);
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Project/App/Service", "<p>Edit the Project/App/Service.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceProjAppSvc", false);
                                         if (confirm)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
