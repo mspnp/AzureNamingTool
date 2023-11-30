@@ -104,7 +104,7 @@ namespace AzureNamingTool.Helpers
                         }
                         else
                         {
-                            sbMessage.Append("The specified delimiter is not allowed for this resource type and has been removed.");
+                            sbMessage.Append("The specified delimiter was removed. This is often caused by the length of the name exceeding the max length and the delimiter removed to shorten the value or the delimiter is not an allowed character for the resoure type.");
                             sbMessage.Append(Environment.NewLine);
                         }
                     }
@@ -250,6 +250,19 @@ namespace AzureNamingTool.Helpers
             Regex regx = new("^[a-zA-Z0-9]+$");
             Match match = regx.Match(value);
             return match.Success;
+        }
+
+        public static bool CheckComponentLength(ResourceComponent component, string value)
+        {
+            // Check if the component value length is valid
+            if ((value.Length < int.Parse(component.MinLength)) || (value.Length > int.Parse(component.MaxLength)))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }
