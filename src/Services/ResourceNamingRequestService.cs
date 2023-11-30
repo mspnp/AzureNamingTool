@@ -321,7 +321,6 @@ namespace AzureNamingTool.Services
                         {
                             // Set the resource type ot the first value
                             resourceType = resourceTypesByShortName[0];
-                            applyDelimiter = resourceType.ApplyDelimiter;
                         }
                     }
 
@@ -482,7 +481,7 @@ namespace AzureNamingTool.Services
                                                                     if (name != "")
                                                                     {
                                                                         // Check if the component should apply the delimiter
-                                                                        if ((component.ApplyDelimiterBefore) && (previousdelimiterappliedafter) && (applyDelimiter))
+                                                                        if ((component.ApplyDelimiterBefore) && (previousdelimiterappliedafter) && (resourceType.ApplyDelimiter))
                                                                         {
                                                                             name += resourceDelimiter.Delimiter;
                                                                         }
@@ -501,7 +500,7 @@ namespace AzureNamingTool.Services
                                                                 if (!String.IsNullOrEmpty(name))
                                                                 {
                                                                     // Check if the component should apply the delimiter
-                                                                    if ((component.ApplyDelimiterBefore) && (previousdelimiterappliedafter) && (applyDelimiter))
+                                                                    if ((component.ApplyDelimiterBefore) && (previousdelimiterappliedafter) && (resourceType.ApplyDelimiter))
                                                                     {
                                                                         name += resourceDelimiter.Delimiter;
                                                                     }
@@ -592,7 +591,7 @@ namespace AzureNamingTool.Services
                                                                                     }
                                                                                     else
                                                                                     {
-                                                                                        if (!String.IsNullOrEmpty(name) && (applyDelimiter))
+                                                                                        if (!String.IsNullOrEmpty(name) && (resourceType.ApplyDelimiter))
                                                                                         {
                                                                                             name += resourceDelimiter.Delimiter;
                                                                                         }
@@ -671,7 +670,7 @@ namespace AzureNamingTool.Services
                                                                 if (!String.IsNullOrEmpty(name))
                                                                 {
                                                                     // Check if the component should apply the delimiter
-                                                                    if ((component.ApplyDelimiterBefore) && (previousdelimiterappliedafter) && (applyDelimiter))
+                                                                    if ((component.ApplyDelimiterBefore) && (previousdelimiterappliedafter) && (resourceType.ApplyDelimiter))
                                                                     {
                                                                         name += resourceDelimiter.Delimiter;
                                                                     }
