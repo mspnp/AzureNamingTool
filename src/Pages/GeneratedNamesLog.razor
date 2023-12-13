@@ -95,8 +95,8 @@
                                             <span class="oi oi-magnifying-glass" id="addon-wrapping"></span>
                                         </span>
                                         <input class="form-control" type="search" placeholder="Filter by Created By, Generated Name, Resource Type, Components"
-                                        @bind="filterData"
-                                        @bind:event="oninput">
+                                               @bind="filterData"
+                                               @bind:event="oninput">
                                     </div>
                                 </div>
                             </div>
@@ -199,6 +199,7 @@
     public DateTime startdate { get; set; } = DateTime.Today.AddDays(-30);
     public DateTime enddate { get; set; } = DateTime.Today;
     private string currentuser = String.Empty;
+    private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -207,6 +208,13 @@
         {
             var result = await session.GetAsync<bool>("admin");
             admin = (bool)result.Value;
+
+            if (Convert.ToBoolean(config.DisableGeneratedNamesLog) && !admin)
+            {
+                toastService.ShowWarning("The Generated Names Log is disabled in the site settings.");
+                NavigationManager.NavigateTo("/");
+            }
+
             await LoadData();
             duplicatenamesallowed = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("DuplicateNamesAllowed"));
             StateHasChanged();

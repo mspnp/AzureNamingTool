@@ -15,5 +15,8 @@
         public string? IdentityHeaderName { get; set; }
         public string? ResourceTypeEditingAllowed { get; set; } = "False";
         public string? AutoIncrementResourceInstance { get; set; } = "False";
+        public string? DisableNews { get; set; } = "False";
+        public string? DisableGeneratedNamesLog { get; set; } = "False";
+        public string? DisableInstructions { get; set; } = "False";
     }
 }
