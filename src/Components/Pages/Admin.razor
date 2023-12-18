@@ -415,6 +415,69 @@
                             </div>
                             <div class="card mb-3" style="width:auto;">
                                 <div class="card-header bg-default text-dark">
+                                    <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#instructionsenabled" role="button" aria-expanded="false" aria-controls="instructionsenabled">
+                                        <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Instructions
+                                    </a>
+                                </div>
+                                <div class="collapse show card card-body @theme.ThemeStyle" id="instructionsenabled">
+                                    <div class="mb-3">
+                                        <p>
+                                            Enable/Disable the <span class="fw-bold">Instructions</span> page for non-admin users. (Documentation links will still be visible.)
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <label class="switch" title="Instructions Enabled">
+                                            <input type="checkbox" checked="@instructionsenabled" @oninput='args => SettingChanged(args, "instructionsenabled")'>
+                                            <span class="slider round"></span>
+                                        </label>
+                                        <span class="align-text-top"> Enable</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card mb-3" style="width:auto;">
+                                <div class="card-header bg-default text-dark">
+                                    <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#generatednameslogdenabled" role="button" aria-expanded="false" aria-controls="generatednameslogdenabled">
+                                        <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Generated Names Log
+                                    </a>
+                                </div>
+                                <div class="collapse show card card-body @theme.ThemeStyle" id="generatednameslogdenabled">
+                                    <div class="mb-3">
+                                        <p>
+                                            Enable/Disable the <span class="fw-bold">Generated Names Log</span> page for non-admin users.
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <label class="switch" title="Resource Type Editing Enabled">
+                                            <input type="checkbox" checked="@generatednameslogenabled" @oninput='args => SettingChanged(args, "generatednameslogenabled")'>
+                                            <span class="slider round"></span>
+                                        </label>
+                                        <span class="align-text-top"> Enable</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card mb-3" style="width:auto;">
+                                <div class="card-header bg-default text-dark">
+                                    <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#latestnewsenabled" role="button" aria-expanded="false" aria-controls="latestnewsenabled">
+                                        <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Latest News
+                                    </a>
+                                </div>
+                                <div class="collapse show card card-body @theme.ThemeStyle" id="latestnewsenabled">
+                                    <div class="mb-3">
+                                        <p>
+                                            Enable/Disable the <span class="fw-bold">Latest News</span> for all users.
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <label class="switch" title="Latest News Enabled">
+                                            <input type="checkbox" checked="@latestnewsenabled" @oninput='args => SettingChanged(args, "latestnewsenabled")'>
+                                            <span class="slider round"></span>
+                                        </label>
+                                        <span class="align-text-top"> Enable</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card mb-3" style="width:auto;">
+                                <div class="card-header bg-default text-dark">
                                     <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#connectivitycheck" role="button" aria-expanded="false" aria-controls="connectivitycheck">
                                         <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Connectivity Check
                                     </a>
@@ -498,6 +561,9 @@
     private bool connectivitycheckenabled = true;
     private bool resourcetypeeditingallowed = false;
     private bool autoincrementresourceinstance = false;
+    private bool instructionsenabled = false;
+    private bool generatednameslogenabled = false;
+    private bool latestnewsenabled = false;
     private string currentgenerationwebhook = String.Empty;
     private string versionalert = String.Empty;
     private string appversion = String.Empty;
@@ -529,6 +595,9 @@
                 connectivitycheckenabled = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("ConnectivityCheckEnabled"));
                 resourcetypeeditingallowed = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("ResourceTypeEditingAllowed"));
                 autoincrementresourceinstance = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("AutoIncrementResourceInstance"));
+                instructionsenabled = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("InstructionsEnabled"));
+                generatednameslogenabled = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("GeneratedNamesLogEnabled"));
+                latestnewsenabled = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("LatestNewsEnabled"));
                 currentgenerationwebhook = ConfigurationHelper.GetAppSetting("GenerationWebhook", true);
                 currentidentityheadername = ConfigurationHelper.GetAppSetting("IdentityHeaderName", true);
                 if (GeneralHelper.IsNotNull(identityProviderDetails))
@@ -956,6 +1025,27 @@
                         {
                             ConfigurationHelper.SetAppSetting("AutoIncrementResourceInstance", e.Value!.ToString() ?? "");
                             message.Message = "Auto Increment Resource Instance setting updated to " + e.Value?.ToString()!.ToUpper() ?? "" + "!";
+                        }
+                        break;
+                    case "instructionsenabled":
+                        if (GeneralHelper.IsNotNull(e.Value))
+                        {
+                            ConfigurationHelper.SetAppSetting("InstructionsEnabled", e.Value!.ToString() ?? "");
+                            message.Message = "Instructions Enabled setting updated to " + e.Value?.ToString()!.ToUpper() ?? "" + "!";
+                        }
+                        break;
+                    case "generatednameslogenabled":
+                        if (GeneralHelper.IsNotNull(e.Value))
+                        {
+                            ConfigurationHelper.SetAppSetting("GeneratedNamesLogEnabled", e.Value!.ToString() ?? "");
+                            message.Message = "Generated Names Log Enabled setting updated to " + e.Value?.ToString()!.ToUpper() ?? "" + "!";
+                        }
+                        break;
+                    case "latestnewsenabled":
+                        if (GeneralHelper.IsNotNull(e.Value))
+                        {
+                            ConfigurationHelper.SetAppSetting("LatestNewsEnabled", e.Value!.ToString() ?? "");
+                            message.Message = "Latest News Enabled setting updated to " + e.Value?.ToString()!.ToUpper() ?? "" + "!";
                         }
                         break;
                 }

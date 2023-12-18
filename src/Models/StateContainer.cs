@@ -6,7 +6,7 @@
         private bool? _admin;
         private bool? _password;
         private string _apptheme =  String.Empty;
-        private bool? _newsenabled;
+        private bool? _latestnewsenabled;
         public bool _reloadnav;
         public bool? _configurationdatasynced;
 
@@ -74,19 +74,19 @@
             NotifyStateChanged();
         }
 
-        public bool NewsEnabled
+        public bool LatestNewsEnabled
         {
-            get => _newsenabled ?? true;
+            get => _latestnewsenabled ?? true;
             set
             {
-                _newsenabled = value;
+                _latestnewsenabled = value;
                 NotifyStateChanged();
             }
         }
 
-        public void SetNewsEnabled(bool newsenabled)
+        public void SetLatestNewsEnabled(bool latestnewsenabled)
         {
-            _newsenabled = newsenabled;
+            _latestnewsenabled = latestnewsenabled;
             NotifyStateChanged();
         }
 

@@ -110,6 +110,9 @@ namespace AzureNamingTool.Services
                 configdata.GenerationWebhook = config.GenerationWebhook;                    
                 configdata.ResourceTypeEditingAllowed = config.ResourceTypeEditingAllowed;
                 configdata.AutoIncrementResourceInstance = config.AutoIncrementResourceInstance;
+                configdata.InstructionsEnabled = config.InstructionsEnabled;
+                configdata.GeneratedNamesLogEnabled = config.GeneratedNamesLogEnabled;
+                configdata.LatestNewsEnabled = config.LatestNewsEnabled;
 
                 // Get the security settings
                 if (includeadmin)
@@ -199,6 +202,18 @@ namespace AzureNamingTool.Services
                 if (GeneralHelper.IsNotNull(configdata.AutoIncrementResourceInstance))
                 {
                     config.AutoIncrementResourceInstance = configdata.AutoIncrementResourceInstance;
+                }
+                if (GeneralHelper.IsNotNull(configdata.InstructionsEnabled))
+                {
+                    config.InstructionsEnabled = configdata.InstructionsEnabled;
+                }
+                if (GeneralHelper.IsNotNull(configdata.GeneratedNamesLogEnabled))
+                {
+                    config.GeneratedNamesLogEnabled = configdata.GeneratedNamesLogEnabled;
+                }
+                if (GeneralHelper.IsNotNull(configdata.LatestNewsEnabled))
+                {
+                    config.LatestNewsEnabled = configdata.LatestNewsEnabled;
                 }
                 var jsonWriteOptions = new JsonSerializerOptions()
                 {
