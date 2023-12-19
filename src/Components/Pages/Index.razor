@@ -32,7 +32,7 @@
             <h4>Instructions</h4>
             <p>
                 The Instructions page provides documentation for the site pages. Each page of the site contains a documentation link (top right) that will open contextual instructions for the current page.
-        </p>
+            </p>
         }
         <h4>Configuration</h4>
         <p>
@@ -52,16 +52,15 @@
             <h4>Generated Names Log</h4>
             <p>
                 The Generated Names Log contains a record of all names generated in the Azure Naming Tool. This includes the date, user, generated name, resource type, and components selected. This log can be exported to a .csv file.
-        </p>
+            </p>
         }
         @if (Convert.ToBoolean(config.InstructionsEnabled) || admin)
         {
             <p>
                 <button class="btn btn-primary" title="Instructions" @onclick="@(e => OnInstructionsClick())">
-                View Instructions
-            </button>
-        </p>
-        }
+                    View Instructions
+                </button>
+            </p>
         }
     </div>
 </div>
@@ -79,7 +78,11 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         var resultAdmin = await session.GetAsync<bool>("admin");
-        admin = (bool)resultAdmin.Value;
+        if (admin != (bool)resultAdmin.Value)
+        {
+            admin = (bool)resultAdmin.Value;
+            StateHasChanged();
+        }
         // Determine if the version notification has been dismissed
         var resultNotification = await session.GetAsync<bool>("versionnotification");
         bool notificationshown = resultNotification.Success ? resultNotification.Value : false;
