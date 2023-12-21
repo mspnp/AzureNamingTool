@@ -1,0 +1,59 @@
+# Variable 'environment' was defined in the Variables tab
+resources:
+  repositories:
+  - repository: self
+    type: git
+    ref: refs/heads/main
+jobs:
+- job: Job_2
+  displayName: Linux Agent
+  pool:
+    vmImage: ubuntu-latest
+  steps:
+  - checkout: self
+    clean: true
+    fetchTags: false
+  - task: Bash@3
+    displayName: Capture PR ID
+    inputs:
+      targetType: inline
+      script: >-
+        echo $(System.PullRequest.PullRequestId) >> $(Build.ArtifactStagingDirectory)/pr.id
+
+        echo $(System.PullRequest.PullRequestId)
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: PR ID'
+    inputs:
+      PathtoPublish: $(Build.ArtifactStagingDirectory)/pr.id
+      ArtifactName: $(environment)-pr-id
+- job: Job_1
+  displayName: Windows Agent
+  pool:
+    vmImage: windows-2019
+  steps:
+  - checkout: self
+    clean: true
+    fetchTags: false
+  - task: AzurePowerShell@5
+    displayName: Azure PowerShell
+    inputs:
+      ConnectedServiceNameARM: 0faffa26-f6d1-4e46-a68e-8e39814f0c25
+      ScriptPath: Ryan Testing/Intune Desktop Icons/ArmWhatIfTest.ps1
+      ScriptArguments: -TestResourceGroupName IntuneDesktopIcons-$(environment)-rg
+      TargetAzurePs: LatestVersion
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: Validate ARM Template
+    inputs:
+      ConnectedServiceName: 0faffa26-f6d1-4e46-a68e-8e39814f0c25
+      subscriptionName: 310cc2d0-d0bb-4604-8a62-58ab3306915f
+      resourceGroupName: IntuneDesktopIcons-$(environment)-rg
+      location: West US 2
+      csmFile: Ryan Testing/Intune Desktop Icons/IntuneDesktopIcons-StorageAccount-template.json
+      overrideParameters: -regionLocation "westus2" -createdByTag "Ryan Huffman - DevOps Pipeline" -environment "$(environment)" -principalId "8b49b9f2-101d-4d76-81f9-60f991c51997"
+      deploymentMode: Validation
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Templates'
+    inputs:
+      PathtoPublish: Ryan Testing/Intune Desktop Icons
+      ArtifactName: $(environment)-arm-templates
+...
