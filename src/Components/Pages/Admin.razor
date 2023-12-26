@@ -1,10 +1,12 @@
 ﻿@page "/admin"
+@using AzureNamingTool.Components.Modals
 @using AzureNamingTool.Helpers;
 @using AzureNamingTool.Models;
 @using System.Runtime.Caching;
 @using AzureNamingTool.Services;
 @using Blazored.Toast.Configuration;
 @using Microsoft.AspNetCore.Html
+@using Microsoft.AspNetCore.WebUtilities
 @using Microsoft.Extensions.Logging
 @using System.Reflection;
 @inject IJSRuntime JsRuntime
@@ -524,6 +526,23 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="card mb-3" style="width:auto;">
+                                <div class="card-header bg-default text-dark">
+                                    <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#resetsitesettings" role="button" aria-expanded="false" aria-controls="resetsitesettings">
+                                        <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Reset Site Settings
+                                    </a>
+                                </div>
+                                <div class="collapse show card card-body @theme.ThemeStyle" id="resetsitesettings">
+                                    <div class="mb-3">
+                                        <p>
+                                            This will reset all site settings to the default values. This cannot be undone!
+                                        </p>
+                                    </div>
+                                    <div class="mb-3">
+                                        <button type="button" class="btn btn-danger w-auto" @onclick="@(e => AdminFormAction("resetsitesettings"))" title="Reset Site Settings">Reset Site Settings</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 }
@@ -614,11 +633,27 @@
             state.AppTheme = theme.ThemeStyle;
 
             StateHasChanged();
+
+            var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+            if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("reset", out var _reset))
+            {
+                if (Convert.ToBoolean(_reset))
+                {
+                    toastService.ShowSuccess("The site settings have been reset!");
+                }
+            }
+
         }
     }
 
     private async void AdminFormAction(string action, int id = 0)
     {
+        var workingmodaloptions = new ModalOptions()
+            {
+                HideCloseButton = true,
+                UseCustomLayout = true
+            };
+        var workingmodal = Modal.Show<WorkingModal>("Working", workingmodaloptions);
         message = new ResponseMessage();
         message.Header = "INFORMATION";
         message.Type = MessageTypesEnum.INFORMATION;
@@ -896,6 +931,28 @@
                     displaymessage = false;
                 }
                 break;
+
+            case "resetsitesettings":
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will reset the site settings.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                if (confirm)
+                {
+                    // Create new default configuration
+                    SiteConfiguration resetconfig = new();
+                    ConfigurationHelper.SetAppSetting("AutoIncrementResourceInstance", resetconfig.AutoIncrementResourceInstance!, false);
+                    ConfigurationHelper.SetAppSetting("DuplicateNamesAllowed", resetconfig.DuplicateNamesAllowed!, false);
+                    ConfigurationHelper.SetAppSetting("ResourceTypeEditingAllowed", resetconfig.ResourceTypeEditingAllowed!, false);
+                    ConfigurationHelper.SetAppSetting("InstructionsEnabled", resetconfig.InstructionsEnabled!, false);
+                    ConfigurationHelper.SetAppSetting("GeneratedNamesLogEnabled", resetconfig.GeneratedNamesLogEnabled!, false);
+                    ConfigurationHelper.SetAppSetting("LatestNewsEnabled", resetconfig.LatestNewsEnabled!, false);
+                    ConfigurationHelper.SetAppSetting("ConnectivityCheckEnabled", resetconfig.ConnectivityCheckEnabled!, false);
+                    ConfigurationHelper.SetAppSetting("GenerationWebhook", String.Empty, true);
+                    NavigationManager.NavigateTo("/admin?reset=true", true);
+                }
+                else
+                {
+                    displaymessage = false;
+                }
+                break;
         }
 
         config = ConfigurationHelper.GetConfigurationData();
@@ -923,11 +980,11 @@
             }
         }
 
-
         servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
         state.SetNavReload(true);
         StateHasChanged();
 
+        workingmodal.Close();
         if (redirect)
         {
             if (admin)

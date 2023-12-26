@@ -17,6 +17,6 @@
         public string? AutoIncrementResourceInstance { get; set; } = "False";
         public string? InstructionsEnabled { get; set; } = "True";
         public string? GeneratedNamesLogEnabled { get; set; } = "True";
-        public string? LatestNewsEnabled { get; set; } = "True";
+        public string? LatestNewsEnabled { get; set; } = "False";
     }
 }
