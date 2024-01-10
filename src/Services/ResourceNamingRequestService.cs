@@ -786,33 +786,31 @@ namespace AzureNamingTool.Services
                         // Check if the request contains Resource Instance is a selected componoent
                         if (!String.IsNullOrEmpty(GeneralHelper.GetPropertyValue(request, "ResourceInstance")?.ToString()))
                         {
-                            // Check if the name should be auto-incremented
+                            // CHeck if the name should be auto-incremented
                             if (Convert.ToBoolean(ConfigurationHelper.GetAppSetting("AutoIncrementResourceInstance")))
                             {
                                 // Check if there was a ResourceInstance value supplied
                                 if (GeneralHelper.IsNotNull(GeneralHelper.GetPropertyValue(request, "ResourceInstance")))
                                 {
                                     // Attempt to auto-increement the instance 
-                                    // Set the original name value
-                                    string originalname = name;
                                     // Get the instance value
                                     string originalinstance = GeneralHelper.GetPropertyValue(request, "ResourceInstance")?.ToString() ?? "";
-                                    // Determine the next instance value
-                                    string newinstance = String.Empty;
-                                    int i = 1;
-                                    while (await ConfigurationHelper.CheckIfGeneratedNameExists(name))
+                                    // Increase the instance by 1
+                                    string newinstance = (Convert.ToInt32(originalinstance) + 1).ToString();
+                                    // Make sure the instance pattern matches the entered values (leading zeros)
+                                    while (newinstance.Length < originalinstance.Length)
                                     {
-                                        newinstance = (Convert.ToInt32(originalinstance) + i).ToString();
-                                        // Make sure the instance pattern matches the entered values (leading zeros)
-                                        while (newinstance.Length < originalinstance.Length)
-                                        {
-                                            newinstance = "0" + newinstance;
-                                        }
-                                        // Replace the new instance in the original name
-                                        name = originalname.Replace(originalinstance, newinstance);
-                                        // Increase the counter
-                                        i += 1;
+                                        newinstance = "0" + newinstance;
                                     }
+                                    // Update the generated name with the new instance
+                                    string newname = name.Replace(originalinstance, newinstance);
+                                    // Check to make sure the new name is unique
+                                    while (await ConfigurationHelper.CheckIfGeneratedNameExists(newname))
+                                    {
+                                        newinstance = (Convert.ToInt32(newinstance) + 1).ToString();
+                                        newname = name.Replace(originalinstance, newinstance);
+                                    }
+                                    name = newname;
                                     sbMessage.Append("The resource instance has been auto-incremented to the next value.");
                                     sbMessage.Append(Environment.NewLine);
                                 }

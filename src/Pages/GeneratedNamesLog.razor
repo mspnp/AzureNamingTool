@@ -199,7 +199,6 @@
     public DateTime startdate { get; set; } = DateTime.Today.AddDays(-30);
     public DateTime enddate { get; set; } = DateTime.Today;
     private string currentuser = String.Empty;
-    private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -208,11 +207,6 @@
         {
             var result = await session.GetAsync<bool>("admin");
             admin = (bool)result.Value;
-            if (!Convert.ToBoolean(config.GeneratedNamesLogEnabled) && !admin)
-            {
-                toastService.ShowWarning("The Generated Names Log is disabled in the site settings.");
-                NavigationManager.NavigateTo("/");
-            }
             await LoadData();
             duplicatenamesallowed = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("DuplicateNamesAllowed"));
             StateHasChanged();
@@ -309,7 +303,7 @@
         if (confirm)
         {
             await LogHelper.PurgeGeneratedNames();
-            toastService.ShowSuccess("Generated Names Log purged!");
+            toastService.ShowSuccess("Generated Log purged!");
             AdminLogService.PostItem(new AdminLogMessage() { Source = currentuser, Title = "INFORMATION", Message = "Generated Names log purged." });
             await LoadData();
             StateHasChanged();

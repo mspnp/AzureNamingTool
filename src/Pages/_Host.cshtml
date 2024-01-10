@@ -1,25 +1,27 @@
-﻿@using AzureNamingTool.Helpers
-@using AzureNamingTool.Models
+﻿@page "/"
+@namespace AzureNamingTool.Pages
+@using AzureNamingTool.Helpers;
+@using AzureNamingTool.Models;
 @inject StateContainer state
-@inject IHttpContextAccessor httpContextAccessor;
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @{
-    //Layout = "_Layout";
+    Layout = "_Layout";
 
     // Verify the site configration files are present
     ConfigurationHelper.VerifyConfiguration(state);
     ConfigurationHelper.VerifySecurity(state);
 
     var identityProviderDetails = new IdentityProviderDetails();
-    //Check if there is an HttpContext object
-    if (GeneralHelper.IsNotNull(httpContextAccessor))
+    // Check if there is an HttpContext object
+    if (GeneralHelper.IsNotNull(this.HttpContext))
     {
-        if (GeneralHelper.IsNotNull(httpContextAccessor.HttpContext!.Request.Headers))
+        if (GeneralHelper.IsNotNull(this.HttpContext.Request.Headers))
         {
             // Get the Identity provider, if using Azure App Service Authentication
-            if (httpContextAccessor.HttpContext.Request.Headers.ContainsKey("X-MS-CLIENT-PRINCIPAL-IDP"))
+            if (this.HttpContext.Request.Headers.ContainsKey("X-MS-CLIENT-PRINCIPAL-IDP"))
             {
                 // Set the identity provider
-                identityProviderDetails.CurrentIdentityProvider = httpContextAccessor.HttpContext.Request.Headers["X-MS-CLIENT-PRINCIPAL-IDP"]!;
+                identityProviderDetails.CurrentIdentityProvider = this.HttpContext.Request.Headers["X-MS-CLIENT-PRINCIPAL-IDP"]!;
             }
         }
 
@@ -28,16 +30,16 @@
         {
             string headername = ConfigurationHelper.GetAppSetting("IdentityHeaderName", true);
             // Check if the IdentityHeaderName header is present
-            if (GeneralHelper.IsNotNull(httpContextAccessor.HttpContext))
+            if(GeneralHelper.IsNotNull(this.HttpContext))
             {
-                if (GeneralHelper.IsNotNull(httpContextAccessor.HttpContext.Request))
+                if(GeneralHelper.IsNotNull(this.HttpContext.Request))
                 {
-                    if (GeneralHelper.IsNotNull(httpContextAccessor.HttpContext.Request.Headers))
+                    if (GeneralHelper.IsNotNull(this.HttpContext.Request.Headers))
                     {
-                        if (httpContextAccessor.HttpContext.Request.Headers.ContainsKey(headername))
+                        if (this.HttpContext.Request.Headers.ContainsKey(headername))
                         {
                             // Set the current user
-                            identityProviderDetails.CurrentUser = httpContextAccessor.HttpContext.Request.Headers[headername]!;
+                            identityProviderDetails.CurrentUser = this.HttpContext.Request.Headers[headername]!;
                         }
                     }
                 }
@@ -45,27 +47,11 @@
         }
     }
 }
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <base href="/" />
-    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
-    <link href="css/site.css" rel="stylesheet" />
-    <link href="AzureNamingTool.styles.css" rel="stylesheet" />
-    <HeadOutlet @rendermode="InteractiveServer" />
-</head>
+<link href="AzureNamingTool.styles.css" rel="stylesheet">
 
-<body>
-    <Routes @rendermode="InteractiveServer" identityProviderDetails="identityProviderDetails" />
-    <script src="_framework/blazor.web.js"></script>
-    <script src="js/jquery-3.7.0.min.js"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
-</body>
+<component type="typeof(App)" render-mode="ServerPrerendered" param-IdentityProviderDetails="identityProviderDetails" />
 
-</html>
 <script>
 
     //Get the button:
@@ -176,38 +162,5 @@
                 checkbox.checked = false;
             };
         }
-    }
-
-    function addPopovers() {
-        $("#dropdownMenu").on("show.bs.dropdown", function () {
-            // For difference between offset and position: http://stackoverflow.com/a/3202038/44852
-            var dropdownButtonPosition = $(this).position();
-            var dropdownButtonOffset = $(this).offset();
-            var dropdownButtonHeight = $(this).height();
-            var dropdownMenu = $(this).find(".dropdown-menu:first");
-            var dropdownMenuHeight = dropdownMenu.height();
-            var scrollToTop = $(document).scrollTop();
-
-            // It seems there are some numbers that don't get included so I am using some tolerance for
-            // more accurate result.
-            var heightTolerance = 17;
-
-            // I figured that window.innerHeight works more accurate on Chrome
-            // but it is not available on Internet Explorer. So I am using $(window).height()
-            // method where window.innerHeight is not available.
-            var visibleWindowHeight = window.innerHeight || $(window).height();
-
-            var totalHeightDropdownOccupies = dropdownMenuHeight +
-                dropdownButtonOffset.top + dropdownButtonHeight + heightTolerance - scrollToTop;
-
-            // If there is enough height for dropdown to fully appear, then show it under the dropdown button,
-            // otherwise show it above dropdown button.
-            var dropdownMenuTopLocation = totalHeightDropdownOccupies < visibleWindowHeight
-                ? dropdownButtonPosition.top + dropdownButtonHeight
-                : dropdownButtonPosition.top - dropdownMenuHeight - dropdownButtonHeight + heightTolerance;
-
-            dropdownMenu.css("left", dropdownButtonPosition.left)
-                .css("top", dropdownMenuTopLocation);
-        });
     }
 </script>
