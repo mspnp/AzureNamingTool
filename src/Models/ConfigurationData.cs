@@ -1,24 +1,24 @@
 ﻿using AzureNamingTool.Models;
-using AzureNamingTool.Pages;
+using AzureNamingTool.Components.Pages;
 using System.Collections.Generic;
 
 namespace AzureNamingTool.Models
 {
     public class ConfigurationData
     {
-        public List<ResourceComponent> ResourceComponents { get; set; } = new();
-        public List<ResourceDelimiter> ResourceDelimiters { get; set; } = new();
-        public List<ResourceEnvironment> ResourceEnvironments { get; set; } = new();
-        public List<ResourceLocation> ResourceLocations { get; set; } = new();
-        public List<ResourceOrg> ResourceOrgs { get; set; } = new();
-        public List<ResourceProjAppSvc> ResourceProjAppSvcs { get; set; } = new();
-        public List<ResourceType> ResourceTypes { get; set; } = new();
-        public List<ResourceUnitDept> ResourceUnitDepts { get; set; } = new();
-        public List<ResourceFunction> ResourceFunctions { get; set; } = new();
-        public List<CustomComponent> CustomComponents { get; set; } = new();
-        public List<GeneratedName> GeneratedNames { get; set; } = new();
-        public List<AdminLogMessage>? AdminLogs { get; set; } = new();
-        public List<AdminUser> AdminUsers { get; set; } = new();
+        public List<ResourceComponent> ResourceComponents { get; set; } = [];
+        public List<ResourceDelimiter> ResourceDelimiters { get; set; } = [];
+        public List<ResourceEnvironment> ResourceEnvironments { get; set; } = [];
+        public List<ResourceLocation> ResourceLocations { get; set; } = [];
+        public List<ResourceOrg> ResourceOrgs { get; set; } = [];
+        public List<ResourceProjAppSvc> ResourceProjAppSvcs { get; set; } = [];
+        public List<ResourceType> ResourceTypes { get; set; } = [];
+        public List<ResourceUnitDept> ResourceUnitDepts { get; set; } = [];
+        public List<ResourceFunction> ResourceFunctions { get; set; } = [];
+        public List<CustomComponent> CustomComponents { get; set; } = [];
+        public List<GeneratedName> GeneratedNames { get; set; } = [];
+        public List<AdminLogMessage>? AdminLogs { get; set; } = [];
+        public List<AdminUser> AdminUsers { get; set; } = [];
 
         public string? SALTKey { get; set; }
         public string? AdminPassword { get; set; }
@@ -31,5 +31,8 @@ namespace AzureNamingTool.Models
         public string? IdentityHeaderName { get; set; }
         public string? ResourceTypeEditingAllowed { get; set; } = "False";
         public string? AutoIncrementResourceInstance { get; set; } = "False";
+        public string? InstructionsEnabled { get; set; } = "True";
+        public string? GeneratedNamesLogEnabled { get; set; } = "True";
+        public string? LatestNewsEnabled { get; set; } = "False";
     }
 }
