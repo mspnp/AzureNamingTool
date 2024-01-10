@@ -1,7 +1,7 @@
 using AzureNamingTool.Models;
-using AzureNamingTool.Pages;
+using AzureNamingTool.Components.Pages;
 using AzureNamingTool.Services;
-using AzureNamingTool.Shared;
+using AzureNamingTool.Components;
 using Blazored.Modal;
 using Blazored.Modal.Services;
 using System;
