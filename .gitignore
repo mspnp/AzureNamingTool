@@ -1,9 +1,0 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-/src/obj
-/src/Properties/PublishProfiles
-/src/Properties/ServiceDependencies/azurenamingtool-dev - Zip Deploy
-/src/.vs
-/src/bin

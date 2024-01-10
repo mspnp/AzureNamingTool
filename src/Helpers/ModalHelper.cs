@@ -1,6 +1,6 @@
 ﻿using AzureNamingTool.Models;
 using AzureNamingTool.Services;
-using AzureNamingTool.Components.Modals;
+using AzureNamingTool.Shared.Modals;
 using Blazored.Modal;
 using Blazored.Modal.Services;
 
