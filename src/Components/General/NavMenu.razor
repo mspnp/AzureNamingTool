@@ -127,7 +127,7 @@
                 </div>
             }
 
-            @if ((PageType.ToString() == "AzureNamingTool.Pages.Index") && (connected))
+            @if ((PageType.ToString() == "AzureNamingTool.Pages.Index") && (connected) && !Convert.ToBoolean(config.LatestNewsEnabled))
             {
                 <hr />
                 <div class="nav-item px-3">
@@ -136,11 +136,11 @@
                             Latest News
                         </label>
                         <label class="switch" title="Latest News Switch" style="top:-5px; float:right;">
-                            <input type="checkbox" checked="@newsenabled" @oninput="NewsChanged">
+                            <input type="checkbox" checked="@latestnewsenabled" @oninput="NewsChanged">
                             <span class="slider round"></span>
                         </label>
                         <div style="clear:both"></div>
-                        @if (newsenabled)
+                        @if (latestnewsenabled)
                         {
                             <div classclass="nav-link" style="padding-top:10px">
                                 <LatestNews></LatestNews>
@@ -159,8 +159,9 @@
     private bool collapseNavMenu = true;
     private ServicesData servicesData = new();
     private bool admin;
+    private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : String.Empty;
-    private bool newsenabled = false;
+    private bool latestnewsenabled = false;
     private bool connected = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -174,14 +175,14 @@
                 servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
                 try
                 {
-                    result = await storage.GetAsync<bool>("newsenabled");
-                    newsenabled = result.Success ? result.Value : true;
+                    result = await storage.GetAsync<bool>("latestnewsenabled");
+                    latestnewsenabled = result.Success ? result.Value : true;
                 }
                 catch
                 {
-                    newsenabled = true;
+                    latestnewsenabled = true;
                 }
-                state.NewsEnabled = newsenabled;
+                state.LatestNewsEnabled = latestnewsenabled;
             }
             else
             {
@@ -213,9 +214,9 @@
     {
         if (GeneralHelper.IsNotNull(e.Value))
         {
-            newsenabled = (bool)e.Value;
-            await storage.SetAsync("newsenabled", newsenabled);
-            state.NewsEnabled = newsenabled;
+            latestnewsenabled = (bool)e.Value;
+            await storage.SetAsync("newsenabled", latestnewsenabled);
+            state.LatestNewsEnabled = latestnewsenabled;
             StateHasChanged();
         }
     }

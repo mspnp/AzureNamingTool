@@ -1,7 +1,7 @@
-﻿@using AzureNamingTool.Helpers
+﻿@using AzureNamingTool.Components.Modals
+@using AzureNamingTool.Helpers
 @using AzureNamingTool.Models
-@using AzureNamingTool.Shared.Components
-@using AzureNamingTool.Shared.Modals;
+@using Blazored.Toast.Configuration
 @inherits LayoutComponentBase
 @implements IDisposable
 @inject StateContainer state
@@ -10,7 +10,6 @@
 @inject ILogger<MainLayout> Logger
 @inject NavigationManager NavigationManager
 @using AzureNamingTool.Services;
-@using Blazored.Toast.Configuration
 @using System.Security.Claims;
 @inject ProtectedLocalStorage storage
 @inject ProtectedSessionStorage session
@@ -19,7 +18,7 @@
 <PageTitle>Azure Naming Tool</PageTitle>
 <BlazoredToasts Position="ToastPosition.BottomRight" ShowProgressBar="true" />
 <div class="page @theme.ThemeStyle">
-    <div class="sidebar">
+    <div class="sidebar" style="overflow-y:auto;">
         <NavMenu PageType="@PageType" />
     </div>
 
@@ -74,7 +73,7 @@
     </main>
 </div>
 
-<button onclick="topFunction()" id="btnScrollToTop" class="btn btn-success btn-sm" title="Go to top"><span class="oi oi-arrow-circle-top" style="vertical-align:text-top;"></span> Top</button>
+<button onclick="topFunction()" type="button" id="btnScrollToTop" class="btn btn-success btn-sm" title="Go to top"><span class="oi oi-arrow-circle-top" style="vertical-align:text-top;"></span> Top</button>
 @if (PasswordModalOpen)
 {
     <PasswordModal OnClose="@OnPasswordModalClose">
