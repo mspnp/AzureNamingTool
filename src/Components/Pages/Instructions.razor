@@ -1,10 +1,12 @@
 ﻿@page "/instructions"
+@using AzureNamingTool.Components.Instructions
 @using AzureNamingTool.Helpers
 @using AzureNamingTool.Models
-@using AzureNamingTool.Shared.Components
-@using AzureNamingTool.Shared.Instructions
+@using AzureNamingTool.Components.General
 @inject StateContainer state
 @inject ProtectedSessionStorage session
+@inject IToastService toastService
+@inject NavigationManager NavigationManager
 
 <div class="card @theme!.ThemeStyle">
     <div class="card-body">
@@ -32,16 +34,16 @@
                     <AdminConfigurationInstructions theme="@theme" admin="@admin" />
                 </div>
             </div>
-                <div class="card mb-3">
-                    <h5 class="card-header bg-secondary text-white" id="adminlogcontainer">
+            <div class="card mb-3">
+                <h5 class="card-header bg-secondary text-white" id="adminlogcontainer">
                     <a class="link-light text-decoration-none" data-bs-toggle="collapse" style="display:block;" href="#adminlog" role="button" aria-expanded="true" aria-controls="adminlog">
-                            <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Admin Log
-                        </a>
-                    </h5>
-                <div class="card card-body collapse show @theme.ThemeStyle" id="adminlog">
-                        <AdminLogInstructions theme="@theme" admin="@admin" />
-                    </div>
-                </div>
+                        <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Admin Log
+                    </a>
+                </h5>
+            </div>
+            <div class="card card-body collapse show @theme.ThemeStyle" id="adminlog">
+                <AdminLogInstructions theme="@theme" admin="@admin" />
+            </div>
         }
         <div class="card mb-3">
             <h5 class="card-header bg-secondary text-white" id="configurationcontainer">
@@ -89,8 +91,8 @@
 @code {
     [CascadingParameter]
     protected ThemeInfo? theme { get; set; }
-
     private bool admin = false;
+    private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -98,6 +100,11 @@
         {
             var result = await session.GetAsync<bool>("admin");
             admin = (bool)result.Value;
+            if (!Convert.ToBoolean(config.InstructionsEnabled) && !admin)
+            {
+                toastService.ShowWarning("The Instructions page is disabled in the site settings.");
+                NavigationManager.NavigateTo("/");
+            }
             StateHasChanged();
         }
     }

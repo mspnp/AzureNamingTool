@@ -1,6 +1,6 @@
 ﻿using AzureNamingTool.Helpers;
 using AzureNamingTool.Models;
-using AzureNamingTool.Pages;
+using AzureNamingTool.Components.Pages;
 using System.Text.Json;
 
 namespace AzureNamingTool.Services
