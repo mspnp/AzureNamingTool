@@ -4,16 +4,19 @@ using System.Text.Json;
 
 namespace AzureNamingTool.Services
 {
+    /// <summary>
+    /// Service for managing generated names.
+    /// </summary>
     public class GeneratedNamesService
     {
         /// <summary>
-        /// This function gets the generated names log. 
+        /// Retrieves a list of items.
         /// </summary>
-        /// <returns>List of GeneratedNames - List of generated names</returns>
+        /// <returns>Task&lt;ServiceResponse&gt; - The response containing the list of items or an error message.</returns>
         public static async Task<ServiceResponse> GetItems()
         {
             ServiceResponse serviceResponse = new();
-            List<GeneratedName> lstGeneratedNames = new();
+            List<GeneratedName> lstGeneratedNames = [];
             try
             {
                 // Get list of items
@@ -32,6 +35,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Retrieves an item with the specified ID.
+        /// </summary>
+        /// <param name="id">int - The ID of the item to retrieve.</param>
+        /// <returns>Task&lt;ServiceResponse&gt; - The response containing the retrieved item or an error message.</returns>
         public static async Task<ServiceResponse> GetItem(int id)
         {
             ServiceResponse serviceResponse = new();
@@ -67,9 +75,10 @@ namespace AzureNamingTool.Services
         }
 
         /// <summary>
-        ///  This function logs the generated name. 
+        /// Posts an item to the list of generated names.
         /// </summary>
-        /// <param name="generatedName">GeneratedName - Generated name and components.</param>
+        /// <param name="generatedName">GeneratedName - The generated name to be added.</param>
+        /// <returns>Task&lt;ServiceResponse&gt; - The response indicating the success or failure of the operation.</returns>
         public static async Task<ServiceResponse> PostItem(GeneratedName generatedName)
         {
             ServiceResponse serviceResponse = new();
@@ -106,6 +115,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Deletes an item with the specified ID.
+        /// </summary>
+        /// <param name="id">int - The ID of the item to delete.</param>
+        /// <returns>Task&lt;ServiceResponse&gt; - The response indicating the success or failure of the operation.</returns>
         public static async Task<ServiceResponse> DeleteItem(int id)
         {
             ServiceResponse serviceResponse = new();
@@ -146,15 +160,15 @@ namespace AzureNamingTool.Services
         }
 
         /// <summary>
-        /// This function clears the generated names log. 
+        /// This function deletes all the items.
         /// </summary>
-        /// <returns>void</returns>
+        /// <returns>ServiceResponse - The response indicating the success or failure of the operation.</returns>
         public static async Task<ServiceResponse> DeleteAllItems()
         {
             ServiceResponse serviceResponse = new();
             try
             {
-                List<GeneratedName> items = new();
+                List<GeneratedName> items = [];
                 await ConfigurationHelper.WriteList<GeneratedName>(items);
                 serviceResponse.Success = true;
             }
@@ -166,6 +180,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// This function posts the configuration items.
+        /// </summary>
+        /// <param name="items">List of GeneratedName - The configuration items to be posted.</param>
+        /// <returns>ServiceResponse - The response indicating the success or failure of the operation.</returns>
         public static async Task<ServiceResponse> PostConfig(List<GeneratedName> items)
         {
             ServiceResponse serviceResponse = new();

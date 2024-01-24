@@ -103,7 +103,7 @@
             if (!Convert.ToBoolean(config.InstructionsEnabled) && !admin)
             {
                 toastService.ShowWarning("The Instructions page is disabled in the site settings.");
-                NavigationManager.NavigateTo("/");
+                NavigationManager.NavigateTo("");
             }
             StateHasChanged();
         }

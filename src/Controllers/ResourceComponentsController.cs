@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace AzureNamingTool.Controllers
 {
+    /// <summary>
+    /// Controller for managing resource components.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [ApiKey]
@@ -48,7 +51,7 @@ namespace AzureNamingTool.Controllers
 
         // GET api/<resourcecomponentsController>/5
         /// <summary>
-        /// This function will return the specifed resource component data.
+        /// This function will return the specified resource component data.
         /// </summary>
         /// <param name="id">int - Resource Component id</param>
         /// <returns>json - Resource component data</returns>
@@ -78,7 +81,7 @@ namespace AzureNamingTool.Controllers
 
         // POST api/<ResourceComponentsController>
         /// <summary>
-        /// This function will create/update the specified component data.
+        /// This function will create or update the specified component data.
         /// </summary>
         /// <param name="item">ResourceComponent (json) - Component data</param>
         /// <returns>bool - PASS/FAIL</returns>
@@ -132,7 +135,7 @@ namespace AzureNamingTool.Controllers
                     return BadRequest(serviceResponse.ResponseObject);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);

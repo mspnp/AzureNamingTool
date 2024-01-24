@@ -5,9 +5,17 @@ using System.Security.AccessControl;
 
 namespace AzureNamingTool.Services
 {
+    /// <summary>
+    /// Service for managing resource components.
+    /// </summary>
     public class ResourceComponentService
     {
 
+        /// <summary>
+        /// Retrieves a list of resource components.
+        /// </summary>
+        /// <param name="admin">A boolean value indicating whether the user is an admin.</param>
+        /// <returns>A service response containing the list of resource components.</returns>
         public static async Task<ServiceResponse> GetItems(bool admin)
         {
             ServiceResponse serviceResponse = new();
@@ -40,6 +48,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Retrieves a resource component item by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the resource component item.</param>
+        /// <returns>A service response containing the resource component item.</returns>
         public static async Task<ServiceResponse> GetItem(int id)
         {
             ServiceResponse serviceResponse = new();
@@ -74,6 +87,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Posts a resource component item.
+        /// </summary>
+        /// <param name="item">The resource component item to post.</param>
+        /// <returns>A service response indicating the success of the operation.</returns>
         public static async Task<ServiceResponse> PostItem(ResourceComponent item)
         {
             ServiceResponse serviceResponse = new();
@@ -92,7 +110,7 @@ namespace AzureNamingTool.Services
                         }
 
                         int position = 1;
-                        items = items.OrderBy(x => x.SortOrder).ToList();
+                        items = [.. items.OrderBy(x => x.SortOrder)];
 
                         if (item.SortOrder == 0)
                         {
@@ -163,6 +181,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Deletes an item from the list of resource components.
+        /// </summary>
+        /// <param name="id">The ID of the item to delete.</param>
+        /// <returns>A service response indicating the success of the operation.</returns>
         public static async Task<ServiceResponse> DeleteItem(int id)
         {
             ServiceResponse serviceResponse = new();
@@ -177,7 +200,7 @@ namespace AzureNamingTool.Services
                     if (GeneralHelper.IsNotNull(item))
                     {
                         // Delete any resource type settings for the component
-                        List<string> currentvalues = new();
+                        List<string> currentvalues = [];
                         serviceResponse = await ResourceTypeService.GetItems();
                         if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                         {
@@ -190,14 +213,14 @@ namespace AzureNamingTool.Services
                                     if (currentvalues.Contains(GeneralHelper.NormalizeName(item.Name, false)))
                                     {
                                         currentvalues.Remove(GeneralHelper.NormalizeName(item.Name, false));
-                                        currenttype.Optional = String.Join(",", currentvalues.ToArray());
+                                        currenttype.Optional = String.Join(",", [.. currentvalues]);
                                     }
 
                                     currentvalues = new List<string>(currenttype.Exclude.Split(','));
                                     if (currentvalues.Contains(GeneralHelper.NormalizeName(item.Name, false)))
                                     {
                                         currentvalues.Remove(GeneralHelper.NormalizeName(item.Name, false));
-                                        currenttype.Exclude = String.Join(",", currentvalues.ToArray());
+                                        currenttype.Exclude = String.Join(",", [.. currentvalues]);
                                     }
                                     await ResourceTypeService.PostItem(currenttype);
                                 }
@@ -250,12 +273,17 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Posts the configuration for a list of resource components.
+        /// </summary>
+        /// <param name="items">The list of resource components to configure.</param>
+        /// <returns>A service response indicating the success of the operation.</returns>
         public static async Task<ServiceResponse> PostConfig(List<ResourceComponent> items)
         {
             ServiceResponse serviceResponse = new();
             try
             {
-                string[] componentnames = new string[8] { "ResourceEnvironment", "ResourceInstance", "ResourceLocation", "ResourceOrg", "ResourceProjAppSvc", "ResourceType", "ResourceUnitDept", "ResourceFunction" };
+                string[] componentnames = ["ResourceEnvironment", "ResourceInstance", "ResourceLocation", "ResourceOrg", "ResourceProjAppSvc", "ResourceType", "ResourceUnitDept", "ResourceFunction"];
                 var newitems = new List<ResourceComponent>();
 
                 // Examine the current items

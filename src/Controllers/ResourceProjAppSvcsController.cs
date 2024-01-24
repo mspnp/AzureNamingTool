@@ -14,20 +14,24 @@ using AzureNamingTool.Attributes;
 
 namespace AzureNamingTool.Controllers
 {
+    /// <summary>
+    /// Controller for managing resource projects, apps, and services.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [ApiKey]
     public class ResourceProjAppSvcsController : ControllerBase
     {
+        private ServiceResponse serviceResponse = new();
+
         // GET: api/<ResourceProjAppSvcsController>
         /// <summary>
         /// This function will return the projects/apps/services data. 
         /// </summary>
-        /// <returns>json - Current projects/apps/servicse data</returns>
+        /// <returns>json - Current projects/apps/services data</returns>
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceProjAppSvcService.GetItems();
@@ -49,14 +53,13 @@ namespace AzureNamingTool.Controllers
 
         // GET api/<ResourceProjAppSvcsController>/5
         /// <summary>
-        /// This function will return the specifed project/app/service data.
+        /// This function will return the specified project/app/service data.
         /// </summary>
         /// <param name="id">int - Project/App/Service id</param>
         /// <returns>json - Project/App/Service data</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -86,7 +89,6 @@ namespace AzureNamingTool.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ResourceProjAppSvc item)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceProjAppSvcService.PostItem(item);
@@ -118,7 +120,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<ResourceProjAppSvc> items)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceProjAppSvcService.PostConfig(items);
@@ -142,14 +143,13 @@ namespace AzureNamingTool.Controllers
 
         // DELETE api/<ResourceProjAppSvcsController>/5
         /// <summary>
-        /// This function will delete the specifed project/app/service data.
+        /// This function will delete the specified project/app/service data.
         /// </summary>
-        /// <param name="id">int - Project/App?service id</param>
+        /// <param name="id">int - Project/App/Service id</param>
         /// <returns>bool - PASS/FAIL</returns>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get the item details

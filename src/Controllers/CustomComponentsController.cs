@@ -14,6 +14,9 @@ using Microsoft.Extensions.Options;
 
 namespace AzureNamingTool.Controllers
 {
+    /// <summary>
+    /// Controller for managing custom components.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [ApiKey]
@@ -216,8 +219,8 @@ namespace AzureNamingTool.Controllers
             ServiceResponse serviceResponse = new();
             try
             {
-                List<ResourceComponent> currentresourcecomponents = new();
-                List<CustomComponent> newcustomcomponents = new();
+                List<ResourceComponent> currentresourcecomponents = [];
+                List<CustomComponent> newcustomcomponents = [];
                 // Get the current resource components
                 serviceResponse = await ResourceComponentService.GetItems(true);
                 if (serviceResponse.Success)

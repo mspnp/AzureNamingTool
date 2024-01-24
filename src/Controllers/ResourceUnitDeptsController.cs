@@ -13,11 +13,16 @@ using AzureNamingTool.Attributes;
 
 namespace AzureNamingTool.Controllers
 {
+    /// <summary>
+    /// Controller for managing resource units/departments.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [ApiKey]
     public class ResourceUnitDeptsController : ControllerBase
     {
+        private ServiceResponse serviceResponse = new();
+
         // GET: api/<ResourceUnitDeptsController>
         /// <summary>
         /// This function will return the units/depts data. 
@@ -26,7 +31,6 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -56,7 +60,6 @@ namespace AzureNamingTool.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -86,7 +89,6 @@ namespace AzureNamingTool.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ResourceUnitDept item)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceUnitDeptService.PostItem(item);
@@ -118,7 +120,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<ResourceUnitDept> items)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceUnitDeptService.PostConfig(items);
@@ -149,7 +150,6 @@ namespace AzureNamingTool.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get the item details

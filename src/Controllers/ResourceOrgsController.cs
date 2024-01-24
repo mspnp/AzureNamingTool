@@ -14,11 +14,16 @@ using AzureNamingTool.Attributes;
 
 namespace AzureNamingTool.Controllers
 {
+    /// <summary>
+    /// Controller for managing Resource Orgs.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [ApiKey]
     public class ResourceOrgsController : ControllerBase
     {
+        private ServiceResponse serviceResponse = new();
+
         // GET: api/<ResourceOrgsController>
         /// <summary>
         /// This function will return the orgs data. 
@@ -27,7 +32,6 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -57,7 +61,6 @@ namespace AzureNamingTool.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -87,7 +90,6 @@ namespace AzureNamingTool.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ResourceOrg item)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceOrgService.PostItem(item);
@@ -119,7 +121,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<ResourceOrg> items)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceOrgService.PostConfig(items);
@@ -150,7 +151,6 @@ namespace AzureNamingTool.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get the item details

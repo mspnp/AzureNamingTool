@@ -13,6 +13,9 @@ using System.Threading.Tasks;
 
 namespace AzureNamingTool.Controllers
 {
+    /// <summary>
+    /// Controller for managing resource delimiters.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [ApiKey]
@@ -134,7 +137,7 @@ namespace AzureNamingTool.Controllers
                     return BadRequest(serviceResponse.ResponseObject);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);

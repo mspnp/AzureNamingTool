@@ -13,6 +13,9 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace AzureNamingTool.Services
 {
+    /// <summary>
+    /// Service for managing Resource Naming Requests
+    /// </summary>
     public class ResourceNamingRequestService
     {
         /// <summary>
@@ -32,7 +35,7 @@ namespace AzureNamingTool.Services
             {
                 bool valid = true;
                 bool ignoredelimeter = false;
-                List<string[]> lstComponents = new();
+                List<string[]> lstComponents = [];
                 bool previousdelimiterappliedafter = true;
 
                 // Get the specified resource type
@@ -51,9 +54,8 @@ namespace AzureNamingTool.Services
                 }
 
                 // Get the components
-                ServiceResponse serviceresponse = new();
-                serviceresponse = await ResourceComponentService.GetItems(false);
-                var currentResourceComponents = serviceresponse.ResponseObject;
+                serviceResponse = await ResourceComponentService.GetItems(false);
+                var currentResourceComponents = serviceResponse.ResponseObject;
                 dynamic d = request;
 
                 string name = "";
@@ -129,17 +131,17 @@ namespace AzureNamingTool.Services
                                 // Add property to aray for indivudal component validation
                                 if (component.Name == "ResourceType")
                                 {
-                                    lstComponents.Add(new string[] { component.Name, prop.Resource + " (" + value + ")" });
+                                    lstComponents.Add([component.Name, prop.Resource + " (" + value + ")"]);
                                 }
                                 else
                                 {
                                     if (component.Name == "ResourceInstance")
                                     {
-                                        lstComponents.Add(new string[] { component.Name, prop });
+                                        lstComponents.Add([component.Name, prop]);
                                     }
                                     else
                                     {
-                                        lstComponents.Add(new string[] { component.Name, prop.Name + " (" + value + ")" });
+                                        lstComponents.Add([component.Name, prop.Name + " (" + value + ")"]);
                                     }
                                 }
                             }
@@ -234,7 +236,7 @@ namespace AzureNamingTool.Services
         }
 
         /// <summary>
-        /// This function is used to generate a name by providing each componetn and the short name value. The function will validate the values to ensure they match the current configuration. 
+        /// This function is used to generate a name by providing each component and the short name value. The function will validate the values to ensure they match the current configuration. 
         /// </summary>
         /// <param name="request"></param>
         /// <returns>ResourceNameResponse - Response of name generation</returns>
@@ -249,14 +251,13 @@ namespace AzureNamingTool.Services
             {
                 bool valid = true;
                 bool ignoredelimeter = false;
-                List<string[]> lstComponents = new();
+                List<string[]> lstComponents = [];
                 ServiceResponse serviceResponse = new();
                 ResourceDelimiter resourceDelimiter = new();
                 ResourceType resourceType = new();
                 string name = "";
                 StringBuilder sbMessage = new();
                 bool previousdelimiterappliedafter = true;
-                bool applyDelimiter = true;
 
                 // Get the current delimiter
                 serviceResponse = await ResourceDelimiterService.GetCurrentItem();
@@ -337,7 +338,7 @@ namespace AzureNamingTool.Services
                     // Make sure the passed custom component names are normalized
                     if (GeneralHelper.IsNotNull(request.CustomComponents))
                     {
-                        Dictionary<string, string> newComponents = new();
+                        Dictionary<string, string> newComponents = [];
                         foreach (var cc in request.CustomComponents)
                         {
                             string value = cc.Value;
@@ -513,7 +514,7 @@ namespace AzureNamingTool.Services
                                                         // Add property to array for individual component validation
                                                         if (!resourceType.Exclude.ToLower().Split(',').Contains(normalizedcomponentname))
                                                         {
-                                                            lstComponents.Add(new string[] { component.Name, value });
+                                                            lstComponents.Add([component.Name, value]);
                                                         }
                                                     }
                                                 }
@@ -599,7 +600,7 @@ namespace AzureNamingTool.Services
                                                                                         name += componentvalue;
 
                                                                                         // Add property to array for individual component validation
-                                                                                        lstComponents.Add(new string[] { component.Name, componentvalue });
+                                                                                        lstComponents.Add([component.Name, componentvalue]);
                                                                                     }
                                                                                 }
                                                                             }
@@ -679,7 +680,7 @@ namespace AzureNamingTool.Services
                                                                 name += componentvalue;
 
                                                                 // Add property to array for individual component validation
-                                                                lstComponents.Add(new string[] { component.Name, componentvalue });
+                                                                lstComponents.Add([component.Name, componentvalue]);
                                                             }
                                                             else
                                                             {

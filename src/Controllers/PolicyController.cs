@@ -12,6 +12,9 @@ using AzureNamingTool.Attributes;
 
 namespace AzureNamingTool.Controllers
 {
+    /// <summary>
+    /// Controller for managing policies.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [ApiKey]

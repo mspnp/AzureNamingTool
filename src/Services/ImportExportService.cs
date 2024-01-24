@@ -6,8 +6,16 @@ using System.Text.Json.Serialization;
 
 namespace AzureNamingTool.Services
 {
+    /// <summary>
+    /// Service for managing the import and export of configuration data.
+    /// </summary>
     public class ImportExportService
     {
+        /// <summary>
+        /// Export the configuration data.
+        /// </summary>
+        /// <param name="includeadmin">Flag to include admin settings in the export.</param>
+        /// <returns>The service response containing the exported configuration data.</returns>
         public static async Task<ServiceResponse> ExportConfig(bool includeadmin = false)
         {
             ServiceResponse serviceResponse = new();
@@ -143,6 +151,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Import the configuration data.
+        /// </summary>
+        /// <param name="configdata">The configuration data to import.</param>
+        /// <returns>The service response indicating the success or failure of the import.</returns>
         public static async Task<ServiceResponse> PostConfig(ConfigurationData configdata)
         {
             ServiceResponse serviceResponse = new();

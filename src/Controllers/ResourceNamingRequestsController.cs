@@ -17,14 +17,18 @@ using AzureNamingTool.Attributes;
 
 namespace AzureNamingTool.Controllers
 {
+    /// <summary>
+    /// Controller for handling resource naming requests.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [ApiKey]
     public class ResourceNamingRequestsController : ControllerBase
     {
+        private ServiceResponse serviceResponse = new();
         // POST api/<ResourceNamingRequestsController>
         /// <summary>
-        /// This function will generate a resoure type name for specifed component values. This function requires full definition for all components. It is recommended to use the RequestName API function for name generation.   
+        /// This function will generate a resource type name for specified component values. This function requires full definition for all components. It is recommended to use the RequestName API function for name generation.
         /// </summary>
         /// <param name="request">ResourceNameRequestWithComponents (json) - Resource Name Request data</param>
         /// <returns>string - Name generation response</returns>
@@ -53,7 +57,7 @@ namespace AzureNamingTool.Controllers
 
         // POST api/<ResourceNamingRequestsController>
         /// <summary>
-        /// This function will generate a resoure type name for specifed component values, using a simple data format.  
+        /// This function will generate a resource type name for specified component values, using a simple data format.
         /// </summary>
         /// <param name="request">ResourceNameRequest (json) - Resource Name Request data</param>
         /// <returns>string - Name generation response</returns>
@@ -83,7 +87,7 @@ namespace AzureNamingTool.Controllers
 
         // POST api/<ResourceNamingRequestsController>
         /// <summary>
-        /// This function will validate the name for the specified resource type. NOTE: This function does not validate using the tool configuration, only the regex for the specified resource type. Use the RequestName function to validate using the tool configuration. 
+        /// This function will validate the name for the specified resource type. NOTE: This function does not validate using the tool configuration, only the regex for the specified resource type. Use the RequestName function to validate using the tool configuration.
         /// </summary>
         /// <param name="validateNameRequest">ValidateNameRequest (json) - Validate Name Request data</param>
         /// <returns>ValidateNameResponse - Name validation response</returns>
@@ -91,7 +95,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> ValidateName([FromBody] ValidateNameRequest validateNameRequest)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get the current delimiter
