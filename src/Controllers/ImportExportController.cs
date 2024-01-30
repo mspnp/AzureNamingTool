@@ -9,8 +9,6 @@ using System.Threading.Tasks;
 using AzureNamingTool.Services;
 using AzureNamingTool.Attributes;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace AzureNamingTool.Controllers
 {
     /// <summary>
@@ -21,6 +19,11 @@ namespace AzureNamingTool.Controllers
     [ApiKey]
     public class ImportExportController : ControllerBase
     {
+        /// <summary>
+        /// Response for controller functions
+        /// </summary>
+        ServiceResponse serviceResponse = new();
+
         // GET: api/<ImportExportController>
         /// <summary>
         /// This function will export the current configuration data (all components) as a single JSON file. 
@@ -31,7 +34,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> ExportConfiguration(bool includeAdmin = false)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ImportExportService.ExportConfig(includeAdmin);
@@ -61,7 +63,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> ImportConfiguration([FromBody] ConfigurationData configdata)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ImportExportService.PostConfig(configdata);

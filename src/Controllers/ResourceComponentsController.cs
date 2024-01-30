@@ -8,8 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace AzureNamingTool.Controllers
 {
     /// <summary>
@@ -20,6 +18,11 @@ namespace AzureNamingTool.Controllers
     [ApiKey]
     public class ResourceComponentsController : ControllerBase
     {
+        /// <summary>
+        /// Response for controller functions
+        /// </summary>
+        ServiceResponse serviceResponse = new();
+
         // GET: api/<resourcecomponentsController>
         /// <summary>
         /// This function will return the components data.
@@ -29,7 +32,6 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> Get(bool admin = false)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceComponentService.GetItems(admin);
@@ -58,7 +60,6 @@ namespace AzureNamingTool.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -88,7 +89,6 @@ namespace AzureNamingTool.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ResourceComponent item)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceComponentService.PostItem(item);
@@ -120,7 +120,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<ResourceComponent> items)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceComponentService.PostConfig(items);

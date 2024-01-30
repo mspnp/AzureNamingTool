@@ -18,6 +18,16 @@ namespace AzureNamingTool.Helpers
     public class ConfigurationHelper
     {
         /// <summary>
+        /// Helper class for logging operations.
+        /// </summary>
+        private static readonly JsonSerializerOptions options = new()
+        {
+            AllowTrailingCommas = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            PropertyNameCaseInsensitive = true
+        };
+
+        /// <summary>
         /// Retrieves the configuration data for the site.
         /// </summary>
         /// <returns>The site configuration data.</returns>
@@ -323,12 +333,6 @@ namespace AzureNamingTool.Helpers
 
                 if (data != "[]")
                 {
-                    JsonSerializerOptions options = new()
-                    {
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                        PropertyNameCaseInsensitive = true
-                    };
-
                     items = JsonSerializer.Deserialize<List<T>>(data, options);
                 }
             }
@@ -721,11 +725,6 @@ namespace AzureNamingTool.Helpers
                         if (GeneralHelper.IsNotNull(data))
                         {
                             var items = new List<VersionAlert>();
-                            JsonSerializerOptions options = new()
-                            {
-                                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                                PropertyNameCaseInsensitive = true
-                            };
                             items = [.. JsonSerializer.Deserialize<List<VersionAlert>>(data, options)!];
                             versionalert = items.Where(x => x.Version == appversion).FirstOrDefault()!;
 
@@ -866,12 +865,6 @@ namespace AzureNamingTool.Helpers
                                 string data = await FileSystemHelper.ReadFile("resourcecomponents.json", "repository/");
                                 if (!String.IsNullOrEmpty(data))
                                 {
-                                    JsonSerializerOptions options = new()
-                                    {
-                                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                                        PropertyNameCaseInsensitive = true
-                                    };
-
                                     if (!String.IsNullOrEmpty(data))
                                     {
                                         defaultComponents = JsonSerializer.Deserialize<List<ResourceComponent>>(data, options)!;

@@ -9,6 +9,16 @@ namespace AzureNamingTool.Helpers
     public class LogHelper
     {
         /// <summary>
+        /// Helper class for logging operations.
+        /// </summary>
+        private static readonly JsonSerializerOptions options = new()
+        {
+            AllowTrailingCommas = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            PropertyNameCaseInsensitive = true
+        };
+
+        /// <summary>
         /// Retrieves the list of generated names.
         /// </summary>
         /// <returns>List of GeneratedName objects.</returns>
@@ -20,11 +30,6 @@ namespace AzureNamingTool.Helpers
                 string items = await FileSystemHelper.ReadFile("generatednames.json");
                 if (GeneralHelper.IsNotNull(items))
                 {
-                    var options = new JsonSerializerOptions
-                    {
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                        PropertyNameCaseInsensitive = true
-                    };
                     lstGeneratedNames = [.. JsonSerializer.Deserialize<List<GeneratedName>>(items, options)!.OrderByDescending(x => x.CreatedOn)];
                 }
             }
@@ -96,11 +101,6 @@ namespace AzureNamingTool.Helpers
                 if (GeneralHelper.IsNotNull(data))
                 {
                     var items = new List<AdminLogMessage>();
-                    JsonSerializerOptions options = new()
-                    {
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                        PropertyNameCaseInsensitive = true
-                    };
                     lstAdminLogMessages = [.. JsonSerializer.Deserialize<List<AdminLogMessage>>(data, options)!.OrderByDescending(x => x.CreatedOn)];
                 }
             }

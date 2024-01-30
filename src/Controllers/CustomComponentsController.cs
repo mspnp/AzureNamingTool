@@ -10,8 +10,6 @@ using AzureNamingTool.Services;
 using AzureNamingTool.Attributes;
 using Microsoft.Extensions.Options;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace AzureNamingTool.Controllers
 {
     /// <summary>
@@ -22,6 +20,11 @@ namespace AzureNamingTool.Controllers
     [ApiKey]
     public class CustomComponentsController : ControllerBase
     {
+        /// <summary>
+        /// Response for controller functions
+        /// </summary>
+        ServiceResponse serviceResponse = new();
+
         // GET: api/<CustomComponentsController>
         /// <summary>
         /// This function will return the custom components data. 
@@ -30,7 +33,6 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -61,7 +63,6 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> GetByParentComponentId(int parentcomponentid)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -92,7 +93,6 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> GetByParentType(string parenttype)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -122,7 +122,6 @@ namespace AzureNamingTool.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -152,7 +151,6 @@ namespace AzureNamingTool.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CustomComponent item)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await CustomComponentService.PostItem(item);
@@ -184,7 +182,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<CustomComponent> items)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await CustomComponentService.PostConfig(items);
@@ -216,7 +213,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfigWithParentData([FromBody] CustomComponmentConfig config)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 List<ResourceComponent> currentresourcecomponents = [];
@@ -306,7 +302,6 @@ namespace AzureNamingTool.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get the item details
@@ -346,7 +341,6 @@ namespace AzureNamingTool.Controllers
         [HttpDelete("[action]/{parentcomponentid}")]
         public async Task<IActionResult> DeleteByParentComponentId(int parentcomponentid)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get the item details

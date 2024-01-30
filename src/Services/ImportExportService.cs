@@ -115,7 +115,7 @@ namespace AzureNamingTool.Services
                 configdata.DismissedAlerts = config.DismissedAlerts;
                 configdata.DuplicateNamesAllowed = config.DuplicateNamesAllowed;
                 configdata.ConnectivityCheckEnabled = config.ConnectivityCheckEnabled;
-                configdata.GenerationWebhook = config.GenerationWebhook;                    
+                configdata.GenerationWebhook = config.GenerationWebhook;
                 configdata.ResourceTypeEditingAllowed = config.ResourceTypeEditingAllowed;
                 configdata.AutoIncrementResourceInstance = config.AutoIncrementResourceInstance;
                 configdata.InstructionsEnabled = config.InstructionsEnabled;
