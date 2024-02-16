@@ -92,8 +92,9 @@
                                     </div>
                                 }
                                 <div class="mb-3">
-                                    <button type="button" class="btn btn-success" @onclick="@(e => SubmitIssue("feature"))" title="Feature Request">Feature Request</button>
-                                    <button type="button" class="btn btn-danger" @onclick="@(e => SubmitIssue("bug"))" title="Submit a bug">Submit a bug</button>
+                                    <button type="button" class="btn btn-success" @onclick="@(e => SubmitGHTopic("feature"))" title="Feature request">Feature Request</button>
+                                    <button type="button" class="btn btn-danger" @onclick="@(e => SubmitGHTopic("bug"))" title="Submit a bug">Submit a bug</button>
+                                    <button type="button" class="btn btn-primary" @onclick="@(e => SubmitGHTopic("discussion"))" title="Start a discussion">Start a Discussion</button>
                                 </div>
                             </div>
                         </div>
@@ -1166,22 +1167,24 @@
         }
     }
 
-    private async void SubmitIssue(string type)
+    private async void SubmitGHTopic(string type)
     {
-        string issueURL = "";
+        string githubURL = "";
         switch (type)
         {
             case "bug":
-                issueURL = "https://github.com/mspnp/AzureNamingTool/issues/new?assignees=&labels=&projects=&template=bug_report.md&title=";
+                githubURL = "https://github.com/mspnp/AzureNamingTool/issues/new?assignees=&labels=&projects=&template=bug_report.md&title=";
                 break;
             case "feature":
-                issueURL = "https://github.com/mspnp/AzureNamingTool/issues/new?assignees=&labels=&projects=&template=feature_request.md&title=";
+                githubURL = "https://github.com/mspnp/AzureNamingTool/issues/new?assignees=&labels=&projects=&template=feature_request.md&title=";
                 break;
-
+            case "discussion":
+                githubURL = "https://github.com/mspnp/AzureNamingTool/discussions/new/choose";
+                break;
         }
-        if (!String.IsNullOrEmpty(issueURL))
+        if (!String.IsNullOrEmpty(githubURL))
         {
-            await JsRuntime.InvokeVoidAsync("open", issueURL, "_blank");
+            await JsRuntime.InvokeVoidAsync("open", githubURL, "_blank");
         }
     }
 }
