@@ -653,7 +653,7 @@ namespace AzureNamingTool.Helpers
                 if (String.IsNullOrEmpty(data))
                 {
                     Version version = Assembly.GetExecutingAssembly().GetName().Version!;
-                    result = version.Major + "." + version.Minor + "." + version.Revision;
+                    result = version.Major + "." + version.Minor + "." + version.Build;
                     CacheHelper.SetCacheObject("assemblyversion", result);
                 }
                 else
