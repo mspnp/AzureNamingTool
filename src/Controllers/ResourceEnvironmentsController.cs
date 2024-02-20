@@ -9,15 +9,17 @@ using System.Threading.Tasks;
 using AzureNamingTool.Services;
 using AzureNamingTool.Attributes;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace AzureNamingTool.Controllers
 {
+    /// <summary>
+    /// Controller for managing resource environments.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [ApiKey]
     public class ResourceEnvironmentsController : ControllerBase
     {
+        private ServiceResponse serviceResponse = new();
         // GET: api/<ResourceEnvironmentsController>
         /// <summary>
         /// This function will return the environments data. 
@@ -26,7 +28,6 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceEnvironmentService.GetItems();
@@ -55,7 +56,6 @@ namespace AzureNamingTool.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceEnvironmentService.GetItem(id);
@@ -84,7 +84,6 @@ namespace AzureNamingTool.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ResourceEnvironment item)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceEnvironmentService.PostItem(item);
@@ -116,7 +115,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<ResourceEnvironment> items)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceEnvironmentService.PostConfig(items);
@@ -147,7 +145,6 @@ namespace AzureNamingTool.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get the item details

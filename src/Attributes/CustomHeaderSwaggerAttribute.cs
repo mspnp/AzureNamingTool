@@ -3,12 +3,19 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace AzureNamingTool.Attributes
 {
+    /// <summary>
+    /// Represents a custom header Swagger attribute.
+    /// </summary>
     public class CustomHeaderSwaggerAttribute : IOperationFilter
     {
+        /// <summary>
+        /// Applies the custom header Swagger attribute to the specified operation.
+        /// </summary>
+        /// <param name="operation">The OpenApiOperation object representing the operation.</param>
+        /// <param name="context">The OperationFilterContext object representing the context of the operation.</param>
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            if (operation.Parameters == null)
-                operation.Parameters = new List<OpenApiParameter>();
+            operation.Parameters ??= new List<OpenApiParameter>();
 
             operation.Parameters.Add(new OpenApiParameter
             {
@@ -21,6 +28,5 @@ namespace AzureNamingTool.Attributes
                 }
             });
         }
-
     }
 }

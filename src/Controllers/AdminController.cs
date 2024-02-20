@@ -11,16 +11,18 @@ using AzureNamingTool.Attributes;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace AzureNamingTool.Controllers
 {
+    /// <summary>
+    /// Controller for managing Admin settings.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [ApiKey]
     public class AdminController : ControllerBase
     {
         private readonly SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
+        private ServiceResponse serviceResponse = new();
 
         // POST api/<AdminController>
         /// <summary>
@@ -33,7 +35,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> UpdatePassword([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword, [FromBody] string password)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 if (GeneralHelper.IsNotNull(adminpassword))
@@ -72,7 +73,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> UpdateAPIKey([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword, [FromBody] string apikey)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 if (GeneralHelper.IsNotNull(adminpassword))
@@ -111,7 +111,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> GenerateAPIKey([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 if (GeneralHelper.IsNotNull(adminpassword))
@@ -150,7 +149,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> UpdateReadOnlyAPIKey([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword, [FromBody] string apikey)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 if (GeneralHelper.IsNotNull(adminpassword))
@@ -188,7 +186,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> GenerateReadOnlyAPIKey([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 if (GeneralHelper.IsNotNull(adminpassword))
@@ -224,7 +221,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> GetAdminLog([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 if (GeneralHelper.IsNotNull(adminpassword))
@@ -267,7 +263,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PurgeAdminLog([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 if (GeneralHelper.IsNotNull(adminpassword))
@@ -310,7 +305,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> GetGeneratedNamesLog()
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await GeneratedNamesService.GetItems();
@@ -340,7 +334,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]/{id}")]
         public async Task<IActionResult> GetGeneratedName(int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await GeneratedNamesService.GetItem(id);
@@ -371,7 +364,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]/{id}")]
         public async Task<IActionResult> DeleteGeneratedName([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword, int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 if (GeneralHelper.IsNotNull(adminpassword))
@@ -426,7 +418,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PurgeGeneratedNamesLog([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 if (GeneralHelper.IsNotNull(adminpassword))
@@ -469,7 +460,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public IActionResult ResetSiteConfiguration([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 if (GeneralHelper.IsNotNull(adminpassword))

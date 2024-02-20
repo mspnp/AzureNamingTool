@@ -3,8 +3,15 @@ using AzureNamingTool.Models;
 
 namespace AzureNamingTool.Services
 {
+    /// <summary>
+    /// Service for managing custom components.
+    /// </summary>
     public class CustomComponentService
     {
+        /// <summary>
+        /// Retrieves a list of custom component items.
+        /// </summary>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation.</returns>
         public static async Task<ServiceResponse> GetItems()
         {
             ServiceResponse serviceResponse = new();
@@ -31,6 +38,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Retrieves a list of custom component items by the parent component ID.
+        /// </summary>
+        /// <param name="parentcomponetid">The ID of the parent component.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation.</returns>
         public static async Task<ServiceResponse> GetItemsByParentComponentId(int parentcomponetid)
         {
             ServiceResponse serviceResponse = new();
@@ -68,6 +80,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Retrieves a list of custom component items by the parent type.
+        /// </summary>
+        /// <param name="parenttype">The parent type of the custom components.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation.</returns>
         public static async Task<ServiceResponse> GetItemsByParentType(string parenttype)
         {
             ServiceResponse serviceResponse = new();
@@ -94,6 +111,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Retrieves a custom component item by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the custom component to retrieve.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation.</returns>
         public static async Task<ServiceResponse> GetItem(int id)
         {
             ServiceResponse serviceResponse = new();
@@ -128,6 +150,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Posts a custom component item.
+        /// </summary>
+        /// <param name="item">The custom component item to be posted.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation.</returns>
         public static async Task<ServiceResponse> PostItem(CustomComponent item)
         {
             ServiceResponse serviceResponse = new();
@@ -155,7 +182,7 @@ namespace AzureNamingTool.Services
                     }
 
                     int position = 1;
-                    items = items.OrderBy(x => x.SortOrder).ToList();
+                    items = [.. items.OrderBy(x => x.SortOrder)];
 
                     if (item.SortOrder == 0)
                     {
@@ -228,6 +255,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Deletes a custom component by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the custom component to delete.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation.</returns>
         public static async Task<ServiceResponse> DeleteItem(int id)
         {
             ServiceResponse serviceResponse = new();
@@ -275,6 +307,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Posts a configuration of custom components.
+        /// </summary>
+        /// <param name="items">The list of custom components to be configured.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation.</returns>
         public static async Task<ServiceResponse> PostConfig(List<CustomComponent> items)
         {
             ServiceResponse serviceResponse = new();
@@ -317,6 +354,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Deletes custom components by parent component ID.
+        /// </summary>
+        /// <param name="componentid">The ID of the parent component.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation.</returns>
         public static async Task<ServiceResponse> DeleteByParentComponentId(int componentid)
         {
             ServiceResponse serviceResponse = new();

@@ -3,11 +3,20 @@ using AzureNamingTool.Services;
 
 namespace AzureNamingTool.Helpers
 {
+    /// <summary>
+    /// Helper class for loading services data.
+    /// </summary>
     public class ServicesHelper
     {
+        /// <summary>
+        /// Loads the services data.
+        /// </summary>
+        /// <param name="servicesData">The services data.</param>
+        /// <param name="admin">A flag indicating whether the user is an admin.</param>
+        /// <returns>The loaded services data.</returns>
         public static async Task<ServicesData> LoadServicesData(ServicesData servicesData, bool admin)
         {
-            ServiceResponse serviceResponse = new();
+            ServiceResponse serviceResponse;
             try
             {
                 serviceResponse = await ResourceComponentService.GetItems(admin);
@@ -38,7 +47,7 @@ namespace AzureNamingTool.Helpers
                 servicesData.AdminUsers = (List<AdminUser>?)serviceResponse.ResponseObject;
                 return servicesData;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return servicesData;

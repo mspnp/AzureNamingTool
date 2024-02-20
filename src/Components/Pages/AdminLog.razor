@@ -163,7 +163,7 @@
             admin = (bool)result.Value;
             if (!admin)
             {
-                NavigationManager.NavigateTo("/");
+                NavigationManager.NavigateTo("");
             }
             ServiceResponse serviceResponse = new();
             serviceResponse = await AdminLogService.GetItems();
@@ -182,7 +182,7 @@
 
     private void OnInstructionsClick()
     {
-        NavigationManager.NavigateTo("/instructions");
+        NavigationManager.NavigateTo("instructions");
     }
 
 

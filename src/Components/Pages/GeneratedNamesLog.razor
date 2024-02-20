@@ -211,7 +211,7 @@
             if (!Convert.ToBoolean(config.GeneratedNamesLogEnabled) && !admin)
             {
                 toastService.ShowWarning("The Generated Names Log is disabled in the site settings.");
-                NavigationManager.NavigateTo("/");
+                NavigationManager.NavigateTo("");
             }
             await LoadData();
             duplicatenamesallowed = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("DuplicateNamesAllowed"));
@@ -237,7 +237,7 @@
 
     private void OnInstructionsClick()
     {
-        NavigationManager.NavigateTo("/instructions");
+        NavigationManager.NavigateTo("instructions");
     }
 
 
