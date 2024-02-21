@@ -4,10 +4,20 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace AzureNamingTool.Attributes
 {
+    /// <summary>
+    /// Attribute to validate API key for authorization.
+    /// </summary>
     [AttributeUsage(validOn: AttributeTargets.Class)]
     public class ApiKeyAttribute : Attribute, IAsyncActionFilter
     {
         private const string APIKEYNAME = "APIKey";
+
+        /// <summary>
+        /// Validates the API key for authorization.
+        /// </summary>
+        /// <param name="context">The action executing context.</param>
+        /// <param name="next">The action execution delegate.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             if (!context.HttpContext.Request.Headers.TryGetValue(APIKEYNAME, out var extractedApiKey))
@@ -37,7 +47,7 @@ namespace AzureNamingTool.Attributes
                     }
                 }
                 else
-                { 
+                {
                     // Request is a POST. Make sure the provided API Key is for full access
                     if (!GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!).Equals(extractedApiKey))
                     {

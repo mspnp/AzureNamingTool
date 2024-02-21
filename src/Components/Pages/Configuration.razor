@@ -2024,7 +2024,7 @@
                 var workingmodal = Modal.Show<WorkingModal>("Working", workingmodaloptions);
                 try
                 {
-                    ServiceResponse serviceResponse;
+                    ServiceResponse serviceResponse = new();
                     JsonSerializerOptions options = new JsonSerializerOptions
                         {
                             PropertyNameCaseInsensitive = true
@@ -4108,7 +4108,7 @@
 
     private void OnInstructionsClick()
     {
-        NavigationManager.NavigateTo("/instructions");
+        NavigationManager.NavigateTo("instructions");
     }
 
     private async Task OnConfigurationAlertDismissed()

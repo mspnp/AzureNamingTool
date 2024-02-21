@@ -10,24 +10,27 @@ using System.Web;
 using AzureNamingTool.Services;
 using AzureNamingTool.Attributes;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace AzureNamingTool.Controllers
 {
+    /// <summary>
+    /// Controller for managing resource types.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [ApiKey]
     public class ResourceTypesController : ControllerBase
     {
+        private ServiceResponse serviceResponse = new();
+
         // GET: api/<ResourceTypesController>
         /// <summary>
         /// This function will return the resource types data. 
         /// </summary>
+        /// <param name="admin">bool - Indicates if the user is an admin (optional)</param>
         /// <returns>json - Current resource types data</returns>
         [HttpGet]
         public async Task<IActionResult> Get(bool admin = false)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -50,14 +53,13 @@ namespace AzureNamingTool.Controllers
 
         // GET api/<ResourceTypesController>/5
         /// <summary>
-        /// This function will return the specifed resource type data.
+        /// This function will return the specified resource type data.
         /// </summary>
         /// <param name="id">int - Resource Type id</param>
         /// <returns>json - Resource Type data</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -88,7 +90,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<ResourceType> items)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceTypeService.PostConfig(items);
@@ -112,16 +113,15 @@ namespace AzureNamingTool.Controllers
 
         // POST api/<ResourceTypesController>
         /// <summary>
-        /// This function will update all resource types for the specifed component
+        /// This function will update all resource types for the specified component.
         /// </summary>
-        /// <param name="operation">string - Operation type  (optional-add, optional-remove, exlcude-add, exclude-remove)</param>
+        /// <param name="operation">string - Operation type (optional-add, optional-remove, exlcude-add, exclude-remove)</param>
         /// <param name="componentid">int - Component ID</param>
         /// <returns>bool - PASS/FAIL</returns>
         [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> UpdateTypeComponents(string operation, int componentid)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceTypeService.UpdateTypeComponents(operation, componentid);

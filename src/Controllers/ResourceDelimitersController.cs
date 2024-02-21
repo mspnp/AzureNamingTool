@@ -9,15 +9,21 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace AzureNamingTool.Controllers
 {
+    /// <summary>
+    /// Controller for managing resource delimiters.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [ApiKey]
     public class ResourceDelimitersController : ControllerBase
     {
+        /// <summary>
+        /// Response for controller functions
+        /// </summary>
+        ServiceResponse serviceResponse = new();
+
         // GET api/<ResourceDelimitersController>
         /// <summary>
         /// This function will return the delimiters data.
@@ -27,7 +33,6 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> Get(bool admin = false)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceDelimiterService.GetItems(admin);
@@ -56,7 +61,6 @@ namespace AzureNamingTool.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -86,7 +90,6 @@ namespace AzureNamingTool.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ResourceDelimiter item)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceDelimiterService.PostItem(item);
@@ -119,7 +122,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<ResourceDelimiter> items)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceDelimiterService.PostConfig(items);
@@ -134,7 +136,7 @@ namespace AzureNamingTool.Controllers
                     return BadRequest(serviceResponse.ResponseObject);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);

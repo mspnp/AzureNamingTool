@@ -3,8 +3,15 @@ using AzureNamingTool.Models;
 
 namespace AzureNamingTool.Services
 {
+    /// <summary>
+    /// Service for managing resource functions.
+    /// </summary>
     public class ResourceFunctionService
     {
+        /// <summary>
+        /// Retrieves a list of resource functions.
+        /// </summary>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the list of resource functions if found, or an error message if not found.</returns>
         public static async Task<ServiceResponse> GetItems()
         {
             ServiceResponse serviceResponse = new();
@@ -31,6 +38,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Retrieves an item from the list of resource functions based on the specified ID.
+        /// </summary>
+        /// <param name="id">The ID of the item to retrieve.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the retrieved item if found, or an error message if not found.</returns>
         public static async Task<ServiceResponse> GetItem(int id)
         {
             ServiceResponse serviceResponse = new();
@@ -65,6 +77,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Posts an item to the list of resource functions.
+        /// </summary>
+        /// <param name="item">The item to be added or updated.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the success status of the operation.</returns>
         public static async Task<ServiceResponse> PostItem(ResourceFunction item)
         {
             ServiceResponse serviceResponse = new();
@@ -99,7 +116,7 @@ namespace AzureNamingTool.Services
                     }
 
                     int position = 1;
-                    items = items.OrderBy(x => x.SortOrder).ToList();
+                    items = [.. items.OrderBy(x => x.SortOrder)];
 
                     if (item.SortOrder == 0)
                     {
@@ -173,6 +190,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Deletes an item from the list of resource functions.
+        /// </summary>
+        /// <param name="id">The ID of the item to delete.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the success status of the operation.</returns>
         public static async Task<ServiceResponse> DeleteItem(int id)
         {
             ServiceResponse serviceResponse = new();
@@ -220,6 +242,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Posts the configuration for a list of resource functions.
+        /// </summary>
+        /// <param name="items">The list of resource functions to configure.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the success status of the operation.</returns>
         public static async Task<ServiceResponse> PostConfig(List<ResourceFunction> items)
         {
             ServiceResponse serviceResponse = new();
