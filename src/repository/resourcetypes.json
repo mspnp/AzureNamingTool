@@ -2941,7 +2941,7 @@
     "invalidCharactersStart": "",
     "invalidCharactersEnd": "",
     "invalidCharactersConsecutive": "",
-    "regx": "^(?![0-9]+$)([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]{0,13}[a-zA-Z0-9])$",
+    "regx": "^(?![0-9]+$)([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]{0,62}[a-zA-Z0-9])$",
     "staticValues": ""
   },
   {
@@ -2960,7 +2960,7 @@
     "invalidCharactersStart": "",
     "invalidCharactersEnd": "",
     "invalidCharactersConsecutive": "",
-    "regx": "^(?![0-9]+$)([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]{0,62}[a-zA-Z0-9])$",
+    "regx": "^(?![0-9]+$)([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]{0,13}[a-zA-Z0-9])$",
     "staticValues": ""
   },
   {
