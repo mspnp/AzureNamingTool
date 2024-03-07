@@ -100,6 +100,13 @@ namespace AzureNamingTool.Helpers
                 bool valid = true;
                 StringBuilder sbMessage = new();
 
+                // Check if the resource type only allows lowercase
+                if (!resourceType.Regx.Contains("A-Z"))
+                {
+                    sbMessage.Append("This resource type only allows lowercase names. The generated name has been updated to lowercase characters.");
+                    name = name.ToLower();                
+                }
+
                 // Check regex
                 // Validate the name against the resource type regex
                 Regex regx = new(resourceType.Regx);

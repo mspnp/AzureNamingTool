@@ -143,5 +143,10 @@ namespace AzureNamingTool.Models
         /// Gets or sets whether latest news is enabled.
         /// </summary>
         public string? LatestNewsEnabled { get; set; } = "False";
+
+        /// <summary>
+        /// Gets or sets whether retaining of Generate opage selections is enabled.
+        /// </summary>
+        public string? RetainGenerateSelections { get; set; } = "False";
     }
 }

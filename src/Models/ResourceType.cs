@@ -43,7 +43,7 @@ namespace AzureNamingTool.Models
         public string ShortName
         {
             get { return _ShortName; }
-            set => _ShortName = value?.ToLower()!;
+            set => _ShortName = value;
         }
 
         /// <summary>

@@ -970,5 +970,64 @@ namespace AzureNamingTool.Helpers
             }
             return nameexists;
         }
+
+
+        /// <summary>
+        /// Converts the case of the items in the list.
+        /// </summary>
+        /// <typeparam name="T">The type of the items in the list.</typeparam>
+        /// <param name="items">The list of items to convert.</param>
+        /// <param name="lowercase">A flag indicating whether to convert to lowercase or uppercase.</param>
+        /// <returns>A <see cref="Task{TResult}"/> representing the asynchronous operation. The task result contains a <see cref="ServiceResponse"/> object.</returns>
+        public static async Task<ServiceResponse> ConvertCase<T>(List<T> items, bool lowercase)
+        {
+            // Check if the name already exists
+            ServiceResponse serviceResponse = new();
+            try
+            {
+                foreach (dynamic item in items)
+                {
+                    item!.ShortName = lowercase ? item.ShortName.ToLower() : item.ShortName.ToUpper();
+
+                    switch (typeof(T).Name)
+                    {
+                        case nameof(ResourceEnvironment):
+                            serviceResponse = await ResourceEnvironmentService.PostItem(item);
+                            break;
+                        case nameof(Models.ResourceLocation):
+                            serviceResponse = await ResourceLocationService.PostItem(item);
+                            break;
+                        case nameof(ResourceOrg):
+                            serviceResponse = await ResourceOrgService.PostItem(item);
+                            break;
+                        case nameof(ResourceProjAppSvc):
+                            serviceResponse = await ResourceProjAppSvcService.PostItem(item);
+                            break;
+                        case nameof(Models.ResourceType):
+                            serviceResponse = await ResourceTypeService.PostItem(item);
+                            break;
+                        case nameof(ResourceUnitDept):
+                            serviceResponse = await ResourceUnitDeptService.PostItem(item);
+                            break;
+                        case nameof(ResourceFunction):
+                            serviceResponse = await ResourceFunctionService.PostItem(item);
+                            break;
+                        case nameof(CustomComponent):
+                            serviceResponse = await CustomComponentService.PostItem(item);
+                            break;
+                    }
+
+                    if (!serviceResponse.Success)
+                    {
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            }
+            return serviceResponse;
+        }
     }
 }

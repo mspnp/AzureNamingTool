@@ -529,6 +529,27 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                @if (admin)
+                                                {
+                                                    <div class="card w-auto mb-3">
+                                                        <div class="card card-header bg-default text-dark" style="font-weight:bold;">
+                                                            Bulk Update
+                                                        </div>
+                                                        <div class="card card-body @theme.ThemeStyle">
+                                                            <p>
+                                                                Use the options below to bulk update all component options.
+                                                            </p>
+                                                            <p>
+                                                                <button type="button" class="btn btn-success" @onclick=@(e => FormAction("CustomComponent",0,"uppercase", customComponent.Name)) title="Uppercase">
+                                                                    <span class="oi oi-arrow-thick-top" aria-hidden="true"></span> Convert to Uppercase
+                                                                </button>
+                                                                <button type="button" class="btn btn-success" @onclick=@(e => FormAction("CustomComponent",0,"lowercase", customComponent.Name)) title="Uppercase">
+                                                                    <span class="oi oi-arrow-thick-bottom" aria-hidden="true"></span> Convert to Lowercase
+                                                                </button>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                }
                                             </div>
                                         }
                                         else
@@ -682,6 +703,24 @@
                                                 <div class="collapse card card-body @theme.ThemeStyle" id="environmentsconfig">
                                                     <div class="card w-auto mb-3">
                                                         <div class="card card-header bg-default text-dark" style="font-weight:bold;">
+                                                            Bulk Update
+                                                        </div>
+                                                        <div class="card card-body @theme.ThemeStyle">
+                                                            <p>
+                                                                Use the options below to bulk update all component options.
+                                                            </p>
+                                                            <p>
+                                                                <button type="button" class="btn btn-success" @onclick=@(e => FormAction(resourceComponent.Name,0,"uppercase")) title="Uppercase">
+                                                                    <span class="oi oi-arrow-thick-top" aria-hidden="true"></span> Convert to Uppercase
+                                                                </button>
+                                                                <button type="button" class="btn btn-success" @onclick=@(e => FormAction(resourceComponent.Name,0,"lowercase")) title="Uppercase">
+                                                                    <span class="oi oi-arrow-thick-bottom" aria-hidden="true"></span> Convert to Lowercase
+                                                                </button>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card w-auto mb-3">
+                                                        <div class="card card-header bg-default text-dark" style="font-weight:bold;">
                                                             Export the current Environments Configuration
                                                         </div>
                                                         <div class="card card-body @theme.ThemeStyle">
@@ -822,6 +861,24 @@
                                                     </a>
                                                 </div>
                                                 <div class="collapse card card-body @theme.ThemeStyle" id="functionsconfig">
+                                                    <div class="card w-auto mb-3">
+                                                        <div class="card card-header bg-default text-dark" style="font-weight:bold;">
+                                                            Bulk Update
+                                                        </div>
+                                                        <div class="card card-body @theme.ThemeStyle">
+                                                            <p>
+                                                                Use the options below to bulk update all component options.
+                                                            </p>
+                                                            <p>
+                                                                <button type="button" class="btn btn-success" @onclick=@(e => FormAction(resourceComponent.Name,0,"uppercase")) title="Uppercase">
+                                                                    <span class="oi oi-arrow-thick-top" aria-hidden="true"></span> Convert to Uppercase
+                                                                </button>
+                                                                <button type="button" class="btn btn-success" @onclick=@(e => FormAction(resourceComponent.Name,0,"lowercase")) title="Uppercase">
+                                                                    <span class="oi oi-arrow-thick-bottom" aria-hidden="true"></span> Convert to Lowercase
+                                                                </button>
+                                                            </p>
+                                                        </div>
+                                                    </div>
                                                     <div class="card  w-auto mb-3">
                                                         <div class="card card-header bg-default text-dark" style="font-weight:bold;">
                                                             Export Function Configuration
@@ -974,6 +1031,24 @@
                                                     </a>
                                                 </div>
                                                 <div class="collapse card card-body @theme.ThemeStyle" id="locationsconfig">
+                                                    <div class="card w-auto mb-3">
+                                                        <div class="card card-header bg-default text-dark" style="font-weight:bold;">
+                                                            Bulk Update
+                                                        </div>
+                                                        <div class="card card-body @theme.ThemeStyle">
+                                                            <p>
+                                                                Use the options below to bulk update all component options.
+                                                            </p>
+                                                            <p>
+                                                                <button type="button" class="btn btn-success" @onclick=@(e => FormAction(resourceComponent.Name,0,"uppercase")) title="Uppercase">
+                                                                    <span class="oi oi-arrow-thick-top" aria-hidden="true"></span> Convert to Uppercase
+                                                                </button>
+                                                                <button type="button" class="btn btn-success" @onclick=@(e => FormAction(resourceComponent.Name,0,"lowercase")) title="Uppercase">
+                                                                    <span class="oi oi-arrow-thick-bottom" aria-hidden="true"></span> Convert to Lowercase
+                                                                </button>
+                                                            </p>
+                                                        </div>
+                                                    </div>
                                                     <div class="card  w-auto mb-3">
                                                         <div class="card card-header bg-default text-dark" style="font-weight:bold;">
                                                             Export the current Locations Configuration
@@ -1159,6 +1234,24 @@
                                                     </a>
                                                 </div>
                                                 <div class="collapse card card-body @theme.ThemeStyle" id="orgsconfig">
+                                                    <div class="card w-auto mb-3">
+                                                        <div class="card card-header bg-default text-dark" style="font-weight:bold;">
+                                                            Bulk Update
+                                                        </div>
+                                                        <div class="card card-body @theme.ThemeStyle">
+                                                            <p>
+                                                                Use the options below to bulk update all component options.
+                                                            </p>
+                                                            <p>
+                                                                <button type="button" class="btn btn-success" @onclick=@(e => FormAction(resourceComponent.Name,0,"uppercase")) title="Uppercase">
+                                                                    <span class="oi oi-arrow-thick-top" aria-hidden="true"></span> Convert to Uppercase
+                                                                </button>
+                                                                <button type="button" class="btn btn-success" @onclick=@(e => FormAction(resourceComponent.Name,0,"lowercase")) title="Uppercase">
+                                                                    <span class="oi oi-arrow-thick-bottom" aria-hidden="true"></span> Convert to Lowercase
+                                                                </button>
+                                                            </p>
+                                                        </div>
+                                                    </div>
                                                     <div class="card  w-auto mb-3">
                                                         <div class="card card-header bg-default text-dark" style="font-weight:bold;">
                                                             Export the current Orgs Configuration
@@ -1301,6 +1394,24 @@
                                                     </a>
                                                 </div>
                                                 <div class="collapse card card-body @theme.ThemeStyle" id="projappsvcsconfig">
+                                                    <div class="card w-auto mb-3">
+                                                        <div class="card card-header bg-default text-dark" style="font-weight:bold;">
+                                                            Bulk Update
+                                                        </div>
+                                                        <div class="card card-body @theme.ThemeStyle">
+                                                            <p>
+                                                                Use the options below to bulk update all component options.
+                                                            </p>
+                                                            <p>
+                                                                <button type="button" class="btn btn-success" @onclick=@(e => FormAction(resourceComponent.Name,0,"uppercase")) title="Uppercase">
+                                                                    <span class="oi oi-arrow-thick-top" aria-hidden="true"></span> Convert to Uppercase
+                                                                </button>
+                                                                <button type="button" class="btn btn-success" @onclick=@(e => FormAction(resourceComponent.Name,0,"lowercase")) title="Uppercase">
+                                                                    <span class="oi oi-arrow-thick-bottom" aria-hidden="true"></span> Convert to Lowercase
+                                                                </button>
+                                                            </p>
+                                                        </div>
+                                                    </div>
                                                     <div class="card  w-auto mb-3">
                                                         <div class="card card-header bg-default text-dark" style="font-weight:bold;">
                                                             Export the current Projects/Apps/Services Configuration
@@ -1410,8 +1521,8 @@
                                                                     <span class="oi oi-magnifying-glass" id="addon-wrapping"></span>
                                                                 </span>
                                                                 <input class="form-control" type="search" placeholder="Filter by Name, Short Name"
-                                                                @bind="filterData"
-                                                                @bind:event="oninput">
+                                                                       @bind="filterData"
+                                                                       @bind:event="oninput">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1514,6 +1625,24 @@
                                                     </a>
                                                 </div>
                                                 <div class="collapse card card-body @theme.ThemeStyle" id="typesconfig">
+                                                    <div class="card w-auto mb-3">
+                                                        <div class="card card-header bg-default text-dark" style="font-weight:bold;">
+                                                            Bulk Update
+                                                        </div>
+                                                        <div class="card card-body @theme.ThemeStyle">
+                                                            <p>
+                                                                Use the options below to bulk update all component options.
+                                                            </p>
+                                                            <p>
+                                                                <button type="button" class="btn btn-success" @onclick=@(e => FormAction(resourceComponent.Name,0,"uppercase")) title="Uppercase">
+                                                                    <span class="oi oi-arrow-thick-top" aria-hidden="true"></span> Convert to Uppercase
+                                                                </button>
+                                                                <button type="button" class="btn btn-success" @onclick=@(e => FormAction(resourceComponent.Name,0,"lowercase")) title="Uppercase">
+                                                                    <span class="oi oi-arrow-thick-bottom" aria-hidden="true"></span> Convert to Lowercase
+                                                                </button>
+                                                            </p>
+                                                        </div>
+                                                    </div>
                                                     <div class="card  w-auto mb-3">
                                                         <div class="card card-header bg-default text-dark" style="font-weight:bold;">
                                                             Export the current Resource Types Configuration
@@ -1697,6 +1826,24 @@
                                                     </a>
                                                 </div>
                                                 <div class="collapse card card-body @theme.ThemeStyle" id="unitdeptsconfig">
+                                                    <div class="card w-auto mb-3">
+                                                        <div class="card card-header bg-default text-dark" style="font-weight:bold;">
+                                                            Bulk Update
+                                                        </div>
+                                                        <div class="card card-body @theme.ThemeStyle">
+                                                            <p>
+                                                                Use the options below to bulk update all component options.
+                                                            </p>
+                                                            <p>
+                                                                <button type="button" class="btn btn-success" @onclick=@(e => FormAction(resourceComponent.Name,0,"uppercase")) title="Uppercase">
+                                                                    <span class="oi oi-arrow-thick-top" aria-hidden="true"></span> Convert to Uppercase
+                                                                </button>
+                                                                <button type="button" class="btn btn-success" @onclick=@(e => FormAction(resourceComponent.Name,0,"lowercase")) title="Uppercase">
+                                                                    <span class="oi oi-arrow-thick-bottom" aria-hidden="true"></span> Convert to Lowercase
+                                                                </button>
+                                                            </p>
+                                                        </div>
+                                                    </div>
                                                     <div class="card  w-auto mb-3">
                                                         <div class="card card-header bg-default text-dark" style="font-weight:bold;">
                                                             Export Units/Depts Configuration
@@ -2071,7 +2218,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceComponent.Name + " move failed!";
+                                            message.Message = resourceComponent.Name + " move failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -2097,7 +2244,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceComponent.Name + " move failed!";
+                                            message.Message = resourceComponent.Name + " move failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -2121,7 +2268,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceComponent.Name + " enabling failed!";
+                                            message.Message = resourceComponent.Name + " enabling failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -2144,7 +2291,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceComponent.Name + " disabling failed!";
+                                            message.Message = resourceComponent.Name + " disabling failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -2198,7 +2345,7 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = resourceComponent.Name + " deletion failed!";
+                                                message.Message = resourceComponent.Name + " deletion failed! Please check the Admin Log for details.";
                                                 message.MessageDetails = serviceResponse.ResponseMessage;
                                             }
                                         }
@@ -2234,7 +2381,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = "Components configuration reset failed!";
+                                            message.Message = "Components configuration reset failed! Please check the Admin Log for details.";
                                         }
                                     }
                                     break;
@@ -2253,7 +2400,7 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = "Resource Components config update failed!";
+                                                message.Message = "Resource Components config update failed! Please check the Admin Log for details.";
                                                 message.MessageDetails = serviceResponse.ResponseMessage;
                                             }
                                         }
@@ -2288,7 +2435,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceDelimiter.Name + " enabling failed!";
+                                            message.Message = resourceDelimiter.Name + " enabling failed! Please check the Admin Log for details.";
                                         }
                                     }
                                     else
@@ -2310,7 +2457,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceDelimiter.Name + " disabling failed!";
+                                            message.Message = resourceDelimiter.Name + " disabling failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -2348,7 +2495,7 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = "Resource Delimiters config update failed!";
+                                                message.Message = "Resource Delimiters config update failed! Please check the Admin Log for details.";
                                                 message.MessageDetails = serviceResponse.ResponseMessage;
                                             }
                                         }
@@ -2366,7 +2513,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = "Delimiters configuration reset failed!";
+                                            message.Message = "Delimiters configuration reset failed! Please check the Admin Log for details.";
                                         }
                                     }
                                     break;
@@ -2402,7 +2549,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceEnvironment.Name + " move failed!";
+                                            message.Message = resourceEnvironment.Name + " move failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -2428,7 +2575,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceEnvironment.Name + " move failed!";
+                                            message.Message = resourceEnvironment.Name + " move failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -2469,7 +2616,7 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = resourceEnvironment.Name + " deletion failed!";
+                                                message.Message = resourceEnvironment.Name + " deletion failed! Please check the Admin Log for details.";
                                                 message.MessageDetails = serviceResponse.ResponseMessage;
                                             }
                                         }
@@ -2482,7 +2629,7 @@
                                 case "add":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Environment", "<p>Add an Environment.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceEnvironment", admin, "");
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Environment", "<p>Add an Environment.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li><li>Short Name must not contain spaces.</li></ul>", (int)id, "ResourceEnvironment", admin, "");
                                         if (response)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -2493,6 +2640,56 @@
                                     else
                                     {
                                         generalerror = true;
+                                    }
+                                    break;
+                                case "uppercase":
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update all the short names to <span class=\"fw-bold\">uppercase</span> characters!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                                    if (confirm)
+                                    {
+                                        if (GeneralHelper.IsNotNull(servicesData.ResourceEnvironments))
+                                        {
+                                            serviceResponse = await ConfigurationHelper.ConvertCase(servicesData.ResourceEnvironments, false);
+                                            if (serviceResponse.Success)
+                                            {
+                                                message.Type = MessageTypesEnum.SUCCESS;
+                                                message.Message = "Options updated to uppercase!";
+                                            }
+                                            else
+                                            {
+                                                message.Type = MessageTypesEnum.ERROR;
+                                                message.Message = "Options update failed! Please check the Admin Log for details.";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            message.Type = MessageTypesEnum.ERROR;
+                                            message.Message = "Options update failed! Please check the Admin Log for details.";
+                                        }
+                                    }
+                                    break;
+                                case "lowercase":
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update all the short names to <span class=\"fw-bold\">lowercase</span> characters!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                                    if (confirm)
+                                    {
+                                        if (GeneralHelper.IsNotNull(servicesData.ResourceEnvironments))
+                                        {
+                                            serviceResponse = await ConfigurationHelper.ConvertCase(servicesData.ResourceEnvironments, true);
+                                            if (serviceResponse.Success)
+                                            {
+                                                message.Type = MessageTypesEnum.SUCCESS;
+                                                message.Message = "Options updated to lowercase!";
+                                            }
+                                            else
+                                            {
+                                                message.Type = MessageTypesEnum.ERROR;
+                                                message.Message = "Options update failed! Please check the Admin Log for details.";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            message.Type = MessageTypesEnum.ERROR;
+                                            message.Message = "Options update failed! Please check the Admin Log for details.";
+                                        }
                                     }
                                     break;
                                 case "download":
@@ -2521,7 +2718,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = "Environments configuration reset failed!";
+                                            message.Message = "Environments configuration reset failed! Please check the Admin Log for details.";
                                         }
                                     }
                                     break;
@@ -2541,7 +2738,7 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = "Resource Environments config update failed!";
+                                                message.Message = "Resource Environments config update failed! Please check the Admin Log for details.";
                                                 message.MessageDetails = serviceResponse.ResponseMessage;
                                             }
                                         }
@@ -2579,7 +2776,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceFunction.Name + " move failed!";
+                                            message.Message = resourceFunction.Name + " move failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -2605,7 +2802,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceFunction.Name + " move failed!";
+                                            message.Message = resourceFunction.Name + " move failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -2646,7 +2843,7 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = resourceFunction.Name + " deletion failed!";
+                                                message.Message = resourceFunction.Name + " deletion failed! Please check the Admin Log for details.";
                                                 message.MessageDetails = serviceResponse.ResponseMessage;
                                             }
                                         }
@@ -2659,7 +2856,7 @@
                                 case "add":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Function", "<p>Add a Function.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceFunction", admin, "");
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Function", "<p>Add a Function.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li><li>Short Name must not contain spaces.</li></ul>", (int)id, "ResourceFunction", admin, "");
                                         if (response)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -2670,6 +2867,57 @@
                                     else
                                     {
                                         generalerror = true;
+                                    }
+                                    break;
+
+                                case "uppercase":
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update all the short names to <span class=\"fw-bold\">uppercase</span> characters!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                                    if (confirm)
+                                    {
+                                        if (GeneralHelper.IsNotNull(servicesData.ResourceFunctions))
+                                        {
+                                            serviceResponse = await ConfigurationHelper.ConvertCase(servicesData.ResourceFunctions, false);
+                                            if (serviceResponse.Success)
+                                            {
+                                                message.Type = MessageTypesEnum.SUCCESS;
+                                                message.Message = "Options updated to uppercase!";
+                                            }
+                                            else
+                                            {
+                                                message.Type = MessageTypesEnum.ERROR;
+                                                message.Message = "Options update failed! Please check the Admin Log for details.";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            message.Type = MessageTypesEnum.ERROR;
+                                            message.Message = "Options update failed! Please check the Admin Log for details.";
+                                        }
+                                    }
+                                    break;
+                                case "lowercase":
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update all the short names to <span class=\"fw-bold\">lowercase</span> characters!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                                    if (confirm)
+                                    {
+                                        if (GeneralHelper.IsNotNull(servicesData.ResourceFunctions))
+                                        {
+                                            serviceResponse = await ConfigurationHelper.ConvertCase(servicesData.ResourceFunctions, true);
+                                            if (serviceResponse.Success)
+                                            {
+                                                message.Type = MessageTypesEnum.SUCCESS;
+                                                message.Message = "Options updated to lowercase!";
+                                            }
+                                            else
+                                            {
+                                                message.Type = MessageTypesEnum.ERROR;
+                                                message.Message = "Options update failed! Please check the Admin Log for details.";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            message.Type = MessageTypesEnum.ERROR;
+                                            message.Message = "Options update failed! Please check the Admin Log for details.";
+                                        }
                                     }
                                     break;
                                 case "download":
@@ -2698,7 +2946,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = "Functions configuration reset failed!";
+                                            message.Message = "Functions configuration reset failed! Please check the Admin Log for details.";
                                         }
                                     }
                                     break;
@@ -2718,7 +2966,7 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = "Functions configuration update failed!";
+                                                message.Message = "Functions configuration update failed! Please check the Admin Log for details.";
                                                 message.MessageDetails = serviceResponse.ResponseMessage;
                                             }
                                         }
@@ -2752,7 +3000,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceLocation.Name + " enabling failed!";
+                                            message.Message = resourceLocation.Name + " enabling failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -2775,7 +3023,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceLocation.Name + " disabling failed!";
+                                            message.Message = resourceLocation.Name + " disabling failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -2803,7 +3051,7 @@
                                 case "add":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Location", "<p>Add a Location.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceLocation", admin, "");
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Location", "<p>Add a Location.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li><li>Short Name must not contain spaces.</li></ul>", (int)id, "ResourceLocation", admin, "");
                                         if (response)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -2832,13 +3080,64 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = resourceLocation.Name + " deletion failed!";
+                                                message.Message = resourceLocation.Name + " deletion failed! Please check the Admin Log for details.";
                                                 message.MessageDetails = serviceResponse.ResponseMessage;
                                             }
                                         }
                                         else
                                         {
                                             generalerror = true;
+                                        }
+                                    }
+                                    break;
+
+                                case "uppercase":
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update all the short names to <span class=\"fw-bold\">uppercase</span> characters!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                                    if (confirm)
+                                    {
+                                        if (GeneralHelper.IsNotNull(servicesData.ResourceLocations))
+                                        {
+                                            serviceResponse = await ConfigurationHelper.ConvertCase(servicesData.ResourceLocations, false);
+                                            if (serviceResponse.Success)
+                                            {
+                                                message.Type = MessageTypesEnum.SUCCESS;
+                                                message.Message = "Options updated to uppercase!";
+                                            }
+                                            else
+                                            {
+                                                message.Type = MessageTypesEnum.ERROR;
+                                                message.Message = "Options update failed! Please check the Admin Log for details.";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            message.Type = MessageTypesEnum.ERROR;
+                                            message.Message = "Options update failed! Please check the Admin Log for details.";
+                                        }
+                                    }
+                                    break;
+                                case "lowercase":
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update all the short names to <span class=\"fw-bold\">lowercase</span> characters!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                                    if (confirm)
+                                    {
+                                        if (GeneralHelper.IsNotNull(servicesData.ResourceLocations))
+                                        {
+                                            serviceResponse = await ConfigurationHelper.ConvertCase(servicesData.ResourceLocations, true);
+                                            if (serviceResponse.Success)
+                                            {
+                                                message.Type = MessageTypesEnum.SUCCESS;
+                                                message.Message = "Options updated to lowercase!";
+                                            }
+                                            else
+                                            {
+                                                message.Type = MessageTypesEnum.ERROR;
+                                                message.Message = "Options update failed! Please check the Admin Log for details.";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            message.Type = MessageTypesEnum.ERROR;
+                                            message.Message = "Options update failed! Please check the Admin Log for details.";
                                         }
                                     }
                                     break;
@@ -2863,7 +3162,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = "Locations configuration refresh failed! ";
+                                            message.Message = "Locations configuration refresh failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -2880,7 +3179,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = "Locations configuration reset failed!";
+                                            message.Message = "Locations configuration reset failed! Please check the Admin Log for details.";
                                         }
                                     }
                                     break;
@@ -2900,7 +3199,7 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = "Resource Locations config update failed!";
+                                                message.Message = "Resource Locations config update failed! Please check the Admin Log for details.";
                                                 message.MessageDetails = serviceResponse.ResponseMessage;
                                             }
                                         }
@@ -2938,7 +3237,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceOrg.Name + " move failed!";
+                                            message.Message = resourceOrg.Name + " move failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -2964,7 +3263,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceOrg.Name + " move failed!";
+                                            message.Message = resourceOrg.Name + " move failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -3005,7 +3304,7 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = resourceOrg.Name + " deletion failed!";
+                                                message.Message = resourceOrg.Name + " deletion failed! Please check the Admin Log for details.";
                                                 message.MessageDetails = serviceResponse.ResponseMessage;
                                             }
                                         }
@@ -3018,7 +3317,7 @@
                                 case "add":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Org", "<p>Add an Org.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceOrg", admin, "");
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Org", "<p>Add an Org.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li><li>Short Name must not contain spaces.</li></ul>", (int)id, "ResourceOrg", admin, "");
                                         if (response)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -3029,6 +3328,57 @@
                                     else
                                     {
                                         generalerror = true;
+                                    }
+                                    break;
+
+                                case "uppercase":
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update all the short names to <span class=\"fw-bold\">uppercase</span> characters!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                                    if (confirm)
+                                    {
+                                        if (GeneralHelper.IsNotNull(servicesData.ResourceOrgs))
+                                        {
+                                            serviceResponse = await ConfigurationHelper.ConvertCase(servicesData.ResourceOrgs, false);
+                                            if (serviceResponse.Success)
+                                            {
+                                                message.Type = MessageTypesEnum.SUCCESS;
+                                                message.Message = "Options updated to uppercase!";
+                                            }
+                                            else
+                                            {
+                                                message.Type = MessageTypesEnum.ERROR;
+                                                message.Message = "Options update failed! Please check the Admin Log for details.";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            message.Type = MessageTypesEnum.ERROR;
+                                            message.Message = "Options update failed! Please check the Admin Log for details.";
+                                        }
+                                    }
+                                    break;
+                                case "lowercase":
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update all the short names to <span class=\"fw-bold\">lowercase</span> characters!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                                    if (confirm)
+                                    {
+                                        if (GeneralHelper.IsNotNull(servicesData.ResourceOrgs))
+                                        {
+                                            serviceResponse = await ConfigurationHelper.ConvertCase(servicesData.ResourceOrgs, true);
+                                            if (serviceResponse.Success)
+                                            {
+                                                message.Type = MessageTypesEnum.SUCCESS;
+                                                message.Message = "Options updated to lowercase!";
+                                            }
+                                            else
+                                            {
+                                                message.Type = MessageTypesEnum.ERROR;
+                                                message.Message = "Options update failed! Please check the Admin Log for details.";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            message.Type = MessageTypesEnum.ERROR;
+                                            message.Message = "Options update failed! Please check the Admin Log for details.";
+                                        }
                                     }
                                     break;
                                 case "download":
@@ -3057,7 +3407,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = "Orgs configuration reset failed!";
+                                            message.Message = "Orgs configuration reset failed! Please check the Admin Log for details.";
                                         }
                                     }
                                     break;
@@ -3077,7 +3427,7 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = "Resource Orgs config update failed!";
+                                                message.Message = "Resource Orgs config update failed! Please check the Admin Log for details.";
                                                 message.MessageDetails = serviceResponse.ResponseMessage;
                                             }
                                         }
@@ -3115,7 +3465,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceProjAppSvc.Name + " move failed!";
+                                            message.Message = resourceProjAppSvc.Name + " move failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -3141,7 +3491,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceProjAppSvc.Name + " move failed!";
+                                            message.Message = resourceProjAppSvc.Name + " move failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -3182,7 +3532,7 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = resourceProjAppSvc.Name + " deletion failed!";
+                                                message.Message = resourceProjAppSvc.Name + " deletion failed! Please check the Admin Log for details.";
                                                 message.MessageDetails = serviceResponse.ResponseMessage;
                                             }
                                         }
@@ -3195,7 +3545,7 @@
                                 case "add":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Project/App/Service", "<p>Add an Project/App/Service.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceProjAppSvc", admin, "");
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Project/App/Service", "<p>Add an Project/App/Service.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li><li>Short Name must not contain spaces.</li></ul>", (int)id, "ResourceProjAppSvc", admin, "");
                                         if (response)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -3206,6 +3556,57 @@
                                     else
                                     {
                                         generalerror = true;
+                                    }
+                                    break;
+
+                                case "uppercase":
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update all the short names to <span class=\"fw-bold\">uppercase</span> characters!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                                    if (confirm)
+                                    {
+                                        if (GeneralHelper.IsNotNull(servicesData.ResourceProjAppSvcs))
+                                        {
+                                            serviceResponse = await ConfigurationHelper.ConvertCase(servicesData.ResourceProjAppSvcs, false);
+                                            if (serviceResponse.Success)
+                                            {
+                                                message.Type = MessageTypesEnum.SUCCESS;
+                                                message.Message = "Options updated to uppercase!";
+                                            }
+                                            else
+                                            {
+                                                message.Type = MessageTypesEnum.ERROR;
+                                                message.Message = "Options update failed! Please check the Admin Log for details.";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            message.Type = MessageTypesEnum.ERROR;
+                                            message.Message = "Options update failed! Please check the Admin Log for details.";
+                                        }
+                                    }
+                                    break;
+                                case "lowercase":
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update all the short names to <span class=\"fw-bold\">lowercase</span> characters!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                                    if (confirm)
+                                    {
+                                        if (GeneralHelper.IsNotNull(servicesData.ResourceProjAppSvcs))
+                                        {
+                                            serviceResponse = await ConfigurationHelper.ConvertCase(servicesData.ResourceProjAppSvcs, true);
+                                            if (serviceResponse.Success)
+                                            {
+                                                message.Type = MessageTypesEnum.SUCCESS;
+                                                message.Message = "Options updated to lowercase!";
+                                            }
+                                            else
+                                            {
+                                                message.Type = MessageTypesEnum.ERROR;
+                                                message.Message = "Options update failed! Please check the Admin Log for details.";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            message.Type = MessageTypesEnum.ERROR;
+                                            message.Message = "Options update failed! Please check the Admin Log for details.";
+                                        }
                                     }
                                     break;
                                 case "download":
@@ -3234,7 +3635,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = "Projects/Apps/Services configuration reset failed!";
+                                            message.Message = "Projects/Apps/Services configuration reset failed! Please check the Admin Log for details.";
                                         }
                                     }
                                     break;
@@ -3254,7 +3655,7 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = "ProjAppSvcs configuration update failed!";
+                                                message.Message = "ProjAppSvcs configuration update failed! Please check the Admin Log for details.";
                                                 message.MessageDetails = serviceResponse.ResponseMessage;
                                             }
                                         }
@@ -3288,7 +3689,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceType.Resource + " enabling failed!";
+                                            message.Message = resourceType.Resource + " enabling failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -3311,7 +3712,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceType.Resource + " disabling failed!";
+                                            message.Message = resourceType.Resource + " disabling failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -3335,6 +3736,57 @@
                                     else
                                     {
                                         generalerror = true;
+                                    }
+                                    break;
+
+                                case "uppercase":
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update all the short names to <span class=\"fw-bold\">uppercase</span> characters!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                                    if (confirm)
+                                    {
+                                        if (GeneralHelper.IsNotNull(servicesData.ResourceTypes))
+                                        {
+                                            serviceResponse = await ConfigurationHelper.ConvertCase(servicesData.ResourceTypes, false);
+                                            if (serviceResponse.Success)
+                                            {
+                                                message.Type = MessageTypesEnum.SUCCESS;
+                                                message.Message = "Options updated to uppercase!";
+                                            }
+                                            else
+                                            {
+                                                message.Type = MessageTypesEnum.ERROR;
+                                                message.Message = "Options update failed! Please check the Admin Log for details.";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            message.Type = MessageTypesEnum.ERROR;
+                                            message.Message = "Options update failed! Please check the Admin Log for details.";
+                                        }
+                                    }
+                                    break;
+                                case "lowercase":
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update all the short names to <span class=\"fw-bold\">lowercase</span> characters!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                                    if (confirm)
+                                    {
+                                        if (GeneralHelper.IsNotNull(servicesData.ResourceTypes))
+                                        {
+                                            serviceResponse = await ConfigurationHelper.ConvertCase(servicesData.ResourceTypes, true);
+                                            if (serviceResponse.Success)
+                                            {
+                                                message.Type = MessageTypesEnum.SUCCESS;
+                                                message.Message = "Options updated to lowercase!";
+                                            }
+                                            else
+                                            {
+                                                message.Type = MessageTypesEnum.ERROR;
+                                                message.Message = "Options update failed! Please check the Admin Log for details.";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            message.Type = MessageTypesEnum.ERROR;
+                                            message.Message = "Options update failed! Please check the Admin Log for details.";
+                                        }
                                     }
                                     break;
                                 case "download":
@@ -3364,7 +3816,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = "Types configuration refresh failed! ";
+                                            message.Message = "Types configuration refresh failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -3381,7 +3833,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = "Types configuration reset failed!";
+                                            message.Message = "Types configuration reset failed! Please check the Admin Log for details.";
                                         }
                                     }
                                     break;
@@ -3401,7 +3853,7 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = "Types configuration update failed! " + serviceResponse.ResponseObject;
+                                                message.Message = "Types configuration update failed! Please check the Admin Log for details. " + serviceResponse.ResponseObject;
                                                 message.MessageDetails = serviceResponse.ResponseMessage;
                                             }
                                         }
@@ -3439,7 +3891,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceUnitDept.Name + " move failed!";
+                                            message.Message = resourceUnitDept.Name + " move failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -3465,7 +3917,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = resourceUnitDept.Name + " move failed!";
+                                            message.Message = resourceUnitDept.Name + " move failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -3507,7 +3959,7 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = resourceUnitDept.Name + " deletion failed!";
+                                                message.Message = resourceUnitDept.Name + " deletion failed! Please check the Admin Log for details.";
                                                 message.MessageDetails = serviceResponse.ResponseMessage;
                                             }
                                         }
@@ -3520,7 +3972,7 @@
                                 case "add":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Unit/Dept", "<p>Add a Unit/Dept.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceUnitDept", admin, "");
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Unit/Dept", "<p>Add a Unit/Dept.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li><li>Short Name must not contain spaces.</li></ul>", (int)id, "ResourceUnitDept", admin, "");
                                         if (response)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -3531,6 +3983,57 @@
                                     else
                                     {
                                         generalerror = true;
+                                    }
+                                    break;
+
+                                case "uppercase":
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update all the short names to <span class=\"fw-bold\">uppercase</span> characters!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                                    if (confirm)
+                                    {
+                                        if (GeneralHelper.IsNotNull(servicesData.ResourceUnitDepts))
+                                        {
+                                            serviceResponse = await ConfigurationHelper.ConvertCase(servicesData.ResourceUnitDepts, false);
+                                            if (serviceResponse.Success)
+                                            {
+                                                message.Type = MessageTypesEnum.SUCCESS;
+                                                message.Message = "Options updated to uppercase!";
+                                            }
+                                            else
+                                            {
+                                                message.Type = MessageTypesEnum.ERROR;
+                                                message.Message = "Options update failed! Please check the Admin Log for details.";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            message.Type = MessageTypesEnum.ERROR;
+                                            message.Message = "Options update failed! Please check the Admin Log for details.";
+                                        }
+                                    }
+                                    break;
+                                case "lowercase":
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update all the short names to <span class=\"fw-bold\">lowercase</span> characters!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                                    if (confirm)
+                                    {
+                                        if (GeneralHelper.IsNotNull(servicesData.ResourceUnitDepts))
+                                        {
+                                            serviceResponse = await ConfigurationHelper.ConvertCase(servicesData.ResourceUnitDepts, true);
+                                            if (serviceResponse.Success)
+                                            {
+                                                message.Type = MessageTypesEnum.SUCCESS;
+                                                message.Message = "Options updated to lowercase!";
+                                            }
+                                            else
+                                            {
+                                                message.Type = MessageTypesEnum.ERROR;
+                                                message.Message = "Options update failed! Please check the Admin Log for details.";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            message.Type = MessageTypesEnum.ERROR;
+                                            message.Message = "Options update failed! Please check the Admin Log for details.";
+                                        }
                                     }
                                     break;
                                 case "download":
@@ -3559,7 +4062,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = "Units/Depts configuration reset failed!";
+                                            message.Message = "Units/Depts configuration reset failed! Please check the Admin Log for details.";
                                         }
                                     }
                                     break;
@@ -3579,7 +4082,7 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = "Units/Depts configuration update failed!";
+                                                message.Message = "Units/Depts configuration update failed! Please check the Admin Log for details.";
                                                 message.MessageDetails = serviceResponse.ResponseMessage;
                                             }
                                         }
@@ -3617,7 +4120,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = customComponent.Name + " move failed!";
+                                            message.Message = customComponent.Name + " move failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -3643,7 +4146,7 @@
                                         else
                                         {
                                             message.Type = MessageTypesEnum.ERROR;
-                                            message.Message = customComponent.Name + " move failed!";
+                                            message.Message = customComponent.Name + " move failed! Please check the Admin Log for details.";
                                             message.MessageDetails = serviceResponse.ResponseMessage;
                                         }
                                     }
@@ -3656,7 +4159,7 @@
                                     // Get the component in the list
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Custom Component", "<p>Add a Custom Component.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "CustomComponent", admin, parentcomponent);
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Custom Component", "<p>Add a Custom Component.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li><li>Short Name must not contain spaces.</li></ul>", (int)id, "CustomComponent", admin, parentcomponent);
                                         if (response)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -3703,13 +4206,65 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = customComponent.Name + " deletion failed!";
+                                                message.Message = customComponent.Name + " deletion failed! Please check the Admin Log for details.";
                                                 message.MessageDetails = serviceResponse.ResponseMessage;
                                             }
                                         }
                                         else
                                         {
                                             generalerror = true;
+                                        }
+                                    }
+                                    break;
+                                case "uppercase":
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update all the short names to <span class=\"fw-bold\">uppercase</span> characters!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                                    if (confirm)
+                                    {
+                                        if (GeneralHelper.IsNotNull(servicesData.CustomComponents))
+                                        {
+                                            List<CustomComponent> lstcomponents = servicesData.CustomComponents.Where(x => x.ParentComponent == GeneralHelper.NormalizeName(parentcomponent, true)).ToList();
+                                            serviceResponse = await ConfigurationHelper.ConvertCase(lstcomponents, false);
+                                            if (serviceResponse.Success)
+                                            {
+                                                message.Type = MessageTypesEnum.SUCCESS;
+                                                message.Message = parentcomponent + " - Options updated to uppercase!";
+                                            }
+                                            else
+                                            {
+                                                message.Type = MessageTypesEnum.ERROR;
+                                                message.Message = parentcomponent + " - Options update failed! Please check the Admin Log for details.";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            message.Type = MessageTypesEnum.ERROR;
+                                            message.Message = parentcomponent + " - Options update failed! Please check the Admin Log for details.";
+                                        }
+                                    }
+                                    break;
+                                case "lowercase":
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update all the short names to <span class=\"fw-bold\">lowercase</span> characters!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                                    if (confirm)
+                                    {
+                                        if (GeneralHelper.IsNotNull(servicesData.CustomComponents))
+                                        {
+                                            List<CustomComponent> lstcomponents = servicesData.CustomComponents.Where(x => x.ParentComponent == GeneralHelper.NormalizeName(parentcomponent, true)).ToList();
+                                            serviceResponse = await ConfigurationHelper.ConvertCase(lstcomponents, true);
+                                            if (serviceResponse.Success)
+                                            {
+                                                message.Type = MessageTypesEnum.SUCCESS;
+                                                message.Message = parentcomponent + " - Options updated to lowercase!";
+                                            }
+                                            else
+                                            {
+                                                message.Type = MessageTypesEnum.ERROR;
+                                                message.Message = parentcomponent + " - Options update failed! Please check the Admin Log for details.";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            message.Type = MessageTypesEnum.ERROR;
+                                            message.Message = parentcomponent + " - Options update failed! Please check the Admin Log for details.";
                                         }
                                     }
                                     break;
@@ -3750,7 +4305,7 @@
                                     else
                                     {
                                         message.Type = MessageTypesEnum.ERROR;
-                                        message.Message = "There was a problem exporting the custom components. Please try again";
+                                        message.Message = "There was a problem exporting the custom components.  Please check the Admin Log for details.";
                                         message.MessageDetails = serviceResponse.ResponseMessage;
                                     }
                                     break;
@@ -3761,7 +4316,7 @@
                                         if (FileSystemHelper.ResetConfiguration("customcomponents.json"))
                                         {
                                             message.Type = MessageTypesEnum.SUCCESS;
-                                            message.Message = "Custom Components configuration reset!";
+                                            message.Message = "Custom Components configuration reset! Please check the Admin Log for details.";
                                         }
                                         else
                                         {
@@ -3863,7 +4418,7 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = "Custom Components configuration update failed!";
+                                                message.Message = "Custom Components configuration update failed! Please check the Admin Log for details.";
                                                 message.MessageDetails = serviceResponse.ResponseMessage;
                                             }
                                         }
@@ -3911,7 +4466,7 @@
                                             else
                                             {
                                                 message.Type = MessageTypesEnum.ERROR;
-                                                message.Message = "Global configuration reset failed!";
+                                                message.Message = "Global configuration reset failed! Please check the Admin Log for details.";
                                             }
                                         }
                                     }
@@ -3935,7 +4490,7 @@
                                                 else
                                                 {
                                                     message.Type = MessageTypesEnum.ERROR;
-                                                    message.Message = "Global config update failed!";
+                                                    message.Message = "Global config update failed! Please check the Admin Log for details.";
                                                     message.MessageDetails = serviceResponse.ResponseMessage;
                                                 }
                                             }
@@ -3975,7 +4530,7 @@
                 {
                     AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                     message.Type = MessageTypesEnum.ERROR;
-                    message.Message = "There was a problem with the request.";
+                    message.Message = "There was a problem with the request. Please check the Admin Log for details.";
                 }
 
                 workingmodal.Close();
@@ -4009,13 +4564,13 @@
             }
             else
             {
-                toastService.ShowError("There was an error with teh request. Please try again");
+                toastService.ShowError("There was an error with teh request.  Please check the Admin Log for details.");
             }
         }
         else
         {
             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
-            toastService.ShowError("There was an error with teh request. Please try again");
+            toastService.ShowError("There was an error with the request.  Please check the Admin Log for details.");
         }
     }
 

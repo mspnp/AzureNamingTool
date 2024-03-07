@@ -111,9 +111,6 @@ namespace AzureNamingTool.Services
                     return serviceResponse;
                 }
 
-                // Force lowercase on the shortname
-                item.ShortName = item.ShortName.ToLower();
-
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<ResourceType>();
                 if (GeneralHelper.IsNotNull(items))
@@ -228,8 +225,6 @@ namespace AzureNamingTool.Services
                 // Determine new item id
                 foreach (ResourceType item in items)
                 {
-                    // Force lowercase on the shortname
-                    item.ShortName = item.ShortName.ToLower();
                     item.Id = i;
                     newitems.Add(item);
                     i += 1;
@@ -296,7 +291,7 @@ namespace AzureNamingTool.Services
             // Filter out resource types that should have name generation
             if (!String.IsNullOrEmpty(filter))
             {
-                currenttypes = types.Where(x => x.Resource.StartsWith(filter.ToLower() + "/", StringComparison.CurrentCultureIgnoreCase) && !x.Property.Equals("display name", StringComparison.CurrentCultureIgnoreCase) && !String.IsNullOrEmpty(x.ShortName)).ToList();
+                currenttypes = types.Where(x => x.Resource.StartsWith(filter + "/", StringComparison.CurrentCultureIgnoreCase) && !x.Property.Equals("display name", StringComparison.CurrentCultureIgnoreCase) && !String.IsNullOrEmpty(x.ShortName)).ToList();
             }
             else
             {
