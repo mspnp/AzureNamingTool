@@ -81,3 +81,11 @@ app.UseStatusCodePagesWithRedirects("/404");
 
 app.MapControllers();
 app.Run();
+
+
+/// <summary>
+/// Exists so can be used as reference for WebApplicationFactory in tests project
+/// </summary>
+public partial class Program
+{
+}
