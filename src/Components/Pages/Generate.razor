@@ -517,6 +517,7 @@
     protected ThemeInfo theme { get; set; } = new();
     [CascadingParameter]
     public IModalService? Modal { get; set; }
+    private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
     private ServicesData servicesData = new();
     private ResourceDelimiter resourceDelimiter = new();
     private string selectedResourceEnvironment = String.Empty;
@@ -568,6 +569,11 @@
 
         var currentuservalue = await session.GetAsync<string>("currentuser");
         currentuser = (string)currentuservalue.Value!;
+
+        // TO DO: Implement retention of the selected values
+        // Need to determine how to properly load selected values from session.
+        // This is a work in progress.
+        // await GetRetainedSelections();s
     }
 
     private async Task SetServicesData()
@@ -771,6 +777,9 @@
                 // Always show the response
                 generatedName = sbNames.ToString();
                 namerequested = true;
+
+                // TO DO: Implement retention of the selected values
+                //await SetRetainedSelections();
             }
 
             catch (Exception ex)
@@ -1178,7 +1187,7 @@
                                     {
                                         if (!resourceComponent.IsFreeText)
                                         {
-                                            if (servicesData.CustomComponents!.Where(x => x.ParentComponent == nomalizedcomponentname).Count() > 0)
+                                            if (servicesData.CustomComponents!.Where(x => x.ParentComponent.ToLower() == nomalizedcomponentname).Count() > 0)
                                             {
                                                 // Make sure each component has a value
                                                 if (String.IsNullOrEmpty(selectedCustomComponents[nomalizedcomponentname]))
@@ -1508,6 +1517,9 @@
                 }
             }
         }
+
+        // TO DO: Implement retention of the selected values
+        //await SetRetainedSelections();
     }
 
     private string GetControlStyle()
@@ -1545,6 +1557,45 @@
         {
             multiselectedResourceTypes.Clear();
         }
+        generatedName = String.Empty;
+        namerequested = false;
         optional = " <span class=\"fst-italic\">** OPTIONAL **</span>";
+    }
+
+    private async Task GetRetainedSelections()
+    {
+        // Check if the current selections should be retained
+        if (Convert.ToBoolean(config.RetainGenerateSelections))
+        {
+            selectedResourceType = (await session.GetAsync<string>("selectedResourceType")).Value ?? String.Empty;
+            multiselectedResourceTypes = (await session.GetAsync<List<string>>("multiselectedResourceTypes")).Value ?? new List<string>();
+            selectedResourceEnvironment = (await session.GetAsync<string>("selectedResourceEnvironment")).Value ?? String.Empty;
+            selectedResourceFunction = (await session.GetAsync<string>("selectedResourceFunction")).Value ?? String.Empty;
+            selectedResourceInstance = (await session.GetAsync<string>("selectedResourceInstance")).Value ?? String.Empty;
+            selectedResourceLocation = (await session.GetAsync<string>("selectedResourceLocation")).Value ?? String.Empty;
+            selectedResourceOrg = (await session.GetAsync<string>("selectedResourceOrg")).Value ?? String.Empty;
+            selectedResourceProjAppSvc = (await session.GetAsync<string>("selectedResourceProjAppSvc")).Value ?? String.Empty;
+            selectedResourceUnitDept = (await session.GetAsync<string>("selectedResourceUnitDept")).Value ?? String.Empty;
+            selectedCustomComponents = (await session.GetAsync<Dictionary<string, string>>("selectedCustomComponents")).Value ?? new Dictionary<string, string>();
+            StateHasChanged();
+        }
+    }
+
+    private async Task SetRetainedSelections()
+    {
+        // Check if the current selections should be retained
+        if (Convert.ToBoolean(config.RetainGenerateSelections))
+        {
+            await session.SetAsync("selectedResourceType", selectedResourceType);
+            await session.SetAsync("multiselectedResourceTypes", multiselectedResourceTypes);
+            await session.SetAsync("selectedResourceEnvironment", selectedResourceEnvironment);
+            await session.SetAsync("selectedResourceFunction", selectedResourceFunction);
+            await session.SetAsync("selectedResourceInstance", selectedResourceInstance);
+            await session.SetAsync("selectedResourceLocation", selectedResourceLocation);
+            await session.SetAsync("selectedResourceOrg", selectedResourceOrg);
+            await session.SetAsync("selectedResourceProjAppSvc", selectedResourceProjAppSvc);
+            await session.SetAsync("selectedResourceUnitDept", selectedResourceUnitDept);
+            await session.SetAsync("selectedCustomComponents", selectedCustomComponents);
+        }
     }
 }

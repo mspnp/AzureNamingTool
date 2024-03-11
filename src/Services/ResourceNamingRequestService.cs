@@ -84,7 +84,7 @@ namespace AzureNamingTool.Services
                                 }
                                 else
                                 {
-                                    value = prop.GetType().GetProperty("ShortName").GetValue(prop, null).ToLower();
+                                    value = prop.GetType().GetProperty("ShortName").GetValue(prop, null);
                                 }
 
                                 // Check if the delimeter is already ignored
@@ -211,12 +211,12 @@ namespace AzureNamingTool.Services
                     GeneratedName generatedName = new()
                     {
                         CreatedOn = DateTime.Now,
-                        ResourceName = name.ToLower(),
+                        ResourceName = name,
                         Components = lstComponents
                     };
                     await GeneratedNamesService.PostItem(generatedName);
                     response.Success = true;
-                    response.ResourceName = name.ToLower();
+                    response.ResourceName = name;
                     response.Message = sbMessage.ToString();
                     return response;
                 }
@@ -851,7 +851,7 @@ namespace AzureNamingTool.Services
                         GeneratedName generatedName = new()
                         {
                             CreatedOn = DateTime.Now,
-                            ResourceName = name.ToLower(),
+                            ResourceName = name,
                             Components = lstComponents,
                             ResourceTypeName = resourceType.Resource,
                             User = request.CreatedBy,
@@ -868,7 +868,7 @@ namespace AzureNamingTool.Services
                         if (responseGenerateName.Success)
                         {
                             resourceNameResponse.Success = true;
-                            resourceNameResponse.ResourceName = name.ToLower();
+                            resourceNameResponse.ResourceName = name;
                             resourceNameResponse.Message = sbMessage.ToString();
                             resourceNameResponse.ResourceNameDetails = generatedName;
 

@@ -150,17 +150,17 @@
 
 
 @code {
-    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new();
-    [Parameter] public ThemeInfo theme { get; set; } = new();
+        [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new();
+        [Parameter] public ThemeInfo theme { get; set; } = new();
 
-    [Parameter] public int id { get; set; } = 0;
-    [Parameter] public string title { get; set; } = String.Empty;
-    [Parameter] public string message { get; set; } = String.Empty;
-    [Parameter] public string type { get; set; } = String.Empty;
-    [Parameter] public string parentcomponent { get; set; } = String.Empty;
-    [Parameter] public string headerstyle { get; set; } = String.Empty;
-    [Parameter] public bool admin { get; set; } = false;
-    [Parameter] public ServicesData servicesData { get; set; } = new();
+        [Parameter] public int id { get; set; } = 0;
+        [Parameter] public string title { get; set; } = String.Empty;
+        [Parameter] public string message { get; set; } = String.Empty;
+        [Parameter] public string type { get; set; } = String.Empty;
+        [Parameter] public string parentcomponent { get; set; } = String.Empty;
+        [Parameter] public string headerstyle { get; set; } = String.Empty;
+        [Parameter] public bool admin { get; set; } = false;
+        [Parameter] public ServicesData servicesData { get; set; } = new();
 
 
     private ServiceResponse serviceResponse = new();
@@ -260,9 +260,14 @@
                 {
                     if ((!String.IsNullOrEmpty(itemName)) && (!String.IsNullOrEmpty(itemShortName)))
                     {
+                        if(itemShortName.Any(Char.IsWhiteSpace))
+                        {
+                            toastService.ShowError("You must enter a valid short name with no spaces!");
+                            break;
+                        }
+
                         if (await ValidationHelper.ValidateShortName(type, itemShortName, this.parentcomponent))
                         {
-                            itemShortName = itemShortName.ToLower();
                             string normailzedname = GeneralHelper.NormalizeName(itemName, true);
                             switch (type)
                             {
@@ -280,7 +285,7 @@
                                         ResourceEnvironment resourceEnvironment = new ResourceEnvironment()
                                             {
                                                 Name = itemName,
-                                                ShortName = itemShortName.ToLower()
+                                                ShortName = itemShortName
 
                                             };
                                         serviceResponse = await ResourceEnvironmentService.PostItem(resourceEnvironment);
@@ -301,7 +306,7 @@
                                         ResourceLocation resourceLocation = new ResourceLocation()
                                             {
                                                 Name = itemName,
-                                                ShortName = itemShortName.ToLower()
+                                                ShortName = itemShortName
 
                                             };
                                         serviceResponse = await ResourceLocationService.PostItem(resourceLocation);
@@ -322,7 +327,7 @@
                                         ResourceOrg resourceOrg = new ResourceOrg()
                                             {
                                                 Name = itemName,
-                                                ShortName = itemShortName.ToLower()
+                                                ShortName = itemShortName
 
                                             };
                                         serviceResponse = await ResourceOrgService.PostItem(resourceOrg);
@@ -343,7 +348,7 @@
                                         ResourceProjAppSvc resourceProjAppSvc = new ResourceProjAppSvc()
                                             {
                                                 Name = itemName,
-                                                ShortName = itemShortName.ToLower()
+                                                ShortName = itemShortName
 
                                             };
                                         serviceResponse = await ResourceProjAppSvcService.PostItem(resourceProjAppSvc);
@@ -364,7 +369,7 @@
                                         ResourceUnitDept resourceUnitDept = new ResourceUnitDept()
                                             {
                                                 Name = itemName,
-                                                ShortName = itemShortName.ToLower()
+                                                ShortName = itemShortName
 
                                             };
                                         serviceResponse = await ResourceUnitDeptService.PostItem(resourceUnitDept);
@@ -385,7 +390,7 @@
                                         ResourceFunction resourceFunction = new ResourceFunction()
                                             {
                                                 Name = itemName,
-                                                ShortName = itemShortName.ToLower()
+                                                ShortName = itemShortName
 
                                             };
                                         serviceResponse = await ResourceFunctionService.PostItem(resourceFunction);
@@ -406,7 +411,7 @@
                                         CustomComponent customComponent = new CustomComponent()
                                             {
                                                 Name = itemName,
-                                                ShortName = itemShortName.ToLower(),
+                                                ShortName = itemShortName,
                                                 ParentComponent = GeneralHelper.NormalizeName(this.parentcomponent, true),
                                                 MinLength = itemMinLength,
                                                 MaxLength = itemMaxLength

@@ -13,5 +13,10 @@
     "id": 3,
     "version": "3.3.0",
     "alert": "<p><span class=\"fw-bold\">IMPORTANT NOTES</span></p><ul><li class=\"mb-3\">With the release of v4.0.0, the Azure Naming Tool will be upgraded to a .NET 8 Blazor Web App. This will require an update to the hosting environment, as well as a BACKUP & RESTORE of your configuration. Review the v4.0.0 Migration Guide for details.<br /><br /><a href=\"https://github.com/mspnp/AzureNamingTool/wiki/v4.0.0-Migration-Guide\" target=\"_blank\"><span class=\"fw-bold\">View the Azure Naming Tool v4.0.0 Migration Guide</span></a></li></ul>"
+  },
+  {
+    "id": 3,
+    "version": "4.1.0",
+    "alert": "<p><span class=\"fw-bold\">IMPORTANT NOTES</span></p><ul><li class=\"mb-3\">With the release of v4.1.0, the Azure Naming Tool now supports uppercase and lowercase characters for resource names. Use the Configuration page to update the component options."
   }
 ]
