@@ -121,6 +121,7 @@ namespace AzureNamingTool.Services
                 configdata.InstructionsEnabled = config.InstructionsEnabled;
                 configdata.GeneratedNamesLogEnabled = config.GeneratedNamesLogEnabled;
                 configdata.LatestNewsEnabled = config.LatestNewsEnabled;
+                configdata.RetainGenerateSelections = config.RetainGenerateSelections;
 
                 // Get the security settings
                 if (includeadmin)
@@ -227,6 +228,10 @@ namespace AzureNamingTool.Services
                 if (GeneralHelper.IsNotNull(configdata.LatestNewsEnabled))
                 {
                     config.LatestNewsEnabled = configdata.LatestNewsEnabled;
+                }
+                if (GeneralHelper.IsNotNull(configdata.RetainGenerateSelections))
+                {
+                    config.RetainGenerateSelections = configdata.RetainGenerateSelections;
                 }
                 var jsonWriteOptions = new JsonSerializerOptions()
                 {

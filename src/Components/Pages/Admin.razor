@@ -480,6 +480,30 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!--
+                                 // TO DO: Implement retention of the selected values
+                                <div class="card mb-3" style="width:auto;">
+                                    <div class="card-header bg-default text-dark">
+                                        <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#retaingenerateselections" role="button" aria-expanded="false" aria-controls="retaingenerateselections">
+                                            <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Retain Generate Selections
+                                        </a>
+                                    </div>
+                                    <div class="collapse show card card-body @theme.ThemeStyle" id="retaingenerateselections">
+                                        <div class="mb-3">
+                                            <p>
+                                                Enable/Disable <span class="fw-bold">Retaining of selections after name generation</span> for all users.
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <label class="switch" title="Retain Generate Seelctions">
+                                                <input type="checkbox" checked="@retaingenerateselections" @oninput='args => SettingChanged(args, "retaingenerateselections")'>
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span class="align-text-top"> Enable</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                 -->
                                 <div class="card mb-3" style="width:auto;">
                                     <div class="card-header bg-default text-dark">
                                         <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#connectivitycheck" role="button" aria-expanded="false" aria-controls="connectivitycheck">
@@ -594,6 +618,7 @@
     private bool instructionsenabled = false;
     private bool generatednameslogenabled = false;
     private bool latestnewsenabled = false;
+    private bool retaingenerateselections = false;
     private string currentgenerationwebhook = String.Empty;
     private string versionalert = String.Empty;
     private string appversion = String.Empty;
@@ -628,6 +653,7 @@
                 instructionsenabled = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("InstructionsEnabled"));
                 generatednameslogenabled = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("GeneratedNamesLogEnabled"));
                 latestnewsenabled = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("LatestNewsEnabled"));
+                retaingenerateselections = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("RetainGenerateSelections"));
                 currentgenerationwebhook = ConfigurationHelper.GetAppSetting("GenerationWebhook", true);
                 currentidentityheadername = ConfigurationHelper.GetAppSetting("IdentityHeaderName", true);
                 if (GeneralHelper.IsNotNull(identityProviderDetails))
@@ -955,6 +981,7 @@
                     ConfigurationHelper.SetAppSetting("InstructionsEnabled", resetconfig.InstructionsEnabled!, false);
                     ConfigurationHelper.SetAppSetting("GeneratedNamesLogEnabled", resetconfig.GeneratedNamesLogEnabled!, false);
                     ConfigurationHelper.SetAppSetting("LatestNewsEnabled", resetconfig.LatestNewsEnabled!, false);
+                    ConfigurationHelper.SetAppSetting("RetainGenerateSelections", resetconfig.RetainGenerateSelections!, false);
                     ConfigurationHelper.SetAppSetting("ConnectivityCheckEnabled", resetconfig.ConnectivityCheckEnabled!, false);
                     ConfigurationHelper.SetAppSetting("GenerationWebhook", String.Empty, true);
                     NavigationManager.NavigateTo("admin?reset=true", true);
@@ -1114,6 +1141,13 @@
                         {
                             ConfigurationHelper.SetAppSetting("LatestNewsEnabled", e.Value!.ToString() ?? "");
                             message.Message = "Latest News Enabled setting updated to " + e.Value?.ToString()!.ToUpper() ?? "" + "!";
+                        }
+                        break;
+                    case "retaingenerateselections":
+                        if (GeneralHelper.IsNotNull(e.Value))
+                        {
+                            ConfigurationHelper.SetAppSetting("RetainGenerateSelections", e.Value!.ToString() ?? "");
+                            message.Message = "Retain Generate Selections setting updated to " + e.Value?.ToString()!.ToUpper() ?? "" + "!";
                         }
                         break;
                 }

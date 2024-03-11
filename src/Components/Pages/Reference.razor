@@ -471,9 +471,9 @@
                                 {
                                     if (!resourceComponent.IsFreeText)
                                     {
-                                        if (servicesData.CustomComponents!.Where(x => x.ParentComponent == normalizedcomponentname).Count() > 0)
+                                        if (servicesData.CustomComponents!.Where(x => x.ParentComponent.ToLower() == normalizedcomponentname).Count() > 0)
                                         {
-                                            name += servicesData.CustomComponents!.Where(x => x.ParentComponent == normalizedcomponentname).FirstOrDefault()!.ShortName;
+                                            name += servicesData.CustomComponents!.Where(x => x.ParentComponent.ToLower() == normalizedcomponentname).FirstOrDefault()!.ShortName;
                                         }
                                     }
                                     else
@@ -485,6 +485,12 @@
                         }
                     }
                 }
+            }
+
+            // Check if the resource type only allows lowercase
+            if (!type.Regx.Contains("A-Z"))
+            {
+                name = name.ToLower();
             }
 
             // Apply the regex to the generate name

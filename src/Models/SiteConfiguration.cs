@@ -84,5 +84,10 @@
         /// Gets or sets a value indicating whether the latest news feature is enabled.
         /// </summary>
         public string? LatestNewsEnabled { get; set; } = "False";
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the Generate oage will retain selected vlues after generation
+        /// </summary>
+        public string? RetainGenerateSelections { get; set; } = "False";
     }
 }
