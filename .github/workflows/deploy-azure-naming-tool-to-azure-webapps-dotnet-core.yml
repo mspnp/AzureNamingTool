@@ -44,7 +44,7 @@ jobs:
       outputs:
         secrets-valid: ${{ steps.secrets-valid.outputs.isvalid }}
       steps:
-        - uses: actions/checkout@v3      
+        - uses: actions/checkout@v4.1.4    
         - id: secrets-valid
           env: 
             azure-webapp-name: ${{ secrets.AZURE_WEBAPP_NAME }}
@@ -60,14 +60,14 @@ jobs:
     needs: [check-secrets]
     if: needs.check-secrets.outputs.secrets-valid == 'true'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4.1 4
       - name: Set up .NET Core
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v4.0.0
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       
       - name: Set up dependency caching for faster builds
-        uses: actions/cache@v3
+        uses: actions/cache@v4.0.2
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -80,7 +80,7 @@ jobs:
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.3.3
         with:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
@@ -100,13 +100,13 @@ jobs:
 
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: .net-app
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
+        uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
