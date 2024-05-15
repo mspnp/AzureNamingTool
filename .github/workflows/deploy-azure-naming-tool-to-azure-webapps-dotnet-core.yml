@@ -60,9 +60,9 @@ jobs:
     needs: [check-secrets]
     if: needs.check-secrets.outputs.secrets-valid == 'true'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4.1 4
       - name: Set up .NET Core
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v4.0.0
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       
