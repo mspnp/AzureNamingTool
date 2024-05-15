@@ -44,7 +44,7 @@ jobs:
       outputs:
         secrets-valid: ${{ steps.secrets-valid.outputs.isvalid }}
       steps:
-        - uses: actions/checkout@v3      
+        - uses: actions/checkout@v4.1.4    
         - id: secrets-valid
           env: 
             azure-webapp-name: ${{ secrets.AZURE_WEBAPP_NAME }}
