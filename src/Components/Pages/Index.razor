@@ -86,6 +86,11 @@
     private string appversion = ConfigurationHelper.GetAssemblyVersion();
     private string updateurl = "https://github.com/mspnp/AzureNamingTool/wiki/Updating";
 
+    protected override async Task OnInitializedAsync()
+    {
+        customwelcomecontent = ConfigurationHelper.GetAppSetting("CustomWelcomeContent", false);
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         var resultAdmin = await session.GetAsync<bool>("admin");
@@ -102,7 +107,6 @@
         {
             try
             {
-                customwelcomecontent = ConfigurationHelper.GetAppSetting("CustomWelcomeContent", false);
                 if (admin)
                 {
                     if (await ConfigurationHelper.VerifyConnectivity())
