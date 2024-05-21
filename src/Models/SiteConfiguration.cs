@@ -89,5 +89,10 @@
         /// Gets or sets a value indicating whether the Generate oage will retain selected vlues after generation
         /// </summary>
         public string? RetainGenerateSelections { get; set; } = "False";
+
+        /// <summary>
+        /// Gets or sets custom welcome content.
+        /// </summary>
+        public string? CustomWelcomeContent { get; set; } = String.Empty;
     }
 }

@@ -552,6 +552,28 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div class="card mb-3" style="width:auto;">
+                                    <div class="card-header bg-default text-dark">
+                                        <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#customwelcomecontent" role="button" aria-expanded="false" aria-controls="customwelcomecontent">
+                                            <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Custom Welcome Content
+                                        </a>
+                                    </div>
+                                    <div class="collapse show card card-body @theme.ThemeStyle" id="customwelcomecontent">
+                                        <div class="mb-3">
+                                            <p>
+                                                Use the form below to set the tool welcome text.
+                                            </p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">Content</div>
+                                            <input title="Custom Welcome Content" id="currentcustomwelcomecontent" class="form-control" type="text" @onchange="@((ui) => { SetFormValue("customwelcomecontent",(string)ui.Value!);})" value="@currentcustomwelcomecontent" />
+                                        </div>
+                                        <div>
+                                            <button type="button" class="btn btn-success w-auto" @onclick="@(e => AdminFormAction("customwelcomecontentsave"))" title="Save Custom Welcome Content">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="card mb-3" style="width:auto;">
                                     <div class="card-header bg-default text-dark">
                                         <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#resetsitesettings" role="button" aria-expanded="false" aria-controls="resetsitesettings">
@@ -584,7 +606,7 @@
     </div>
 </form>
 <script>
-    document.getElementById("admin-form").addEventListener("keyup", function(event) {
+    document.getElementById("admin-form").addEventListener("keyup", function (event) {
         if (event.key === 'Enter') {
             event.preventDefault();
             document.getElementById("admin-form").submit();
@@ -619,6 +641,8 @@
     private bool generatednameslogenabled = false;
     private bool latestnewsenabled = false;
     private bool retaingenerateselections = false;
+    private string customwelcomecontet = String.Empty;
+    private string currentcustomwelcomecontent = String.Empty;
     private string currentgenerationwebhook = String.Empty;
     private string versionalert = String.Empty;
     private string appversion = String.Empty;
@@ -654,6 +678,7 @@
                 generatednameslogenabled = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("GeneratedNamesLogEnabled"));
                 latestnewsenabled = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("LatestNewsEnabled"));
                 retaingenerateselections = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("RetainGenerateSelections"));
+                currentcustomwelcomecontent = ConfigurationHelper.GetAppSetting("CustomWelcomeContent", false);
                 currentgenerationwebhook = ConfigurationHelper.GetAppSetting("GenerationWebhook", true);
                 currentidentityheadername = ConfigurationHelper.GetAppSetting("IdentityHeaderName", true);
                 if (GeneralHelper.IsNotNull(identityProviderDetails))
@@ -917,6 +942,20 @@
                     displaymessage = false;
                 }
                 break;
+            case "customwelcomecontentsave":
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the Custom Welcome Content.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                if (confirm)
+                {
+                    ConfigurationHelper.SetAppSetting("CustomWelcomeContent", currentcustomwelcomecontent, false);
+                    message.Type = MessageTypesEnum.SUCCESS;
+                    message.Header = "SUCCESS";
+                    message.Message = "Custom Welcome Content configuration saved!";
+                }
+                else
+                {
+                    displaymessage = false;
+                }
+                break;
             case "clearcache":
                 CacheHelper.ClearAllCache();
                 message.Type = MessageTypesEnum.SUCCESS;
@@ -982,6 +1021,7 @@
                     ConfigurationHelper.SetAppSetting("GeneratedNamesLogEnabled", resetconfig.GeneratedNamesLogEnabled!, false);
                     ConfigurationHelper.SetAppSetting("LatestNewsEnabled", resetconfig.LatestNewsEnabled!, false);
                     ConfigurationHelper.SetAppSetting("RetainGenerateSelections", resetconfig.RetainGenerateSelections!, false);
+                    ConfigurationHelper.SetAppSetting("CustomWelcomeContent", String.Empty, false);
                     ConfigurationHelper.SetAppSetting("ConnectivityCheckEnabled", resetconfig.ConnectivityCheckEnabled!, false);
                     ConfigurationHelper.SetAppSetting("GenerationWebhook", String.Empty, true);
                     NavigationManager.NavigateTo("admin?reset=true", true);
@@ -1068,6 +1108,10 @@
             case "generationwebhook":
                 currentgenerationwebhook = value;
                 break;
+            case "customwelcomecontent":
+                currentcustomwelcomecontent = value;
+                break;
+
         }
     }
 

@@ -148,5 +148,10 @@ namespace AzureNamingTool.Models
         /// Gets or sets whether retaining of Generate opage selections is enabled.
         /// </summary>
         public string? RetainGenerateSelections { get; set; } = "False";
+
+        /// <summary>
+        /// Gets or sets custom welcome content.
+        /// </summary>
+        public string? CustomWelcomeContent { get; set; } = String.Empty;
     }
 }
