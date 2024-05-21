@@ -3,6 +3,7 @@
 @using AzureNamingTool.Helpers
 @using AzureNamingTool.Models
 @using AzureNamingTool.Services
+@using Markdig;
 @inject ILogger<Index> Logger
 @inject NavigationManager NavigationManager
 @inject StateContainer state
@@ -14,7 +15,7 @@
     @if (!String.IsNullOrEmpty(customwelcomecontent))
     {
         <div class="card-body">
-            @customwelcomecontent
+            @((MarkupString)Markdown.ToHtml(customwelcomecontent))
         </div>
     }
     else
