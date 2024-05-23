@@ -122,7 +122,9 @@ namespace AzureNamingTool.Services
                 configdata.GeneratedNamesLogEnabled = config.GeneratedNamesLogEnabled;
                 configdata.LatestNewsEnabled = config.LatestNewsEnabled;
                 configdata.RetainGenerateSelections = config.RetainGenerateSelections;
-                configdata.CustomWelcomeContent = config.CustomWelcomeContent;
+                configdata.CustomHomeContent = config.CustomHomeContent;
+                configdata.CustomLogoPath = config.CustomLogoPath;
+                configdata.CustomToolName = config.CustomToolName;
 
                 // Get the security settings
                 if (includeadmin)
@@ -234,9 +236,17 @@ namespace AzureNamingTool.Services
                 {
                     config.RetainGenerateSelections = configdata.RetainGenerateSelections;
                 }
-                if (GeneralHelper.IsNotNull(configdata.CustomWelcomeContent))
+                if (GeneralHelper.IsNotNull(configdata.CustomHomeContent))
                 {
-                    config.CustomWelcomeContent = configdata.CustomWelcomeContent;
+                    config.CustomHomeContent = configdata.CustomHomeContent;
+                }
+                if (GeneralHelper.IsNotNull(configdata.CustomLogoPath))
+                {
+                    config.CustomLogoPath = configdata.CustomLogoPath;
+                }
+                if (GeneralHelper.IsNotNull(configdata.CustomToolName))
+                {
+                    config.CustomToolName = configdata.CustomToolName;
                 }
                 var jsonWriteOptions = new JsonSerializerOptions()
                 {

@@ -9,21 +9,22 @@
 @inject StateContainer state
 @inject ProtectedSessionStorage session
 
-<PageTitle>Azure Naming Tool - Home</PageTitle>
+<PageTitle>@toolname - Home</PageTitle>
 
 <div class="card @theme!.ThemeStyle">
-    @if (!String.IsNullOrEmpty(customwelcomecontent))
-    {
-        <div class="card-body">
-            @((MarkupString)Markdown.ToHtml(customwelcomecontent))
-        </div>
-    }
-    else
-    {
-        <div class="card-body">
-            <p>
-                <img src="images/AzureNamingToolLogo.png" height="160" alt="Azure Naming Tool" />
-            </p>
+
+    <div class="card-body">
+        <p>
+            <img src="@logopath" height="160" alt="@toolname" />
+        </p>
+        @if (!String.IsNullOrEmpty(customhomecontent))
+        {
+            <div class="card-body">
+                @((MarkupString)Markdown.ToHtml(customhomecontent))
+            </div>
+        }
+        else
+        {
             <p class="alert alert-info">
                 <span class="fs-4">Disclaimer</span>
                 <br />
@@ -71,8 +72,8 @@
                     </button>
                 </p>
             }
-        </div>
-    }
+        }
+    </div>
 </div>
 @code {
     [CascadingParameter]
@@ -81,14 +82,18 @@
     public IModalService? Modal { get; set; }
     private bool admin;
     private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
-    private string? customwelcomecontent = String.Empty;
+    private string? customhomecontent = String.Empty;
+    private string? logopath = String.Empty;
+    private string? toolname = String.Empty;
 
     private string appversion = ConfigurationHelper.GetAssemblyVersion();
     private string updateurl = "https://github.com/mspnp/AzureNamingTool/wiki/Updating";
 
     protected override async Task OnInitializedAsync()
     {
-        customwelcomecontent = ConfigurationHelper.GetAppSetting("CustomWelcomeContent", false);
+        customhomecontent = ConfigurationHelper.GetAppSetting("CustomHomeContent", false);
+        logopath = !String.IsNullOrEmpty(ConfigurationHelper.GetAppSetting("CustomLogoPath", false)) ? ConfigurationHelper.GetAppSetting("CustomLogoPath", false) : "images/AzureNamingToolLogo.png";
+        toolname = !String.IsNullOrEmpty(ConfigurationHelper.GetAppSetting("CustomToolName", false)) ? ConfigurationHelper.GetAppSetting("CustomToolName", false) : "Azure Naming Tool";
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

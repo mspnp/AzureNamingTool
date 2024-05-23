@@ -9,7 +9,7 @@
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/"><img src="images/AzureNamingToolLogo-NoText.png" height="20" style="vertical-align:top;margin-top:2px;padding-right:10px;" alt="Azure Naming Tool" />Azure Naming Tool</a>
+        <a class="navbar-brand" href="/"><img src="@logopath" height="20" style="vertical-align:top;margin-top:2px;padding-right:10px;" alt="@toolname" />@toolname</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -163,6 +163,15 @@
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : String.Empty;
     private bool latestnewsenabled = false;
     private bool connected = true;
+    private string? logopath = String.Empty;
+    private string? toolname = String.Empty;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        logopath = !String.IsNullOrEmpty(ConfigurationHelper.GetAppSetting("CustomLogoPath", false)) ? ConfigurationHelper.GetAppSetting("CustomLogoPath", false) : "images/AzureNamingToolLogo-NoText.png";
+        toolname = !String.IsNullOrEmpty(ConfigurationHelper.GetAppSetting("CustomToolName", false)) ? ConfigurationHelper.GetAppSetting("CustomToolName", false) : "Azure Naming Tool";
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

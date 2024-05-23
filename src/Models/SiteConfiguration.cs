@@ -91,8 +91,18 @@
         public string? RetainGenerateSelections { get; set; } = "False";
 
         /// <summary>
-        /// Gets or sets custom welcome content.
+        /// Gets or sets custom Home content.
         /// </summary>
-        public string? CustomWelcomeContent { get; set; } = String.Empty;
+        public string? CustomHomeContent { get; set; } = String.Empty;
+
+        /// <summary>
+        /// Gets or sets custom Logo path.
+        /// </summary>
+        public string? CustomLogoPath { get; set; } = String.Empty;
+
+        /// <summary>
+        /// Gets or sets custom tool name.
+        /// </summary>
+        public string? CustomToolName { get; set; } = String.Empty;
     }
 }
