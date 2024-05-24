@@ -140,6 +140,16 @@ namespace AzureNamingTool.Models
         public string? GeneratedNamesLogEnabled { get; set; } = "True";
 
         /// <summary>
+        /// Gets or sets a value indicating whether reference is enabled.
+        /// </summary>
+        public string? ReferenceEnabled { get; set; } = "True";
+
+        /// <summary>
+        /// Gets or sets a value indicating whether configuration is enabled.
+        /// </summary>
+        public string? ConfigurationEnabled { get; set; } = "True";
+
+        /// <summary>
         /// Gets or sets whether latest news is enabled.
         /// </summary>
         public string? LatestNewsEnabled { get; set; } = "False";
@@ -148,5 +158,21 @@ namespace AzureNamingTool.Models
         /// Gets or sets whether retaining of Generate opage selections is enabled.
         /// </summary>
         public string? RetainGenerateSelections { get; set; } = "False";
+
+        /// <summary>
+        /// Gets or sets custom Home content.
+        /// </summary>
+        public string? CustomHomeContent { get; set; } = String.Empty;
+
+
+        /// <summary>
+        /// Gets or sets custom Logo path.
+        /// </summary>
+        public string? CustomLogoPath { get; set; } = String.Empty;
+
+        /// <summary>
+        /// Gets or sets custom tool name.
+        /// </summary>
+        public string? CustomToolName { get; set; } = String.Empty;
     }
 }
