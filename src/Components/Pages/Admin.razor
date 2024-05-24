@@ -142,7 +142,7 @@
                                         </p>
                                     </div>
                                     <div class="mb-3">
-                                        <MarkdownEditor @bind-Value="@customhomecontent" @ref="mdCustomHomeContent"/>
+                                        <MarkdownEditor @bind-Value="@customhomecontent" @ref="mdCustomHomeContent" />
                                     </div>
                                     <div>
                                         <button type="button" class="btn btn-success w-auto" @onclick="@(e => AdminFormAction("customhomecontentsave"))" title="Save Custom Home Content">Save</button>
@@ -182,9 +182,16 @@
                                         <InputFile OnChange="UploadLogo" class="form-control" />
                                     </div>
                                     <div class="alert alert-info show" role="alert">
-                                        <h4>NOTE</h4>
+                                        <h4 class="mb-3">NOTES</h4>
                                         <div class="mb-3">
-                                            You may need to refresh the browser for the custom logo to be displayed.
+                                            <ul>
+                                                <li class="mb-3">
+                                                    You may need to refresh the browser for the custom logo to be displayed.
+                                                </li>
+                                                <li class="mb-3">
+                                                    If hosting in a container, uploaded logo images will <span class="fw-bold">NOT</span> be stored in the <span class="fw-bold">/settings</span> folder and will not be persisted. If the container is recreated, you will need to re-upload the logo file.
+                                                </li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
