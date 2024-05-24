@@ -109,26 +109,26 @@
                                 This section allows you to customize the Azure Naming Tool site.
                             </p>
                             @* <div class="card mb-3" style="width:auto;">
-                                <div class="card-header bg-default text-dark">
-                                    <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#customtoolname" role="button" aria-expanded="false" aria-controls="customtoolname">
-                                        <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Custom Tool Name
-                                    </a>
-                                </div>
-                                <div class="collapse show card card-body @theme.ThemeStyle" id="customtoolname">
-                                    <p>
-                                        You can enter custom <span class="fw-bold">Name</span> for the tool that will be displayed within the site.
-                                    </p>
-                                    <div class="mb-3">
-                                        <div class="fw-bold">Name</div>
-                                        <input title="Custom Tool Name" id="customtoolname" class="form-control" type="text" @onchange="@((ui) => { SetFormValue("customtoolname",(string)ui.Value!);})" value="@customtoolname" />
-                                    </div>
-                                    <div>
-                                        <button type="button" class="btn btn-success w-auto" @onclick="@(e => AdminFormAction("customtoolnamesave"))" title="Save Custom Tool Name">Save</button>
-                                        <span> </span>
-                                        <button type="button" class="btn btn-secondary w-auto" @onclick="@(e => AdminFormAction("customtoolnameclear"))" title="Clear Custom Tool Name">Clear</button>
-                                    </div>
-                                </div>
-                            </div> *@
+                        <div class="card-header bg-default text-dark">
+                        <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#customtoolname" role="button" aria-expanded="false" aria-controls="customtoolname">
+                        <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Custom Tool Name
+                        </a>
+                        </div>
+                        <div class="collapse show card card-body @theme.ThemeStyle" id="customtoolname">
+                        <p>
+                        You can enter custom <span class="fw-bold">Name</span> for the tool that will be displayed within the site.
+                        </p>
+                        <div class="mb-3">
+                        <div class="fw-bold">Name</div>
+                        <input title="Custom Tool Name" id="customtoolname" class="form-control" type="text" @onchange="@((ui) => { SetFormValue("customtoolname",(string)ui.Value!);})" value="@customtoolname" />
+                        </div>
+                        <div>
+                        <button type="button" class="btn btn-success w-auto" @onclick="@(e => AdminFormAction("customtoolnamesave"))" title="Save Custom Tool Name">Save</button>
+                        <span> </span>
+                        <button type="button" class="btn btn-secondary w-auto" @onclick="@(e => AdminFormAction("customtoolnameclear"))" title="Clear Custom Tool Name">Clear</button>
+                        </div>
+                        </div>
+                        </div> *@
                             <div class="card mb-3" style="width:auto;">
                                 <div class="card-header bg-default text-dark">
                                     <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#customhomecontent" role="button" aria-expanded="false" aria-controls="customhomecontent">
@@ -142,7 +142,6 @@
                                         </p>
                                     </div>
                                     <div class="mb-3">
-                                        <div class="fw-bold">Content</div>
                                         <MarkdownEditor @bind-Value="@customhomecontent" @ref="mdCustomHomeContent" />
                                     </div>
                                     <div>
@@ -152,29 +151,44 @@
                                     </div>
                                 </div>
                             </div>
-                            @* <div class="card mb-3" style="width:auto;">
+                            <div class="card mb-3" style="width:auto;">
                                 <div class="card-header bg-default text-dark">
                                     <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#customlogo" role="button" aria-expanded="false" aria-controls="customlogo">
                                         <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Custom Logo
                                     </a>
                                 </div>
                                 <div class="collapse show card card-body @theme.ThemeStyle" id="customlogo">
+                                    <p>
+                                        This section is used to upload a custom logo for the site.
+                                    </p>
                                     <div class="mb-3">
-                                        <p>
-                                        </p>
+                                        <div class="fw-bold">Custom Logo</div>
+                                        @if (!String.IsNullOrEmpty(customlogopath))
+                                        {
+                                            <div class="mb-3">
+                                                <img src="@customlogopath" height="100" alt="Custom Logo" />
+                                            </div>
+                                            <div>
+                                                <button type="button" class="btn btn-danger w-auto" @onclick="@(e => AdminFormAction("customlogopathclear"))" title="Delete Custom Logo">Delete</button>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span style="font-style:italic;">No custom logo uploaded.</span>
+                                        }
                                     </div>
-
                                     <div class="mb-3">
                                         <div class="fw-bold">Upload</div>
-                                        <InputFile OnChange="UploadLogo" />
+                                        <InputFile OnChange="UploadLogo" class="form-control" />
                                     </div>
-                                    <div>
-                                        <button type="button" class="btn btn-success w-auto" @onclick="@(e => AdminFormAction("customlogopathsave"))" title="Upload Custom Logo">Save</button>
-                                        <span> </span>
-                                        <button type="button" class="btn btn-secondary w-auto" @onclick="@(e => AdminFormAction("customlogopathclear"))" title="Clear Custom Logo">Clear</button>
+                                    <div class="alert alert-secondary show" role="alert">
+                                        <h4>NOTE</h4>
+                                        <div class="mb-3">
+                                            You may need to refresh the browser for the custom logo to be displayed.
+                                        </div>
                                     </div>
                                 </div>
-                            </div> *@
+                            </div>
                         </div>
                     </div>
                     <div class="card mb-3">
@@ -419,7 +433,7 @@
                         </h5>
                         <div class="collapse card card-body @theme.ThemeStyle" id="cache">
                             <p>
-                                The tool uses caching for data to improve performance.
+                                This section allows you to view/manage cached data for the tool.
                             </p>
                             <div class="card mb-3" style="width:auto;">
                                 <div class="card-header bg-default text-dark">
@@ -1439,9 +1453,10 @@
         {
 
             var trustedFileName = Path.GetRandomFileName();
-            await using FileStream fs = new(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "settings/" + e.File.Name), FileMode.Create);
+            await using FileStream fs = new(Path.Combine(Environment.CurrentDirectory, "wwwroot/images/" + e.File.Name), FileMode.Create);
             await e.File.OpenReadStream(maxFileSize).CopyToAsync(fs);
-            //ConfigurationHelper.SetAppSetting("CustomLogoPath", "settings/" + e.File.Name ?? "");
+            ConfigurationHelper.SetAppSetting("CustomLogoPath", "images/" + e.File.Name ?? "");
+            customlogopath = "images/" + e.File.Name;
             message.Message = "Custom Logo uploaded!";
         }
         catch (Exception ex)
@@ -1470,6 +1485,6 @@
             }
             AdminLogService.PostItem(new AdminLogMessage() { Title = message.Type.ToString(), Message = message.Message, Source = currentuser });
         }
-
+        StateHasChanged();
     }
 }
