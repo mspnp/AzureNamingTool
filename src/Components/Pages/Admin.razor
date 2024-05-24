@@ -104,7 +104,7 @@
                                 <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Customization
                             </a>
                         </h5>
-                        <div class="collapse card card-body @theme.ThemeStyle" id="customization">
+                        <div class="collapse show card card-body @theme.ThemeStyle" id="customization">
                             <p>
                                 This section allows your to customize the Azure Naming Tool site. This includes Custom Home content, logo, and navigation links displayed for non-admin users.
                             </p>
@@ -142,7 +142,7 @@
                                         </p>
                                     </div>
                                     <div class="mb-3">
-                                        <MarkdownEditor @bind-Value="@customhomecontent" @ref="mdCustomHomeContent" />
+                                        <MarkdownEditor @bind-Value="@customhomecontent" @ref="mdCustomHomeContent"/>
                                     </div>
                                     <div>
                                         <button type="button" class="btn btn-success w-auto" @onclick="@(e => AdminFormAction("customhomecontentsave"))" title="Save Custom Home Content">Save</button>
@@ -835,6 +835,7 @@
                 latestnewsenabled = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("LatestNewsEnabled"));
                 retaingenerateselections = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("RetainGenerateSelections"));
                 customhomecontent = ConfigurationHelper.GetAppSetting("CustomHomeContent", false);
+                //await mdCustomHomeContent.SetValueAsync(customhomecontent);
                 customlogopath = ConfigurationHelper.GetAppSetting("CustomLogoPath", false);
                 customtoolname = ConfigurationHelper.GetAppSetting("CustomToolName", false);
                 currentgenerationwebhook = ConfigurationHelper.GetAppSetting("GenerationWebhook", true);
@@ -1105,6 +1106,7 @@
                 if (confirm)
                 {
                     ConfigurationHelper.SetAppSetting("CustomHomeContent", customhomecontent, false);
+                    await mdCustomHomeContent.SetValueAsync(customhomecontent);
                     message.Type = MessageTypesEnum.SUCCESS;
                     message.Header = "SUCCESS";
                     message.Message = "Custom Home content saved!";
@@ -1120,7 +1122,7 @@
                 {
                     ConfigurationHelper.SetAppSetting("CustomHomeContent", String.Empty, false);
                     customhomecontent = String.Empty;
-                    await mdCustomHomeContent.SetValueAsync(String.Empty);
+                    await mdCustomHomeContent.SetValueAsync(customhomecontent);
                     message.Type = MessageTypesEnum.SUCCESS;
                     message.Header = "SUCCESS";
                     message.Message = "Custom Home content cleared!";
