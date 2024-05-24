@@ -106,7 +106,7 @@
                         </h5>
                         <div class="collapse card card-body @theme.ThemeStyle" id="customization">
                             <p>
-                                This section allows you to customize the Azure Naming Tool site.
+                                This section allows your to customize the Azure Naming Tool site. This includes Custom Home content, logo, and navigation links displayed for non-admin users.
                             </p>
                             @* <div class="card mb-3" style="width:auto;">
                         <div class="card-header bg-default text-dark">
@@ -198,7 +198,7 @@
                                 <div class="collapse show card card-body @theme.ThemeStyle" id="sitenavigation">
                                     <div class="mb-3">
                                         <p>
-                                            This section allows you to congiguration what navigation links are displayed to non-admin users.
+                                            This section allows you to configure what navigation links are displayed for non-admin users.
                                         </p>
                                     </div>
                                     <div class="card mb-3" style="width:auto;">
@@ -1260,6 +1260,7 @@
                     ConfigurationHelper.SetAppSetting("CustomToolName", String.Empty, false);
                     ConfigurationHelper.SetAppSetting("ConnectivityCheckEnabled", resetconfig.ConnectivityCheckEnabled!, false);
                     ConfigurationHelper.SetAppSetting("GenerationWebhook", String.Empty, true);
+                    AdminLogService.PostItem(new AdminLogMessage() { Title = MessageTypesEnum.SUCCESS.ToString(), Message = "Site Settings reset!", Source = currentuser });
                     NavigationManager.NavigateTo("admin?reset=true", true);
                 }
                 else
