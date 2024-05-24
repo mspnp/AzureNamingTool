@@ -12,6 +12,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Components\General\NavMenu.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Components\General\NavMenu.razor.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BlazorDownloadFile" Version="2.4.0.2" />
     <PackageReference Include="Blazored.Modal" Version="7.3.1" />
     <PackageReference Include="Blazored.Toast" Version="4.2.1" />

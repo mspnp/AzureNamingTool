@@ -120,6 +120,8 @@ namespace AzureNamingTool.Services
                 configdata.AutoIncrementResourceInstance = config.AutoIncrementResourceInstance;
                 configdata.InstructionsEnabled = config.InstructionsEnabled;
                 configdata.GeneratedNamesLogEnabled = config.GeneratedNamesLogEnabled;
+                configdata.ConfigurationEnabled = config.ConfigurationEnabled;
+                configdata.ReferenceEnabled = config.ReferenceEnabled;
                 configdata.LatestNewsEnabled = config.LatestNewsEnabled;
                 configdata.RetainGenerateSelections = config.RetainGenerateSelections;
                 configdata.CustomHomeContent = config.CustomHomeContent;
@@ -227,6 +229,14 @@ namespace AzureNamingTool.Services
                 if (GeneralHelper.IsNotNull(configdata.GeneratedNamesLogEnabled))
                 {
                     config.GeneratedNamesLogEnabled = configdata.GeneratedNamesLogEnabled;
+                }
+                if (GeneralHelper.IsNotNull(configdata.ConfigurationEnabled))
+                {
+                    config.ConfigurationEnabled = configdata.ConfigurationEnabled;
+                }
+                if (GeneralHelper.IsNotNull(configdata.ReferenceEnabled))
+                {
+                    config.ReferenceEnabled = configdata.ReferenceEnabled;
                 }
                 if (GeneralHelper.IsNotNull(configdata.LatestNewsEnabled))
                 {

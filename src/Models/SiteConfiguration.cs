@@ -81,6 +81,16 @@
         public string? GeneratedNamesLogEnabled { get; set; } = "True";
 
         /// <summary>
+        /// Gets or sets a value indicating whether reference is enabled.
+        /// </summary>
+        public string? ReferenceEnabled { get; set; } = "True";
+
+        /// <summary>
+        /// Gets or sets a value indicating whether configuration is enabled.
+        /// </summary>
+        public string? ConfigurationEnabled { get; set; } = "True";
+
+        /// <summary>
         /// Gets or sets a value indicating whether the latest news feature is enabled.
         /// </summary>
         public string? LatestNewsEnabled { get; set; } = "False";

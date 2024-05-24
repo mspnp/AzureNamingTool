@@ -181,10 +181,129 @@
                                         <div class="fw-bold">Upload</div>
                                         <InputFile OnChange="UploadLogo" class="form-control" />
                                     </div>
-                                    <div class="alert alert-secondary show" role="alert">
+                                    <div class="alert alert-info show" role="alert">
                                         <h4>NOTE</h4>
                                         <div class="mb-3">
                                             You may need to refresh the browser for the custom logo to be displayed.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card mb-3" style="width:auto;">
+                                <div class="card-header bg-default text-dark">
+                                    <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#sitenavigation" role="button" aria-expanded="false" aria-controls="sitenavigation">
+                                        <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Site Navigation
+                                    </a>
+                                </div>
+                                <div class="collapse show card card-body @theme.ThemeStyle" id="sitenavigation">
+                                    <div class="mb-3">
+                                        <p>
+                                            This section allows you to congiguration what navigation links are displayed to non-admin users.
+                                        </p>
+                                    </div>
+                                    <div class="card mb-3" style="width:auto;">
+                                        <div class="card-header bg-default text-dark">
+                                            <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#instructionsenabled" role="button" aria-expanded="false" aria-controls="instructionsenabled">
+                                                <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Instructions
+                                            </a>
+                                        </div>
+                                        <div class="collapse show card card-body @theme.ThemeStyle" id="instructionsenabled">
+                                            <div class="mb-3">
+                                                <p>
+                                                    Enable/Disable the <span class="fw-bold">Instructions</span> page for non-admin users. (Documentation links will still be visible.)
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <label class="switch" title="Instructions Enabled">
+                                                    <input type="checkbox" checked="@instructionsenabled" @oninput='args => SettingChanged(args, "instructionsenabled")'>
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <span class="align-text-top"> Enable</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3" style="width:auto;">
+                                        <div class="card-header bg-default text-dark">
+                                            <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#configurationenabled" role="button" aria-expanded="false" aria-controls="configurationenabled">
+                                                <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Configuration
+                                            </a>
+                                        </div>
+                                        <div class="collapse show card card-body @theme.ThemeStyle" id="configurationenabled">
+                                            <div class="mb-3">
+                                                <p>
+                                                    Enable/Disable the <span class="fw-bold">Configuration</span> page for non-admin users. (Documentation links will still be visible.)
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <label class="switch" title="Configuration Enabled">
+                                                    <input type="checkbox" checked="@configurationenabled" @oninput='args => SettingChanged(args, "configurationenabled")'>
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <span class="align-text-top"> Enable</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3" style="width:auto;">
+                                        <div class="card-header bg-default text-dark">
+                                            <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#referenceenabled" role="button" aria-expanded="false" aria-controls="referenceenabled">
+                                                <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Reference
+                                            </a>
+                                        </div>
+                                        <div class="collapse show card card-body @theme.ThemeStyle" id="referenceenabled">
+                                            <div class="mb-3">
+                                                <p>
+                                                    Enable/Disable the <span class="fw-bold">Reference</span> page for non-admin users. (Documentation links will still be visible.)
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <label class="switch" title="Reference Enabled">
+                                                    <input type="checkbox" checked="@referenceenabled" @oninput='args => SettingChanged(args, "referenceenabled")'>
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <span class="align-text-top"> Enable</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3" style="width:auto;">
+                                        <div class="card-header bg-default text-dark">
+                                            <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#generatednameslogenabled" role="button" aria-expanded="false" aria-controls="generatednameslogenabled">
+                                                <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Generated Names Log
+                                            </a>
+                                        </div>
+                                        <div class="collapse show card card-body @theme.ThemeStyle" id="generatednameslogenabled">
+                                            <div class="mb-3">
+                                                <p>
+                                                    Enable/Disable the <span class="fw-bold">Generated Names Log</span> page for non-admin users. (Documentation links will still be visible.)
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <label class="switch" title="Generated Names Log Enabled">
+                                                    <input type="checkbox" checked="@generatednameslogenabled" @oninput='args => SettingChanged(args, "generatednameslogenabled")'>
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <span class="align-text-top"> Enable</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card mb-3" style="width:auto;">
+                                        <div class="card-header bg-default text-dark">
+                                            <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#latestnewsenabled" role="button" aria-expanded="false" aria-controls="latestnewsenabled">
+                                                <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Latest News
+                                            </a>
+                                        </div>
+                                        <div class="collapse show card card-body @theme.ThemeStyle" id="latestnewsenabled">
+                                            <div class="mb-3">
+                                                <p>
+                                                    Enable/Disable the <span class="fw-bold">Latest News</span> for all users.
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <label class="switch" title="Latest News Enabled">
+                                                    <input type="checkbox" checked="@latestnewsenabled" @oninput='args => SettingChanged(args, "latestnewsenabled")'>
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <span class="align-text-top"> Enable</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -540,71 +659,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card mb-3" style="width:auto;">
-                                <div class="card-header bg-default text-dark">
-                                    <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#instructionsenabled" role="button" aria-expanded="false" aria-controls="instructionsenabled">
-                                        <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Instructions
-                                    </a>
-                                </div>
-                                <div class="collapse show card card-body @theme.ThemeStyle" id="instructionsenabled">
-                                    <div class="mb-3">
-                                        <p>
-                                            Enable/Disable the <span class="fw-bold">Instructions</span> page for non-admin users. (Documentation links will still be visible.)
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <label class="switch" title="Instructions Enabled">
-                                            <input type="checkbox" checked="@instructionsenabled" @oninput='args => SettingChanged(args, "instructionsenabled")'>
-                                            <span class="slider round"></span>
-                                        </label>
-                                        <span class="align-text-top"> Enable</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card mb-3" style="width:auto;">
-                                <div class="card-header bg-default text-dark">
-                                    <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#generatednameslogdenabled" role="button" aria-expanded="false" aria-controls="generatednameslogdenabled">
-                                        <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Generated Names Log
-                                    </a>
-                                </div>
-                                <div class="collapse show card card-body @theme.ThemeStyle" id="generatednameslogdenabled">
-                                    <div class="mb-3">
-                                        <p>
-                                            Enable/Disable the <span class="fw-bold">Generated Names Log</span> page for non-admin users.
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <label class="switch" title="Resource Type Editing Enabled">
-                                            <input type="checkbox" checked="@generatednameslogenabled" @oninput='args => SettingChanged(args, "generatednameslogenabled")'>
-                                            <span class="slider round"></span>
-                                        </label>
-                                        <span class="align-text-top"> Enable</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card mb-3" style="width:auto;">
-                                <div class="card-header bg-default text-dark">
-                                    <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#latestnewsenabled" role="button" aria-expanded="false" aria-controls="latestnewsenabled">
-                                        <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Latest News
-                                    </a>
-                                </div>
-                                <div class="collapse show card card-body @theme.ThemeStyle" id="latestnewsenabled">
-                                    <div class="mb-3">
-                                        <p>
-                                            Enable/Disable the <span class="fw-bold">Latest News</span> for all users.
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <label class="switch" title="Latest News Enabled">
-                                            <input type="checkbox" checked="@latestnewsenabled" @oninput='args => SettingChanged(args, "latestnewsenabled")'>
-                                            <span class="slider round"></span>
-                                        </label>
-                                        <span class="align-text-top"> Enable</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!--
-                             // TO DO: Implement retention of the selected values
+                            <!--// TO DO: Implement retention of the selected values
                             <div class="card mb-3" style="width:auto;">
                                 <div class="card-header bg-default text-dark">
                                     <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#retaingenerateselections" role="button" aria-expanded="false" aria-controls="retaingenerateselections">
@@ -731,6 +786,8 @@
     private bool autoincrementresourceinstance = false;
     private bool instructionsenabled = false;
     private bool generatednameslogenabled = false;
+    private bool configurationenabled = false;
+    private bool referenceenabled = false;
     private bool latestnewsenabled = false;
     private bool retaingenerateselections = false;
     private string customhomecontent = String.Empty;
@@ -773,6 +830,8 @@
                 autoincrementresourceinstance = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("AutoIncrementResourceInstance"));
                 instructionsenabled = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("InstructionsEnabled"));
                 generatednameslogenabled = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("GeneratedNamesLogEnabled"));
+                configurationenabled = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("ConfigurationEnabled"));
+                referenceenabled = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("ReferenceEnabled"));
                 latestnewsenabled = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("LatestNewsEnabled"));
                 retaingenerateselections = Convert.ToBoolean(ConfigurationHelper.GetAppSetting("RetainGenerateSelections"));
                 customhomecontent = ConfigurationHelper.GetAppSetting("CustomHomeContent", false);
@@ -1192,9 +1251,13 @@
                     ConfigurationHelper.SetAppSetting("ResourceTypeEditingAllowed", resetconfig.ResourceTypeEditingAllowed!, false);
                     ConfigurationHelper.SetAppSetting("InstructionsEnabled", resetconfig.InstructionsEnabled!, false);
                     ConfigurationHelper.SetAppSetting("GeneratedNamesLogEnabled", resetconfig.GeneratedNamesLogEnabled!, false);
+                    ConfigurationHelper.SetAppSetting("ConfigurationEnabled", resetconfig.ConfigurationEnabled!, false);
+                    ConfigurationHelper.SetAppSetting("ReferenceEnabled", resetconfig.ReferenceEnabled!, false);
                     ConfigurationHelper.SetAppSetting("LatestNewsEnabled", resetconfig.LatestNewsEnabled!, false);
                     ConfigurationHelper.SetAppSetting("RetainGenerateSelections", resetconfig.RetainGenerateSelections!, false);
                     ConfigurationHelper.SetAppSetting("CustomHomeContent", String.Empty, false);
+                    ConfigurationHelper.SetAppSetting("CustomLogoPath", String.Empty, false);
+                    ConfigurationHelper.SetAppSetting("CustomToolName", String.Empty, false);
                     ConfigurationHelper.SetAppSetting("ConnectivityCheckEnabled", resetconfig.ConnectivityCheckEnabled!, false);
                     ConfigurationHelper.SetAppSetting("GenerationWebhook", String.Empty, true);
                     NavigationManager.NavigateTo("admin?reset=true", true);
@@ -1350,6 +1413,20 @@
                         {
                             ConfigurationHelper.SetAppSetting("GeneratedNamesLogEnabled", e.Value!.ToString() ?? "");
                             message.Message = "Generated Names Log Enabled setting updated to " + e.Value?.ToString()!.ToUpper() ?? "" + "!";
+                        }
+                        break;
+                    case "configurationenabled":
+                        if (GeneralHelper.IsNotNull(e.Value))
+                        {
+                            ConfigurationHelper.SetAppSetting("ConfigurationEnabled", e.Value!.ToString() ?? "");
+                            message.Message = "Configuration Enabled setting updated to " + e.Value?.ToString()!.ToUpper() ?? "" + "!";
+                        }
+                        break;
+                    case "referenceenabled":
+                        if (GeneralHelper.IsNotNull(e.Value))
+                        {
+                            ConfigurationHelper.SetAppSetting("ReferenceEnabled", e.Value!.ToString() ?? "");
+                            message.Message = "Reference Enabled setting updated to " + e.Value?.ToString()!.ToUpper() ?? "" + "!";
                         }
                         break;
                     case "latestnewsenabled":
