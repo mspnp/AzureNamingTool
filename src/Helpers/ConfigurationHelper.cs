@@ -1016,7 +1016,6 @@ namespace AzureNamingTool.Helpers
                             serviceResponse = await CustomComponentService.PostItem(item);
                             break;
                     }
-
                     if (!serviceResponse.Success)
                     {
                         break;
