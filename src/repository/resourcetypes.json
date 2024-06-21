@@ -6218,7 +6218,7 @@
     "optional": "UnitDept",
     "exclude": "Org,Function",
     "property": "",
-    "ShortName": "plan",
+    "ShortName": "asp",
     "scope": "resource group",
     "lengthMin": "1",
     "lengthMax": "40",
