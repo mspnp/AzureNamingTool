@@ -3,8 +3,15 @@ using AzureNamingTool.Models;
 
 namespace AzureNamingTool.Services
 {
+    /// <summary>
+    /// Service for managing the AdminUser configuration.
+    /// </summary>
     public class AdminUserService
     {
+        /// <summary>
+        /// Retrieves a list of items.
+        /// </summary>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation.</returns>
         public static async Task<ServiceResponse> GetItems()
         {
             ServiceResponse serviceResponse = new();
@@ -27,6 +34,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Retrieves an item from the list based on the specified name.
+        /// </summary>
+        /// <param name="name">The name of the item to retrieve.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation.</returns>
         public static async Task<ServiceResponse> GetItem(string name)
         {
             ServiceResponse serviceResponse = new();
@@ -50,6 +62,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Posts an item to the list of AdminUsers.
+        /// </summary>
+        /// <param name="item">The AdminUser item to be added.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation.</returns>
         public static async Task<ServiceResponse> PostItem(AdminUser item)
         {
             ServiceResponse serviceResponse = new();
@@ -72,7 +89,7 @@ namespace AzureNamingTool.Services
                         }
                     }
 
-                    items = items.OrderBy(x => x.Name).ToList();
+                    items = [.. items.OrderBy(x => x.Name)];
 
                     // Determine new item id
                     if (items.Count > 0)
@@ -122,6 +139,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Deletes an item from the list based on the specified id.
+        /// </summary>
+        /// <param name="id">The id of the item to delete.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation.</returns>
         public static async Task<ServiceResponse> DeleteItem(int id)
         {
             ServiceResponse serviceResponse = new();
@@ -153,6 +175,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Posts the configuration items to the file.
+        /// </summary>
+        /// <param name="items">The list of configuration items.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation.</returns>
         public static async Task<ServiceResponse> PostConfig(List<AdminUser> items)
         {
             ServiceResponse serviceResponse = new();

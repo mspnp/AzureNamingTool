@@ -8,5 +8,15 @@
     "id": 2,
     "version": "2.8.0",
     "alert": "<p><span class=\"fw-bold\">IMPORTANT NOTES</span></p><ul><li class=\"mb-3\">The Azure Naming Tool will moving to a new GitHub repo in the next version! This change will allow us more frequent updates, enhanced features, and the ability to request new features and report bugs.<br /><br /><a href=\"https://github.com/mspnp/AzureNamingTool/wiki/v3.0.0-Repository-Migration-Instructions\" target=\"_blank\"><span class=\"fw-bold\">View the Azure Naming Tool V3 Migration Guide</span></a></li><li class=\"mb-3\">You can learn more about the new Identity Provider Integration <a href=\"https://soltisweb.com/blog/detail/2023-06-azurenamingtool-identityproviderintegrationdeepdive\" target=\"_blank\"><span class=\"fw-bold\">HERE</span></a>.</ul>"
+  },
+  {
+    "id": 3,
+    "version": "3.3.0",
+    "alert": "<p><span class=\"fw-bold\">IMPORTANT NOTES</span></p><ul><li class=\"mb-3\">With the release of v4.0.0, the Azure Naming Tool will be upgraded to a .NET 8 Blazor Web App. This will require an update to the hosting environment, as well as a BACKUP & RESTORE of your configuration. Review the v4.0.0 Migration Guide for details.<br /><br /><a href=\"https://github.com/mspnp/AzureNamingTool/wiki/v4.0.0-Migration-Guide\" target=\"_blank\"><span class=\"fw-bold\">View the Azure Naming Tool v4.0.0 Migration Guide</span></a></li></ul>"
+  },
+  {
+    "id": 3,
+    "version": "4.1.0",
+    "alert": "<p><span class=\"fw-bold\">IMPORTANT NOTES</span></p><ul><li class=\"mb-3\">With the release of v4.1.0, the Azure Naming Tool now supports uppercase and lowercase characters for resource names. Use the Configuration page to update the component options."
   }
 ]

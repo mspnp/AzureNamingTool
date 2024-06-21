@@ -9,24 +9,26 @@ using System.Threading.Tasks;
 using AzureNamingTool.Services;
 using AzureNamingTool.Attributes;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace AzureNamingTool.Controllers
 {
+    /// <summary>
+    /// Controller for managing resource locations.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [ApiKey]
     public class ResourceLocationsController : ControllerBase
     {
+        private ServiceResponse serviceResponse = new();
         // GET: api/<ResourceLocationsController>
         /// <summary>
         /// This function will return the locations data. 
         /// </summary>
+        /// <param name="admin">bool - Indicates if the user is an admin</param>
         /// <returns>json - Current locations data</returns>
         [HttpGet]
         public async Task<IActionResult> Get(bool admin = false)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceLocationService.GetItems(admin);
@@ -48,14 +50,13 @@ namespace AzureNamingTool.Controllers
 
         // GET api/<ResourceLocationsController>/5
         /// <summary>
-        /// This function will return the specifed location data.
+        /// This function will return the specified location data.
         /// </summary>
         /// <param name="id">int - Location id</param>
         /// <returns>json - Location data</returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceLocationService.GetItem(id);
@@ -85,7 +86,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<ResourceLocation> items)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceLocationService.PostConfig(items);

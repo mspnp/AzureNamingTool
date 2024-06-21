@@ -1,0 +1,51 @@
+﻿@using AzureNamingTool.Helpers
+@using AzureNamingTool.Models
+@using AzureNamingTool.Components
+@inject StateContainer state
+@inject ProtectedSessionStorage session
+@inject IToastService toastService
+@inject ILogger<PasswordModal> Logger
+
+<div class="modal fade show d-block" tabindex="-1" role="dialog">
+    <div class="modal-backdrop fade show" @onclick="Cancel"></div>
+    <div class="modal-dialog" style="z-index: 1050">
+        <!-- Pop it above the backdrop -->
+        <div class="modal-content @theme.ThemeStyle">
+            <div class="modal-header @headerstyle text-white">
+                <h3 class="modal-title">@title</h3>
+            </div>
+            <div class="modal-body">
+                @if (GeneralHelper.IsNotNull(message))
+                {
+                    <div class="mb-3">
+                        @(
+                            (MarkupString)message
+                            )
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" @onclick=@Confirm>OK</button>
+                <button type="button" class="btn btn-secondary" @onclick=@Cancel>Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new();
+    [Parameter] public ThemeInfo theme { get; set; } = new();
+
+    [Parameter] public string title { get; set; } = String.Empty;
+    [Parameter] public string message { get; set; } = String.Empty;
+    [Parameter] public string headerstyle { get; set; } = String.Empty;
+
+
+    async Task Confirm() => await ModalInstance.CloseAsync();
+
+    async Task Cancel() => await ModalInstance.CancelAsync();
+
+}

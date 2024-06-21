@@ -21,7 +21,7 @@ name: Azure Naming Tool - Build and deploy to an Azure Web App
 
 env:
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
-  DOTNET_VERSION: '7.0.x'                 # set this to the .NET Core version to use
+  DOTNET_VERSION: '8.0.x'                 # set this to the .NET Core version to use
 
 on:
   push:
@@ -49,8 +49,7 @@ jobs:
           env: 
             azure-webapp-name: ${{ secrets.AZURE_WEBAPP_NAME }}
             azure-webapp-publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-            azure-credentials: ${{ secrets.AZURE_CREDENTIALS }}
-          if: (env.azure-webapp-name != null && env.azure-webapp-publish-profile != null && env.azure-credentials != null)
+          if: (env.azure-webapp-name != null && env.azure-webapp-publish-profile != null)
           run: echo 'isvalid=true' >> $GITHUB_OUTPUT
             
   build:
@@ -104,11 +103,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: .net-app
-          
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp

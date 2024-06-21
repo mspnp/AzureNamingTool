@@ -4,8 +4,16 @@ using System.Text.Json;
 
 namespace AzureNamingTool.Services
 {
+    /// <summary>
+    /// Service for managing resource location items.
+    /// </summary>
     public class ResourceLocationService
     {
+        /// <summary>
+        /// Retrieves a list of resource location items.
+        /// </summary>
+        /// <param name="admin">A flag indicating whether to retrieve all items or only the enabled items.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the result of the retrieval operation.</returns>
         public static async Task<ServiceResponse> GetItems(bool admin = true)
         {
             ServiceResponse serviceResponse = new();
@@ -39,6 +47,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Retrieves a resource location item by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the resource location item.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the result of the retrieval operation.</returns>
         public static async Task<ServiceResponse> GetItem(int id)
         {
             ServiceResponse serviceResponse = new();
@@ -73,6 +86,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Posts an item to the list of resource locations.
+        /// </summary>
+        /// <param name="item">The resource location item to be posted.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the result of the post operation.</returns>
         public static async Task<ServiceResponse> PostItem(ResourceLocation item)
         {
             ServiceResponse serviceResponse = new();
@@ -85,9 +103,6 @@ namespace AzureNamingTool.Services
                     serviceResponse.ResponseObject = "Short name must be alphanumeric.";
                     return serviceResponse;
                 }
-
-                // Force lowercase on the shortname
-                item.ShortName = item.ShortName.ToLower();
 
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<ResourceLocation>();
@@ -148,6 +163,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Deletes an item from the list of resource locations.
+        /// </summary>
+        /// <param name="id">The ID of the item to delete.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the result of the delete operation.</returns>
         public static async Task<ServiceResponse> DeleteItem(int id)
         {
             ServiceResponse serviceResponse = new();
@@ -187,6 +207,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Posts the configuration items to the file.
+        /// </summary>
+        /// <param name="items">The list of resource locations to be posted.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the result of the post operation.</returns>
         public static async Task<ServiceResponse> PostConfig(List<ResourceLocation> items)
         {
             ServiceResponse serviceResponse = new();
@@ -207,9 +232,6 @@ namespace AzureNamingTool.Services
                         return serviceResponse;
                     }
 
-                    // Force lowercase on the shortname
-                    item.ShortName = item.ShortName.ToLower();
-
                     item.Id = i;
                     newitems.Add(item);
                     i += 1;
@@ -228,6 +250,12 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Refreshes the resource locations by retrieving the existing locations, downloading the updated locations from a specified URL,
+        /// and updating the existing locations with any new locations or updated information.
+        /// </summary>
+        /// <param name="shortNameReset">A flag indicating whether to reset the short names of the existing locations.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the result of the refresh operation.</returns>
         public static async Task<ServiceResponse> RefreshResourceLocations(bool shortNameReset = false)
         {
             ServiceResponse serviceResponse = new();

@@ -3,26 +3,34 @@ using System.Text.Json;
 
 namespace AzureNamingTool.Helpers
 {
+    /// <summary>
+    /// Helper class for logging operations.
+    /// </summary>
     public class LogHelper
     {
         /// <summary>
-        /// This function gets the gernated names log. 
+        /// Helper class for logging operations.
         /// </summary>
-        /// <returns>List of GeneratedNames - List of generated names</returns>
+        private static readonly JsonSerializerOptions options = new()
+        {
+            AllowTrailingCommas = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            PropertyNameCaseInsensitive = true
+        };
+
+        /// <summary>
+        /// Retrieves the list of generated names.
+        /// </summary>
+        /// <returns>List of GeneratedName objects.</returns>
         public static async Task<List<GeneratedName>> GetGeneratedNames()
         {
-            List<GeneratedName> lstGeneratedNames = new();
+            List<GeneratedName> lstGeneratedNames = [];
             try
             {
                 string items = await FileSystemHelper.ReadFile("generatednames.json");
                 if (GeneralHelper.IsNotNull(items))
                 {
-                    var options = new JsonSerializerOptions
-                    {
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                        PropertyNameCaseInsensitive = true
-                    };
-                    lstGeneratedNames = JsonSerializer.Deserialize<List<GeneratedName>>(items, options)!.OrderByDescending(x => x.CreatedOn).ToList();
+                    lstGeneratedNames = [.. JsonSerializer.Deserialize<List<GeneratedName>>(items, options)!.OrderByDescending(x => x.CreatedOn)];
                 }
             }
             catch (Exception ex)
@@ -33,9 +41,9 @@ namespace AzureNamingTool.Helpers
         }
 
         /// <summary>
-        ///  This function logs the generated name. 
+        /// Logs the generated name.
         /// </summary>
-        /// <param name="lstGeneratedName">GeneratedName - Generated name and components.</param>
+        /// <param name="lstGeneratedName">The generated name to log.</param>
         public static async void LogGeneratedName(GeneratedName lstGeneratedName)
         {
             try
@@ -65,9 +73,8 @@ namespace AzureNamingTool.Helpers
         }
 
         /// <summary>
-        /// This function prugres the generated names log. 
+        /// Purges the generated names.
         /// </summary>
-        /// <returns>void</returns>
         public static async Task PurgeGeneratedNames()
         {
             try
@@ -82,24 +89,19 @@ namespace AzureNamingTool.Helpers
         }
 
         /// <summary>
-        /// This function returns the Admin log. 
+        /// Retrieves the list of admin log messages.
         /// </summary>
-        /// <returns>List of AdminLogMessages - List of Adming Log messages.</returns>
+        /// <returns>List of AdminLogMessage objects.</returns>
         public static async Task<List<AdminLogMessage>> GetAdminLog()
         {
-            List<AdminLogMessage> lstAdminLogMessages = new();
+            List<AdminLogMessage> lstAdminLogMessages = [];
             try
             {
                 string data = await FileSystemHelper.ReadFile("adminlogmessages.json");
                 if (GeneralHelper.IsNotNull(data))
                 {
                     var items = new List<AdminLogMessage>();
-                    var options = new JsonSerializerOptions
-                    {
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                        PropertyNameCaseInsensitive = true
-                    };
-                    lstAdminLogMessages = JsonSerializer.Deserialize<List<AdminLogMessage>>(data, options)!.OrderByDescending(x => x.CreatedOn).ToList();
+                    lstAdminLogMessages = [.. JsonSerializer.Deserialize<List<AdminLogMessage>>(data, options)!.OrderByDescending(x => x.CreatedOn)];
                 }
             }
             catch (Exception ex)
@@ -110,10 +112,10 @@ namespace AzureNamingTool.Helpers
         }
 
         /// <summary>
-        /// This function logs the Admin message.
+        /// Logs an admin message.
         /// </summary>
-        /// <param name="title">string - Message title</param>
-        /// <param name="message">string - MEssage body</param>
+        /// <param name="title">The title of the admin message.</param>
+        /// <param name="message">The content of the admin message.</param>
         public static async void LogAdminMessage(string title, string message)
         {
             try
@@ -141,14 +143,13 @@ namespace AzureNamingTool.Helpers
             }
             catch (Exception)
             {
-                // No exception is logged due to this function being the function that would complete the action. 
+                // No exception is logged due to this function being the function that would complete the action.
             }
         }
 
         /// <summary>
-        /// This function purges the Admin log. 
+        /// Purges the admin log messages.
         /// </summary>
-        /// <returns>void</returns>
         public static async Task PurgeAdminLog()
         {
             try

@@ -8,15 +8,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace AzureNamingTool.Controllers
 {
+    /// <summary>
+    /// Controller for managing resource components.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [ApiKey]
     public class ResourceComponentsController : ControllerBase
     {
+        /// <summary>
+        /// Response for controller functions
+        /// </summary>
+        ServiceResponse serviceResponse = new();
+
         // GET: api/<resourcecomponentsController>
         /// <summary>
         /// This function will return the components data.
@@ -26,7 +32,6 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> Get(bool admin = false)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceComponentService.GetItems(admin);
@@ -48,14 +53,13 @@ namespace AzureNamingTool.Controllers
 
         // GET api/<resourcecomponentsController>/5
         /// <summary>
-        /// This function will return the specifed resource component data.
+        /// This function will return the specified resource component data.
         /// </summary>
         /// <param name="id">int - Resource Component id</param>
         /// <returns>json - Resource component data</returns>
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -78,14 +82,13 @@ namespace AzureNamingTool.Controllers
 
         // POST api/<ResourceComponentsController>
         /// <summary>
-        /// This function will create/update the specified component data.
+        /// This function will create or update the specified component data.
         /// </summary>
         /// <param name="item">ResourceComponent (json) - Component data</param>
         /// <returns>bool - PASS/FAIL</returns>
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ResourceComponent item)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceComponentService.PostItem(item);
@@ -117,7 +120,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<ResourceComponent> items)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await ResourceComponentService.PostConfig(items);
@@ -132,7 +134,7 @@ namespace AzureNamingTool.Controllers
                     return BadRequest(serviceResponse.ResponseObject);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);

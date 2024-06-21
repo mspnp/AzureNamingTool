@@ -5,8 +5,16 @@ using System.Text;
 
 namespace AzureNamingTool.Helpers
 {
+    /// <summary>
+    /// Helper class for caching operations.
+    /// </summary>
     public class CacheHelper
     {
+        /// <summary>
+        /// Retrieves an object from the cache based on the specified cache key.
+        /// </summary>
+        /// <param name="cachekey">The cache key.</param>
+        /// <returns>The cached object, or null if not found.</returns>
         public static object? GetCacheObject(string cachekey)
         {
             try
@@ -29,6 +37,11 @@ namespace AzureNamingTool.Helpers
             }
         }
 
+        /// <summary>
+        /// Sets an object in the cache with the specified cache key and data.
+        /// </summary>
+        /// <param name="cachekey">The cache key.</param>
+        /// <param name="cachedata">The data to be cached.</param>
         public static void SetCacheObject(string cachekey, object cachedata)
         {
             try
@@ -47,6 +60,10 @@ namespace AzureNamingTool.Helpers
             }
         }
 
+        /// <summary>
+        /// Invalidates the cached object with the specified cache key.
+        /// </summary>
+        /// <param name="cachekey">The cache key.</param>
         public static void InvalidateCacheObject(string cachekey)
         {
             try
@@ -60,7 +77,10 @@ namespace AzureNamingTool.Helpers
             }
         }
 
-
+        /// <summary>
+        /// Retrieves all the cached data.
+        /// </summary>
+        /// <returns>A string containing all the cached data.</returns>
         public static string GetAllCacheData()
         {
             StringBuilder data = new();
@@ -81,6 +101,9 @@ namespace AzureNamingTool.Helpers
             return data.ToString();
         }
 
+        /// <summary>
+        /// Clears all the cached data.
+        /// </summary>
         public static void ClearAllCache()
         {
             try

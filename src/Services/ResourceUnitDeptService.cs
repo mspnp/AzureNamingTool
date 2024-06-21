@@ -3,8 +3,15 @@ using AzureNamingTool.Models;
 
 namespace AzureNamingTool.Services
 {
+    /// <summary>
+    /// Service for managing Resource Unit/Department
+    /// </summary>
     public class ResourceUnitDeptService
     {
+        /// <summary>
+        /// Retrieves a list of resource unit/departments.
+        /// </summary>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the list of resource unit/departments if found, or an error message if not found.</returns>
         public static async Task<ServiceResponse> GetItems()
         {
             ServiceResponse serviceResponse = new();
@@ -31,6 +38,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Retrieves an item from the list of resource unit/departments based on the specified ID.
+        /// </summary>
+        /// <param name="id">The ID of the item to retrieve.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the retrieved item if found, or an error message if not found.</returns>
         public static async Task<ServiceResponse> GetItem(int id)
         {
             ServiceResponse serviceResponse = new();
@@ -65,6 +77,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Posts an item to the list of resource unit/departments.
+        /// </summary>
+        /// <param name="item">The item to be added or updated.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the success status of the operation.</returns>
         public static async Task<ServiceResponse> PostItem(ResourceUnitDept item)
         {
             ServiceResponse serviceResponse = new();
@@ -77,9 +94,6 @@ namespace AzureNamingTool.Services
                     serviceResponse.ResponseObject = "Short name must be alphanumeric.";
                     return serviceResponse;
                 }
-
-                // Force lowercase on the shortname
-                item.ShortName = item.ShortName.ToLower();
 
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<ResourceUnitDept>();
@@ -100,7 +114,7 @@ namespace AzureNamingTool.Services
                     }
 
                     int position = 1;
-                    items = items.OrderBy(x => x.SortOrder).ToList();
+                    items = [.. items.OrderBy(x => x.SortOrder)];
 
                     if (item.SortOrder == 0)
                     {
@@ -138,6 +152,7 @@ namespace AzureNamingTool.Services
                         else
                         {
                             // Put the item at the end
+                            item.SortOrder = position;
                             items.Add(item);
                         }
                     }
@@ -174,6 +189,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Deletes an item from the list of resource unit/departments.
+        /// </summary>
+        /// <param name="id">The ID of the item to delete.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the success status of the operation.</returns>
         public static async Task<ServiceResponse> DeleteItem(int id)
         {
             ServiceResponse serviceResponse = new();
@@ -221,6 +241,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Posts the configuration of resource unit/departments.
+        /// </summary>
+        /// <param name="items">The list of resource unit/departments to be configured.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the success status of the operation.</returns>
         public static async Task<ServiceResponse> PostConfig(List<ResourceUnitDept> items)
         {
             ServiceResponse serviceResponse = new();
@@ -240,9 +265,6 @@ namespace AzureNamingTool.Services
                         serviceResponse.ResponseObject = "Short name must be alphanumeric.";
                         return serviceResponse;
                     }
-
-                    // Force lowercase on the shortname
-                    item.ShortName = item.ShortName.ToLower();
 
                     item.Id = i;
                     item.SortOrder = i;

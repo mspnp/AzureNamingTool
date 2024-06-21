@@ -1,16 +1,19 @@
 ﻿using AzureNamingTool.Helpers;
 using AzureNamingTool.Models;
-using AzureNamingTool.Pages;
+using AzureNamingTool.Components.Pages;
 using System.Text.Json;
 
 namespace AzureNamingTool.Services
 {
+    /// <summary>
+    /// Service for managing the Admin log.
+    /// </summary>
     public class AdminLogService
     {
         /// <summary>
-        /// This function returns the Admin log. 
+        /// This function retrieves the items from the Admin log.
         /// </summary>
-        /// <returns>List of AdminLogMessages - List of Adming Log messages.</returns>
+        /// <returns>ServiceResponse - The response containing the retrieved items.</returns>
         public static async Task<ServiceResponse> GetItems()
         {
             ServiceResponse serviceResponse = new();
@@ -31,12 +34,12 @@ namespace AzureNamingTool.Services
                 serviceResponse.ResponseObject = ex;
             }
             return serviceResponse;
-
         }
 
         /// <summary>
-        /// This function logs the Admin message.
+        /// This function posts an AdminLogMessage item to the Admin log.
         /// </summary>
+        /// <param name="adminlogMessage">The AdminLogMessage item to be posted.</param>
         public static async void PostItem(AdminLogMessage adminlogMessage)
         {
             ServiceResponse serviceResponse = new();
@@ -62,15 +65,15 @@ namespace AzureNamingTool.Services
         }
 
         /// <summary>
-        /// This function clears the Admin log. 
+        /// This function deletes all items from the Admin log.
         /// </summary>
-        /// <returns>void</returns>
+        /// <returns>ServiceResponse - The response indicating the success or failure of the operation.</returns>
         public static async Task<ServiceResponse> DeleteAllItems()
         {
             ServiceResponse serviceResponse = new();
             try
             {
-                List<AdminLogMessage> lstAdminLogMessages = new();
+                List<AdminLogMessage> lstAdminLogMessages = [];
                 await ConfigurationHelper.WriteList<AdminLogMessage>(lstAdminLogMessages);
                 serviceResponse.Success = true;
             }
@@ -82,6 +85,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// This function posts the configuration items to the Admin log.
+        /// </summary>
+        /// <param name="items">The list of AdminLogMessage items to be posted.</param>
+        /// <returns>ServiceResponse - The response indicating the success or failure of the operation.</returns>
         public static async Task<ServiceResponse> PostConfig(List<AdminLogMessage> items)
         {
             ServiceResponse serviceResponse = new();
