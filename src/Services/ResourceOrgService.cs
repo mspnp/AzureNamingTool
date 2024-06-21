@@ -95,9 +95,6 @@ namespace AzureNamingTool.Services
                     return serviceResponse;
                 }
 
-                // Force lowercase on the shortname
-                item.ShortName = item.ShortName.ToLower();
-
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<ResourceOrg>();
 
@@ -155,6 +152,7 @@ namespace AzureNamingTool.Services
                         else
                         {
                             // Put the item at the end
+                            item.SortOrder = position;
                             items.Add(item);
                         }
                     }
@@ -267,9 +265,6 @@ namespace AzureNamingTool.Services
                         serviceResponse.ResponseObject = "Short name must be alphanumeric.";
                         return serviceResponse;
                     }
-
-                    // Force lowercase on the shortname
-                    item.ShortName = item.ShortName.ToLower();
 
                     item.Id = i;
                     item.SortOrder = i;

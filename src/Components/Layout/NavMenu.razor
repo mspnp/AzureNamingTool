@@ -10,7 +10,7 @@
 
 <div class="top-row ps-2 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/"><img src="images/AzureNamingToolLogo-NoText.png" height="20" style="vertical-align:top;margin-top:2px;padding-right:10px;" alt="Azure Naming Tool" />Azure Naming Tool</a>
+        <a class="navbar-brand" href="/"><img src="@logopath" height="20" style="vertical-align:top;margin-top:2px;padding-right:10px;" alt="@toolname" />@toolname</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -41,20 +41,26 @@
         {
             <div class="nav-item px-2">
                 <NavLink class="nav-link" href="instructions">
-                <span class="oi oi-info" aria-hidden="true"></span> Instructions
-            </NavLink>
-        </div>
+                    <span class="oi oi-info" aria-hidden="true"></span> Instructions
+                </NavLink>
+            </div>
         }
-        <div class="nav-item px-2">
-            <NavLink class="nav-link" href="configuration">
-                <span class="oi oi-cog" aria-hidden="true"></span> Configuration
-            </NavLink>
-        </div>
-        <div class="nav-item px-2">
-            <NavLink class="nav-link" href="reference">
-                <span class="oi oi-spreadsheet" aria-hidden="true"></span> Reference
-            </NavLink>
-        </div>
+        @if (Convert.ToBoolean(config.ConfigurationEnabled) || admin)
+        {
+            <div class="nav-item px-2">
+                <NavLink class="nav-link" href="configuration">
+                    <span class="oi oi-cog" aria-hidden="true"></span> Configuration
+                </NavLink>
+            </div>
+        }
+        @if (Convert.ToBoolean(config.ReferenceEnabled) || admin)
+        {
+            <div class="nav-item px-2">
+                <NavLink class="nav-link" href="reference">
+                    <span class="oi oi-spreadsheet" aria-hidden="true"></span> Reference
+                </NavLink>
+            </div>
+        }
         <div class="nav-item px-2">
             <NavLink class="nav-link" href="generate">
                 <span class="oi oi-check" aria-hidden="true"></span> Generate
@@ -64,9 +70,9 @@
         {
             <div class="nav-item px-2">
                 <NavLink class="nav-link" href="generatednameslog">
-                <span class="oi oi-list" aria-hidden="true"></span> Generated Names Log
-            </NavLink>
-        </div>
+                    <span class="oi oi-list" aria-hidden="true"></span> Generated Names Log
+                </NavLink>
+            </div>
         }
 
         @if (GeneralHelper.IsNotNull(PageType))
@@ -170,6 +176,14 @@
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : String.Empty;
     private bool latestnewsenabled = true;
     private bool connected = true;
+    private string? logopath = String.Empty;
+    private string? toolname = String.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        logopath = !String.IsNullOrEmpty(ConfigurationHelper.GetAppSetting("CustomLogoPath", false)) ? ConfigurationHelper.GetAppSetting("CustomLogoPath", false) : "images/AzureNamingToolLogo-NoText.png";
+        toolname = !String.IsNullOrEmpty(ConfigurationHelper.GetAppSetting("CustomToolName", false)) ? ConfigurationHelper.GetAppSetting("CustomToolName", false) : "Azure Naming Tool";
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
