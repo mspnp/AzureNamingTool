@@ -478,13 +478,13 @@ namespace AzureNamingTool.Helpers
             string versiondatajson = String.Empty;
             try
             {
-                versiondatajson = await FileSystemHelper.ReadFile("configurationfileversions.json");
+                versiondatajson = await FileSystemHelper.ReadFile("configurationfileversions.json", "");
                 // Check if the user has any version data. This value will be '[]' if not.
                 if (versiondatajson == "[]")
                 {
                     // Create new version data with default values in /settings file
                     ConfigurationFileVersionData? versiondata = new();
-                    await FileSystemHelper.WriteFile("configurationfileversions.json", JsonSerializer.Serialize(versiondata), "settings/");
+                    await FileSystemHelper.WriteFile("configurationfileversions.json", JsonSerializer.Serialize(versiondata), "");
                     versiondatajson = JsonSerializer.Serialize(versiondata);
                 }
             }
@@ -522,13 +522,13 @@ namespace AzureNamingTool.Helpers
                     {
                         // Compare the versions
                         // Resource Types
-                        if (officialversiondata.ResourceTypes != currentversiondata.ResourceTypes)
+                        if (officialversiondata.resourcetypes != currentversiondata.resourcetypes)
                         {
                             versiondata.Add("<h5>Resource Types</h5><hr /><div>The Resource Types Configuration is out of date!<br /><br />It is recommended that you refresh your resource types to the latest configuration.<br /><br /><span class=\"fw-bold\">To Refresh:</span><ul><li>Expand the <span class=\"fw-bold\">Types</span> section</li><li>Expand the <span class=\"fw-bold\">Configuration</span> section</li><li>Select the <span class=\"fw-bold\">Refresh</span> option</li></ul></div><br />");
                         }
 
                         // Resource Locations
-                        if (officialversiondata.ResourceLocations != currentversiondata.ResourceLocations)
+                        if (officialversiondata.resourcelocations != currentversiondata.resourcelocations)
                         {
                             versiondata.Add("<h5>Resource Locations</h5><hr /><div>The Resource Locations Configuration is out of date!<br /><br />It is recommended that you refresh your resource locations to the latest configuration.<br /><br /><span class=\"fw-bold\">To Refresh:</span><ul><li>Expand the <span class=\"fw-bold\">Locations</span> section</li><li>Expand the <span class=\"fw-bold\">Configuration</span> section</li><li>Select the <span class=\"fw-bold\">Refresh</span> option</li></ul></div><br />");
                         }
@@ -571,14 +571,14 @@ namespace AzureNamingTool.Helpers
                             switch (fileName)
                             {
                                 case "resourcetypes":
-                                    currentversiondata.ResourceTypes = officialversiondata.ResourceTypes;
+                                    currentversiondata.resourcetypes = officialversiondata.resourcetypes;
                                     break;
                                 case "resourcelocations":
-                                    currentversiondata.ResourceLocations = officialversiondata.ResourceLocations;
+                                    currentversiondata.resourcelocations = officialversiondata.resourcelocations;
                                     break;
                             }
                             //  Update the current configuration file version data
-                            await FileSystemHelper.WriteFile("configurationfileversions.json", JsonSerializer.Serialize(currentversiondata), "settings/");
+                            await FileSystemHelper.WriteFile("configurationfileversions.json", JsonSerializer.Serialize(currentversiondata), "");
                         }
                     }
                 }
