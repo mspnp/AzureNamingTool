@@ -2,6 +2,7 @@
 @using AzureNamingTool.Models
 @using AzureNamingTool.Services
 @using Microsoft.AspNetCore.Html
+@using System.Text.RegularExpressions
 @inject IJSRuntime JsRuntime
 @inject IToastService toastService
 @inject ILogger<EditModal> Logger
@@ -10,7 +11,7 @@
 
 <div class="modal fade show d-block" tabindex="-1" role="dialog">
     <div class="modal-backdrop fade show" @onclick="Cancel"></div>
-    <div class="modal-dialog" style="z-index: 1050">
+    <div class="modal-dialog modal-lg" style="z-index: 1050">
         <!-- Pop it above the backdrop -->
         <div class="modal-content @theme.ThemeStyle">
             <div class="modal-header @headerstyle text-white">
@@ -20,6 +21,42 @@
                 <p>
                     @((MarkupString)message)
                 </p>
+                @if (type == "ResourceType")
+                {
+                    if (Convert.ToBoolean(config.ResourceTypeEditingAllowed))
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                            <h4>ATTENTION</h4>
+                            <div class="mb-3">
+                                <p>
+                                    Resource Type settings are configured by the Azure Naming Tool team and match the Azure portal validation requirements. Overriding these values may result in invalid names for a resource.
+                                </p>
+                                <p class="fw-bold">
+                                    Please see the <a href="https://github.com/mspnp/AzureNamingTool/wiki/Resource-Type-Editing" target="_blank">Resource Type Editing documentation</a> for guidance on metadata editing.
+                                </p>
+                            </div>
+                            <div>
+                                <button type="button" class="close btn btn-light" data-bs-dismiss="alert" aria-label="Dismiss">
+                                    <span aria-hidden="true">Dismiss</span>
+                                </button>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
+                            <h4>NOTE</h4>
+                            <div class="mb-3">
+                                Resource Type settings are disabled by default. You can allow the editing of these values by enabling the "Resource Type Editing" setting in the Admin section.
+                            </div>
+                            <div>
+                                <button type="button" class="close btn btn-light" data-bs-dismiss="alert" aria-label="Dismiss">
+                                    <span aria-hidden="true">Dismiss</span>
+                                </button>
+                            </div>
+                        </div>
+                    }
+                }
                 <div class="card mb-3">
                     <div class="card-header bg-default text-dark fw-bold">
                         Configuration
@@ -30,19 +67,12 @@
                         </div>
                         <div class="mb-3">
                             <div class="fw-bold">
-                                Name
+                                @namelabel
                             </div>
                             <div>
-                                @if (protectedName)
+                                @if ((isProtectedName) || ((type == "ResourceType") && (!Convert.ToBoolean(config.ResourceTypeEditingAllowed))))
                                 {
-                                    @if (type == "ResourceComponent")
-                                    {
-                                        <input title="Name" value="@itemDisplayName" disabled type="text" class="form-control @theme.ThemeStyle" id="name" @onchange="@((ui) => { itemName = (string)ui.Value!;})" />
-                                    }
-                                    else
-                                    {
-                                        <input title="Name" value="@itemName" disabled type="text" class="form-control @theme.ThemeStyle" id="name" @onchange="@((ui) => { itemName = (string)ui.Value!;})" />
-                                    }
+                                    <input title="Name" value="@itemName" disabled type="text" class="form-control @theme.ThemeStyle" id="name" />
                                 }
                                 else
                                 {
@@ -57,7 +87,14 @@
                                     Short Name
                                 </div>
                                 <div>
-                                    <input title="Short Name" value="@itemShortName" type="text" class="form-control @theme.ThemeStyle" id="shortname" @onchange="@((ui) => { itemShortName = (string)ui.Value!;})" />
+                                    @if (((type == "ResourceType") && (!Convert.ToBoolean(config.ResourceTypeEditingAllowed))))
+                                    {
+                                        <input title="Short Name" disabled value="@itemShortName" type="text" class="form-control @theme.ThemeStyle" id="shortname" />
+                                    }
+                                    else
+                                    {
+                                        <input title="Short Name" value="@itemShortName" type="text" class="form-control @theme.ThemeStyle" id="shortname" @onchange="@((ui) => { itemShortName = (string)ui.Value!;})" />
+                                    }
                                 </div>
                             </div>
                         }
@@ -113,21 +150,6 @@
                                     </div>
                                 }
                             }
-                            @if (type == "ResourceType")
-                            {
-                                <hr class="mt-1 mb-3" />
-                                <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
-                                    <h4>ATTENTION</h4>
-                                    <div class="mb-3">
-                                        These settings are configured by the Azure Naming Tool team and match the Azure portal validation requirements. Overriding these values may result in invalid names for a resource.
-                                    </div>
-                                    <div>
-                                        <button type="button" class="close btn btn-light" data-bs-dismiss="alert" aria-label="Dismiss">
-                                            <span aria-hidden="true">Dismiss</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            }
                             <div class="mb-3">
                                 <div class="fw-bold">
                                     Minimum Length
@@ -177,7 +199,7 @@
                                     </div>
                                 </div>
                             }
-                            if(type == "ResourceType")
+                            if (type == "ResourceType")
                             {
                                 <div class="mb-3">
                                     <div class="fw-bold">
@@ -193,41 +215,107 @@
                                         </label>
                                         <span class="align-text-top"> Enable</span>
                                     </div>
-                                </div>                                
+                                </div>
+                                <div id="typemetdadatacontainer" class="card mb-3">
+                                    <div class="card-header bg-default text-dark fw-bold">
+                                        <a id="typemetdadatalink" class="link-dark text-decoration-none" data-bs-toggle="collapse" href="#typemetdadata" role="button" aria-expanded="false" aria-controls="typemetdadata">
+                                            <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Resoure Type Metadata
+                                        </a>
+                                    </div>
+                                    <div class="collapse card card-body @theme.ThemeStyle" id="typemetdadata">
+                                        <div class="mb-3">
+                                            <p>
+                                                This section allows you to edit the Resouce Type metadata.
+                                            </p>
+                                            <div class="alert alert-danger mb-3" role="alert">
+                                                <h4>ATTENTION</h4>
+                                                <span class="fw-bold">Please see the <a href="https://github.com/mspnp/AzureNamingTool/wiki/Resource-Type-Editing" target="_blank">Resource Type Editing documentation</a> for guidance on metadata editing.</span>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="mb-3">
+                                                <div class="fw-bold">
+                                                    Regex
+                                                </div>
+                                                <div class="mb-3">
+                                                    Regex to apply to generated names.
+                                                </div>
+                                                <div>
+                                                    <input title="RegEx" value="@itemRegEx" type="text" class="form-control @theme.ThemeStyle" id="regex" @onchange="@((ui) => { itemRegEx = (string)ui.Value!;})" />
+                                                </div>
+                                            </div>
+
+                                            <div class="fw-bold">
+                                                Scope
+                                            </div>
+                                            <div>
+                                                <input title="Scope" value="@itemScope" type="text" class="form-control @theme.ThemeStyle" id="scope" @onchange="@((ui) => { itemScope = (string)ui.Value!;})" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Valid Text
+                                            </div>
+                                            <div>
+                                                <input title="Valid Text" value="@itemValidText" type="text" class="form-control @theme.ThemeStyle" id="validtext" @onchange="@((ui) => { itemValidText = (string)ui.Value!;})" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Invalid Text
+                                            </div>
+                                            <div>
+                                                <input title="Invalid Text" value="@itemInvalidText" type="text" class="form-control @theme.ThemeStyle" id="invalidtext" @onchange="@((ui) => { itemInvalidText = (string)ui.Value!;})" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Invalid Characters
+                                            </div>
+                                            <div>
+                                                <input title="Invalid Characters" value="@itemInvalidCharacters" type="text" class="form-control @theme.ThemeStyle" id="invalidcharacters" @onchange="@((ui) => { itemInvalidCharacters = (string)ui.Value!;})" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Invalid Characters Start
+                                            </div>
+                                            <div>
+                                                <input title="Invalid Characters Start" value="@itemInvalidCharactersStart" type="text" class="form-control @theme.ThemeStyle" id="invalidcharactersstart" @onchange="@((ui) => { itemInvalidCharactersStart = (string)ui.Value!;})" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Invalid Characters End
+                                            </div>
+                                            <div>
+                                                <input title="Invalid Characters End" value="@itemInvalidCharactersEnd" type="text" class="form-control @theme.ThemeStyle" id="invalidcharactersend" @onchange="@((ui) => { itemInvalidCharactersEnd = (string)ui.Value!;})" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Invalid Characters Consecutive
+                                            </div>
+                                            <div>
+                                                <input title="Invalid Characters Consecutive" value="@itemInvalidCharactersConsecutive" type="text" class="form-control @theme.ThemeStyle" id="invalidcharactersconsecutive" @onchange="@((ui) => { itemInvalidCharactersConsecutive = (string)ui.Value!;})" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Static Values
+                                            </div>
+                                            <div>
+                                                <input title="Static Values" value="@itemStaticValues" type="text" class="form-control @theme.ThemeStyle" id="staticvalues" @onchange="@((ui) => { itemStaticValues = (string)ui.Value!;})" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             }
                         }
                         else
                         {
                             @if ((type == "ResourceType") && (!Convert.ToBoolean(config.ResourceTypeEditingAllowed)))
                             {
-                                <hr class="mt-1 mb-3" />
-                                <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
-                                    <h4>NOTE</h4>
-                                    <div class="mb-3">
-                                        These settings are disabled by default. You can allow the editing of these values by enabling the "Resource Type Editing" setting in the Admin section.
-                                    </div>
-                                    <div>
-                                        <button type="button" class="close btn btn-light" data-bs-dismiss="alert" aria-label="Dismiss">
-                                            <span aria-hidden="true">Dismiss</span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <div class="fw-bold">
-                                        Minimum Length
-                                    </div>
-                                    <div>
-                                        <input title="Minimum Length" value="@itemMinLength" type="text" disabled class="form-control @theme.ThemeStyle" id="minlength" @onchange="@((ui) => { itemMinLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <div class="fw-bold">
-                                        Maximum Length
-                                    </div>
-                                    <div>
-                                        <input title="Maximum Length" value="@itemMaxLength" type="text" disabled class="form-control @theme.ThemeStyle" id="maxlength" @onchange="@((ui) => { itemMaxLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
-                                    </div>
-                                </div>
                                 <div class="mb-3">
                                     <div class="fw-bold">
                                         Apply Delimiter
@@ -238,12 +326,99 @@
                                     <div>
                                         @if (itemApplyDelimiter)
                                         {
-                                         <span class="fst-italic">ENABLED</span>   
+                                            <span class="fst-italic">ENABLED</span>
                                         }
                                         else
                                         {
                                             <span class="fst-italic">DISABLED</span>
                                         }
+                                    </div>
+                                </div>
+                                <div id="typemetdadatadisabledcontainer" class="card mb-3">
+                                    <div class="card-header bg-default text-dark fw-bold">
+                                        <a id="typemetdadatadisabledlink" class="link-dark text-decoration-none" data-bs-toggle="collapse" href="#typemetdadatadisabled" role="button" aria-expanded="false" aria-controls="typemetdadatadisabled">
+                                            <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Resoure Type Metadata
+                                        </a>
+                                    </div>
+                                    <div class="collapse card card-body @theme.ThemeStyle" id="typemetdadatadisabled">
+                                        <div class="mb-3">
+                                            This section allows you to view the Resouce Type metadata.
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Regex
+                                            </div>
+                                            <div class="mb-3">
+                                                Regex to apply to generated names.
+                                            </div>
+                                            <div>
+                                                <input title="RegEx" value="@itemRegEx" type="text" disabled class="form-control @theme.ThemeStyle" id="regex" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Scope
+                                            </div>
+                                            <div>
+                                                <input title="Scope" value="@itemScope" type="text" disabled class="form-control @theme.ThemeStyle" id="scope" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Valid Text
+                                            </div>
+                                            <div>
+                                                <input title="Valid Text" value="@itemValidText" type="text" disabled class="form-control @theme.ThemeStyle" id="validtext" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Invalid Text
+                                            </div>
+                                            <div>
+                                                <input title="Invalid Text" value="@itemInvalidText" type="text" disabled class="form-control @theme.ThemeStyle" id="invalidtext" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Invalid Characters
+                                            </div>
+                                            <div>
+                                                <input title="Invalid Characters" value="@itemInvalidCharacters" type="text" disabled class="form-control @theme.ThemeStyle" id="invalidcharacters" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Invalid Characters Start
+                                            </div>
+                                            <div>
+                                                <input title="Invalid Characters Start" value="@itemInvalidCharactersStart" type="text" disabled class="form-control @theme.ThemeStyle" id="invalidcharactersstart" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Invalid Characters End
+                                            </div>
+                                            <div>
+                                                <input title="Invalid Characters End" value="@itemInvalidCharactersEnd" type="text" disabled class="form-control @theme.ThemeStyle" id="invalidcharactersend" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Invalid Characters Consecutive
+                                            </div>
+                                            <div>
+                                                <input title="Invalid Characters Consecutive" value="@itemInvalidCharactersConsecutive" type="text" disabled class="form-control @theme.ThemeStyle" id="invalidcharactersconsecutive" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Static Values
+                                            </div>
+                                            <div>
+                                                <input title="Static Values" value="@itemStaticValues" type="text" disabled class="form-control @theme.ThemeStyle" id="staticvalues" />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             }
@@ -328,17 +503,6 @@
                 }
                 @if ((type == "ResourceType") && (GeneralHelper.IsNotNull(resourceComponents)))
                 {
-                    @if (bool.Parse(ConfigurationHelper.GetAppSetting("DevMode")))
-                    {
-                        <div id="globallyoptionalcontainer" class="card mb-3">
-                            <div class="card-header bg-default text-dark fw-bold">
-                                Regex
-                            </div>
-                            <div class="card card-body @theme.ThemeStyle">
-                                <input title="RegEx" value="@itemRegEx" type="text" class="form-control @theme.ThemeStyle" id="shortname" @onchange="@((ui) => { itemRegEx = (string)ui.Value!;})" />
-                            </div>
-                        </div>
-                    }
                     <div id="optional" class="card mb-3">
                         <div class="card-header bg-default text-dark fw-bold">
                             <a id="OptionalComponents" class="link-dark text-decoration-none" data-bs-toggle="collapse" href="#optionalcomponents" role="button" aria-expanded="false" aria-controls="optionalcomponents">
@@ -426,7 +590,7 @@
     [Parameter] public string title { get; set; } = String.Empty;
     [Parameter] public string message { get; set; } = String.Empty;
     [Parameter] public string type { get; set; } = String.Empty;
-    [Parameter] public bool protectedName { get; set; } = false;
+    [Parameter] public bool isProtectedName { get; set; } = false;
     [Parameter] public string parentcomponent { get; set; } = String.Empty;
     [Parameter] public string headerstyle { get; set; } = String.Empty;
     [Parameter] public bool admin { get; set; } = false;
@@ -441,6 +605,14 @@
     private string itemMaxLength = String.Empty;
     private string itemMinLengthOriginal = String.Empty;
     private string itemMaxLengthOriginal = String.Empty;
+    private string itemScope = "global";
+    private string itemValidText = String.Empty;
+    private string itemInvalidText = String.Empty;
+    private string itemInvalidCharacters = String.Empty;
+    private string itemInvalidCharactersStart = String.Empty;
+    private string itemInvalidCharactersEnd = String.Empty;
+    private string itemInvalidCharactersConsecutive = String.Empty;
+    private string itemStaticValues = String.Empty;
     private bool itemIsCustom = false;
     private string itemComponentType = "standard";
     private bool itemIsFreeText = false;
@@ -455,6 +627,7 @@
     private string exclude = String.Empty;
     private bool ischecked = false;
     private string currentuser = String.Empty;
+    private string namelabel = "Name";
     private ResponseMessage responseMessage = new();
     private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
 
@@ -510,6 +683,7 @@
                 serviceResponse = await ResourceTypeService.GetItem(id);
                 ResourceType resourceType = servicesData.ResourceTypes!.Find(x => x.Id == id)!;
                 itemName = resourceType.Resource;
+                namelabel = "Resource";
                 itemShortName = resourceType.ShortName;
                 optional = resourceType.Optional;
                 exclude = resourceType.Exclude;
@@ -519,6 +693,14 @@
                 itemMaxLength = resourceType.LengthMax;
                 itemMaxLengthOriginal = itemMaxLength;
                 itemApplyDelimiter = resourceType.ApplyDelimiter;
+                itemScope = resourceType.Scope;
+                itemValidText = resourceType.ValidText;
+                itemInvalidText = resourceType.InvalidText;
+                itemInvalidCharacters = resourceType.InvalidCharacters;
+                itemInvalidCharactersStart = resourceType.InvalidCharactersStart;
+                itemInvalidCharactersEnd = resourceType.InvalidCharactersEnd;
+                itemInvalidCharactersConsecutive = resourceType.InvalidCharactersConsecutive;
+                itemStaticValues = resourceType.StaticValues;
                 resourceComponents = servicesData.ResourceComponents!.OrderBy(x => x.Name).ToList();
                 break;
             case "ResourceUnitDept":
@@ -538,6 +720,7 @@
                 break;
         }
         currentuser = await IdentityHelper.GetCurrentUser(session);
+        StateHasChanged();
     }
 
     async void Save()
@@ -629,6 +812,16 @@
                 {
                     if (await ValidationHelper.ValidateShortName(type, itemShortName, this.parentcomponent))
                     {
+                        try
+                        {
+                            // Check the regex is valid
+                            Regex regx = new(itemRegEx);
+                        }
+                        catch (Exception)
+                        {
+                            toastService.ShowError("The Regex is not valid. Please review the code and try again!");
+                            return;
+                        }
                         valid = true;
                         switch (type)
                         {
@@ -675,10 +868,15 @@
                                         resourceType.LengthMax = itemMaxLength.ToString();
                                     }
                                 }
-                                if (bool.Parse(ConfigurationHelper.GetAppSetting("DevMode")))
-                                {
-                                    resourceType.Regx = itemRegEx;
-                                }
+                                resourceType.Regx = itemRegEx;
+                                resourceType.Scope = itemScope;
+                                resourceType.ValidText = itemValidText;
+                                resourceType.InvalidText = itemInvalidText;
+                                resourceType.InvalidCharacters = itemInvalidCharacters;
+                                resourceType.InvalidCharactersStart = itemInvalidCharactersStart;
+                                resourceType.InvalidCharactersEnd = itemInvalidCharactersEnd;
+                                resourceType.InvalidCharactersConsecutive = itemInvalidCharactersConsecutive;
+                                resourceType.StaticValues = itemStaticValues;
 
                                 // Update the Optional and Exclude components
                                 foreach (ResourceComponent resourceComponent in resourceComponents)

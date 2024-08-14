@@ -2,13 +2,14 @@
 @using AzureNamingTool.Models
 @using AzureNamingTool.Services
 @using Microsoft.AspNetCore.Html
+@using System.Text.RegularExpressions
 @inject IToastService toastService
 @inject StateContainer state
 @inject ProtectedSessionStorage session
 
 <div class="modal fade show d-block" tabindex="-1" role="dialog">
     <div class="modal-backdrop fade show" @onclick="Cancel"></div>
-    <div class="modal-dialog" style="z-index: 1050">
+    <div class="modal-dialog modal-lg" style="z-index: 1050">
         <!-- Pop it above the backdrop -->
         <div class="modal-content @theme.ThemeStyle">
             <div class="modal-header @headerstyle text-white">
@@ -25,7 +26,7 @@
                             Enter the desired configuration.
                         </div>
                         <div class="form-group mb-3">
-                            <label for="name" style="font-weight:bold;">Name</label>
+                            <label for="name" style="font-weight:bold;">@namelabel</label>
                             <input title="Name" value="@itemName" type="text" class="form-control @theme.ThemeStyle" id="name" @onchange="@((ui) => { itemName = (string)ui.Value!;})" />
                         </div>
                         @switch (type)
@@ -127,6 +128,138 @@
                                     </div>
                                 </div>
                                 break;
+                            case "ResourceType":
+                                <div class="form-group mb-3">
+                                    <label for="shortName" style="font-weight:bold;">Short Name</label>
+                                    <input title="Short Name" value="@itemShortName" type="text" class="form-control @theme.ThemeStyle" id="shortname" @onchange="@((ui) => { itemShortName = (string)ui.Value!;})" />
+                                </div>
+                                <div class="mb-3">
+                                    <div class="fw-bold">
+                                        Minimum Length
+                                    </div>
+                                    <div>
+                                        <input title="Minimum Length" value="@itemMinLength" type="text" class="form-control @theme.ThemeStyle" id="minlength" @onchange="@((ui) => { itemMinLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="fw-bold">
+                                        Maximum Length
+                                    </div>
+                                    <div>
+                                        <input title="Maximum Length" value="@itemMaxLength" type="text" class="form-control @theme.ThemeStyle" id="maxlength" @onchange="@((ui) => { itemMaxLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="fw-bold">
+                                        Apply Delimiter
+                                    </div>
+                                    <div class="mb-3">
+                                        If disabled, the current delimiter will not be used for name generation.
+                                    </div>
+                                    <div>
+                                        <label class="switch" title="Apply Delimiter">
+                                            <input type="checkbox" checked="@itemApplyDelimiter" @oninput='args => ComponentSettingChanged(args, "applydelimiter")'>
+                                            <span class="slider round"></span>
+                                        </label>
+                                        <span class="align-text-top"> Enable</span>
+                                    </div>
+                                </div>
+                                <div id="typemetdadatacontainer" class="card mb-3">
+                                    <div class="card-header bg-default text-dark fw-bold">
+                                        <a id="typemetdadatalink" class="link-dark text-decoration-none" data-bs-toggle="collapse" href="#typemetdadata" role="button" aria-expanded="false" aria-controls="typemetdadata">
+                                            <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Resoure Type Metadata
+                                        </a>
+                                    </div>
+                                    <div class="collapse card card-body @theme.ThemeStyle" id="typemetdadata">
+                                        <div class="mb-3">
+                                            <p>
+                                            This section allows you to edit the Resouce Type metadata.
+                                            </p>
+                                                <div class="alert alert-danger mb-3" role="alert">
+                                                    <h4>ATTENTION</h4>
+                                                    <span class="fw-bold">Please see the <a href="https://github.com/mspnp/AzureNamingTool/wiki/Resource-Type-Editing" target="_blank">Resource Type Editing documentation</a> for guidance on metadata editing.</span>
+                                                </div>
+
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="mb-3">
+                                                <div class="fw-bold">
+                                                    Regex
+                                                </div>
+                                                <div class="mb-3">
+                                                    Regex to apply to generated names.
+                                                </div>
+                                                <div>
+                                                    <input title="RegEx" value="@itemRegEx" type="text" class="form-control @theme.ThemeStyle" id="regex" @onchange="@((ui) => { itemRegEx = (string)ui.Value!;})" />
+                                                </div>
+                                            </div>
+
+                                            <div class="fw-bold">
+                                                Scope
+                                            </div>
+                                            <div>
+                                                <input title="Scope" value="@itemScope" type="text" class="form-control @theme.ThemeStyle" id="scope" @onchange="@((ui) => { itemScope = (string)ui.Value!;})" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Valid Text
+                                            </div>
+                                            <div>
+                                                <input title="Valid Text" value="@itemValidText" type="text" class="form-control @theme.ThemeStyle" id="validtext" @onchange="@((ui) => { itemValidText = (string)ui.Value!;})" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Invalid Text
+                                            </div>
+                                            <div>
+                                                <input title="Invalid Text" value="@itemInvalidText" type="text" class="form-control @theme.ThemeStyle" id="invalidtext" @onchange="@((ui) => { itemInvalidText = (string)ui.Value!;})" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Invalid Characters
+                                            </div>
+                                            <div>
+                                                <input title="Invalid Characters" value="@itemInvalidCharacters" type="text" class="form-control @theme.ThemeStyle" id="invalidcharacters" @onchange="@((ui) => { itemInvalidCharacters = (string)ui.Value!;})" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Invalid Characters Start
+                                            </div>
+                                            <div>
+                                                <input title="Invalid Characters Start" value="@itemInvalidCharactersStart" type="text" class="form-control @theme.ThemeStyle" id="invalidcharactersstart" @onchange="@((ui) => { itemInvalidCharactersStart = (string)ui.Value!;})" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Invalid Characters End
+                                            </div>
+                                            <div>
+                                                <input title="Invalid Characters End" value="@itemInvalidCharactersEnd" type="text" class="form-control @theme.ThemeStyle" id="invalidcharactersend" @onchange="@((ui) => { itemInvalidCharactersEnd = (string)ui.Value!;})" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Invalid Characters Consecutive
+                                            </div>
+                                            <div>
+                                                <input title="Invalid Characters Consecutive" value="@itemInvalidCharactersConsecutive" type="text" class="form-control @theme.ThemeStyle" id="invalidcharactersconsecutive" @onchange="@((ui) => { itemInvalidCharactersConsecutive = (string)ui.Value!;})" />
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="fw-bold">
+                                                Static Values
+                                            </div>
+                                            <div>
+                                                <input title="Static Values" value="@itemStaticValues" type="text" class="form-control @theme.ThemeStyle" id="staticvalues" @onchange="@((ui) => { itemStaticValues = (string)ui.Value!;})" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                break;
                             case "AdminUser":
                                 break;
                             default:
@@ -150,17 +283,17 @@
 
 
 @code {
-        [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new();
-        [Parameter] public ThemeInfo theme { get; set; } = new();
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new();
+    [Parameter] public ThemeInfo theme { get; set; } = new();
 
-        [Parameter] public int id { get; set; } = 0;
-        [Parameter] public string title { get; set; } = String.Empty;
-        [Parameter] public string message { get; set; } = String.Empty;
-        [Parameter] public string type { get; set; } = String.Empty;
-        [Parameter] public string parentcomponent { get; set; } = String.Empty;
-        [Parameter] public string headerstyle { get; set; } = String.Empty;
-        [Parameter] public bool admin { get; set; } = false;
-        [Parameter] public ServicesData servicesData { get; set; } = new();
+    [Parameter] public int id { get; set; } = 0;
+    [Parameter] public string title { get; set; } = String.Empty;
+    [Parameter] public string message { get; set; } = String.Empty;
+    [Parameter] public string type { get; set; } = String.Empty;
+    [Parameter] public string parentcomponent { get; set; } = String.Empty;
+    [Parameter] public string headerstyle { get; set; } = String.Empty;
+    [Parameter] public bool admin { get; set; } = false;
+    [Parameter] public ServicesData servicesData { get; set; } = new();
 
 
     private ServiceResponse serviceResponse = new();
@@ -168,17 +301,32 @@
     private string itemShortName = String.Empty;
     private string itemMinLength = "1";
     private string itemMaxLength = "10";
+    private string itemScope = "";
+    private string itemValidText = String.Empty;
+    private string itemInvalidText = String.Empty;
+    private string itemInvalidCharacters = String.Empty;
+    private string itemInvalidCharactersStart = String.Empty;
+    private string itemInvalidCharactersEnd = String.Empty;
+    private string itemInvalidCharactersConsecutive = String.Empty;
+    private string itemRegEx = String.Empty;
+    private string itemStaticValues = String.Empty;
     private string itemComponentType = "standard";
     private bool itemEnforceRandom = false;
     private bool itemAlphanumeric = true;
     private bool itemIsFreeText = false;
-    private bool itemApplyDelimiterBefore = true;
-    private bool itemApplyDelimiterAfter = true;
+    private bool itemApplyDelimiterBefore = true;  // Used to determine if the delimiter will be added before the component
+    private bool itemApplyDelimiterAfter = true;   // Used to determine if the delimiter will be added after the component
+    private bool itemApplyDelimiter = true; // Used to determine if the delimiter is applied to the resource type (all components)
     private string currentuser = String.Empty;
+    private string namelabel = "Name";
 
     protected override async void OnInitialized()
     {
         currentuser = await IdentityHelper.GetCurrentUser(session);
+        if (type == "ResourceType")
+        {
+            namelabel = "Resource";
+        }
     }
 
     async void Save()
@@ -253,14 +401,13 @@
                         serviceResponse = await AdminUserService.PostItem(adminUser);
                     }
                 }
-
                 break;
             default:
                 if ((GeneralHelper.IsNotNull(itemName)) && (GeneralHelper.IsNotNull(itemShortName)))
                 {
                     if ((!String.IsNullOrEmpty(itemName)) && (!String.IsNullOrEmpty(itemShortName)))
                     {
-                        if(itemShortName.Any(Char.IsWhiteSpace))
+                        if (itemShortName.Any(Char.IsWhiteSpace))
                         {
                             toastService.ShowError("You must enter a valid short name with no spaces!");
                             break;
@@ -352,6 +499,50 @@
 
                                             };
                                         serviceResponse = await ResourceProjAppSvcService.PostItem(resourceProjAppSvc);
+                                    }
+                                    break;
+                                case "ResourceType":
+                                    // Check if the item already exists
+                                    serviceResponse = await ResourceTypeService.GetItems();
+                                    ArgumentNullException.ThrowIfNull(servicesData.ResourceTypes);
+                                    List<ResourceType> resourceTypes = servicesData.ResourceTypes;
+                                    if (resourceTypes.Any(x => GeneralHelper.NormalizeName(x.Resource, true) == normailzedname || x.ShortName == itemShortName))
+                                    {
+                                        toastService.ShowError("You must enter a unique Resource Type name and short name!");
+                                    }
+                                    else
+                                    {
+                                        try
+                                        {
+                                            // Check the regex is valid
+                                            Regex regx = new(itemRegEx);
+                                        }
+                                        catch (Exception)
+                                        {
+                                            toastService.ShowError("The Regex is not valid. Please review the code and try again!");
+                                            return;
+                                        }
+
+                                        // If the above code is valid, then continue with the execution
+                                        valid = true;
+                                        ResourceType resourceType = new ResourceType()
+                                            {
+                                                Resource = itemName,
+                                                ShortName = itemShortName,
+                                                LengthMin = itemMinLength,
+                                                LengthMax = itemMaxLength,
+                                                ApplyDelimiter = itemApplyDelimiter,
+                                                Regx = itemRegEx,
+                                                Scope = itemScope,
+                                                ValidText = itemValidText,
+                                                InvalidText = itemInvalidText,
+                                                InvalidCharacters = itemInvalidCharacters,
+                                                InvalidCharactersStart = itemInvalidCharactersStart,
+                                                InvalidCharactersEnd = itemInvalidCharactersEnd,
+                                                InvalidCharactersConsecutive = itemInvalidCharactersConsecutive,
+                                                StaticValues = itemStaticValues
+                                            };
+                                        serviceResponse = await ResourceTypeService.PostItem(resourceType);
                                     }
                                     break;
                                 case "ResourceUnitDept":
@@ -468,6 +659,9 @@
                         break;
                     case "applydelimiterafter":
                         itemApplyDelimiterAfter = (bool)e.Value;
+                        break;
+                    case "applydelimiter":
+                        itemApplyDelimiter = (bool)e.Value;
                         break;
                 }
             }
