@@ -9,7 +9,7 @@
 # the `language` matrix defined below to confirm you have the correct set of
 # supported CodeQL languages.
 #
-name: "CodeQL"
+name: "CodeQL (Local)"
 
 on:
   push:
@@ -42,6 +42,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+      with:
+        repository: mspnp/AzureNamingTool
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
