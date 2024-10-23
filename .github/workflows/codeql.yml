@@ -9,16 +9,16 @@
 # the `language` matrix defined below to confirm you have the correct set of
 # supported CodeQL languages.
 #
-name: "CodeQL"
+name: "CodeQL (Remote Repository)"
 
-# on:
-#   push:
-#     branches: [ "main" ]
-#   pull_request:
-#     # The branches below must be a subset of the branches above
-#     branches: [ "main" ]
-#   schedule:
-#     - cron: '26 17 * * 5'
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ "main" ]
+  schedule:
+    - cron: '26 17 * * 5'
 
 jobs:
   analyze:
@@ -42,6 +42,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+      with:
+        repository: mspnp/AzureNamingTool
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
