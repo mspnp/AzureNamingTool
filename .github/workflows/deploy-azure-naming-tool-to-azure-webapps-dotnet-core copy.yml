@@ -23,10 +23,10 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '8.0.x'                 # set this to the .NET Core version to use
 
-# on:
-#   push:
-#     branches: [ "main" ]
-#   workflow_dispatch:
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
   
 defaults:
   run:
@@ -44,7 +44,9 @@ jobs:
       outputs:
         secrets-valid: ${{ steps.secrets-valid.outputs.isvalid }}
       steps:
-        - uses: actions/checkout@v3      
+        - uses: actions/checkout@v3
+          with:
+            repository: mspnp/AzureNamingTool      
         - id: secrets-valid
           env: 
             azure-webapp-name: ${{ secrets.AZURE_WEBAPP_NAME }}
@@ -61,6 +63,8 @@ jobs:
     if: needs.check-secrets.outputs.secrets-valid == 'true'
     steps:
       - uses: actions/checkout@v3
+        with:
+          repository: mspnp/AzureNamingTool
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v2
         with:
