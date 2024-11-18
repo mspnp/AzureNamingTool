@@ -6,8 +6,16 @@ using System.Configuration;
 
 namespace AzureNamingTool.Helpers
 {
+    /// <summary>
+    /// Helper class for validation operations.
+    /// </summary>
     public class ValidationHelper
     {
+        /// <summary>
+        /// Validates a password.
+        /// </summary>
+        /// <param name="text">The password to validate.</param>
+        /// <returns>True if the password is valid, otherwise false.</returns>
         public static bool ValidatePassword(string text)
         {
             var hasNumber = new Regex(@"[0-9]+");
@@ -19,14 +27,21 @@ namespace AzureNamingTool.Helpers
             return isValidated;
         }
 
+        /// <summary>
+        /// Validates a short name.
+        /// </summary>
+        /// <param name="type">The type of the short name.</param>
+        /// <param name="value">The value of the short name.</param>
+        /// <param name="parentcomponent">The parent component of the short name (optional).</param>
+        /// <returns>True if the short name is valid, otherwise false.</returns>
         public static async Task<bool> ValidateShortName(string type, string value, string? parentcomponent = null)
         {
             bool valid = false;
             try
             {
                 ResourceComponent resourceComponent = new();
-                List<ResourceComponent> resourceComponents = new();
-                ServiceResponse serviceResponse;
+                List<ResourceComponent> resourceComponents = [];
+                ServiceResponse serviceResponse = new();
 
                 // Get the current components
                 serviceResponse = await ResourceComponentService.GetItems(true);
@@ -70,6 +85,13 @@ namespace AzureNamingTool.Helpers
             return valid;
         }
 
+        /// <summary>
+        /// Validates a generated name.
+        /// </summary>
+        /// <param name="resourceType">The resource type.</param>
+        /// <param name="name">The generated name.</param>
+        /// <param name="delimiter">The delimiter used in the generated name.</param>
+        /// <returns>A ValidateNameResponse object containing the validation result.</returns>
         public static ValidateNameResponse ValidateGeneratedName(Models.ResourceType resourceType, string name, string delimiter)
         {
             ValidateNameResponse response = new();
@@ -77,6 +99,13 @@ namespace AzureNamingTool.Helpers
             {
                 bool valid = true;
                 StringBuilder sbMessage = new();
+
+                // Check if the resource type only allows lowercase
+                if (!resourceType.Regx.Contains("A-Z"))
+                {
+                    sbMessage.Append("This resource type only allows lowercase names. The generated name has been updated to lowercase characters.");
+                    name = name.ToLower();                
+                }
 
                 // Check regex
                 // Validate the name against the resource type regex
@@ -91,7 +120,7 @@ namespace AzureNamingTool.Helpers
                 if (!match.Success)
                 {
                     if (delimitervalid)
-                        {
+                    {
                         // Strip the delimiter in case that is causing the issue
                         name = name.Replace(delimiter, "");
 
@@ -104,7 +133,7 @@ namespace AzureNamingTool.Helpers
                         }
                         else
                         {
-                            sbMessage.Append("The specified delimiter is not allowed for this resource type and has been removed.");
+                            sbMessage.Append("The specified delimiter was removed. This is often caused by the length of the name exceeding the max length and the delimiter removed to shorten the value or the delimiter is not an allowed character for the resoure type.");
                             sbMessage.Append(Environment.NewLine);
                         }
                     }
@@ -238,6 +267,11 @@ namespace AzureNamingTool.Helpers
             return response;
         }
 
+        /// <summary>
+        /// Checks if a string contains only numeric characters.
+        /// </summary>
+        /// <param name="value">The string to check.</param>
+        /// <returns>True if the string contains only numeric characters, otherwise false.</returns>
         public static bool CheckNumeric(string value)
         {
             Regex regx = new("^[0-9]+$");
@@ -245,11 +279,35 @@ namespace AzureNamingTool.Helpers
             return match.Success;
         }
 
+        /// <summary>
+        /// Checks if a string contains only alphanumeric characters.
+        /// </summary>
+        /// <param name="value">The string to check.</param>
+        /// <returns>True if the string contains only alphanumeric characters, otherwise false.</returns>
         public static bool CheckAlphanumeric(string value)
         {
             Regex regx = new("^[a-zA-Z0-9]+$");
             Match match = regx.Match(value);
             return match.Success;
+        }
+
+        /// <summary>
+        /// Checks if a component value length is valid.
+        /// </summary>
+        /// <param name="component">The resource component.</param>
+        /// <param name="value">The component value.</param>
+        /// <returns>True if the component value length is valid, otherwise false.</returns>
+        public static bool CheckComponentLength(ResourceComponent component, string value)
+        {
+            // Check if the component value length is valid
+            if ((value.Length < int.Parse(component.MinLength)) || (value.Length > int.Parse(component.MaxLength)))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }

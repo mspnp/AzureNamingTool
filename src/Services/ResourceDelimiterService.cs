@@ -3,8 +3,16 @@ using AzureNamingTool.Models;
 
 namespace AzureNamingTool.Services
 {
+    /// <summary>
+    /// Service for managing resource delimiters.
+    /// </summary>
     public class ResourceDelimiterService
     {
+        /// <summary>
+        /// Retrieves a list of items based on the specified criteria.
+        /// </summary>
+        /// <param name="admin">A boolean value indicating whether the user is an admin.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The task result contains the service response.</returns>
         public static async Task<ServiceResponse> GetItems(bool admin)
         {
             ServiceResponse serviceResponse = new();
@@ -38,6 +46,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Gets the item with the specified ID from the list of resource delimiters.
+        /// </summary>
+        /// <param name="id">The ID of the item to retrieve.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The task result contains the service response.</returns>
         public static async Task<ServiceResponse> GetItem(int id)
         {
             ServiceResponse serviceResponse = new();
@@ -72,6 +85,10 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Gets the current item from the list of resource delimiters.
+        /// </summary>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The task result contains the service response.</returns>
         public static async Task<ServiceResponse> GetCurrentItem()
         {
             ServiceResponse serviceResponse = new();
@@ -98,6 +115,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Posts an item of type ResourceDelimiter.
+        /// </summary>
+        /// <param name="item">The item to be posted.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The task result contains the service response.</returns>
         public static async Task<ServiceResponse> PostItem(ResourceDelimiter item)
         {
             ServiceResponse serviceResponse = new();
@@ -114,7 +136,7 @@ namespace AzureNamingTool.Services
                     }
                     item.Enabled = true;
                     int position = 1;
-                    items = items.OrderBy(x => x.SortOrder).ToList();
+                    items = [.. items.OrderBy(x => x.SortOrder)];
                     if (item.SortOrder == 0)
                     {
                         item.SortOrder = items.Count + 1;
@@ -191,6 +213,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Posts the configuration for resource delimiters.
+        /// </summary>
+        /// <param name="items">The list of resource delimiters to be configured.</param>
+        /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The task result contains the service response.</returns>
         public static async Task<ServiceResponse> PostConfig(List<ResourceDelimiter> items)
         {
             ServiceResponse serviceResponse = new();

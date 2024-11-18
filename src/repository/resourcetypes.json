@@ -2808,7 +2808,7 @@
     "invalidCharactersStart": "",
     "invalidCharactersEnd": "",
     "invalidCharactersConsecutive": "",
-    "regx": "^[a-zA-Z0-9_-\\.]{1,64}$",
+    "Regx": "^[a-zA-Z0-9_\\.-]{1,64}$",
     "staticValues": ""
   },
   {
@@ -2941,7 +2941,7 @@
     "invalidCharactersStart": "",
     "invalidCharactersEnd": "",
     "invalidCharactersConsecutive": "",
-    "regx": "^(?![0-9]+$)([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]{0,13}[a-zA-Z0-9])$",
+    "regx": "^(?![0-9]+$)([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]{0,62}[a-zA-Z0-9])$",
     "staticValues": ""
   },
   {
@@ -2960,7 +2960,7 @@
     "invalidCharactersStart": "",
     "invalidCharactersEnd": "",
     "invalidCharactersConsecutive": "",
-    "regx": "^(?![0-9]+$)([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]{0,62}[a-zA-Z0-9])$",
+    "regx": "^(?![0-9]+$)([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]{0,13}[a-zA-Z0-9])$",
     "staticValues": ""
   },
   {
@@ -3682,7 +3682,7 @@
     "invalidCharactersStart": "",
     "invalidCharactersEnd": "",
     "invalidCharactersConsecutive": "",
-    "regx": "^[a-zA-Z0-9_-\\.()]{1,80}$",
+    "regx": "^[a-zA-Z0-9_\\.()-]{1,80}$",
     "staticValues": ""
   },
   {
@@ -3701,7 +3701,7 @@
     "invalidCharactersStart": "",
     "invalidCharactersEnd": "",
     "invalidCharactersConsecutive": "",
-    "regx": "^[a-zA-Z0-9_-\\.()]{1,80}$",
+    "regx": "^[a-zA-Z0-9_\\.()-]{1,80}$",
     "staticValues": ""
   },
   {
@@ -5173,7 +5173,7 @@
     "optional": "UnitDept",
     "exclude": "Org,Function",
     "property": "",
-    "ShortName": "deloy",
+    "ShortName": "dploy",
     "scope": "resource group",
     "lengthMin": "1",
     "lengthMax": "64",
@@ -6218,7 +6218,7 @@
     "optional": "UnitDept",
     "exclude": "Org,Function",
     "property": "",
-    "ShortName": "plan",
+    "ShortName": "asp",
     "scope": "resource group",
     "lengthMin": "1",
     "lengthMax": "40",

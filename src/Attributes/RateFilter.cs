@@ -7,13 +7,19 @@ using AzureNamingTool.Helpers;
 
 namespace AzureNamingTool.Attributes
 {
+    /// <summary>
+    /// Represents a rate filter attribute that sets the minimum data rate for request and response.
+    /// </summary>
     public class RateFilter : Attribute, IResourceFilter
     {
+        /// <summary>
+        /// Executes the filter before a resource is executed.
+        /// </summary>
+        /// <param name="context">The resource executing context.</param>
         public void OnResourceExecuting(ResourceExecutingContext context)
         {
             try
             {
-
                 var minRequestRateFeature = context.HttpContext.Features.Get<IHttpMinRequestBodyDataRateFeature>();
                 var minResponseRateFeature = context.HttpContext.Features.Get<IHttpMinResponseDataRateFeature>();
                 //Default Bytes/s = 240, Default TimeOut = 5s
@@ -34,6 +40,10 @@ namespace AzureNamingTool.Attributes
             }
         }
 
+        /// <summary>
+        /// Executes the filter after a resource is executed.
+        /// </summary>
+        /// <param name="context">The resource executed context.</param>
         public void OnResourceExecuted(ResourceExecutedContext context)
         {
         }

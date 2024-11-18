@@ -6,8 +6,16 @@ using System.Text.Json.Serialization;
 
 namespace AzureNamingTool.Services
 {
+    /// <summary>
+    /// Service for managing the import and export of configuration data.
+    /// </summary>
     public class ImportExportService
     {
+        /// <summary>
+        /// Export the configuration data.
+        /// </summary>
+        /// <param name="includeadmin">Flag to include admin settings in the export.</param>
+        /// <returns>The service response containing the exported configuration data.</returns>
         public static async Task<ServiceResponse> ExportConfig(bool includeadmin = false)
         {
             ServiceResponse serviceResponse = new();
@@ -107,9 +115,18 @@ namespace AzureNamingTool.Services
                 configdata.DismissedAlerts = config.DismissedAlerts;
                 configdata.DuplicateNamesAllowed = config.DuplicateNamesAllowed;
                 configdata.ConnectivityCheckEnabled = config.ConnectivityCheckEnabled;
-                configdata.GenerationWebhook = config.GenerationWebhook;                    
+                configdata.GenerationWebhook = config.GenerationWebhook;
                 configdata.ResourceTypeEditingAllowed = config.ResourceTypeEditingAllowed;
                 configdata.AutoIncrementResourceInstance = config.AutoIncrementResourceInstance;
+                configdata.InstructionsEnabled = config.InstructionsEnabled;
+                configdata.GeneratedNamesLogEnabled = config.GeneratedNamesLogEnabled;
+                configdata.ConfigurationEnabled = config.ConfigurationEnabled;
+                configdata.ReferenceEnabled = config.ReferenceEnabled;
+                configdata.LatestNewsEnabled = config.LatestNewsEnabled;
+                configdata.RetainGenerateSelections = config.RetainGenerateSelections;
+                configdata.CustomHomeContent = config.CustomHomeContent;
+                configdata.CustomLogoPath = config.CustomLogoPath;
+                configdata.CustomToolName = config.CustomToolName;
 
                 // Get the security settings
                 if (includeadmin)
@@ -117,6 +134,7 @@ namespace AzureNamingTool.Services
                     configdata.SALTKey = config.SALTKey;
                     configdata.AdminPassword = config.AdminPassword;
                     configdata.APIKey = config.APIKey;
+                    configdata.ReadOnlyAPIKey = config.ReadOnlyAPIKey;
                     //IdentityHeaderName
                     configdata.IdentityHeaderName = config.IdentityHeaderName;
                     //AdminUsers
@@ -139,6 +157,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Import the configuration data.
+        /// </summary>
+        /// <param name="configdata">The configuration data to import.</param>
+        /// <returns>The service response indicating the success or failure of the import.</returns>
         public static async Task<ServiceResponse> PostConfig(ConfigurationData configdata)
         {
             ServiceResponse serviceResponse = new();
@@ -183,6 +206,10 @@ namespace AzureNamingTool.Services
                 {
                     config.APIKey = configdata.APIKey;
                 }
+                if (GeneralHelper.IsNotNull(configdata.ReadOnlyAPIKey))
+                {
+                    config.ReadOnlyAPIKey = configdata.ReadOnlyAPIKey;
+                }
                 if (GeneralHelper.IsNotNull(configdata.IdentityHeaderName))
                 {
                     config.IdentityHeaderName = configdata.IdentityHeaderName;
@@ -194,6 +221,42 @@ namespace AzureNamingTool.Services
                 if (GeneralHelper.IsNotNull(configdata.AutoIncrementResourceInstance))
                 {
                     config.AutoIncrementResourceInstance = configdata.AutoIncrementResourceInstance;
+                }
+                if (GeneralHelper.IsNotNull(configdata.InstructionsEnabled))
+                {
+                    config.InstructionsEnabled = configdata.InstructionsEnabled;
+                }
+                if (GeneralHelper.IsNotNull(configdata.GeneratedNamesLogEnabled))
+                {
+                    config.GeneratedNamesLogEnabled = configdata.GeneratedNamesLogEnabled;
+                }
+                if (GeneralHelper.IsNotNull(configdata.ConfigurationEnabled))
+                {
+                    config.ConfigurationEnabled = configdata.ConfigurationEnabled;
+                }
+                if (GeneralHelper.IsNotNull(configdata.ReferenceEnabled))
+                {
+                    config.ReferenceEnabled = configdata.ReferenceEnabled;
+                }
+                if (GeneralHelper.IsNotNull(configdata.LatestNewsEnabled))
+                {
+                    config.LatestNewsEnabled = configdata.LatestNewsEnabled;
+                }
+                if (GeneralHelper.IsNotNull(configdata.RetainGenerateSelections))
+                {
+                    config.RetainGenerateSelections = configdata.RetainGenerateSelections;
+                }
+                if (GeneralHelper.IsNotNull(configdata.CustomHomeContent))
+                {
+                    config.CustomHomeContent = configdata.CustomHomeContent;
+                }
+                if (GeneralHelper.IsNotNull(configdata.CustomLogoPath))
+                {
+                    config.CustomLogoPath = configdata.CustomLogoPath;
+                }
+                if (GeneralHelper.IsNotNull(configdata.CustomToolName))
+                {
+                    config.CustomToolName = configdata.CustomToolName;
                 }
                 var jsonWriteOptions = new JsonSerializerOptions()
                 {

@@ -1,25 +1,30 @@
 using AzureNamingTool.Attributes;
+using AzureNamingTool.Components;
+using AzureNamingTool.Helpers;
+using AzureNamingTool.Models;
 using BlazorDownloadFile;
+using Blazored.Modal;
 using Blazored.Toast;
 using Microsoft.OpenApi.Models;
-using Blazored.Modal;
-using Swashbuckle.AspNetCore.Swagger;
 using System.Reflection;
-using AzureNamingTool.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddMvcCore().AddApiExplorer();
-builder.Services.AddRazorPages();
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddServerSideBlazor().AddCircuitOptions(x => x.DetailedErrors = true).AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000);
-}
-else
-{
-    builder.Services.AddServerSideBlazor().AddHubOptions(x => x.MaximumReceiveMessageSize = 102400000);
-}
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents().AddHubOptions(options =>
+    {
+        options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
+        options.EnableDetailedErrors = false;
+        options.HandshakeTimeout = TimeSpan.FromSeconds(15);
+        options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+        options.MaximumParallelInvocationsPerClient = 1;
+        options.MaximumReceiveMessageSize = 102400000;
+        options.StreamBufferCapacity = 10;
+    });
+
+
+builder.Services.AddHealthChecks();
 builder.Services.AddBlazorDownloadFile();
 builder.Services.AddBlazoredToast();
 builder.Services.AddBlazoredModal();
@@ -27,12 +32,13 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddSingleton<StateContainer>();
 
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.OperationFilter<CustomHeaderSwaggerAttribute>();
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Version = "v" + Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion,
+        Version = "v" + ConfigurationHelper.GetAssemblyVersion(),
         Title = "Azure Naming Tool API",
         Description = "An ASP.NET Core Web API for managing the Azure Naming tool configuration. All API requests require the configured API Keys (found in the site Admin configuration). You can find more details in the <a href=\"https://github.com/mspnp/AzureNamingTool/wiki/Using-the-API\" target=\"_new\">Azure Naming Tool API documentation</a>."
     });
@@ -41,34 +47,22 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(
-        builder =>
-        {
-            builder.WithOrigins("http://localhost:44332")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-        });
-});
-
+// Add services to the container
+builder.Services.AddBlazorDownloadFile();
+builder.Services.AddBlazoredToast();
+builder.Services.AddBlazoredModal();
 builder.Services.AddMemoryCache();
+builder.Services.AddMvcCore().AddApiExplorer();
+
 var app = builder.Build();
 
+app.MapHealthChecks("/healthcheck/ping");
+
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (!app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
-    app.UseCors(x => x
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .SetIsOriginAllowed(origin => true) // allow any origin
-                .AllowCredentials()); // allow credentials
-}
-else
-{
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts. 
+    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -78,14 +72,20 @@ app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AzureNaming
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+app.UseAntiforgery();
 
-app.UseRouting();
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
 
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseStatusCodePagesWithRedirects("/404");
 
 app.MapControllers();
-app.MapBlazorHub();
-app.MapFallbackToPage("/_Host");
-
 app.Run();
+
+
+/// <summary>
+/// Exists so can be used as reference for WebApplicationFactory in tests project
+/// </summary>
+public partial class Program
+{
+}

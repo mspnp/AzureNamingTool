@@ -10,15 +10,21 @@ using AzureNamingTool.Services;
 using AzureNamingTool.Attributes;
 using Microsoft.Extensions.Options;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace AzureNamingTool.Controllers
 {
+    /// <summary>
+    /// Controller for managing custom components.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [ApiKey]
     public class CustomComponentsController : ControllerBase
     {
+        /// <summary>
+        /// Response for controller functions
+        /// </summary>
+        ServiceResponse serviceResponse = new();
+
         // GET: api/<CustomComponentsController>
         /// <summary>
         /// This function will return the custom components data. 
@@ -27,7 +33,6 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -50,7 +55,37 @@ namespace AzureNamingTool.Controllers
 
         // GET api/<CustomComponentsController>/sample
         /// <summary>
-        /// This function will return the custom components data for the specifc parent component type.
+        /// This function will return the custom components data for the specifc parent component id.
+        /// </summary>
+        /// <param name="parentcomponentid">int - Parent Component Id</param>
+        /// <returns>json - Current custom components data</returns>
+        [Route("[action]/{parentcomponentid}")]
+        [HttpGet]
+        public async Task<IActionResult> GetByParentComponentId(int parentcomponentid)
+        {
+            try
+            {
+                // Get list of items
+                serviceResponse = await CustomComponentService.GetItemsByParentComponentId(parentcomponentid);
+                if (serviceResponse.Success)
+                {
+                    return Ok(serviceResponse.ResponseObject);
+                }
+                else
+                {
+                    return BadRequest(serviceResponse.ResponseObject);
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                return BadRequest(ex);
+            }
+        }
+
+        // GET api/<CustomComponentsController>/sample
+        /// <summary>
+        /// This function will return the custom components data for the specifc parent component type (name).
         /// </summary>
         /// <param name="parenttype">string - Parent Component Type Name</param>
         /// <returns>json - Current custom components data</returns>
@@ -58,7 +93,6 @@ namespace AzureNamingTool.Controllers
         [HttpGet]
         public async Task<IActionResult> GetByParentType(string parenttype)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -88,7 +122,6 @@ namespace AzureNamingTool.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
@@ -118,7 +151,6 @@ namespace AzureNamingTool.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CustomComponent item)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await CustomComponentService.PostItem(item);
@@ -150,7 +182,6 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfig([FromBody] List<CustomComponent> items)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 serviceResponse = await CustomComponentService.PostConfig(items);
@@ -182,11 +213,10 @@ namespace AzureNamingTool.Controllers
         [Route("[action]")]
         public async Task<IActionResult> PostConfigWithParentData([FromBody] CustomComponmentConfig config)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
-                List<ResourceComponent> currentresourcecomponents = new();
-                List<CustomComponent> newcustomcomponents = new();
+                List<ResourceComponent> currentresourcecomponents = [];
+                List<CustomComponent> newcustomcomponents = [];
                 // Get the current resource components
                 serviceResponse = await ResourceComponentService.GetItems(true);
                 if (serviceResponse.Success)
@@ -272,7 +302,6 @@ namespace AzureNamingTool.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            ServiceResponse serviceResponse = new();
             try
             {
                 // Get the item details
@@ -284,8 +313,47 @@ namespace AzureNamingTool.Controllers
                     if (serviceResponse.Success)
                     {
                         AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Custom Component (" + item.Name + ") deleted." });
-                        CacheHelper.InvalidateCacheObject("GeneratedName");
+                        CacheHelper.InvalidateCacheObject("CustomComponent");
                         return Ok("Custom Component (" + item.Name + ") deleted.");
+                    }
+                    else
+                    {
+                        return BadRequest(serviceResponse.ResponseObject);
+                    }
+                }
+                else
+                {
+                    return BadRequest(serviceResponse.ResponseObject);
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                return BadRequest(ex);
+            }
+        }
+        // DELETE api/<CustomComponentsController>/5
+        /// <summary>
+        /// This function will delete the custom component data for the specifed parent component id.
+        /// </summary>
+        /// <param name="parentcomponentid">int - Parent component id</param>
+        /// <returns>bool - PASS/FAIL</returns>
+        [HttpDelete("[action]/{parentcomponentid}")]
+        public async Task<IActionResult> DeleteByParentComponentId(int parentcomponentid)
+        {
+            try
+            {
+                // Get the item details
+                serviceResponse = await ResourceComponentService.GetItem(parentcomponentid);
+                if (serviceResponse.Success)
+                {
+                    var component = (ResourceComponent)serviceResponse.ResponseObject!;
+                    serviceResponse = await CustomComponentService.DeleteByParentComponentId(parentcomponentid);
+                    if (serviceResponse.Success)
+                    {
+                        AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Custom Component data for component (" + component.Name + ") deleted." });
+                        CacheHelper.InvalidateCacheObject("CustomComponent");
+                        return Ok("Custom Component data for component (" + component.Name + ") deleted.");
                     }
                     else
                     {

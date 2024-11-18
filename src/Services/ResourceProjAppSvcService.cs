@@ -3,8 +3,15 @@ using AzureNamingTool.Models;
 
 namespace AzureNamingTool.Services
 {
+    /// <summary>
+    /// Service for managing ResourceProjAppSvc items.
+    /// </summary>
     public class ResourceProjAppSvcService
-    { 
+    {
+        /// <summary>
+        /// Retrieves a list of ResourceProjAppSvc items.
+        /// </summary>
+        /// <returns>A ServiceResponse containing the list of items.</returns>
         public static async Task<ServiceResponse> GetItems()
         {
             ServiceResponse serviceResponse = new();
@@ -31,6 +38,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Retrieves an item from the list of ResourceProjAppSvc items by its ID.
+        /// </summary>
+        /// <param name="id">The ID of the item to retrieve.</param>
+        /// <returns>A ServiceResponse containing the retrieved item.</returns>
         public static async Task<ServiceResponse> GetItem(int id)
         {
             ServiceResponse serviceResponse = new();
@@ -65,6 +77,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Posts an item to the list of ResourceProjAppSvc items.
+        /// </summary>
+        /// <param name="item">The item to be posted.</param>
+        /// <returns>A ServiceResponse indicating the success of the operation.</returns>
         public static async Task<ServiceResponse> PostItem(ResourceProjAppSvc item)
         {
             ServiceResponse serviceResponse = new();
@@ -77,9 +94,6 @@ namespace AzureNamingTool.Services
                     serviceResponse.ResponseObject = "Short name must be alphanumeric.";
                     return serviceResponse;
                 }
-
-                // Force lowercase on the shortname
-                item.ShortName = item.ShortName.ToLower();
 
                 // Get list of items
                 var items = await ConfigurationHelper.GetList<ResourceProjAppSvc>();
@@ -100,7 +114,7 @@ namespace AzureNamingTool.Services
                     }
 
                     int position = 1;
-                    items = items.OrderBy(x => x.SortOrder).ToList();
+                    items = [.. items.OrderBy(x => x.SortOrder)];
 
                     if (item.SortOrder == 0)
                     {
@@ -138,6 +152,7 @@ namespace AzureNamingTool.Services
                         else
                         {
                             // Put the item at the end
+                            item.SortOrder = position;
                             items.Add(item);
                         }
                     }
@@ -174,6 +189,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Deletes an item from the list of ResourceProjAppSvc items.
+        /// </summary>
+        /// <param name="id">The ID of the item to be deleted.</param>
+        /// <returns>A ServiceResponse indicating the success of the operation.</returns>
         public static async Task<ServiceResponse> DeleteItem(int id)
         {
             ServiceResponse serviceResponse = new();
@@ -221,6 +241,11 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Posts the configuration for a list of ResourceProjAppSvc items.
+        /// </summary>
+        /// <param name="items">The list of ResourceProjAppSvc items to be configured.</param>
+        /// <returns>A ServiceResponse indicating the success of the operation.</returns>
         public static async Task<ServiceResponse> PostConfig(List<ResourceProjAppSvc> items)
         {
             ServiceResponse serviceResponse = new();
@@ -240,9 +265,6 @@ namespace AzureNamingTool.Services
                         serviceResponse.ResponseObject = "Short name must be alphanumeric.";
                         return serviceResponse;
                     }
-
-                    // Force lowercase on the shortname
-                    item.ShortName = item.ShortName.ToLower();
 
                     item.Id = i;
                     item.SortOrder = i;

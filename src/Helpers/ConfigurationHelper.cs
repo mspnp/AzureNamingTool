@@ -11,8 +11,26 @@ using System.Text.Json.Serialization;
 
 namespace AzureNamingTool.Helpers
 {
+
+    /// <summary>
+    /// Helper class for configuration-related operations.
+    /// </summary>
     public class ConfigurationHelper
     {
+        /// <summary>
+        /// Helper class for logging operations.
+        /// </summary>
+        private static readonly JsonSerializerOptions options = new()
+        {
+            AllowTrailingCommas = true,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            PropertyNameCaseInsensitive = true
+        };
+
+        /// <summary>
+        /// Retrieves the configuration data for the site.
+        /// </summary>
+        /// <returns>The site configuration data.</returns>
         public static SiteConfiguration GetConfigurationData()
         {
             var config = new ConfigurationBuilder()
@@ -23,6 +41,12 @@ namespace AzureNamingTool.Helpers
             return config!;
         }
 
+        /// <summary>
+        /// Retrieves the value of the specified app setting.
+        /// </summary>
+        /// <param name="key">The key of the app setting.</param>
+        /// <param name="decrypt">Indicates whether the value should be decrypted.</param>
+        /// <returns>The value of the app setting.</returns>
         public static string GetAppSetting(string key, bool decrypt = false)
         {
             string value = String.Empty;
@@ -73,6 +97,12 @@ namespace AzureNamingTool.Helpers
             return value;
         }
 
+        /// <summary>
+        /// Set the value of the specified app setting.
+        /// </summary>
+        /// <param name="key">The key of the app setting.</param>
+        /// <param name="value">The value of the app setting.</param>
+        /// <param name="encrypt">Indicates whether the value should be encrypted.</param>
         public static async void SetAppSetting(string key, string value, bool encrypt = false)
         {
             try
@@ -96,6 +126,10 @@ namespace AzureNamingTool.Helpers
             }
         }
 
+        /// <summary>
+        /// Verifies the configuration by performing various checks and operations.
+        /// </summary>
+        /// <param name="state">The state container object.</param>
         public static async void VerifyConfiguration(StateContainer state)
         {
             try
@@ -120,7 +154,7 @@ namespace AzureNamingTool.Helpers
                     await FileSystemHelper.MigrateDataToFile("adminlog.json", "settings/", "adminlogmessages.json", "settings/", true);
                 }
 
-                // Sync cnfiguration data
+                // Sync configuration data
                 if (!state.ConfigurationDataSynced)
                 {
                     await SyncConfigurationData("ResourceComponent");
@@ -133,6 +167,10 @@ namespace AzureNamingTool.Helpers
             }
         }
 
+        /// <summary>
+        /// Verifies the security settings and updates the state container.
+        /// </summary>
+        /// <param name="state">The state container.</param>
         public static async void VerifySecurity(StateContainer state)
         {
             try
@@ -185,6 +223,10 @@ namespace AzureNamingTool.Helpers
             }
         }
 
+        /// <summary>
+        /// Verifies the connectivity by pinging a URL or downloading a file.
+        /// </summary>
+        /// <returns>True if the connectivity check is successful, otherwise false.</returns>
         public static async Task<bool> VerifyConnectivity()
         {
             bool pingsuccessful = false;
@@ -254,6 +296,11 @@ namespace AzureNamingTool.Helpers
             return result;
         }
 
+        /// <summary>
+        /// Retrieves a list of items of type T.
+        /// </summary>
+        /// <typeparam name="T">The type of items to retrieve.</typeparam>
+        /// <returns>A list of items of type T.</returns>
         public async static Task<List<T>?> GetList<T>()
         {
             var items = new List<T>();
@@ -286,12 +333,6 @@ namespace AzureNamingTool.Helpers
 
                 if (data != "[]")
                 {
-                    var options = new JsonSerializerOptions
-                    {
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                        PropertyNameCaseInsensitive = true
-                    };
-
                     items = JsonSerializer.Deserialize<List<T>>(data, options);
                 }
             }
@@ -302,6 +343,11 @@ namespace AzureNamingTool.Helpers
             return items;
         }
 
+        /// <summary>
+        /// Writes a list of items to a configuration file based on the type of the items.
+        /// </summary>
+        /// <typeparam name="T">The type of the items.</typeparam>
+        /// <param name="items">The list of items to write.</param>
         public async static Task WriteList<T>(List<T> items)
         {
             try
@@ -379,6 +425,10 @@ namespace AzureNamingTool.Helpers
             }
         }
 
+        /// <summary>
+        /// Updates the settings in the appsettings.json file.
+        /// </summary>
+        /// <param name="config">The updated SiteConfiguration object.</param>
         public static async Task UpdateSettings(SiteConfiguration config)
         {
             // Clear the cache
@@ -388,7 +438,8 @@ namespace AzureNamingTool.Helpers
             {
                 memoryCache.Remove(cacheKey);
             }
-            var jsonWriteOptions = new JsonSerializerOptions()
+
+            JsonSerializerOptions jsonWriteOptions = new()
             {
                 WriteIndented = true
             };
@@ -400,6 +451,10 @@ namespace AzureNamingTool.Helpers
             await FileSystemHelper.WriteFile("appsettings.json", newJson);
         }
 
+        /// <summary>
+        /// Retrieves the official configuration file version data from a specified URL.
+        /// </summary>
+        /// <returns>The configuration file version data as a string.</returns>
         public static async Task<string> GetOfficalConfigurationFileVersionData()
         {
             string versiondata = String.Empty;
@@ -414,18 +469,22 @@ namespace AzureNamingTool.Helpers
             return versiondata;
         }
 
+        /// <summary>
+        /// Gets the current configuration file version data.
+        /// </summary>
+        /// <returns>The current configuration file version data as a JSON string.</returns>
         public static async Task<string> GetCurrentConfigFileVersionData()
         {
             string versiondatajson = String.Empty;
             try
             {
-                versiondatajson = await FileSystemHelper.ReadFile("configurationfileversions.json");
+                versiondatajson = await FileSystemHelper.ReadFile("configurationfileversions.json", "");
                 // Check if the user has any version data. This value will be '[]' if not.
                 if (versiondatajson == "[]")
                 {
                     // Create new version data with default values in /settings file
                     ConfigurationFileVersionData? versiondata = new();
-                    await FileSystemHelper.WriteFile("configurationfileversions.json", JsonSerializer.Serialize(versiondata), "settings/");
+                    await FileSystemHelper.WriteFile("configurationfileversions.json", JsonSerializer.Serialize(versiondata), "");
                     versiondatajson = JsonSerializer.Serialize(versiondata);
                 }
             }
@@ -436,9 +495,13 @@ namespace AzureNamingTool.Helpers
             return versiondatajson;
         }
 
+        /// <summary>
+        /// Verifies the configuration file version data.
+        /// </summary>
+        /// <returns>A list of strings representing the differences in configuration file version data.</returns>
         public static async Task<List<string>> VerifyConfigurationFileVersionData()
         {
-            List<string> versiondata = new();
+            List<string> versiondata = [];
             try
             {
                 // Get the official version from GitHub
@@ -479,6 +542,10 @@ namespace AzureNamingTool.Helpers
             return versiondata;
         }
 
+        /// <summary>
+        /// Updates the configuration file version for the specified file.
+        /// </summary>
+        /// <param name="fileName">The name of the file to update.</param>
         public static async Task UpdateConfigurationFileVersion(string fileName)
         {
             if (await VerifyConnectivity())
@@ -511,7 +578,7 @@ namespace AzureNamingTool.Helpers
                                     break;
                             }
                             //  Update the current configuration file version data
-                            await FileSystemHelper.WriteFile("configurationfileversions.json", JsonSerializer.Serialize(currentversiondata), "settings/");
+                            await FileSystemHelper.WriteFile("configurationfileversions.json", JsonSerializer.Serialize(currentversiondata), "");
                         }
                     }
                 }
@@ -522,6 +589,10 @@ namespace AzureNamingTool.Helpers
             }
         }
 
+        /// <summary>
+        /// Resets the site configuration by copying repository files to the settings folder and clearing the cache.
+        /// </summary>
+        /// <returns>True if the site configuration is reset successfully; otherwise, false.</returns>
         public static bool ResetSiteConfiguration()
         {
             bool result = false;
@@ -530,7 +601,7 @@ namespace AzureNamingTool.Helpers
                 // Get all the files in the repository folder
                 DirectoryInfo repositoryDir = new("repository");
                 // Filter out the appsettings.json to retain admin credentials
-                string[] protectedfilenames = { "adminusers.json", "appsettings.json" };
+                string[] protectedfilenames = ["adminusers.json", "appsettings.json"];
                 foreach (FileInfo file in repositoryDir.GetFiles())
                 {
                     //Only copy non-admin files
@@ -557,6 +628,10 @@ namespace AzureNamingTool.Helpers
             return result;
         }
 
+        /// <summary>
+        /// Resets the state of the application.
+        /// </summary>
+        /// <param name="state">The state container.</param>
         public static void ResetState(StateContainer state)
         {
             state.SetVerified(false);
@@ -565,6 +640,39 @@ namespace AzureNamingTool.Helpers
             state.SetAppTheme("bg-default text-dark");
         }
 
+        /// <summary>
+        /// Gets the assembly version.
+        /// </summary>
+        /// <returns>The assembly version.</returns>
+        public static string GetAssemblyVersion()
+        {
+            string result = String.Empty;
+            try
+            {
+                string data = (string)CacheHelper.GetCacheObject("assemblyversion")!;
+                if (String.IsNullOrEmpty(data))
+                {
+                    Version version = Assembly.GetExecutingAssembly().GetName().Version!;
+                    result = version.Major + "." + version.Minor + "." + version.Build;
+                    CacheHelper.SetCacheObject("assemblyversion", result);
+                }
+                else
+                {
+                    result = data;
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Retrieves the tool version from the program settings.
+        /// </summary>
+        /// <returns>The tool version as a string, or null if an error occurs.</returns>
         public static async Task<string?> GetToolVersion()
         {
             try
@@ -581,6 +689,11 @@ namespace AzureNamingTool.Helpers
             }
         }
 
+        /// <summary>
+        /// Gets the version alert message.
+        /// </summary>
+        /// <param name="forceDisplay">Flag indicating whether to force display the alert.</param>
+        /// <returns>The version alert message.</returns>
         public static async Task<string> GetVersionAlert(bool forceDisplay = false)
         {
             string alert = "";
@@ -588,7 +701,7 @@ namespace AzureNamingTool.Helpers
             {
                 VersionAlert versionalert = new();
                 bool dismissed = false;
-                string appversion = Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
+                string appversion = GetAssemblyVersion();
 
                 // Check if version alert has been dismissed
                 var dismissedalerts = GetAppSetting("DismissedAlerts").Split(',');
@@ -607,17 +720,12 @@ namespace AzureNamingTool.Helpers
                     if (cacheddata == null)
                     {
                         // Get the alert 
-                        List<VersionAlert> versionAlerts = new();
+                        List<VersionAlert> versionAlerts = [];
                         string data = await FileSystemHelper.ReadFile("versionalerts.json", "");
                         if (GeneralHelper.IsNotNull(data))
                         {
                             var items = new List<VersionAlert>();
-                            var options = new JsonSerializerOptions
-                            {
-                                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                                PropertyNameCaseInsensitive = true
-                            };
-                            items = JsonSerializer.Deserialize<List<VersionAlert>>(data, options)!.ToList();
+                            items = [.. JsonSerializer.Deserialize<List<VersionAlert>>(data, options)!];
                             versionalert = items.Where(x => x.Version == appversion).FirstOrDefault()!;
 
                             if (GeneralHelper.IsNotNull(versionalert))
@@ -641,11 +749,14 @@ namespace AzureNamingTool.Helpers
             return alert;
         }
 
+        /// <summary>
+        /// Dismisses the version alert and updates the dismissed alerts list.
+        /// </summary>
         public static void DismissVersionAlert()
         {
             try
             {
-                string appversion = Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
+                string appversion = GetAssemblyVersion();
                 List<string> dismissedalerts = new(GetAppSetting("DismissedAlerts").Split(','));
                 if (!dismissedalerts.Contains(appversion))
                 {
@@ -663,6 +774,12 @@ namespace AzureNamingTool.Helpers
             }
         }
 
+        /// <summary>
+        /// Posts the generated name to the specified webhook URL.
+        /// </summary>
+        /// <param name="URL">The URL of the webhook.</param>
+        /// <param name="generatedName">The generated name to be posted.</param>
+        /// <returns>A boolean indicating whether the post was successful or not.</returns>
         public static async Task<bool> PostToGenerationWebhook(string URL, GeneratedName generatedName)
         {
             bool result = false;
@@ -689,6 +806,12 @@ namespace AzureNamingTool.Helpers
             }
             return result;
         }
+
+        /// <summary>
+        /// Retrieves the program setting from the cache or downloads it from the specified URL if not found in the cache.
+        /// </summary>
+        /// <param name="programSetting">The name of the program setting to retrieve.</param>
+        /// <returns>The value of the program setting.</returns>
         public static async Task<string> GetProgramSetting(string programSetting)
         {
             string result = String.Empty;
@@ -716,9 +839,9 @@ namespace AzureNamingTool.Helpers
         }
 
         /// <summary>
-        /// This function is used to sync default configuration data with the user's local version
+        /// Synchronizes the configuration data based on the specified type.
         /// </summary>
-        /// <param name="type">string - Type of configuration data to sync</param>
+        /// <param name="type">The type of configuration data to synchronize.</param>
         public static async Task SyncConfigurationData(string type)
         {
             try
@@ -729,7 +852,7 @@ namespace AzureNamingTool.Helpers
                 {
                     case "ResourceComponent":
                         // Get all the existing components
-                        List<ResourceComponent> currentComponents = new();
+                        List<ResourceComponent> currentComponents = [];
                         ServiceResponse serviceResponse = new();
                         serviceResponse = await ResourceComponentService.GetItems(true);
                         if (serviceResponse.Success)
@@ -738,16 +861,10 @@ namespace AzureNamingTool.Helpers
                             {
                                 currentComponents = serviceResponse.ResponseObject!;
                                 // Get the default component data
-                                List<ResourceComponent> defaultComponents = new();
+                                List<ResourceComponent> defaultComponents = [];
                                 string data = await FileSystemHelper.ReadFile("resourcecomponents.json", "repository/");
                                 if (!String.IsNullOrEmpty(data))
                                 {
-                                    var options = new JsonSerializerOptions
-                                    {
-                                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                                        PropertyNameCaseInsensitive = true
-                                    };
-
                                     if (!String.IsNullOrEmpty(data))
                                     {
                                         defaultComponents = JsonSerializer.Deserialize<List<ResourceComponent>>(data, options)!;
@@ -804,15 +921,19 @@ namespace AzureNamingTool.Helpers
             }
         }
 
-        public static List<KeyValuePair<string,string>> GetEnvironmentVariables()
+        /// <summary>
+        /// Retrieves a list of key-value pairs representing the environment variables.
+        /// </summary>
+        /// <returns>A list of key-value pairs representing the environment variables.</returns>
+        public static List<KeyValuePair<string, string>> GetEnvironmentVariables()
         {
-            List<KeyValuePair<string, string>> result = new();
+            List<KeyValuePair<string, string>> result = [];
             try
             {
                 var entries = Environment.GetEnvironmentVariables().Cast<DictionaryEntry>()
                               .Select(x => KeyValuePair.Create((string)x.Key, (string)x.Value!));
                 var sortedEntries = entries.OrderBy(x => x.Key);
-                result = sortedEntries.ToList<KeyValuePair<string, string>>();
+                result = [.. sortedEntries];
                 return result;
             }
             catch (Exception ex)
@@ -822,7 +943,11 @@ namespace AzureNamingTool.Helpers
             return result;
         }
 
-
+        /// <summary>
+        /// Checks if the generated name already exists.
+        /// </summary>
+        /// <param name="name">The name to check.</param>
+        /// <returns>True if the name exists, otherwise false.</returns>
         public static async Task<bool> CheckIfGeneratedNameExists(string name)
         {
             bool nameexists = false;
@@ -846,11 +971,62 @@ namespace AzureNamingTool.Helpers
             return nameexists;
         }
 
-        public static string AutoIncremenetResourceInstance(string resourcetype)
-        {
-            string resourcetypeupdated = String.Empty;
 
-            return resourcetypeupdated;
+        /// <summary>
+        /// Converts the case of the items in the list.
+        /// </summary>
+        /// <typeparam name="T">The type of the items in the list.</typeparam>
+        /// <param name="items">The list of items to convert.</param>
+        /// <param name="lowercase">A flag indicating whether to convert to lowercase or uppercase.</param>
+        /// <returns>A <see cref="Task{TResult}"/> representing the asynchronous operation. The task result contains a <see cref="ServiceResponse"/> object.</returns>
+        public static async Task<ServiceResponse> ConvertCase<T>(List<T> items, bool lowercase)
+        {
+            // Check if the name already exists
+            ServiceResponse serviceResponse = new();
+            try
+            {
+                foreach (dynamic item in items)
+                {
+                    item!.ShortName = lowercase ? item.ShortName.ToLower() : item.ShortName.ToUpper();
+
+                    switch (typeof(T).Name)
+                    {
+                        case nameof(ResourceEnvironment):
+                            serviceResponse = await ResourceEnvironmentService.PostItem(item);
+                            break;
+                        case nameof(Models.ResourceLocation):
+                            serviceResponse = await ResourceLocationService.PostItem(item);
+                            break;
+                        case nameof(ResourceOrg):
+                            serviceResponse = await ResourceOrgService.PostItem(item);
+                            break;
+                        case nameof(ResourceProjAppSvc):
+                            serviceResponse = await ResourceProjAppSvcService.PostItem(item);
+                            break;
+                        case nameof(Models.ResourceType):
+                            serviceResponse = await ResourceTypeService.PostItem(item);
+                            break;
+                        case nameof(ResourceUnitDept):
+                            serviceResponse = await ResourceUnitDeptService.PostItem(item);
+                            break;
+                        case nameof(ResourceFunction):
+                            serviceResponse = await ResourceFunctionService.PostItem(item);
+                            break;
+                        case nameof(CustomComponent):
+                            serviceResponse = await CustomComponentService.PostItem(item);
+                            break;
+                    }
+                    if (!serviceResponse.Success)
+                    {
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            }
+            return serviceResponse;
         }
     }
 }

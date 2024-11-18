@@ -4,8 +4,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AzureNamingTool.Services
 {
+    /// <summary>
+    /// Service for managing policies.
+    /// </summary>
     public class PolicyService
     {
+        /// <summary>
+        /// Retrieves the policy.
+        /// </summary>
+        /// <returns>The service response.</returns>
         public static async Task<ServiceResponse> GetPolicy()
         {
             ServiceResponse serviceResponse = new();
@@ -21,7 +28,7 @@ namespace AzureNamingTool.Services
                 var Functions = await Helpers.ConfigurationHelper.GetList<ResourceFunction>();
                 var projectAppSvcs = await Helpers.ConfigurationHelper.GetList<ResourceProjAppSvc>();
 
-                List<String> validations = new();
+                List<String> validations = [];
                 var maxSortOrder = 0;
                 if (GeneralHelper.IsNotNull(nameComponents))
                 {
@@ -84,8 +91,10 @@ namespace AzureNamingTool.Services
                     }
                 }
 
-                var property = new PolicyProperty("Name Validation", "This policy enables you to restrict the name can be specified when deploying a Azure Resource.");
-                property.PolicyRule = PolicyRuleFactory.GetNameValidationRules(validations.Select(x => new PolicyRule(x, delimiter)).ToList(), delimiter);
+                var property = new PolicyProperty("Name Validation", "This policy enables you to restrict the name can be specified when deploying a Azure Resource.")
+                {
+                    PolicyRule = PolicyRuleFactory.GetNameValidationRules(validations.Select(x => new PolicyRule(x, delimiter)).ToList(), delimiter)
+                };
                 PolicyDefinition definition = new(property);
 
                 //serviceResponse.ResponseObject = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(definition.ToString())).ToArray();
@@ -101,13 +110,20 @@ namespace AzureNamingTool.Services
             return serviceResponse;
         }
 
+        /// <summary>
+        /// Adds validations to the list based on the provided parameters.
+        /// </summary>
+        /// <param name="list">The dynamic list of items.</param>
+        /// <param name="validations">The list of validations.</param>
+        /// <param name="delimiter">The delimiter character.</param>
+        /// <param name="level">The level of the validations.</param>
         private static void AddValidations(dynamic list, List<string> validations, Char delimiter, int level)
         {
             if (validations.Count == 0)
             {
                 foreach (var item in list)
                 {
-                    if (item.ShortName.Trim() !=  String.Empty)
+                    if (item.ShortName.Trim() != String.Empty)
                     {
                         var key = $"{item.ShortName}{delimiter}*";
                         if (!validations.Contains(key))
@@ -119,7 +135,7 @@ namespace AzureNamingTool.Services
             {
                 foreach (var item in list)
                 {
-                    if (item.ShortName.Trim() !=  String.Empty)
+                    if (item.ShortName.Trim() != String.Empty)
                     {
                         foreach (var validation in validations.Where(x => x.Count(p => p.ToString().Contains(delimiter)) == level - 1).ToList())
                         {

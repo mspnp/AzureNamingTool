@@ -1,0 +1,488 @@
+﻿@using AzureNamingTool.Helpers
+@using AzureNamingTool.Models
+@using AzureNamingTool.Services
+@using Microsoft.AspNetCore.Html
+@inject IToastService toastService
+@inject StateContainer state
+@inject ProtectedSessionStorage session
+
+<div class="modal fade show d-block" tabindex="-1" role="dialog">
+    <div class="modal-backdrop fade show" @onclick="Cancel"></div>
+    <div class="modal-dialog" style="z-index: 1050">
+        <!-- Pop it above the backdrop -->
+        <div class="modal-content @theme.ThemeStyle">
+            <div class="modal-header @headerstyle text-white">
+                <h3 class="modal-title">@title</h3>
+            </div>
+            <div class="modal-body">
+                @((MarkupString)message)
+                <div class="card mb-3">
+                    <div class="card-header bg-default text-dark fw-bold">
+                        Configuration
+                    </div>
+                    <div class="card card-body @theme.ThemeStyle">
+                        <div class="mb-3">
+                            Enter the desired configuration.
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="name" style="font-weight:bold;">Name</label>
+                            <input title="Name" value="@itemName" type="text" class="form-control @theme.ThemeStyle" id="name" @onchange="@((ui) => { itemName = (string)ui.Value!;})" />
+                        </div>
+                        @switch (type)
+                        {
+                            case "ResourceComponent":
+                                <div class="form-group mb-3">
+                                    <div class="mb-3">
+                                        <div class="fw-bold">
+                                            Field Type
+                                        </div>
+                                        <select @bind="itemComponentType" class="form-control @theme.ThemeStyle">
+                                            <option value="standard">Standard - User selects an option from a pre-defined list</option>
+                                            <option value="freetext">Free Form / Random</option>
+                                        </select>
+                                    </div>
+                                    @if (itemComponentType == "freetext")
+                                    {
+                                        <div class="card card-body @theme.ThemeStyle mb-3">
+                                            <div>
+                                                <div class="fw-bold">
+                                                    Generate Random Value
+                                                </div>
+                                                <div class="mb-3">
+                                                    By default, Free Form allows any value. If enabled, this setting will generate a random value for the component.
+                                                </div>
+                                                <div>
+                                                    <label class="switch" title="Generate Random Value">
+                                                        <input type="checkbox" checked="@itemEnforceRandom" @oninput='args => ComponentSettingChanged(args, "enforcerandom")'>
+                                                        <span class="slider round"></span>
+                                                    </label>
+                                                    <span class="align-text-top"> Enable</span>
+                                                </div>
+                                            </div>
+                                            @if (itemEnforceRandom)
+                                            {
+                                                <div class="mt-3">
+                                                    <div class="fw-bold">
+                                                        Generate Alphanumeric Values
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        If enabled, the tool will generate a random alphanumeric value for the component. If disabled, only letters will be generated.
+                                                    </div>
+                                                    <div>
+                                                        <label class="switch" title="Alphanumeric">
+                                                            <input type="checkbox" checked="@itemAlphanumeric" @oninput='args => ComponentSettingChanged(args, "alphanumeric")'>
+                                                            <span class="slider round"></span>
+                                                        </label>
+                                                        <span class="align-text-top"> Enable</span>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                    <div class="mb-3">
+                                        <div class="fw-bold">
+                                            Minimum Length
+                                        </div>
+                                        <div>
+                                            <input title="Minimum Length" value="@itemMinLength" type="text" class="form-control @theme.ThemeStyle" id="minlength" @onchange="@((ui) => { itemMinLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="fw-bold">
+                                            Maximum Length
+                                        </div>
+                                        <div>
+                                            <input title="Maximum Length" value="@itemMaxLength" type="text" class="form-control @theme.ThemeStyle" id="maxlength" @onchange="@((ui) => { itemMaxLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="fw-bold">
+                                            Apply Before
+                                        </div>
+                                        <div class="mb-3">
+                                            If disabled, this setting will not add the current delimiter BEFORE the component value.
+                                        </div>
+                                        <div>
+                                            <label class="switch" title="Apply Delimiter">
+                                                <input type="checkbox" checked="@itemApplyDelimiterBefore" @oninput='args => ComponentSettingChanged(args, "applydelimiterbefore")'>
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span class="align-text-top"> Enable</span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="fw-bold">
+                                            Apply Delimiter After
+                                        </div>
+                                        <div class="mb-3">
+                                            If disabled, this setting will not add the current delimiter AFTER the component value.
+                                        </div>
+                                        <div>
+                                            <label class="switch" title="Apply Delimiter">
+                                                <input type="checkbox" checked="@itemApplyDelimiterAfter" @oninput='args => ComponentSettingChanged(args, "applydelimiterafter")'>
+                                                <span class="slider round"></span>
+                                            </label>
+                                            <span class="align-text-top"> Enable</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                break;
+                            case "AdminUser":
+                                break;
+                            default:
+                                <div class="form-group mb-3">
+                                    <label for="shortName" style="font-weight:bold;">Short Name</label>
+                                    <input title="Short Name" value="@itemShortName" type="text" class="form-control @theme.ThemeStyle" id="shortname" @onchange="@((ui) => { itemShortName = (string)ui.Value!;})" />
+                                </div>
+                                break;
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button title="Add" @onclick="Save" class="btn btn-success">Add</button>
+                <button title="Cancel" @onclick="Cancel" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+        [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new();
+        [Parameter] public ThemeInfo theme { get; set; } = new();
+
+        [Parameter] public int id { get; set; } = 0;
+        [Parameter] public string title { get; set; } = String.Empty;
+        [Parameter] public string message { get; set; } = String.Empty;
+        [Parameter] public string type { get; set; } = String.Empty;
+        [Parameter] public string parentcomponent { get; set; } = String.Empty;
+        [Parameter] public string headerstyle { get; set; } = String.Empty;
+        [Parameter] public bool admin { get; set; } = false;
+        [Parameter] public ServicesData servicesData { get; set; } = new();
+
+
+    private ServiceResponse serviceResponse = new();
+    private string itemName = String.Empty;
+    private string itemShortName = String.Empty;
+    private string itemMinLength = "1";
+    private string itemMaxLength = "10";
+    private string itemComponentType = "standard";
+    private bool itemEnforceRandom = false;
+    private bool itemAlphanumeric = true;
+    private bool itemIsFreeText = false;
+    private bool itemApplyDelimiterBefore = true;
+    private bool itemApplyDelimiterAfter = true;
+    private string currentuser = String.Empty;
+
+    protected override async void OnInitialized()
+    {
+        currentuser = await IdentityHelper.GetCurrentUser(session);
+    }
+
+    async void Save()
+    {
+        bool valid = false;
+        switch (type)
+        {
+            case "ResourceComponent":
+                if (!String.IsNullOrEmpty(itemName))
+                {
+                    // Make sure the min/max length is valid
+                    if (Convert.ToInt32(itemMaxLength) < Convert.ToInt32(itemMinLength))
+                    {
+                        toastService.ShowError("The Maximum Length must equal/greater than the Minimum length!");
+                    }
+                    else
+                    {
+                        // Make sure the name is unique
+                        ArgumentNullException.ThrowIfNull(servicesData.ResourceComponents);
+                        List<ResourceComponent> resourceComponents = servicesData.ResourceComponents;
+                        if (resourceComponents.Where(x => GeneralHelper.NormalizeName(x.Name, true) == GeneralHelper.NormalizeName(itemName, true)).Count() > 0)
+                        {
+                            toastService.ShowError("You must enter a unique component name!");
+                        }
+                        else
+                        {
+                            valid = true;
+                            if (itemComponentType == "freetext")
+                            {
+                                itemIsFreeText = true;
+                            }
+                            ResourceComponent resourceComponent = new()
+                                {
+                                    Name = itemName,
+                                    DisplayName = itemName,
+                                    IsCustom = true,
+                                    IsFreeText = itemIsFreeText,
+                                    MinLength = itemMinLength,
+                                    MaxLength = itemMaxLength,
+                                    EnforceRandom = itemEnforceRandom,
+                                    Alphanumeric = itemAlphanumeric,
+                                    ApplyDelimiterBefore = itemApplyDelimiterBefore,
+                                    ApplyDelimiterAfter = itemApplyDelimiterAfter
+                                };
+                            serviceResponse = await ResourceComponentService.PostItem(resourceComponent);
+                        }
+                    }
+                }
+                else
+                {
+                    toastService.ShowError("You must enter a component name!");
+                }
+                break;
+            case "AdminUser":
+                if (!String.IsNullOrEmpty(itemName))
+                {
+                    // Check if the item already exists
+                    serviceResponse = await AdminUserService.GetItems();
+                    ArgumentNullException.ThrowIfNull(servicesData.AdminUsers);
+                    List<AdminUser> adminUsers = servicesData.AdminUsers;
+                    if (adminUsers.Any(x => x.Name == itemName))
+                    {
+                        toastService.ShowError("You must enter a unique Admin User name!");
+                    }
+                    else
+                    {
+                        valid = true;
+                        AdminUser adminUser = new AdminUser()
+                            {
+                                Name = itemName
+                            };
+                        serviceResponse = await AdminUserService.PostItem(adminUser);
+                    }
+                }
+
+                break;
+            default:
+                if ((GeneralHelper.IsNotNull(itemName)) && (GeneralHelper.IsNotNull(itemShortName)))
+                {
+                    if ((!String.IsNullOrEmpty(itemName)) && (!String.IsNullOrEmpty(itemShortName)))
+                    {
+                        if(itemShortName.Any(Char.IsWhiteSpace))
+                        {
+                            toastService.ShowError("You must enter a valid short name with no spaces!");
+                            break;
+                        }
+
+                        if (await ValidationHelper.ValidateShortName(type, itemShortName, this.parentcomponent))
+                        {
+                            string normailzedname = GeneralHelper.NormalizeName(itemName, true);
+                            switch (type)
+                            {
+                                case "ResourceEnvironment":
+                                    // Check if the item already exists
+                                    ArgumentNullException.ThrowIfNull(servicesData.ResourceEnvironments);
+                                    List<ResourceEnvironment> resourceEnvironments = servicesData.ResourceEnvironments;
+                                    if (resourceEnvironments.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
+                                    {
+                                        toastService.ShowError("You must enter a unique Resource Environment name and short name!");
+                                    }
+                                    else
+                                    {
+                                        valid = true;
+                                        ResourceEnvironment resourceEnvironment = new ResourceEnvironment()
+                                            {
+                                                Name = itemName,
+                                                ShortName = itemShortName
+
+                                            };
+                                        serviceResponse = await ResourceEnvironmentService.PostItem(resourceEnvironment);
+                                    }
+                                    break;
+                                case "ResourceLocation":
+                                    // Check if the item already exists
+                                    serviceResponse = await ResourceLocationService.GetItems();
+                                    ArgumentNullException.ThrowIfNull(servicesData.ResourceLocations);
+                                    List<ResourceLocation> resourceLocations = servicesData.ResourceLocations;
+                                    if (resourceLocations.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
+                                    {
+                                        toastService.ShowError("You must enter a unique Resource Location name and short name!");
+                                    }
+                                    else
+                                    {
+                                        valid = true;
+                                        ResourceLocation resourceLocation = new ResourceLocation()
+                                            {
+                                                Name = itemName,
+                                                ShortName = itemShortName
+
+                                            };
+                                        serviceResponse = await ResourceLocationService.PostItem(resourceLocation);
+                                    }
+                                    break;
+                                case "ResourceOrg":
+                                    // Check if the item already exists
+                                    serviceResponse = await ResourceOrgService.GetItems();
+                                    ArgumentNullException.ThrowIfNull(servicesData.ResourceOrgs);
+                                    List<ResourceOrg> resourceOrgs = servicesData.ResourceOrgs;
+                                    if (resourceOrgs.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
+                                    {
+                                        toastService.ShowError("You must enter a unique Resource Org name and short name!");
+                                    }
+                                    else
+                                    {
+                                        valid = true;
+                                        ResourceOrg resourceOrg = new ResourceOrg()
+                                            {
+                                                Name = itemName,
+                                                ShortName = itemShortName
+
+                                            };
+                                        serviceResponse = await ResourceOrgService.PostItem(resourceOrg);
+                                    }
+                                    break;
+                                case "ResourceProjAppSvc":
+                                    // Check if the item already exists
+                                    serviceResponse = await ResourceProjAppSvcService.GetItems();
+                                    ArgumentNullException.ThrowIfNull(servicesData.ResourceProjAppSvcs);
+                                    List<ResourceProjAppSvc> resourceProjAppSvcs = servicesData.ResourceProjAppSvcs;
+                                    if (resourceProjAppSvcs.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
+                                    {
+                                        toastService.ShowError("You must enter a unique Resource Project/App/Service name and short name!");
+                                    }
+                                    else
+                                    {
+                                        valid = true;
+                                        ResourceProjAppSvc resourceProjAppSvc = new ResourceProjAppSvc()
+                                            {
+                                                Name = itemName,
+                                                ShortName = itemShortName
+
+                                            };
+                                        serviceResponse = await ResourceProjAppSvcService.PostItem(resourceProjAppSvc);
+                                    }
+                                    break;
+                                case "ResourceUnitDept":
+                                    // Check if the item already exists
+                                    serviceResponse = await ResourceUnitDeptService.GetItems();
+                                    ArgumentNullException.ThrowIfNull(servicesData.ResourceUnitDepts);
+                                    List<ResourceUnitDept> resourceUnitDepts = servicesData.ResourceUnitDepts;
+                                    if (resourceUnitDepts.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
+                                    {
+                                        toastService.ShowError("You must enter a unique Resource Unit/Dept name and short name!");
+                                    }
+                                    else
+                                    {
+                                        valid = true;
+                                        ResourceUnitDept resourceUnitDept = new ResourceUnitDept()
+                                            {
+                                                Name = itemName,
+                                                ShortName = itemShortName
+
+                                            };
+                                        serviceResponse = await ResourceUnitDeptService.PostItem(resourceUnitDept);
+                                    }
+                                    break;
+                                case "ResourceFunction":
+                                    // Check if the item already exists
+                                    serviceResponse = await ResourceFunctionService.GetItems();
+                                    ArgumentNullException.ThrowIfNull(servicesData.ResourceFunctions);
+                                    List<ResourceFunction> resourceFunctions = servicesData.ResourceFunctions;
+                                    if (resourceFunctions.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
+                                    {
+                                        toastService.ShowError("You must enter a unique Resource Function name and short name!");
+                                    }
+                                    else
+                                    {
+                                        valid = true;
+                                        ResourceFunction resourceFunction = new ResourceFunction()
+                                            {
+                                                Name = itemName,
+                                                ShortName = itemShortName
+
+                                            };
+                                        serviceResponse = await ResourceFunctionService.PostItem(resourceFunction);
+                                    }
+                                    break;
+                                case "CustomComponent":
+                                    // Check if the item already exists
+                                    serviceResponse = await CustomComponentService.GetItems();
+                                    ArgumentNullException.ThrowIfNull(servicesData.CustomComponents);
+                                    List<CustomComponent> customComponents = servicesData.CustomComponents;
+                                    if (customComponents.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
+                                    {
+                                        toastService.ShowError("You must enter a unique Custom Component name and short name!");
+                                    }
+                                    else
+                                    {
+                                        valid = true;
+                                        CustomComponent customComponent = new CustomComponent()
+                                            {
+                                                Name = itemName,
+                                                ShortName = itemShortName,
+                                                ParentComponent = GeneralHelper.NormalizeName(this.parentcomponent, true),
+                                                MinLength = itemMinLength,
+                                                MaxLength = itemMaxLength
+                                            };
+                                        serviceResponse = await CustomComponentService.PostItem(customComponent);
+                                    }
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            toastService.ShowError("You must enter a valid name and short name! Please check the Minimum and Maximum length requirements.");
+                        }
+                    }
+                    else
+                    {
+                        toastService.ShowError("You must enter a name and short name!");
+                    }
+                }
+                break;
+        }
+
+        if (valid)
+        {
+            if (serviceResponse.Success)
+            {
+                await ModalInstance.CloseAsync();
+                toastService.ShowSuccess(type.Replace("Resource", "Resource ") + " added!");
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "SUCCESS", Message = "(" + type + ") " + itemName + " added!", Source = currentuser });
+            }
+            else
+            {
+                toastService.ShowError("There was an error adding the " + GeneralHelper.NormalizeName(type, false) + "!");
+            }
+        }
+    }
+
+    private void ComponentSettingChanged(ChangeEventArgs e, string setting)
+    {
+        try
+        {
+            if (GeneralHelper.IsNotNull(e.Value))
+            {
+                switch (setting)
+                {
+                    case "enforcerandom":
+                        itemEnforceRandom = (bool)e.Value;
+                        break;
+                    case "alphanumeric":
+                        itemAlphanumeric = (bool)e.Value;
+                        break;
+                    case "applydelimiterbefore":
+                        itemApplyDelimiterBefore = (bool)e.Value;
+                        break;
+                    case "applydelimiterafter":
+                        itemApplyDelimiterAfter = (bool)e.Value;
+                        break;
+                }
+            }
+            else
+            {
+                toastService.ShowError("There was an error updating the component!");
+            }
+        }
+        catch (Exception ex)
+        {
+            AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            toastService.ShowError("There was an error updating the " + GeneralHelper.NormalizeName(type, false) + "! " + ex.Message);
+        }
+    }
+
+
+    async Task Cancel() => await ModalInstance.CancelAsync();
+}
