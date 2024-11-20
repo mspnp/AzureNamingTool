@@ -1526,6 +1526,14 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    @if ((admin) && (Convert.ToBoolean(config.ResourceTypeEditingAllowed)))
+                                                    {
+                                                    <p>
+                                                        <button type="button" class="btn btn-success" @onclick="@(e => FormAction("ResourceType",0,"add"))" title="Add Resource Type">
+                                                            <span class="oi oi-plus" aria-hidden="true"></span> Add Resource Type
+                                                        </button>
+                                                    </p>
+                                                    }
                                                 </p>
                                                 <div class="table-responsive">
                                                     <table class="table @theme.ThemeStyle">
@@ -1605,6 +1613,13 @@
                                                                                 <span> </span>
                                                                                 <button type="button" class="btn btn-success" @onclick="@(e => FormAction("ResourceType",item.Id,"enable"))" title="Enable">
                                                                                     <span class="oi oi-plus" aria-hidden="true"></span>
+                                                                                </button>
+                                                                            }
+                                                                            @if ((servicesData.ResourceTypes.Count > 1) && (Convert.ToBoolean(config.ResourceTypeEditingAllowed)))
+                                                                            {
+                                                                                <span> </span>
+                                                                                <button type="button" class="btn btn-danger" @onclick="@(e => FormAction("ResourceType",item.Id,"delete"))" title="Delete">
+                                                                                    <span class="oi oi-x" aria-hidden="true"></span>
                                                                                 </button>
                                                                             }
                                                                         </td>
@@ -2065,6 +2080,8 @@
     private string currentuser = String.Empty;
 
     private ResponseMessage message = new();
+
+    private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -3035,7 +3052,7 @@
                                 case "edit":
                                     if (GeneralHelper.IsNotNull(thisresourceComponent))
                                     {
-                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Location", "<p>Edit the Location.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceLocation", true);
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Location", "<p>Edit the Location.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li></ul>", (int)id, "ResourceLocation", false);
                                         if (confirm)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -3725,7 +3742,7 @@
                                     resourceType = servicesData.ResourceTypes!.Find(x => x.Id == id)!;
                                     if (GeneralHelper.IsNotNull(resourceType))
                                     {
-                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Resource Type", "<p>Edit the Resource Type.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + resourceType.LengthMin + "-" + resourceType.LengthMax + " characters.</li></ul>", (int)id, "ResourceType", true);
+                                        confirm = await ModalHelper.ShowEditModal(Modal, servicesData, theme, "bg-navcolor", "Edit Resource Type", "<p>Edit the Resource Type.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + resourceType.LengthMin + "-" + resourceType.LengthMax + " characters.</li></ul>", (int)id, "ResourceType", false);
                                         if (confirm)
                                         {
                                             servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
@@ -3739,6 +3756,48 @@
                                     }
                                     break;
 
+                                case "delete":
+                                    confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will delete the Resource Type and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                                    if (confirm)
+                                    {
+                                        resourceType = servicesData.ResourceTypes!.Find(x => x.Id == id)!;
+                                        if (GeneralHelper.IsNotNull(resourceType))
+                                        {
+                                            serviceResponse = await ResourceTypeService.DeleteItem(Convert.ToInt32(resourceType.Id));
+                                            if (serviceResponse.Success)
+                                            {
+                                                message.Type = MessageTypesEnum.SUCCESS;
+                                                message.Message = resourceType.Resource + " deleted!";
+                                            }
+                                            else
+                                            {
+                                                message.Type = MessageTypesEnum.ERROR;
+                                                message.Message = resourceType.Resource + " deletion failed! Please check the Admin Log for details.";
+                                                message.MessageDetails = serviceResponse.ResponseMessage;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            generalerror = true;
+                                        }
+                                    }
+                                    break;
+                                case "add":
+                                    if (GeneralHelper.IsNotNull(thisresourceComponent))
+                                    {
+                                        response = await ModalHelper.ShowAddModal(Modal!, servicesData, theme, "bg-navcolor", "Add Resource Type", "<p>Add a Resource Type.</p><p><span class=\"fw-bold\">NOTES</span></p><ul><li>Short Name value will be converted to lower case.</li><li>Short Name must be " + thisresourceComponent.MinLength + "-" + thisresourceComponent.MaxLength + " characters.</li><li>Short Name must not contain spaces.</li></ul>", (int)id, "ResourceType", admin, "");
+                                        if (response)
+                                        {
+                                            servicesData = await ServicesHelper.LoadServicesData(servicesData, admin);
+                                            state.SetNavReload(true);
+                                            StateHasChanged();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        generalerror = true;
+                                    }
+                                    break;
                                 case "uppercase":
                                     confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update all the short names to <span class=\"fw-bold\">uppercase</span> characters!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
                                     if (confirm)

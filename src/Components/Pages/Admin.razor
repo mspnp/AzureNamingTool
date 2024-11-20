@@ -104,7 +104,7 @@
                                 <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Customization
                             </a>
                         </h5>
-                        <div class="collapse show card card-body @theme.ThemeStyle" id="customization">
+                        <div class="collapse card card-body @theme.ThemeStyle" id="customization">
                             <p>
                                 This section allows your to customize the Azure Naming Tool site. This includes Custom Home content, logo, and navigation links displayed for non-admin users.
                             </p>
@@ -656,6 +656,12 @@
                                         <p>
                                             By default, <span class="fw-bold">Resource Type Validation</span> is configured to match the Azure portal. These values can be overriden by enabling the following setting.
                                         </p>
+                                        <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                                            <h4>ATTENTION</h4>
+                                            <p class="fw-bold">
+                                                Please see the <a href="https://github.com/mspnp/AzureNamingTool/wiki/Resource-Type-Editing" target="_blank">Resource Type Editing documentation</a> for guidance on metadata editing.
+                                            </p>
+                                        </div>
                                     </div>
                                     <div>
                                         <label class="switch" title="Resource Type Editing Enabled">
@@ -666,6 +672,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <!--// TO DO: Implement retention of the selected values
                             <div class="card mb-3" style="width:auto;">
                                 <div class="card-header bg-default text-dark">
@@ -809,8 +816,6 @@
     private List<KeyValuePair<string, string>> environmentvariables = new();
     private string releasenotesurl = String.Empty;
     private long maxFileSize = 2000000;
-    private int maxAllowedFiles = 1;
-    private bool isLoading;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

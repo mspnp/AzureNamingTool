@@ -169,10 +169,10 @@ namespace AzureNamingTool.Helpers
         /// <param name="message">The message of the modal.</param>
         /// <param name="id">The ID of the modal.</param>
         /// <param name="type">The type of the modal.</param>
-        /// <param name="protectedname">A boolean indicating if the name is protected.</param>
+        /// <param name="isprotectedname">A boolean indicating if the name is protected.</param>
         /// <param name="parentcomponent">The parent component of the modal.</param>
         /// <returns>A task representing the asynchronous operation. The task result contains a boolean indicating the user's response.</returns>
-        public static async Task<bool> ShowEditModal(IModalService modal, ServicesData servicesData, ThemeInfo theme, string headerstyle, string title, string message, int id, string type, bool protectedname = true, string? parentcomponent = null)
+        public static async Task<bool> ShowEditModal(IModalService modal, ServicesData servicesData, ThemeInfo theme, string headerstyle, string title, string message, int id, string type, bool isprotectedname = false, string? parentcomponent = null)
         {
             bool response = false;
             try
@@ -183,7 +183,7 @@ namespace AzureNamingTool.Helpers
                         { nameof(EditModal.type), type },
                         { nameof(EditModal.message), message },
                         { nameof(EditModal.title), title },
-                        { nameof(EditModal.protectedName), protectedname },
+                        { nameof(EditModal.isProtectedName), isprotectedname },
                         { nameof(EditModal.parentcomponent), parentcomponent! },
                         { nameof(EditModal.servicesData), servicesData },
                         { nameof(EditModal.headerstyle), headerstyle },
