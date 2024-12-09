@@ -43,6 +43,10 @@
                 }
             }
         }
+        string? unencryptedIdentityHeaderName = ConfigurationHelper.GetAppSetting("IdentityHeaderFull", false);
+        Console.WriteLine($"DEBUG - unencryptedIdentityHeaderName: {unencryptedIdentityHeaderName}");
+        string? encryptedIdentityHeaderName = ConfigurationHelper.GetAppSetting("IdentityHeaderFull", true);
+        Console.WriteLine($"DEBUG - encryptedIdentityHeaderName: {encryptedIdentityHeaderName}");
         if (!String.IsNullOrEmpty(ConfigurationHelper.GetAppSetting("IdentityHeaderFull", true)))
         {
             string headername = ConfigurationHelper.GetAppSetting("IdentityHeaderFull", true);
