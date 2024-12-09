@@ -55,7 +55,12 @@ public static class ClaimsPrincipalParser
                 var decoded = Convert.FromBase64String(data);
                 var json = Encoding.UTF8.GetString(decoded);
                 Console.WriteLine($"DEBUG - X-MS-CLIENT-PRINCIPAL JSON: {json}");
-                principal = JsonSerializer.Deserialize<ClientPrincipal>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                // add ReferenceHandler.Preserve to JsonSerializerOptions to prevent stack overflow
+                principal = JsonSerializer.Deserialize<ClientPrincipal>(json, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    ReferenceHandler = ReferenceHandler.Preserve
+                });
 
 
                 /*
@@ -76,7 +81,9 @@ public static class ClaimsPrincipalParser
                 if (principal.Claims != null)
                 {
                     identity.AddClaims(principal.Claims.Select(c => new Claim(c.Type, c.Value)));
-                } else {
+                }
+                else
+                {
                     Console.WriteLine("DEBUG - ClientPrincipal claims are null.");
                 }
                 return new ClaimsPrincipal(identity);
