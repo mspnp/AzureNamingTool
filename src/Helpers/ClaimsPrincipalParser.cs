@@ -39,7 +39,7 @@ public static class ClaimsPrincipalParser
     /// <returns>A ClaimsPrincipal object.</returns>
     public static ClaimsPrincipal? Parse(HttpRequest req)
     {
-        if (req.Headers.TryGetValue(ConfigurationHelper.GetAppSetting("IdentityHeaderFull", true), out var header))
+        if (req.Headers.TryGetValue("X-MS-CLIENT-PRINCIPAL", out var header))
         {
             var principal = new ClientPrincipal();
 
@@ -47,13 +47,14 @@ public static class ClaimsPrincipalParser
             var data = header[0];
             if (string.IsNullOrWhiteSpace(data))
             {
+                Console.WriteLine("DEBUG - X-MS-CLIENT-PRINCIPAL header is empty.");
                 return null;
             }
             try
             {
                 var decoded = Convert.FromBase64String(data);
                 var json = Encoding.UTF8.GetString(decoded);
-                Console.WriteLine($"DEBUG - IdentityHeaderFull JSON: {json}");
+                Console.WriteLine($"DEBUG - X-MS-CLIENT-PRINCIPAL JSON: {json}");
                 principal = JsonSerializer.Deserialize<ClientPrincipal>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
 
@@ -68,12 +69,15 @@ public static class ClaimsPrincipalParser
                  */
                 if (principal == null)
                 {
+                    Console.WriteLine("DEBUG - ClientPrincipal is null.");
                     return null;
                 }
                 var identity = new ClaimsIdentity(principal.IdentityProvider, principal.NameClaimType, principal.RoleClaimType);
                 if (principal.Claims != null)
                 {
                     identity.AddClaims(principal.Claims.Select(c => new Claim(c.Type, c.Value)));
+                } else {
+                    Console.WriteLine("DEBUG - ClientPrincipal claims are null.");
                 }
                 return new ClaimsPrincipal(identity);
             }

@@ -43,27 +43,22 @@
                 }
             }
         }
-        string? unencryptedIdentityHeaderName = ConfigurationHelper.GetAppSetting("IdentityHeaderFull", false);
-        Console.WriteLine($"DEBUG - unencryptedIdentityHeaderName: {unencryptedIdentityHeaderName}");
-        string? encryptedIdentityHeaderName = ConfigurationHelper.GetAppSetting("IdentityHeaderFull", true);
-        Console.WriteLine($"DEBUG - encryptedIdentityHeaderName: {encryptedIdentityHeaderName}");
-        if (!String.IsNullOrEmpty(ConfigurationHelper.GetAppSetting("IdentityHeaderFull", true)))
+
+
+        if (GeneralHelper.IsNotNull(httpContextAccessor.HttpContext))
         {
-            string headername = ConfigurationHelper.GetAppSetting("IdentityHeaderFull", true);
-            if (GeneralHelper.IsNotNull(httpContextAccessor.HttpContext))
+            if (GeneralHelper.IsNotNull(httpContextAccessor.HttpContext.Request))
             {
-                if (GeneralHelper.IsNotNull(httpContextAccessor.HttpContext.Request))
+                if (GeneralHelper.IsNotNull(httpContextAccessor.HttpContext.Request.Headers))
                 {
-                    if (GeneralHelper.IsNotNull(httpContextAccessor.HttpContext.Request.Headers))
+                    if (httpContextAccessor.HttpContext.Request.Headers.ContainsKey("X-MS-CLIENT-PRINCIPAL"))
                     {
-                        if (httpContextAccessor.HttpContext.Request.Headers.ContainsKey(headername))
-                        {
-                            Console.WriteLine($"DEBUG - Found header {headername}");
-                            identityProviderDetails.CurrentClaimsPrincipal = ClaimsPrincipalParser.Parse(httpContextAccessor.HttpContext.Request);
-                        }
+                        Console.WriteLine($"DEBUG - Found header X-MS-CLIENT-PRINCIPAL");
+                        identityProviderDetails.CurrentClaimsPrincipal = ClaimsPrincipalParser.Parse(httpContextAccessor.HttpContext.Request);
                     }
                 }
             }
+
         }
     }
 }
