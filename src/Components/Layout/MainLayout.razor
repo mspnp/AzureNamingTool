@@ -157,11 +157,17 @@
                                 if (identityProviderDetails.CurrentClaimsPrincipal != null)
                                 {
                                     claims = identityProviderDetails.CurrentClaimsPrincipal.Claims;
+                                    Console.WriteLine($"DEBUG - Claims: {claims}");
                                     await session.SetAsync("claims", claims);
                                     
+                                } else {
+                                    Console.WriteLine($"DEBUG - No claims found because CurrentClaimsPrincipal is null.");
                                 }
                                 @* Always call so that we can view debug logging *@
                                 admin = identityProviderDetails.IsAdmin;
+                                @* persist *@
+                                await session.SetAsync("admin", admin);
+
                                 // Log the user access
                                 AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "User accessed the site.", Source = currentuser });
 

@@ -53,6 +53,7 @@ public static class ClaimsPrincipalParser
             {
                 var decoded = Convert.FromBase64String(data);
                 var json = Encoding.UTF8.GetString(decoded);
+                Console.WriteLine($"DEBUG - IdentityHeaderFull JSON: {json}");
                 principal = JsonSerializer.Deserialize<ClientPrincipal>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
 
