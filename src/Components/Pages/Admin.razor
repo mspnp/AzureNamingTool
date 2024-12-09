@@ -901,7 +901,7 @@
                 // Check the password
                 if (currentpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
                 {
-                    state.SetAdmin(true);
+                    @* state.SetAdmin(true); *@
                     await session.SetAsync("admin", true);
                     await session.SetAsync("currentuser", "GlobalAdmin");
                     // Load the current API Keys
@@ -915,7 +915,7 @@
                 }
                 else
                 {
-                    state.SetAdmin(false);
+                    @* state.SetAdmin(false); *@
                     await session.SetAsync("admin", false);
                     message.Type = MessageTypesEnum.ERROR;
                     message.Header = "ERROR";
@@ -923,7 +923,7 @@
                 }
                 break;
             case "logout":
-                state.SetAdmin(false);
+                @* state.SetAdmin(false); *@
                 await session.SetAsync("admin", false);
                 message.Type = MessageTypesEnum.INFORMATION;
                 message.Header = "INFORMATION";
