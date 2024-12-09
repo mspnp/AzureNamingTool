@@ -59,7 +59,7 @@ public static class ClaimsPrincipalParser
                 principal = JsonSerializer.Deserialize<ClientPrincipal>(json, new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true,
-                    ReferenceHandler = ReferenceHandler.Preserve
+                    ReferenceHandler = ReferenceHandler.IgnoreCycles,
                 });
 
 

@@ -7,6 +7,7 @@ using Blazored.Modal;
 using Blazored.Toast;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +54,13 @@ builder.Services.AddBlazoredToast();
 builder.Services.AddBlazoredModal();
 builder.Services.AddMemoryCache();
 builder.Services.AddMvcCore().AddApiExplorer();
+
+// Json loop fix
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.WriteIndented = true;
+});
 
 var app = builder.Build();
 
