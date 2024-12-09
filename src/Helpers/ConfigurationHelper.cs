@@ -635,7 +635,7 @@ namespace AzureNamingTool.Helpers
         public static void ResetState(StateContainer state)
         {
             state.SetVerified(false);
-            state.SetAdmin(false);
+            // state.SetAdmin(false);
             state.SetPassword(false);
             state.SetAppTheme("bg-default text-dark");
         }

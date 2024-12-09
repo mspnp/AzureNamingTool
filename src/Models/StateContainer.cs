@@ -55,15 +55,15 @@
             }
         }
 
-        /// <summary>
-        /// Sets the Admin state.
-        /// </summary>
-        /// <param name="admin">The Admin state.</param>
-        public void SetAdmin(bool admin)
-        {
-            _admin = admin;
-            NotifyStateChanged();
-        }
+        // /// <summary>
+        // /// Sets the Admin state.
+        // /// </summary>
+        // /// <param name="admin">The Admin state.</param>
+        // public void SetAdmin(bool admin)
+        // {
+        //     _admin = admin;
+        //     NotifyStateChanged();
+        // }
 
         /// <summary>
         /// Gets or sets the Password state.

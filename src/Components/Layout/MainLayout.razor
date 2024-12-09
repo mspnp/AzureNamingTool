@@ -151,11 +151,19 @@
                                 currentuser = identityProviderDetails.CurrentUser;
                                 await session.SetAsync("currentuser", currentuser);
 
+                                IEnumerable<Claim> claims = [];
+                                    if (identityProviderDetails.CurrentClaimsPrincipal != null)
+                                    {
+                                        claims = identityProviderDetails.CurrentClaimsPrincipal.Claims;
+                                        await session.SetAsync("claims", claims);
+                                        admin = identityProviderDetails.IsAdmin;
+                                    }
+
                                 // Log the user access
                                 AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "User accessed the site.", Source = currentuser });
 
                                 // CHeck if the user is an admin
-                                admin = await IdentityHelper.IsAdminUser(state, session, currentuser);
+                                @* admin = await IdentityHelper.IsAdminUser(state, session, currentuser); *@
                                 // Close modal
                                 workingmodal.Close();
                             }
@@ -251,8 +259,8 @@
     private async void Logout()
     {
         admin = false;
-        state.SetAdmin(false);
-        await session.SetAsync("admin", false);
+        @* state.SetAdmin(false); *@
+        @* await session.SetAsync("admin", false); *@
         await session.SetAsync("currentuser", "System");
         await session.SetAsync("logout", true);
         ResponseMessage message = new();

@@ -43,6 +43,23 @@
                 }
             }
         }
+        if (!String.IsNullOrEmpty(ConfigurationHelper.GetAppSetting("IdentityHeaderFull", true)))
+        {
+            string headername = ConfigurationHelper.GetAppSetting("IdentityHeaderFull", true);
+            if (GeneralHelper.IsNotNull(httpContextAccessor.HttpContext))
+            {
+                if (GeneralHelper.IsNotNull(httpContextAccessor.HttpContext.Request))
+                {
+                    if (GeneralHelper.IsNotNull(httpContextAccessor.HttpContext.Request.Headers))
+                    {
+                        if (httpContextAccessor.HttpContext.Request.Headers.ContainsKey(headername))
+                        {
+                            identityProviderDetails.CurrentClaimsPrincipal = ClaimsPrincipalParser.Parse(httpContextAccessor.HttpContext.Request);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 <!DOCTYPE html>
