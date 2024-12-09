@@ -55,12 +55,28 @@ public static class ClaimsPrincipalParser
                 var decoded = Convert.FromBase64String(data);
                 var json = Encoding.UTF8.GetString(decoded);
                 Console.WriteLine($"DEBUG - X-MS-CLIENT-PRINCIPAL JSON: {json}");
-                // add ReferenceHandler.Preserve to JsonSerializerOptions to prevent stack overflow
-                principal = JsonSerializer.Deserialize<ClientPrincipal>(json, new JsonSerializerOptions
+                // manually parse the json because of nested loop error
+                var jsonObject = JsonDocument.Parse(json).RootElement;
+                IEnumerable<ClientPrincipalClaim> claims = [];
+                foreach (var claim in jsonObject.GetProperty("claims").EnumerateArray())
+                { 
+                    try {
+                        claims.Append(new ClientPrincipalClaim()
+                        {
+                            Type = claim.GetProperty("typ").GetString(),
+                            Value = claim.GetProperty("val").GetString()
+                        });
+                    } catch (Exception ex) {
+                        Console.WriteLine($"DEBUG - Error parsing claim: {ex.Message}");
+                    }
+                }
+                principal = new ClientPrincipal()
                 {
-                    PropertyNameCaseInsensitive = true,
-                    ReferenceHandler = ReferenceHandler.IgnoreCycles,
-                });
+                    IdentityProvider = jsonObject.GetProperty("auth_typ").GetString(),
+                    NameClaimType = jsonObject.GetProperty("name_typ").GetString(),
+                    RoleClaimType = jsonObject.GetProperty("role_typ").GetString(),
+                    Claims = claims
+                };
 
 
                 /*
