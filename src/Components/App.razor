@@ -54,6 +54,7 @@
                     {
                         if (httpContextAccessor.HttpContext.Request.Headers.ContainsKey(headername))
                         {
+                            Console.WriteLine($"DEBUG - Found header {headername}");
                             identityProviderDetails.CurrentClaimsPrincipal = ClaimsPrincipalParser.Parse(httpContextAccessor.HttpContext.Request);
                         }
                     }

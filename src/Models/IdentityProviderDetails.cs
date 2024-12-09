@@ -33,9 +33,22 @@ namespace AzureNamingTool.Models
         {
             get
             {
-                return CurrentClaimsPrincipal != null &&
-                CurrentClaimsPrincipal.HasClaim(c => c.Type == ConfigurationHelper.GetAppSetting("AdminClaimType", false) &&
-                c.Value == ConfigurationHelper.GetAppSetting("AdminClaimValue", false));
+                // Temp debug
+                string adminClaimType = ConfigurationHelper.GetAppSetting("AdminClaimType", false);
+                string adminClaimValue = ConfigurationHelper.GetAppSetting("AdminClaimValue", false);
+                Console.WriteLine($"DEBUG - AdminClaimType: {adminClaimType}");
+                Console.WriteLine($"DEBUG - AdminClaimValue: {adminClaimValue}");
+                bool currentClaimsPrincipalIsNull = CurrentClaimsPrincipal == null;
+                Console.WriteLine($"DEBUG - CurrentClaimsPrincipal is null: {currentClaimsPrincipalIsNull}");
+                bool hasClaim = false;
+                if (CurrentClaimsPrincipal != null)
+                {
+                    hasClaim = CurrentClaimsPrincipal.HasClaim(c => c.Type == ConfigurationHelper.GetAppSetting("AdminClaimType", false) && c.Value == ConfigurationHelper.GetAppSetting("AdminClaimValue", false));
+                    Console.WriteLine($"DEBUG - CurrentClaimsPrincipal has claim: {hasClaim}");
+                }
+               
+
+                return hasClaim;
             }
         }
     }

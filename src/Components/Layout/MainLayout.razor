@@ -152,13 +152,16 @@
                                 await session.SetAsync("currentuser", currentuser);
 
                                 IEnumerable<Claim> claims = [];
-                                    if (identityProviderDetails.CurrentClaimsPrincipal != null)
-                                    {
-                                        claims = identityProviderDetails.CurrentClaimsPrincipal.Claims;
-                                        await session.SetAsync("claims", claims);
-                                        admin = identityProviderDetails.IsAdmin;
-                                    }
-
+                                @* remove claims *@
+                                await session.SetAsync("claims", claims);
+                                if (identityProviderDetails.CurrentClaimsPrincipal != null)
+                                {
+                                    claims = identityProviderDetails.CurrentClaimsPrincipal.Claims;
+                                    await session.SetAsync("claims", claims);
+                                    
+                                }
+                                @* Always call so that we can view debug logging *@
+                                admin = identityProviderDetails.IsAdmin;
                                 // Log the user access
                                 AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "User accessed the site.", Source = currentuser });
 
