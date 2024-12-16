@@ -50,6 +50,8 @@ namespace AzureNamingTool.Models
                 bool hasClaim = false;
                 if (CurrentClaimsPrincipal != null)
                 {
+                    // print number of claims
+                    Console.WriteLine($"DEBUG - CurrentClaimsPrincipal has {CurrentClaimsPrincipal.Claims.Count()} claims.");
                     // print all claims
                     foreach (Claim claim in CurrentClaimsPrincipal.Claims)
                     {
