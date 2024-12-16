@@ -58,7 +58,10 @@ public static class ClaimsPrincipalParser
                 // manually parse the json because of nested loop error
                 var jsonObject = JsonDocument.Parse(json).RootElement;
                 IEnumerable<ClientPrincipalClaim> claims = [];
-                foreach (var claim in jsonObject.GetProperty("claims").EnumerateArray())
+                var claimsJsonArray = jsonObject.GetProperty("claims").EnumerateArray();
+                Console.WriteLine($"DEBUG - Claims array length: {claimsJsonArray.Count()}");
+                
+                foreach (var claim in claimsJsonArray)
                 { 
                     try {
                         claims.Append(new ClientPrincipalClaim()
@@ -70,6 +73,7 @@ public static class ClaimsPrincipalParser
                         Console.WriteLine($"DEBUG - Error parsing claim: {ex.Message}");
                     }
                 }
+                Console.WriteLine($"DEBUG - Parsed claims length: {claims.Count()}");
                 principal = new ClientPrincipal()
                 {
                     IdentityProvider = jsonObject.GetProperty("auth_typ").GetString(),
@@ -102,6 +106,7 @@ public static class ClaimsPrincipalParser
                 {
                     Console.WriteLine("DEBUG - ClientPrincipal claims are null.");
                 }
+                Console.WriteLine($"DEBUG - Identity has {identity.Claims.Count()} claims.");
                 return new ClaimsPrincipal(identity);
             }
             catch (Exception ex)
