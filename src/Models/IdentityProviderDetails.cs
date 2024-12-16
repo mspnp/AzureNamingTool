@@ -50,8 +50,13 @@ namespace AzureNamingTool.Models
                 bool hasClaim = false;
                 if (CurrentClaimsPrincipal != null)
                 {
+                    // print all claims
+                    foreach (Claim claim in CurrentClaimsPrincipal.Claims)
+                    {
+                        Console.WriteLine($"DEBUG - Stored claim Type: {claim.Type}, Value: {claim.Value}");
+                    }
                     hasClaim = CurrentClaimsPrincipal.HasClaim(c => c.Type == adminClaimType && c.Value == adminClaimValue);
-                    Console.WriteLine($"DEBUG - CurrentClaimsPrincipal has claim: {hasClaim}");
+                    Console.WriteLine($"DEBUG - CurrentClaimsPrincipal has admin claim: {hasClaim}");
                 }
 
 
