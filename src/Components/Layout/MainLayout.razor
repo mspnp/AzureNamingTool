@@ -74,11 +74,6 @@
 </div>
 
 <button onclick="topFunction()" type="button" id="btnScrollToTop" class="btn btn-success btn-sm" title="Go to top"><span class="oi oi-arrow-circle-top" style="vertical-align:text-top;"></span> Top</button>
-@if (PasswordModalOpen)
-{
-    <PasswordModal OnClose="@OnPasswordModalClose">
-    </PasswordModal>
-}
 
 @code {
     [CascadingParameter]

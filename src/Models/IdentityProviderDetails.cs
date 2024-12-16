@@ -6,8 +6,11 @@ namespace AzureNamingTool.Models
     /// <summary>
     /// Represents the details of an identity provider.
     /// </summary>
-    public class IdentityProviderDetails
+    public class IdentityProviderDetails(IConfiguration configuration)
     {
+
+        private readonly IConfiguration _configuration = configuration;
+
         /// <summary>
         /// Gets or sets the current user.
         /// </summary>
@@ -33,9 +36,13 @@ namespace AzureNamingTool.Models
         {
             get
             {
-                // Temp debug
-                string adminClaimType = ConfigurationHelper.GetAppSetting("AdminClaimType", false);
-                string adminClaimValue = ConfigurationHelper.GetAppSetting("AdminClaimValue", false);
+                // Get env
+                string adminClaimType = Environment.GetEnvironmentVariable("AdminClaimType")
+                                        ?? _configuration["AdminClaimType"]
+                                        ?? "roles";
+                string adminClaimValue = Environment.GetEnvironmentVariable("AdminClaimValue")
+                                        ?? _configuration["AdminClaimValue"]
+                                        ?? "Admin";
                 Console.WriteLine($"DEBUG - AdminClaimType: {adminClaimType}");
                 Console.WriteLine($"DEBUG - AdminClaimValue: {adminClaimValue}");
                 bool currentClaimsPrincipalIsNull = CurrentClaimsPrincipal == null;
@@ -43,10 +50,10 @@ namespace AzureNamingTool.Models
                 bool hasClaim = false;
                 if (CurrentClaimsPrincipal != null)
                 {
-                    hasClaim = CurrentClaimsPrincipal.HasClaim(c => c.Type == ConfigurationHelper.GetAppSetting("AdminClaimType", false) && c.Value == ConfigurationHelper.GetAppSetting("AdminClaimValue", false));
+                    hasClaim = CurrentClaimsPrincipal.HasClaim(c => c.Type == adminClaimType && c.Value == adminClaimValue);
                     Console.WriteLine($"DEBUG - CurrentClaimsPrincipal has claim: {hasClaim}");
                 }
-               
+
 
                 return hasClaim;
             }

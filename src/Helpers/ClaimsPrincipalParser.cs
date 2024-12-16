@@ -63,8 +63,8 @@ public static class ClaimsPrincipalParser
                     try {
                         claims.Append(new ClientPrincipalClaim()
                         {
-                            Type = claim.GetProperty("typ").GetString(),
-                            Value = claim.GetProperty("val").GetString()
+                            Type = claim.GetProperty("typ").GetString()!,
+                            Value = claim.GetProperty("val").GetString()!,
                         });
                     } catch (Exception ex) {
                         Console.WriteLine($"DEBUG - Error parsing claim: {ex.Message}");

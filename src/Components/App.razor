@@ -1,6 +1,7 @@
 ﻿@using AzureNamingTool.Helpers
 @using AzureNamingTool.Models
 @inject StateContainer state
+@inject IConfiguration configuration;
 @inject IHttpContextAccessor httpContextAccessor;
 @{
     //Layout = "_Layout";
@@ -9,7 +10,7 @@
     ConfigurationHelper.VerifyConfiguration(state);
     ConfigurationHelper.VerifySecurity(state);
 
-    var identityProviderDetails = new IdentityProviderDetails();
+    var identityProviderDetails = new IdentityProviderDetails(configuration);
     //Check if there is an HttpContext object
     if (GeneralHelper.IsNotNull(httpContextAccessor))
     {
@@ -19,7 +20,8 @@
             if (httpContextAccessor.HttpContext.Request.Headers.ContainsKey("X-MS-CLIENT-PRINCIPAL-IDP"))
             {
                 // Set the identity provider
-                identityProviderDetails.CurrentIdentityProvider = httpContextAccessor.HttpContext.Request.Headers["X-MS-CLIENT-PRINCIPAL-IDP"]!;
+                identityProviderDetails.CurrentIdentityProvider =
+                httpContextAccessor.HttpContext.Request.Headers["X-MS-CLIENT-PRINCIPAL-IDP"]!;
             }
         }
 
