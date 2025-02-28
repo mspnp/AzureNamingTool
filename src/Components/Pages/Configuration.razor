@@ -471,6 +471,10 @@
                                         @if (!customComponent.IsFreeText)
                                         {
                                             <div class="collapse card card-body @theme.ThemeStyle" id=@("custom" + customComponent.Id.ToString())>
+                                                @if (!String.IsNullOrEmpty(customComponent.Description))
+                                                {
+                                                    <p>@customComponent.Description</p>
+                                                }
                                                 <div class="card mb-3">
                                                     <div class="card card-header bg-default text-dark" style="font-weight:bold;">
                                                         Current Components
@@ -634,6 +638,10 @@
                                         </a>
                                     </h5>
                                     <div class="collapse card card-body @theme.ThemeStyle" id="environments">
+                                        @if (!String.IsNullOrEmpty(resourceComponent.Description))
+                                        {
+                                            <p>@resourceComponent.Description</p>
+                                        }
                                         <div class="card mb-3">
                                             <div class="card card-header bg-default text-dark" style="font-weight:bold;">
                                                 Current Environments
@@ -793,6 +801,10 @@
                                         </a>
                                     </h5>
                                     <div class="collapse card card-body @theme.ThemeStyle" id="functions">
+                                        @if (!String.IsNullOrEmpty(resourceComponent.Description))
+                                        {
+                                            <p>@resourceComponent.Description</p>
+                                        }
                                         <div class="card mb-3">
                                             <div class="card card-header bg-default text-dark" style="font-weight:bold;">
                                                 Current Functions
@@ -953,6 +965,10 @@
                                         </a>
                                     </h5>
                                     <div class="collapse card card-body @theme.ThemeStyle" id="locations">
+                                        @if (!String.IsNullOrEmpty(resourceComponent.Description))
+                                        {
+                                            <p>@resourceComponent.Description</p>
+                                        }
                                         <div class="card mb-3">
                                             <div class="card card-header bg-default text-dark" style="font-weight:bold;">
                                                 Current Locations
@@ -1167,6 +1183,10 @@
                                         </a>
                                     </h5>
                                     <div class="collapse card card-body @theme.ThemeStyle" id="orgs">
+                                        @if (!String.IsNullOrEmpty(resourceComponent.Description))
+                                        {
+                                            <p>@resourceComponent.Description</p>
+                                        }
                                         <div class="card mb-3">
                                             <div class="card card-header bg-default text-dark" style="font-weight:bold;">
                                                 Current Orgs
@@ -1327,6 +1347,10 @@
                                         </a>
                                     </h5>
                                     <div class="collapse card card-body @theme.ThemeStyle" id="projsappssvcs">
+                                        @if (!String.IsNullOrEmpty(resourceComponent.Description))
+                                        {
+                                            <p>@resourceComponent.Description</p>
+                                        }
                                         <div class="card mb-3">
                                             <div class="card card-header bg-default text-dark" style="font-weight:bold;">
                                                 Current Projects/Apps/Services
@@ -1486,6 +1510,10 @@
                                         </a>
                                     </h5>
                                     <div class="collapse card card-body @theme.ThemeStyle" id="types">
+                                        @if (!String.IsNullOrEmpty(resourceComponent.Description))
+                                        {
+                                            <p>@resourceComponent.Description</p>
+                                        }
                                         <div class="card mb-3">
                                             <div class="card card-header bg-default text-dark" style="font-weight:bold;">
                                                 Current Resource Types
@@ -1644,6 +1672,10 @@
                                                     </a>
                                                 </div>
                                                 <div class="collapse card card-body @theme.ThemeStyle" id="typesconfig">
+                                                    @if (!String.IsNullOrEmpty(resourceComponent.Description))
+                                                    {
+                                                        <p>@resourceComponent.Description</p>
+                                                    }
                                                     <div class="card w-auto mb-3">
                                                         <div class="card card-header bg-default text-dark" style="font-weight:bold;">
                                                             Bulk Update
@@ -1773,6 +1805,10 @@
                                         </a>
                                     </h5>
                                     <div class="collapse card card-body @theme.ThemeStyle" id="unitsdepts">
+                                        @if (!String.IsNullOrEmpty(resourceComponent.Description))
+                                        {
+                                            <p>@resourceComponent.Description</p>
+                                        }
                                         <div class="card mb-3">
                                             <div class="card card-header bg-default text-dark" style="font-weight:bold;">
                                                 Current Units/Depts
