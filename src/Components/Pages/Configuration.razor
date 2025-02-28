@@ -181,6 +181,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>Name</th>
+                                                    <th>Description</th>
                                                     @if (admin)
                                                     {
                                                         <th>Actions</th>
@@ -191,7 +192,7 @@
                                                 @foreach (var item in @servicesData.ResourceComponents!)
                                                 {
                                                     <tr class="@GeneralHelper.SetTextEnabledClass(item.Enabled)">
-                                                        <td class="w-50">
+                                                        <td class="w-30">
                                                             @item.DisplayName
                                                             @if (item.IsCustom)
                                                             {
@@ -199,6 +200,9 @@
                                                                     (CUSTOM)
                                                                 </span>
                                                             }
+                                                        </td>
+                                                        <td class="w-30">
+                                                            @item.Description
                                                         </td>
                                                         @if (admin)
                                                         {

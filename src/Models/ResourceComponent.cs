@@ -74,5 +74,10 @@ namespace AzureNamingTool.Models
         /// Gets or sets a value indicating whether to apply a delimiter after the resource component.
         /// </summary>
         public bool ApplyDelimiterAfter { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets the resource component description.
+        /// </summary>
+        public string Description { get; set; } = string.Empty;
     }
 }

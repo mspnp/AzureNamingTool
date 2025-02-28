@@ -82,6 +82,14 @@
                                     }
                                     <div class="mb-3">
                                         <div class="fw-bold">
+                                            Description
+                                        </div>
+                                        <div>
+                                            <intput title="Decription" value="@itemDescription" type="text" class="form-control @theme.ThemeStyle" id="minlength" @onchange="@((ui) => { itemDescription = (string)ui.Value!;})" />
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="fw-bold">
                                             Minimum Length
                                         </div>
                                         <div>
@@ -299,6 +307,7 @@
     private ServiceResponse serviceResponse = new();
     private string itemName = String.Empty;
     private string itemShortName = String.Empty;
+    private string itemDescription = String.Empty;
     private string itemMinLength = "1";
     private string itemMaxLength = "10";
     private string itemScope = "";
@@ -362,6 +371,7 @@
                                 {
                                     Name = itemName,
                                     DisplayName = itemName,
+                                    Description = itemDescription,
                                     IsCustom = true,
                                     IsFreeText = itemIsFreeText,
                                     MinLength = itemMinLength,
