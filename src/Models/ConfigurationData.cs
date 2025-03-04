@@ -174,5 +174,10 @@ namespace AzureNamingTool.Models
         /// Gets or sets custom tool name.
         /// </summary>
         public string? CustomToolName { get; set; } = String.Empty;
+
+        /// <summary>
+        /// Gets or sets whether admin details are shown to all users.
+        /// </summary>
+        public string? ShowAdminDetailsToAllUsers { get; set; } = "True";
     }
 }
