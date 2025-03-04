@@ -100,6 +100,14 @@
                         }
                         @if ((type == "ResourceComponent") || ((type == "ResourceType") && (Convert.ToBoolean(config.ResourceTypeEditingAllowed))))
                         {
+                            <div class="mb-3">
+                                <div class="fw-bold">
+                                    Description
+                                </div>
+                                <div>
+                                    <input title="Description" value="@itemDescription" type="text" class="form-control @theme.ThemeStyle" id="maxlength" @onchange="@((ui) => { itemDescription = (string)ui.Value!;})" />
+                                </div>
+                            </div>
                             @if ((type == "ResourceComponent") && (itemIsCustom))
                             {
                                 <div class="mb-3">
@@ -600,6 +608,7 @@
     private string itemName = String.Empty;
     private string itemDisplayName = String.Empty;
     private string itemShortName = String.Empty;
+    private string itemDescription = String.Empty;
     private string itemRegEx = String.Empty;
     private string itemMinLength = String.Empty;
     private string itemMaxLength = String.Empty;
@@ -643,6 +652,7 @@
                 ResourceComponent resourceComponent = servicesData.ResourceComponents!.Find(x => x.Id == id)!;
                 itemName = resourceComponent.Name;
                 itemDisplayName = resourceComponent.DisplayName;
+                itemDescription = resourceComponent.Description;
                 itemMinLength = resourceComponent.MinLength;
                 itemMinLengthOriginal = itemMinLength;
                 itemMaxLength = resourceComponent.MaxLength;
@@ -771,6 +781,7 @@
                         {
                             resourceComponent.DisplayName = itemDisplayName;
                         }
+                        resourceComponent.Description = itemDescription;
                         resourceComponent.MinLength = itemMinLength;
                         resourceComponent.MaxLength = itemMaxLength;
                         resourceComponent.ApplyDelimiterBefore = itemApplyDelimiterBefore;

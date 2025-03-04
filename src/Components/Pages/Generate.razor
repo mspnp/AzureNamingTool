@@ -235,6 +235,10 @@
                                                     }
                                                 </h5>
                                                 <div class="card card-body @theme.ThemeStyle">
+                                                    @if (!String.IsNullOrEmpty(resourceComponent.Description))
+                                                    {
+                                                        <p>@resourceComponent.Description</p>
+                                                    }
                                                     <InputSelect title="@resourceComponent.DisplayName" class="@GetControlStyle()" ValueExpression="@(()=>selectedResourceEnvironment)"
                                                                  Value="@selectedResourceEnvironment"
                                                                  ValueChanged="@((string value) => OnComponentChanged("re",value))">
@@ -257,6 +261,10 @@
                                                     }
                                                 </h5>
                                                 <div class="card card-body @theme.ThemeStyle">
+                                                    @if (!String.IsNullOrEmpty(resourceComponent.Description))
+                                                    {
+                                                        <p>@resourceComponent.Description</p>
+                                                    }
                                                     <InputSelect title="@resourceComponent.DisplayName" class="@GetControlStyle()" ValueExpression="@(()=>selectedResourceFunction)"
                                                                  Value="@selectedResourceFunction"
                                                                  ValueChanged="@((string value) => OnComponentChanged("rf",value))">
@@ -287,6 +295,10 @@
                                                     }
                                                 </h5>
                                                 <div class="card card-body @theme.ThemeStyle">
+                                                    @if (!String.IsNullOrEmpty(resourceComponent.Description))
+                                                    {
+                                                        <p>@resourceComponent.Description</p>
+                                                    }
                                                     <InputText title="@resourceComponent.DisplayName" class="@GetControlStyle()" id="ri" ValueExpression="@(()=>selectedResourceInstance)"
                                                                Value="@selectedResourceInstance" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
                                                                ValueChanged="@((string value) => OnComponentChanged("ri",value))" />
@@ -303,6 +315,10 @@
                                                     }
                                                 </h5>
                                                 <div class="card card-body @theme.ThemeStyle">
+                                                    @if (!String.IsNullOrEmpty(resourceComponent.Description))
+                                                    {
+                                                        <p>@resourceComponent.Description</p>
+                                                    }
                                                     <InputSelect title="@resourceComponent.DisplayName" class="@GetControlStyle()" ValueExpression="@(()=>selectedResourceLocation)"
                                                                  Value="@selectedResourceLocation"
                                                                  ValueChanged="@((string value) => OnComponentChanged("rl",value))">
@@ -325,6 +341,10 @@
                                                     }
                                                 </h5>
                                                 <div class="card card-body @theme.ThemeStyle">
+                                                    @if (!String.IsNullOrEmpty(resourceComponent.Description))
+                                                    {
+                                                        <p>@resourceComponent.Description</p>
+                                                    }
                                                     <InputSelect title="@resourceComponent.DisplayName" class="@GetControlStyle()" ValueExpression="@(()=>selectedResourceOrg)"
                                                                  Value="@selectedResourceOrg"
                                                                  ValueChanged="@((string value) => OnComponentChanged("ro",value))">
@@ -347,6 +367,10 @@
                                                     }
                                                 </h5>
                                                 <div class="card card-body @theme.ThemeStyle">
+                                                    @if (!String.IsNullOrEmpty(resourceComponent.Description))
+                                                    {
+                                                        <p>@resourceComponent.Description</p>
+                                                    }
                                                     <InputSelect title="@resourceComponent.DisplayName" class="@GetControlStyle()" ValueExpression="@(()=>selectedResourceProjAppSvc)"
                                                                  Value="@selectedResourceProjAppSvc"
                                                                  ValueChanged="@((string value) => OnComponentChanged("rpas",value))">
@@ -369,6 +393,10 @@
                                                     }
                                                 </h5>
                                                 <div class="card card-body @theme.ThemeStyle">
+                                                    @if (!String.IsNullOrEmpty(resourceComponent.Description))
+                                                    {
+                                                        <p>@resourceComponent.Description</p>
+                                                    }
                                                     <InputSelect title="@resourceComponent.DisplayName" class="@GetControlStyle()" ValueExpression="@(()=>selectedResourceUnitDept)"
                                                                  Value="@selectedResourceUnitDept"
                                                                  ValueChanged="@((string value) => OnComponentChanged("rud",value))">
@@ -397,6 +425,10 @@
                                                                 }
                                                             </h5>
                                                             <div class="card card-body @theme.ThemeStyle">
+                                                                @if (!String.IsNullOrEmpty(resourceComponent.Description))
+                                                                {
+                                                                    <p>@resourceComponent.Description</p>
+                                                                }
                                                                 <select title="@resourceComponent.DisplayName" class="@GetControlStyle()" value="@selectedCustomComponents[GeneralHelper.NormalizeName(resourceComponent.Name, true)]" @onchange='(e  => OnCustomComponentChanged(e, GeneralHelper.NormalizeName(resourceComponent.Name, true)))'>
                                                                     <option value="">Select a component</option>
                                                                     @foreach (var item in @servicesData.CustomComponents!.Where(x => x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)))
@@ -431,6 +463,10 @@
                                                             }
                                                         </h5>
                                                         <div class="card card-body @theme.ThemeStyle">
+                                                            @if (!String.IsNullOrEmpty(resourceComponent.Description))
+                                                            {
+                                                                <p>@resourceComponent.Description</p>
+                                                            }
                                                             <input title="@resourceComponent.DisplayName" readonly="@resourceComponent.EnforceRandom" class="@GetControlStyle()" type="text" value="@selectedCustomComponents[GeneralHelper.NormalizeName(resourceComponent.Name, true)]" @onchange="@((ui) => { OnCustomComponentChanged(ui, GeneralHelper.NormalizeName(resourceComponent.Name, true));})" />
                                                         </div>
                                                     </div>
