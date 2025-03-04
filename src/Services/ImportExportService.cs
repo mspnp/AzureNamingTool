@@ -127,6 +127,7 @@ namespace AzureNamingTool.Services
                 configdata.CustomHomeContent = config.CustomHomeContent;
                 configdata.CustomLogoPath = config.CustomLogoPath;
                 configdata.CustomToolName = config.CustomToolName;
+                configdata.ShowAdminDetailsToAllUsers = config.ShowAdminDetailsToAllUsers;
 
                 // Get the security settings
                 if (includeadmin)
@@ -257,6 +258,10 @@ namespace AzureNamingTool.Services
                 if (GeneralHelper.IsNotNull(configdata.CustomToolName))
                 {
                     config.CustomToolName = configdata.CustomToolName;
+                }
+                if (GeneralHelper.IsNotNull(configdata.ShowAdminDetailsToAllUsers))
+                {
+                    config.ShowAdminDetailsToAllUsers = configdata.ShowAdminDetailsToAllUsers;
                 }
                 var jsonWriteOptions = new JsonSerializerOptions()
                 {
