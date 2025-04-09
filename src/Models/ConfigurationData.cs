@@ -95,6 +95,11 @@ namespace AzureNamingTool.Models
         public string? ReadOnlyAPIKey { get; set; }
 
         /// <summary>
+        /// Gets or sets the Name Generation API key.
+        /// </summary>
+        public string? NameGenerationAPIKey { get; set; }
+
+        /// <summary>
         /// Gets or sets the dismissed alerts.
         /// </summary>
         public string? DismissedAlerts { get; set; }
