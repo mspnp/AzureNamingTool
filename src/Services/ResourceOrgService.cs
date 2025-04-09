@@ -172,7 +172,9 @@ namespace AzureNamingTool.Services
 
                     // Write items to file
                     await ConfigurationHelper.WriteList<ResourceOrg>(items);
-                    serviceResponse.ResponseObject = "Resource Org added/updated!";
+                    // Get the item
+                    var newitem = ResourceOrgService.GetItem((int)item.Id).Result.ResponseObject;
+                    serviceResponse.ResponseObject = newitem;
                     serviceResponse.Success = true;
                 }
                 else
