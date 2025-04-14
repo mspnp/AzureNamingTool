@@ -138,6 +138,84 @@ namespace AzureNamingTool.Controllers
             }
         }
 
+
+
+
+        // POST api/<AdminController>
+        /// <summary>
+        /// This function will update the Name Generation API Key. 
+        /// </summary>
+        /// <param name="apikey">string - Name Generation API Key</param>
+        /// <param name="adminpassword">string - Current Global Admin Password</param>
+        /// <returns>dttring - Successful update</returns>
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> UpdateNameGenerationAPIKey([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword, [FromBody] string apikey)
+        {
+            try
+            {
+                if (GeneralHelper.IsNotNull(adminpassword))
+                {
+                    if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
+                    {
+                        serviceResponse = await AdminService.UpdateAPIKey(apikey, "namegeneration");
+                        return (serviceResponse.Success ? Ok("SUCCESS") : Ok("FAILURE - There was a problem updating the Name Generation API Key."));
+                    }
+                    else
+                    {
+                        return Ok("FAILURE - Incorrect Global Admin Password.");
+                    }
+
+                }
+                else
+                {
+                    return Ok("FAILURE - You must provide the Global Admin Password.");
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                return BadRequest(ex);
+            }
+        }
+
+        // POST api/<AdminController>
+        /// <summary>
+        /// This function will generate a new Name Generation API Key. 
+        /// </summary>
+        /// <param name="adminpassword">string - Current Global Admin Password</param>
+        /// <returns>string - Successful update / Generated Name Generation API Key</returns>
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> GenerateNameGenerationAPIKey([BindRequired][FromHeader(Name = "AdminPassword")] string adminpassword)
+        {
+            try
+            {
+                if (GeneralHelper.IsNotNull(adminpassword))
+                {
+                    if (adminpassword == GeneralHelper.DecryptString(config.AdminPassword!, config.SALTKey!))
+                    {
+                        serviceResponse = await AdminService.GenerateAPIKey("namegeneration");
+                        return (serviceResponse.Success ? Ok("SUCCESS") : Ok("FAILURE - There was a problem generating the Name Generation API Key."));
+                    }
+                    else
+                    {
+                        return Ok("FAILURE - Incorrect Global Admin Password.");
+                    }
+
+                }
+                else
+                {
+                    return Ok("FAILURE - You must provide the Global Admin Password.");
+                }
+            }
+            catch (Exception ex)
+            {
+                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                return BadRequest(ex);
+            }
+        }
+
         // POST api/<AdminController>
         /// <summary>
         /// This function will update the Read-Only API Key. 

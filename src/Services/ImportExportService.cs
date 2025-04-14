@@ -136,6 +136,7 @@ namespace AzureNamingTool.Services
                     configdata.AdminPassword = config.AdminPassword;
                     configdata.APIKey = config.APIKey;
                     configdata.ReadOnlyAPIKey = config.ReadOnlyAPIKey;
+                    configdata.NameGenerationAPIKey = config.NameGenerationAPIKey;
                     //IdentityHeaderName
                     configdata.IdentityHeaderName = config.IdentityHeaderName;
                     //AdminUsers
@@ -210,6 +211,10 @@ namespace AzureNamingTool.Services
                 if (GeneralHelper.IsNotNull(configdata.ReadOnlyAPIKey))
                 {
                     config.ReadOnlyAPIKey = configdata.ReadOnlyAPIKey;
+                }
+                if (GeneralHelper.IsNotNull(configdata.NameGenerationAPIKey))
+                {
+                    config.NameGenerationAPIKey = configdata.NameGenerationAPIKey;
                 }
                 if (GeneralHelper.IsNotNull(configdata.IdentityHeaderName))
                 {

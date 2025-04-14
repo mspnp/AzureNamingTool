@@ -240,7 +240,9 @@ namespace AzureNamingTool.Services
 
                     // Write items to file
                     await ConfigurationHelper.WriteList<CustomComponent>(items);
-                    serviceResponse.ResponseObject = "Custom Component added/updated!";
+                    // Get the item
+                    var newitem = CustomComponentService.GetItem((int)item.Id).Result.ResponseObject;
+                    serviceResponse.ResponseObject = newitem;
                     serviceResponse.Success = true;
                 }
             }

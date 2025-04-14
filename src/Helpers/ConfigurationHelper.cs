@@ -189,6 +189,7 @@ namespace AzureNamingTool.Helpers
                         config.SALTKey = salt.ToString();
                         config.APIKey = GeneralHelper.EncryptString(config.APIKey!, salt.ToString());
                         config.ReadOnlyAPIKey = GeneralHelper.EncryptString(config.ReadOnlyAPIKey!, salt.ToString());
+                        config.NameGenerationAPIKey = GeneralHelper.EncryptString(config.NameGenerationAPIKey!, salt.ToString());
 
                         if (!String.IsNullOrEmpty(config.AdminPassword))
                         {

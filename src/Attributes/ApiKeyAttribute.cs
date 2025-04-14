@@ -36,7 +36,7 @@ namespace AzureNamingTool.Attributes
                 // Determine if the request is read-only
                 if (context.HttpContext.Request.Method == "GET")
                 {
-                    if ((!GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!).Equals(extractedApiKey)) && (!GeneralHelper.DecryptString(config.ReadOnlyAPIKey!, config.SALTKey!).Equals(extractedApiKey)))
+                    if ((!GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!).Equals(extractedApiKey)) && (!GeneralHelper.DecryptString(config.ReadOnlyAPIKey!, config.SALTKey!).Equals(extractedApiKey)) && (!GeneralHelper.DecryptString(config.NameGenerationAPIKey!, config.SALTKey!).Equals(extractedApiKey)))
                     {
                         context.Result = new ContentResult()
                         {
@@ -49,14 +49,30 @@ namespace AzureNamingTool.Attributes
                 else
                 {
                     // Request is a POST. Make sure the provided API Key is for full access
-                    if (!GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!).Equals(extractedApiKey))
+                    // Check if it is a name generation request
+                    if (context.HttpContext.Request.Path.Value.StartsWith("/api/ResourceNamingRequests/"))
                     {
-                        context.Result = new ContentResult()
+                        if ((!GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!).Equals(extractedApiKey)) && (!GeneralHelper.DecryptString(config.NameGenerationAPIKey!, config.SALTKey!).Equals(extractedApiKey)))
                         {
-                            StatusCode = 401,
-                            Content = "Full Access Api Key is not valid!"
-                        };
-                        return;
+                            context.Result = new ContentResult()
+                            {
+                                StatusCode = 401,
+                                Content = "Api Key is not valid!"
+                            };
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        if (!GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!).Equals(extractedApiKey))
+                        {
+                            context.Result = new ContentResult()
+                            {
+                                StatusCode = 401,
+                                Content = "Full Access Api Key is not valid!"
+                            };
+                            return;
+                        }
                     }
                 }
             }

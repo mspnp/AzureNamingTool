@@ -172,7 +172,9 @@ namespace AzureNamingTool.Services
 
                     // Write items to file
                     await ConfigurationHelper.WriteList<ResourceUnitDept>(items);
-                    serviceResponse.ResponseObject = "Resource Unit/Deparment added/updated!";
+                    // Get the item
+                    var newitem = ResourceUnitDeptService.GetItem((int)item.Id).Result.ResponseObject;
+                    serviceResponse.ResponseObject = newitem;
                     serviceResponse.Success = true;
                 }
                 else
