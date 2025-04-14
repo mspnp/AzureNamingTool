@@ -171,7 +171,9 @@ namespace AzureNamingTool.Services
 
                     // Write items to file
                     await ConfigurationHelper.WriteList<ResourceEnvironment>(items);
-                    serviceResponse.ResponseObject = "Resource Environment added/updated!";
+                    // Get the item
+                    var newitem = (await ResourceEnvironmentService.GetItem((int)item.Id)).ResponseObject;
+                    serviceResponse.ResponseObject = newitem;
                     serviceResponse.Success = true;
                 }
                 else

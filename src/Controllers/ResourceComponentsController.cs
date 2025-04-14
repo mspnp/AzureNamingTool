@@ -3,6 +3,7 @@ using AzureNamingTool.Helpers;
 using AzureNamingTool.Models;
 using AzureNamingTool.Services;
 using Microsoft.AspNetCore.Mvc;
+using PSC.Blazor.Components.MarkdownEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -94,6 +95,7 @@ namespace AzureNamingTool.Controllers
                 serviceResponse = await ResourceComponentService.PostItem(item);
                 if (serviceResponse.Success)
                 {
+                    // Get the item
                     AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Component (" + item.Name + ") added/updated." });
                     CacheHelper.InvalidateCacheObject("ResourceComponent");
                     return Ok(serviceResponse.ResponseObject);

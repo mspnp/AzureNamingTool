@@ -613,6 +613,26 @@
                                         </div>
                                         <div class="card mb-3">
                                             <div class="card-header bg-default text-dark">
+                                                <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#updatenamegenerationapikey" role="button" aria-expanded="false" aria-controls="updatenamegenerationapikey">
+                                                    <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Name Generation API Key
+                                                </a>
+                                            </div>
+                                            <div class="collapse show  card card-body @theme.ThemeStyle" id="updatenamegenerationapikey">
+                                                <p>
+                                                    The current <span class="fw-bold">Name Generation API Key</span> is displayed. This key provides <span class="fw-bold">Name Generation</span> access to the API (only for name generation).
+                                                </p>
+                                                <p>
+                                                    Click <span class="fw-bold">Generate</span> to create a new random <span class="fw-bold">Name Generation API Key</span>, or update the text to the desired value.
+                                                </p>
+                                                <div class="form-group">
+                                                    <input title="Name Generation API Key" id="currentnamegenerationapikey" class="form-control mb-3" type="text" @onchange="@((ui) => { SetFormValue("namegenerationapikey",(string)ui.Value!);})" value="@currentnamegenerationapikey" />
+                                                    <button type="button" class="btn btn-success" @onclick="@(e => AdminFormAction("namegenerationapikeysave"))" title="Save Name Generation API Key">Save</button>
+                                                    <button type="button" class="btn btn-success" @onclick="@(e => AdminFormAction("namegenerationapikeygenerate"))" title="Generate Name Generation API Key">Generate</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card mb-3">
+                                            <div class="card-header bg-default text-dark">
                                                 <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#updatereadonlyapikey" role="button" aria-expanded="false" aria-controls="updatereadonlyapikey">
                                                     <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Read-Only API Key
                                                 </a>
@@ -808,6 +828,7 @@
     private string newpassword = String.Empty;
     private string currentapikey = String.Empty;
     private string currentreadonlyapikey = String.Empty;
+    private string currentnamegenerationapikey = String.Empty;
     private string currentidentityheadername = String.Empty;
     private string currentidentityprovider = String.Empty;
     private ResponseMessage message = new();
@@ -854,6 +875,7 @@
             {
                 currentapikey = GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!);
                 currentreadonlyapikey = GeneralHelper.DecryptString(config.ReadOnlyAPIKey!, config.SALTKey!);
+                currentnamegenerationapikey = GeneralHelper.DecryptString(config.NameGenerationAPIKey!, config.SALTKey!);
                 // Determine if the version notification has been dismissed
                 var resultVersionAlert = await session.GetAsync<bool>("versionalert-" + appversion + "-shown");
                 versionalertshown = resultVersionAlert.Success ? resultVersionAlert.Value : false;
@@ -1049,6 +1071,62 @@
                         message.Type = MessageTypesEnum.ERROR;
                         message.Header = "ERROR";
                         message.Message = "There was a problem generating the Full Access API Key!";
+                    }
+                }
+                else
+                {
+                    displaymessage = false;
+                }
+                break;
+            case "namegenerationapikeysave":
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will update the Name Generation API Key.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                if (confirm)
+                {
+                    serviceResponse = await AdminService.UpdateAPIKey(currentnamegenerationapikey, "namegeneration");
+                    if (serviceResponse.Success)
+                    {
+                        message.Type = MessageTypesEnum.SUCCESS;
+                        message.Header = "SUCCESS";
+                        message.Message = "Name Generation API Key updated!";
+                    }
+                    else
+                    {
+                        message.Type = MessageTypesEnum.ERROR;
+                        message.Header = "ERROR";
+                        message.Message = "There was a problem updating the Name Generation API Key!";
+                    }
+                }
+                else
+                {
+                    displaymessage = false;
+                }
+                break;
+            case "namegenerationapikeygenerate":
+                confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will generate a new Name Generation API Key.</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme);
+                if (confirm)
+                {
+                    serviceResponse = await AdminService.GenerateAPIKey("namegeneration");
+                    if (serviceResponse.Success)
+                    {
+                        if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                        {
+                            currentnamegenerationapikey = serviceResponse.ResponseObject!;
+                            message.Type = MessageTypesEnum.SUCCESS;
+                            message.Header = "SUCCESS";
+                            message.Message = "Name Generation API Key updated!";
+                        }
+                        else
+                        {
+                            message.Type = MessageTypesEnum.ERROR;
+                            message.Header = "ERROR";
+                            message.Message = "There was a problem generating the Name Generation API Key!";
+                        }
+                    }
+                    else
+                    {
+                        message.Type = MessageTypesEnum.ERROR;
+                        message.Header = "ERROR";
+                        message.Message = "There was a problem generating the Name Generation API Key!";
                     }
                 }
                 else
@@ -1376,6 +1454,9 @@
                 break;
             case "apikey":
                 currentapikey = value;
+                break;
+            case "namegenerationapikey":
+                currentnamegenerationapikey = value;
                 break;
             case "readonlyapikey":
                 currentreadonlyapikey = value;

@@ -147,7 +147,9 @@ namespace AzureNamingTool.Services
 
                     // Write items to file
                     await ConfigurationHelper.WriteList<ResourceType>([.. items.OrderBy(x => x.Id)]);
-                    serviceResponse.ResponseObject = "Resource Type added/updated!";
+                    // Get the item
+                    var newitem = ResourceTypeService.GetItem((int)item.Id).Result.ResponseObject;
+                    serviceResponse.ResponseObject = newitem;
                     serviceResponse.Success = true;
                 }
                 else

@@ -169,6 +169,9 @@ namespace AzureNamingTool.Services
                         // Write items to file
                         await ConfigurationHelper.WriteList<ResourceComponent>(items);
                         serviceResponse.Success = true;
+                        // Get the item
+                        var newitem = (await ResourceComponentService.GetItem((int)item.Id)).ResponseObject;
+                        serviceResponse.ResponseObject = newitem;
                     }
                 }
             }

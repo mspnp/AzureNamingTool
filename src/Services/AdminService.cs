@@ -63,6 +63,9 @@ namespace AzureNamingTool.Services
                     case "readonly":
                         config.ReadOnlyAPIKey = GeneralHelper.EncryptString(guid.ToString(), config.SALTKey!);
                         break;
+                    case "namegeneration":
+                        config.NameGenerationAPIKey = GeneralHelper.EncryptString(guid.ToString(), config.SALTKey!);
+                        break;
                 }
                 await ConfigurationHelper.UpdateSettings(config);
                 serviceResponse.ResponseObject = guid.ToString();
@@ -93,11 +96,12 @@ namespace AzureNamingTool.Services
                     case "fullaccess":
                         config.APIKey = GeneralHelper.EncryptString(apikey, config.SALTKey!);
                         break;
-
                     case "readonly":
                         config.ReadOnlyAPIKey = GeneralHelper.EncryptString(apikey, config.SALTKey!);
                         break;
-
+                    case "namegeneration":
+                        config.NameGenerationAPIKey = GeneralHelper.EncryptString(apikey, config.SALTKey!);
+                        break;
                 }
                 await ConfigurationHelper.UpdateSettings(config);
                 serviceResponse.ResponseObject = apikey;

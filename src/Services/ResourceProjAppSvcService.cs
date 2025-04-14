@@ -172,7 +172,9 @@ namespace AzureNamingTool.Services
 
                     // Write items to file
                     await ConfigurationHelper.WriteList<ResourceProjAppSvc>(items);
-                    serviceResponse.ResponseObject = "Resource Project/App/Service added/updated!";
+                    // Get the item
+                    var newitem = (await ResourceProjAppSvcService.GetItem((int)item.Id)).ResponseObject;
+                    serviceResponse.ResponseObject = newitem;
                     serviceResponse.Success = true;
                 }
                 else

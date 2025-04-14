@@ -30,8 +30,8 @@
                 {
                     <div class="w-100">
                         @(
-                            "User: " + currentuser
-                            )
+                                "User: " + currentuser
+                                )
                     </div>
                 }
             }
@@ -220,6 +220,7 @@
             config.AdminPassword = "";
             config.APIKey = "";
             config.ReadOnlyAPIKey = "";
+            config.NameGenerationAPIKey = "";
 
             await ConfigurationHelper.UpdateSettings(config);
             ConfigurationHelper.ResetState(state);

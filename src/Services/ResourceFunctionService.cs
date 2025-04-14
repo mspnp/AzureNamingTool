@@ -171,7 +171,9 @@ namespace AzureNamingTool.Services
 
                     // Write items to file
                     await ConfigurationHelper.WriteList<ResourceFunction>(items);
-                    serviceResponse.ResponseObject = "Resource Function added/updated!";
+                    // Get the item
+                    var newitem = (await ResourceFunctionService.GetItem((int)item.Id)).ResponseObject;
+                    serviceResponse.ResponseObject = newitem;
                     serviceResponse.Success = true;
                 }
                 else

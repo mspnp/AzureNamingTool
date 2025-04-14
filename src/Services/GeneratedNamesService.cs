@@ -105,6 +105,9 @@ namespace AzureNamingTool.Services
                     CacheHelper.InvalidateCacheObject("generatednames.json");
 
                     serviceResponse.Success = true;
+                    // Get the item
+                    var newitem = GeneratedNamesService.GetItem((int)generatedName.Id);
+                    serviceResponse.ResponseObject = newitem;
                 }
             }
             catch (Exception ex)
