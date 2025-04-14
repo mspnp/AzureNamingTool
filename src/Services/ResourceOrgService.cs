@@ -173,7 +173,7 @@ namespace AzureNamingTool.Services
                     // Write items to file
                     await ConfigurationHelper.WriteList<ResourceOrg>(items);
                     // Get the item
-                    var newitem = ResourceOrgService.GetItem((int)item.Id).Result.ResponseObject;
+                    var newitem = (await ResourceOrgService.GetItem((int)item.Id)).ResponseObject;
                     serviceResponse.ResponseObject = newitem;
                     serviceResponse.Success = true;
                 }
