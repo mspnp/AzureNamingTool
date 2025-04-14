@@ -170,7 +170,7 @@ namespace AzureNamingTool.Services
                         await ConfigurationHelper.WriteList<ResourceComponent>(items);
                         serviceResponse.Success = true;
                         // Get the item
-                        var newitem = ResourceComponentService.GetItem((int)item.Id).Result.ResponseObject;
+                        var newitem = (await ResourceComponentService.GetItem((int)item.Id)).ResponseObject;
                         serviceResponse.ResponseObject = newitem;
                     }
                 }
