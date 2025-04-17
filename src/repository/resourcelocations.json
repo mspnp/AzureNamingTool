@@ -308,25 +308,5 @@
     "id": 62,
     "name": "Jio India Central",
     "shortName": "injc"
-  },
-  {
-    "id": 63,
-    "name": "US Nat East",
-    "shortName": "east"
-  },
-  {
-    "id": 64,
-    "name": "US Nat West",
-    "shortName": "west"
-  },
-  {
-    "id": 65,
-    "name": "US Sec East",
-    "shortName": "east"
-  },
-  {
-    "id": 66,
-    "name": "US Sec West",
-    "shortName": "west"
   }
 ]
