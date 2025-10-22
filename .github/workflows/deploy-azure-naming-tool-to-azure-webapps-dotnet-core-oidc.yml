@@ -75,7 +75,7 @@ jobs:
   deploy:
     defaults:
       run:
-        working-directory: ready/AzNamingTool
+        working-directory: .
     runs-on: ubuntu-latest
     needs: build
     environment:
