@@ -1,4 +1,4 @@
-﻿@using AzureNamingTool.Helpers
+@using AzureNamingTool.Helpers
 @using AzureNamingTool.Models
 @using AzureNamingTool.Components
 @inject StateContainer state
@@ -6,30 +6,18 @@
 @inject IToastService toastService
 @inject ILogger<PasswordModal> Logger
 
-<div class="modal fade show d-block" tabindex="-1" role="dialog">
-    <div class="modal-backdrop fade show" @onclick="Cancel"></div>
-    <div class="modal-dialog" style="z-index: 1050">
-        <!-- Pop it above the backdrop -->
-        <div class="modal-content @theme.ThemeStyle">
-            <div class="modal-header @headerstyle text-white">
-                <h3 class="modal-title">@title</h3>
-            </div>
-            <div class="modal-body">
-                @if (GeneralHelper.IsNotNull(message))
-                {
-                    <div class="mb-3">
-                        @(
-                            (MarkupString)message
-                            )
-                    </div>
-                }
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" @onclick=@Confirm>OK</button>
-                <button type="button" class="btn btn-secondary" @onclick=@Cancel>Cancel</button>
-            </div>
+<div class="modern-modal-content">
+    @if (GeneralHelper.IsNotNull(message))
+    {
+        <div style="margin-bottom: 1rem;">
+            @((MarkupString)message)
         </div>
-    </div>
+    }
+</div>
+
+<div class="modern-modal-footer">
+    <button type="button" class="modern-btn-success" @onclick=@Confirm>OK</button>
+    <button type="button" class="modern-btn-secondary" @onclick=@Cancel>Cancel</button>
 </div>
 
 @code {
@@ -44,7 +32,7 @@
     [Parameter] public string headerstyle { get; set; } = String.Empty;
 
 
-    async Task Confirm() => await ModalInstance.CloseAsync();
+    async Task Confirm() => await ModalInstance.CloseAsync(ModalResult.Ok(true));
 
     async Task Cancel() => await ModalInstance.CancelAsync();
 

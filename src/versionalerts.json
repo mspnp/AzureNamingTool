@@ -23,5 +23,10 @@
     "id": 4,
     "version": "4.3.0",
     "alert": "<p><span class=\"fw-bold\">IMPORTANT NOTES</span></p><ul><li class=\"mb-3\">With the release of <a href=\"https://github.com/mspnp/AzureNamingTool/wiki/v4.3.0\" target=\"_blank\">v4.3.0</a>, the Azure Naming Tool now supports Resource Type editing. Please see the <a href=\"https://github.com/mspnp/AzureNamingTool/wiki/Resource-Type-Editing\" target=\"_blank\">Resource Type Editing documentation</a> for guidance on metadata editing."
+  },
+  {
+    "id": 5,
+    "version": "5.0.0",
+    "alert": "<p><span class=\"fw-bold\">IMPORTANT NOTES</span></p><ul><li class=\"mb-3\">With the release of <a href=\"https://github.com/mspnp/AzureNamingTool/wiki/v5.0.0\" target=\"_blank\">v5.0.0</a>, the Azure Naming Tool introduces a modern redesigned UI, SQLite database storage option, and Azure resource name validation. Please review the <a href=\"https://github.com/mspnp/AzureNamingTool/wiki/v5.0.0-Migration-Guide\" target=\"_blank\">v5.0.0 Migration Guide</a> for upgrade instructions and new features.</li><li class=\"mb-3\">New features include: Modern UI with improved dashboard, SQLite database support for enhanced performance, Azure validation integration for real-time name conflict detection, and enhanced API capabilities. See the <a href=\"https://github.com/mspnp/AzureNamingTool/wiki/v5.0.0\" target=\"_blank\">v5.0.0 Release Notes</a> for full details.</li></ul>"
   }
 ]

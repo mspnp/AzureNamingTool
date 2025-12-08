@@ -1,5 +1,7 @@
-﻿using AzureNamingTool.Helpers;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+using AzureNamingTool.Helpers;
 using AzureNamingTool.Models;
+using AzureNamingTool.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using System.ComponentModel;
@@ -16,14 +18,61 @@ namespace AzureNamingTool.Services
     /// <summary>
     /// Service for managing Resource Naming Requests
     /// </summary>
-    public class ResourceNamingRequestService
+    public class ResourceNamingRequestService : IResourceNamingRequestService
     {
+        private readonly IResourceComponentService _resourceComponentService;
+        private readonly IResourceDelimiterService _resourceDelimiterService;
+        private readonly IResourceTypeService _resourceTypeService;
+        private readonly IResourceEnvironmentService _resourceEnvironmentService;
+        private readonly IResourceLocationService _resourceLocationService;
+        private readonly IResourceOrgService _resourceOrgService;
+        private readonly IResourceProjAppSvcService _resourceProjAppSvcService;
+        private readonly IResourceUnitDeptService _resourceUnitDeptService;
+        private readonly IResourceFunctionService _resourceFunctionService;
+        private readonly ICustomComponentService _customComponentService;
+        private readonly IGeneratedNamesService _generatedNamesService;
+        private readonly IAdminLogService _adminLogService;
+        private readonly IAzureValidationService? _azureValidationService;
+        private readonly ConflictResolutionService? _conflictResolutionService;
+
+        public ResourceNamingRequestService(
+            IResourceComponentService resourceComponentService,
+            IResourceDelimiterService resourceDelimiterService,
+            IResourceTypeService resourceTypeService,
+            IResourceEnvironmentService resourceEnvironmentService,
+            IResourceLocationService resourceLocationService,
+            IResourceOrgService resourceOrgService,
+            IResourceProjAppSvcService resourceProjAppSvcService,
+            IResourceUnitDeptService resourceUnitDeptService,
+            IResourceFunctionService resourceFunctionService,
+            ICustomComponentService customComponentService,
+            IGeneratedNamesService generatedNamesService,
+            IAdminLogService adminLogService,
+            IAzureValidationService? azureValidationService = null,
+            ConflictResolutionService? conflictResolutionService = null)
+        {
+            _resourceComponentService = resourceComponentService;
+            _resourceDelimiterService = resourceDelimiterService;
+            _resourceTypeService = resourceTypeService;
+            _resourceEnvironmentService = resourceEnvironmentService;
+            _resourceLocationService = resourceLocationService;
+            _resourceOrgService = resourceOrgService;
+            _resourceProjAppSvcService = resourceProjAppSvcService;
+            _resourceUnitDeptService = resourceUnitDeptService;
+            _resourceFunctionService = resourceFunctionService;
+            _customComponentService = customComponentService;
+            _generatedNamesService = generatedNamesService;
+            _adminLogService = adminLogService;
+            _azureValidationService = azureValidationService;
+            _conflictResolutionService = conflictResolutionService;
+        }
+
         /// <summary>
         /// This function will generate a resoure type name for specifed component values. This function requires full definition for all components. It is recommended to use the ResourceNameRequest API function for name generation.   
         /// </summary>
         /// <param name="request"></param>
         /// <returns>ResourceNameResponse - Response of name generation</returns>
-        public static async Task<ResourceNameResponse> RequestNameWithComponents(ResourceNameRequestWithComponents request)
+        public async Task<ResourceNameResponse> RequestNameWithComponentsAsync(ResourceNameRequestWithComponents request)
         {
             ServiceResponse serviceResponse = new();
             ResourceNameResponse response = new()
@@ -54,7 +103,7 @@ namespace AzureNamingTool.Services
                 }
 
                 // Get the components
-                serviceResponse = await ResourceComponentService.GetItems(false);
+                serviceResponse = await _resourceComponentService.GetItemsAsync(false);
                 var currentResourceComponents = serviceResponse.ResponseObject;
                 dynamic d = request;
 
@@ -188,7 +237,7 @@ namespace AzureNamingTool.Services
                     ResourceType = resourceType.ShortName,
                     Name = name
                 };
-                serviceResponse = await ResourceTypeService.ValidateResourceTypeName(validateNameRequest);
+                serviceResponse = await _resourceTypeService.ValidateResourceTypeNameAsync(validateNameRequest);
                 if (serviceResponse.Success)
                 {
                     if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
@@ -214,7 +263,7 @@ namespace AzureNamingTool.Services
                         ResourceName = name,
                         Components = lstComponents
                     };
-                    await GeneratedNamesService.PostItem(generatedName);
+                    await _generatedNamesService.PostItemAsync(generatedName);
                     response.Success = true;
                     response.ResourceName = name;
                     response.Message = sbMessage.ToString();
@@ -229,7 +278,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 response.Message = ex.Message;
                 return response;
             }
@@ -240,7 +289,7 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="request"></param>
         /// <returns>ResourceNameResponse - Response of name generation</returns>
-        public static async Task<ResourceNameResponse> RequestName(ResourceNameRequest request)
+        public async Task<ResourceNameResponse> RequestNameAsync(ResourceNameRequest request)
         {
             ResourceNameResponse resourceNameResponse = new()
             {
@@ -260,7 +309,7 @@ namespace AzureNamingTool.Services
                 bool previousdelimiterappliedafter = true;
 
                 // Get the current delimiter
-                serviceResponse = await ResourceDelimiterService.GetCurrentItem();
+                serviceResponse = await _resourceDelimiterService.GetCurrentItemAsync();
                 if (serviceResponse.Success)
                 {
                     resourceDelimiter = (ResourceDelimiter)serviceResponse.ResponseObject!;
@@ -273,8 +322,14 @@ namespace AzureNamingTool.Services
                     return resourceNameResponse;
                 }
 
-                // Get the specified resource type
-                var resourceTypes = await ConfigurationHelper.GetList<ResourceType>();
+                // Get the specified resource type - use service layer for SQLite/FileSystem compatibility
+                serviceResponse = await _resourceTypeService.GetItemsAsync();
+                List<ResourceType>? resourceTypes = null;
+                if (serviceResponse.Success && GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                {
+                    resourceTypes = (List<ResourceType>)serviceResponse.ResponseObject!;
+                }
+                
                 if (GeneralHelper.IsNotNull(resourceTypes))
                 {
                     var resourceTypesByShortName = resourceTypes.FindAll(x => x.ShortName == request.ResourceType);
@@ -335,6 +390,49 @@ namespace AzureNamingTool.Services
                         return resourceNameResponse;
                     }
 
+                    // Load all component data once for validation (SQLite/FileSystem compatibility)
+                    List<ResourceEnvironment>? environments = null;
+                    serviceResponse = await _resourceEnvironmentService.GetItemsAsync();
+                    if (serviceResponse.Success && GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                    {
+                        environments = (List<ResourceEnvironment>)serviceResponse.ResponseObject!;
+                    }
+
+                    List<ResourceLocation>? locations = null;
+                    serviceResponse = await _resourceLocationService.GetItemsAsync();
+                    if (serviceResponse.Success && GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                    {
+                        locations = (List<ResourceLocation>)serviceResponse.ResponseObject!;
+                    }
+
+                    List<ResourceOrg>? orgs = null;
+                    serviceResponse = await _resourceOrgService.GetItemsAsync();
+                    if (serviceResponse.Success && GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                    {
+                        orgs = (List<ResourceOrg>)serviceResponse.ResponseObject!;
+                    }
+
+                    List<ResourceProjAppSvc>? projappsvcs = null;
+                    serviceResponse = await _resourceProjAppSvcService.GetItemsAsync();
+                    if (serviceResponse.Success && GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                    {
+                        projappsvcs = (List<ResourceProjAppSvc>)serviceResponse.ResponseObject!;
+                    }
+
+                    List<ResourceUnitDept>? unitdepts = null;
+                    serviceResponse = await _resourceUnitDeptService.GetItemsAsync();
+                    if (serviceResponse.Success && GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                    {
+                        unitdepts = (List<ResourceUnitDept>)serviceResponse.ResponseObject!;
+                    }
+
+                    List<ResourceFunction>? functions = null;
+                    serviceResponse = await _resourceFunctionService.GetItemsAsync();
+                    if (serviceResponse.Success && GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                    {
+                        functions = (List<ResourceFunction>)serviceResponse.ResponseObject!;
+                    }
+
                     // Make sure the passed custom component names are normalized
                     if (GeneralHelper.IsNotNull(request.CustomComponents))
                     {
@@ -348,7 +446,7 @@ namespace AzureNamingTool.Services
                     }
 
                     // Get the current components
-                    serviceResponse = await ResourceComponentService.GetItems(false);
+                    serviceResponse = await _resourceComponentService.GetItemsAsync(false);
                     if (serviceResponse.Success)
                     {
                         if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
@@ -386,10 +484,9 @@ namespace AzureNamingTool.Services
                                                         switch (component.Name.ToLower())
                                                         {
                                                             case "resourcetype":
-                                                                var types = await ConfigurationHelper.GetList<ResourceType>();
-                                                                if (GeneralHelper.IsNotNull(types))
+                                                                if (GeneralHelper.IsNotNull(resourceTypes))
                                                                 {
-                                                                    var type = types.Find(x => x.ShortName == value);
+                                                                    var type = resourceTypes.Find(x => x.ShortName == value);
                                                                     if (!GeneralHelper.IsNotNull(type))
                                                                     {
                                                                         valid = false;
@@ -398,7 +495,6 @@ namespace AzureNamingTool.Services
                                                                 }
                                                                 break;
                                                             case "resourceenvironment":
-                                                                var environments = await ConfigurationHelper.GetList<ResourceEnvironment>();
                                                                 if (GeneralHelper.IsNotNull(environments))
                                                                 {
                                                                     var environment = environments.Find(x => x.ShortName == value);
@@ -410,7 +506,6 @@ namespace AzureNamingTool.Services
                                                                 }
                                                                 break;
                                                             case "resourcelocation":
-                                                                var locations = await ConfigurationHelper.GetList<ResourceLocation>();
                                                                 if (GeneralHelper.IsNotNull(locations))
                                                                 {
                                                                     var location = locations.Find(x => x.ShortName == value);
@@ -422,7 +517,6 @@ namespace AzureNamingTool.Services
                                                                 }
                                                                 break;
                                                             case "resourceorg":
-                                                                var orgs = await ConfigurationHelper.GetList<ResourceOrg>();
                                                                 if (GeneralHelper.IsNotNull(orgs))
                                                                 {
                                                                     var org = orgs.Find(x => x.ShortName == value);
@@ -434,7 +528,6 @@ namespace AzureNamingTool.Services
                                                                 }
                                                                 break;
                                                             case "resourceprojappsvc":
-                                                                var projappsvcs = await ConfigurationHelper.GetList<ResourceProjAppSvc>();
                                                                 if (GeneralHelper.IsNotNull(projappsvcs))
                                                                 {
                                                                     var projappsvc = projappsvcs.Find(x => x.ShortName == value);
@@ -446,7 +539,6 @@ namespace AzureNamingTool.Services
                                                                 }
                                                                 break;
                                                             case "resourceunitdept":
-                                                                var unitdepts = await ConfigurationHelper.GetList<ResourceUnitDept>();
                                                                 if (GeneralHelper.IsNotNull(unitdepts))
                                                                 {
                                                                     var unitdept = unitdepts.Find(x => x.ShortName == value);
@@ -458,7 +550,6 @@ namespace AzureNamingTool.Services
                                                                 }
                                                                 break;
                                                             case "resourcefunction":
-                                                                var functions = await ConfigurationHelper.GetList<ResourceFunction>();
                                                                 if (GeneralHelper.IsNotNull(functions))
                                                                 {
                                                                     var function = functions.Find(x => x.ShortName == value);
@@ -544,7 +635,7 @@ namespace AzureNamingTool.Services
                                         if (!component.IsFreeText)
                                         {
                                             // Get the custom components data
-                                            serviceResponse = await CustomComponentService.GetItems();
+                                            serviceResponse = await _customComponentService.GetItemsAsync();
                                             if (serviceResponse.Success)
                                             {
                                                 if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
@@ -581,9 +672,11 @@ namespace AzureNamingTool.Services
                                                                             if (!String.IsNullOrEmpty(componentvalue))
                                                                             {
                                                                                 // Check to make sure it is a valid custom component
-                                                                                var customComponents = await ConfigurationHelper.GetList<CustomComponent>();
-                                                                                if (GeneralHelper.IsNotNull(customComponents))
+                                                                                // Use service layer instead of ConfigurationHelper to support both SQLite and FileSystem
+                                                                                var customComponentsResponse = await _customComponentService.GetItemsAsync();
+                                                                                if (customComponentsResponse.Success && GeneralHelper.IsNotNull(customComponentsResponse.ResponseObject))
                                                                                 {
+                                                                                    var customComponents = (List<CustomComponent>)customComponentsResponse.ResponseObject!;
                                                                                     var validcustomComponent = customComponents.Find(x => x.ParentComponent == normalizedcomponentname && x.ShortName == componentvalue);
                                                                                     if (!GeneralHelper.IsNotNull(validcustomComponent))
                                                                                     {
@@ -760,7 +853,7 @@ namespace AzureNamingTool.Services
                     ResourceType = resourceType.ShortName,
                     Name = name
                 };
-                serviceResponse = await ResourceTypeService.ValidateResourceTypeName(validateNameRequest);
+                serviceResponse = await _resourceTypeService.ValidateResourceTypeNameAsync(validateNameRequest);
                 if (serviceResponse.Success)
                 {
                     if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
@@ -781,8 +874,14 @@ namespace AzureNamingTool.Services
                 if (valid)
                 {
                     bool nameallowed = true;
-                    bool nameexists = await ConfigurationHelper.CheckIfGeneratedNameExists(name);
-                    if (nameexists)
+                    
+                    // Check if Azure validation is enabled - if so, skip internal duplicate check
+                    // as Azure validation will handle conflict resolution
+                    var configData = ConfigurationHelper.GetConfigurationData();
+                    var azureValidationEnabled = configData?.AzureTenantNameValidationEnabled?.Equals("True", StringComparison.OrdinalIgnoreCase) == true;
+                    
+                    bool nameexists = await ConfigurationHelper.CheckIfGeneratedNameExists(name, _generatedNamesService);
+                    if (nameexists && !azureValidationEnabled)
                     {
                         // Check if the request contains Resource Instance is a selected componoent
                         if (!String.IsNullOrEmpty(GeneralHelper.GetPropertyValue(request, "ResourceInstance")?.ToString()))
@@ -801,7 +900,7 @@ namespace AzureNamingTool.Services
                                     // Determine the next instance value
                                     string newinstance = String.Empty;
                                     int i = 1;
-                                    while (await ConfigurationHelper.CheckIfGeneratedNameExists(name))
+                                    while (await ConfigurationHelper.CheckIfGeneratedNameExists(name, _generatedNamesService))
                                     {
                                         newinstance = (Convert.ToInt32(originalinstance) + i).ToString();
                                         // Make sure the instance pattern matches the entered values (leading zeros)
@@ -864,13 +963,101 @@ namespace AzureNamingTool.Services
                             generatedName.ResourceTypeName += " - " + resourceType.Property;
                         }
 
-                        ServiceResponse responseGenerateName = await GeneratedNamesService.PostItem(generatedName);
+                        // Azure Validation and Conflict Resolution
+                        AzureValidationMetadata? validationMetadata = null;
+                        if (_azureValidationService != null && _conflictResolutionService != null)
+                        {
+                            try
+                            {
+                                // Check if Azure validation is enabled
+                                var siteConfig = ConfigurationHelper.GetConfigurationData();
+                                if (siteConfig != null && siteConfig.AzureTenantNameValidationEnabled?.Equals("True", StringComparison.OrdinalIgnoreCase) == true)
+                                {
+                                    // Get Azure validation settings
+                                    var validationSettings = await _azureValidationService.GetSettingsAsync();
+                                    if (validationSettings != null && validationSettings.Enabled)
+                                    {
+                                        // Validate the name against Azure
+                                        validationMetadata = await _azureValidationService.ValidateNameAsync(
+                                            name,
+                                            resourceType.ShortName ?? resourceType.Resource
+                                        );
+
+                                        // If name exists in Azure, apply conflict resolution
+                                        if (validationMetadata.ExistsInAzure)
+                                        {
+                                            var resolutionResult = await _conflictResolutionService.ResolveConflictAsync(
+                                                name,
+                                                resourceType.ShortName ?? resourceType.Resource,
+                                                validationSettings
+                                            );
+
+                                            if (resolutionResult.Success)
+                                            {
+                                                // Update the name with the resolved name
+                                                name = resolutionResult.FinalName;
+                                                generatedName.ResourceName = name;
+
+                                                // Update validation metadata with resolution info
+                                                validationMetadata.OriginalName = resolutionResult.OriginalName;
+                                                validationMetadata.IncrementAttempts = resolutionResult.Attempts;
+                                                
+                                                // Add resolution info to message
+                                                string resolutionMessage = $"Name conflict resolved using {resolutionResult.Strategy} strategy. Original: {resolutionResult.OriginalName}, Final: {resolutionResult.FinalName}";
+                                                if (!string.IsNullOrEmpty(resolutionResult.Warning))
+                                                {
+                                                    validationMetadata.ValidationWarning = resolutionResult.Warning;
+                                                    resolutionMessage += $" Warning: {resolutionResult.Warning}";
+                                                }
+                                                
+                                                if (sbMessage.Length > 0)
+                                                    sbMessage.Append(" ");
+                                                sbMessage.Append(resolutionMessage);
+                                            }
+                                            else
+                                            {
+                                                // Conflict resolution failed - return error
+                                                resourceNameResponse.Success = false;
+                                                resourceNameResponse.ResourceName = "***RESOURCE NAME NOT GENERATED***";
+                                                resourceNameResponse.Message = resolutionResult.ErrorMessage ?? "Failed to resolve naming conflict with Azure tenant.";
+                                                resourceNameResponse.ValidationMetadata = validationMetadata;
+                                                return resourceNameResponse;
+                                            }
+                                        }
+                                        
+                                        // Set validation timestamp
+                                        validationMetadata.ValidationTimestamp = DateTime.UtcNow;
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                // Log but don't fail name generation if Azure validation fails
+                                await _adminLogService.PostItemAsync(new AdminLogMessage() 
+                                { 
+                                    Title = "WARNING", 
+                                    Message = $"Azure validation failed: {ex.Message}" 
+                                });
+                                
+                                // Create validation metadata indicating the error
+                                validationMetadata = new AzureValidationMetadata
+                                {
+                                    ValidationPerformed = true,
+                                    ValidationWarning = $"Azure validation could not be performed: {ex.Message}",
+                                    ValidationTimestamp = DateTime.UtcNow
+                                };
+                            }
+                        }
+
+                        ServiceResponse responseGenerateName = await _generatedNamesService.PostItemAsync(generatedName);
                         if (responseGenerateName.Success)
                         {
                             resourceNameResponse.Success = true;
                             resourceNameResponse.ResourceName = name;
                             resourceNameResponse.Message = sbMessage.ToString();
                             resourceNameResponse.ResourceNameDetails = generatedName;
+                            resourceNameResponse.ValidationMetadata = validationMetadata;
+
 
                             // Check if the GenerationWebhook is configured
                             String webhook = ConfigurationHelper.GetAppSetting("GenerationWebhook", true);
@@ -904,10 +1091,12 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 resourceNameResponse.Message = ex.Message;
                 return resourceNameResponse;
             }
         }
     }
 }
+
+#pragma warning restore CS1591

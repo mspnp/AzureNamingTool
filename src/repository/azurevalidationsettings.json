@@ -1,0 +1,29 @@
+[
+  {
+    "Id": 1,
+    "Enabled": false,
+    "AuthMode": "ManagedIdentity",
+    "TenantId": "",
+    "SubscriptionIds": [],
+    "ManagementGroupId": null,
+    "ServicePrincipal": {
+      "ClientId": "",
+      "ClientSecret": "",
+      "ClientSecretKeyVaultName": null
+    },
+    "KeyVault": {
+      "KeyVaultUri": "",
+      "ClientSecretName": ""
+    },
+    "ConflictResolution": {
+      "Strategy": "NotifyOnly",
+      "MaxAttempts": 100,
+      "IncrementPadding": 3,
+      "IncludeWarnings": true
+    },
+    "Cache": {
+      "Enabled": true,
+      "DurationMinutes": 5
+    }
+  }
+]

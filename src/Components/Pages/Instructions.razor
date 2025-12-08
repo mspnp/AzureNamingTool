@@ -1,4 +1,4 @@
-﻿@page "/instructions"
+@page "/instructions"
 @using AzureNamingTool.Components.Instructions
 @using AzureNamingTool.Helpers
 @using AzureNamingTool.Models
@@ -8,91 +8,129 @@
 @inject IToastService toastService
 @inject NavigationManager NavigationManager
 
-<div class="card @theme!.ThemeStyle">
-    <div class="card-body">
+<PageTitle>Azure Naming Tool - Instructions</PageTitle>
+
+<div class="modern-page-container">
+    <div class="modern-page-title">
         <h1>Instructions</h1>
-        <div class="mb-3">This page provides instructions on how to configure and use the Azure Naming Tool.</div>
+    </div>
+    
+    <div class="modern-page-description">
+        <p>Learn how to configure and use the Azure Naming Tool</p>
+    </div>
+    
+    <div class="modern-page-actions">
+        <button type="button" class="modern-btn-secondary" @onclick="@ExpandAll" title="Expand all sections">
+            <span class="oi oi-fullscreen-enter" aria-hidden="true"></span> Expand All
+        </button>
+        <button type="button" class="modern-btn-secondary" @onclick="@CollapseAll" title="Collapse all sections">
+            <span class="oi oi-fullscreen-exit" aria-hidden="true"></span> Collapse All
+        </button>
+    </div>
+</div>
+
+<div class="modern-card">
+    <div class="modern-card-body">
         @if (admin)
         {
-            <div class="card mb-3">
-                <h5 class="card-header bg-secondary text-white" id="adminpasswordcontainer">
-                    <a id="ResourceComponent" class="link-light text-decoration-none" data-bs-toggle="collapse" style="display:block;" href="#adminpassword" role="button" aria-expanded="true" aria-controls="adminpassword">
+            <div class="modern-card mb-3">
+                <div class="modern-card-header collapsible @(collapsedSections.Contains("adminpassword") ? "collapsed" : "")" data-bs-toggle="collapse" data-bs-target="#adminpassword" aria-expanded="@(!collapsedSections.Contains("adminpassword"))">
+                    <h3>
                         <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Global Admin Password
-                    </a>
-                </h5>
-                <div class="card card-body collapse show @theme!.ThemeStyle" id="adminpassword">
+                    </h3>
+                </div>
+                <div class="collapse @(collapsedSections.Contains("adminpassword") ? "" : "show") modern-card-body" id="adminpassword">
                     <AdminPasswordInstructions theme="@theme" admin="@admin" />
                 </div>
             </div>
-            <div class="card mb-3">
-                <h5 class="card-header bg-secondary text-white" id="adminconfigurationcontainer">
-                    <a class="link-light text-decoration-none" data-bs-toggle="collapse" style="display:block;" href="#adminconfiguration" role="button" aria-expanded="true" aria-controls="adminconfiguration">
+            
+            <div class="modern-card mb-3">
+                <div class="modern-card-header collapsible @(collapsedSections.Contains("adminconfiguration") ? "collapsed" : "")" data-bs-toggle="collapse" data-bs-target="#adminconfiguration" aria-expanded="@(!collapsedSections.Contains("adminconfiguration"))">
+                    <h3>
                         <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Admin Configuration
-                    </a>
-                </h5>
-                <div class="card card-body collapse show @theme.ThemeStyle" id="adminconfiguration">
+                    </h3>
+                </div>
+                <div class="collapse @(collapsedSections.Contains("adminconfiguration") ? "" : "show") modern-card-body" id="adminconfiguration">
                     <AdminConfigurationInstructions theme="@theme" admin="@admin" />
                 </div>
             </div>
-            <div class="card mb-3">
-                <h5 class="card-header bg-secondary text-white" id="adminlogcontainer">
-                    <a class="link-light text-decoration-none" data-bs-toggle="collapse" style="display:block;" href="#adminlog" role="button" aria-expanded="true" aria-controls="adminlog">
+            
+            <div class="modern-card mb-3">
+                <div class="modern-card-header collapsible @(collapsedSections.Contains("adminlog") ? "collapsed" : "")" data-bs-toggle="collapse" data-bs-target="#adminlog" aria-expanded="@(!collapsedSections.Contains("adminlog"))">
+                    <h3>
                         <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Admin Log
-                    </a>
-                </h5>
-            </div>
-            <div class="card card-body collapse show @theme.ThemeStyle" id="adminlog">
-                <AdminLogInstructions theme="@theme" admin="@admin" />
+                    </h3>
+                </div>
+                <div class="collapse @(collapsedSections.Contains("adminlog") ? "" : "show") modern-card-body" id="adminlog">
+                    <AdminLogInstructions theme="@theme" admin="@admin" />
+                </div>
             </div>
         }
-        <div class="card mb-3">
-            <h5 class="card-header bg-secondary text-white" id="configurationcontainer">
-                <a class="link-light text-decoration-none" data-bs-toggle="collapse" style="display:block;" href="#configuration" role="button" aria-expanded="true" aria-controls="configuration">
+        
+        <div class="modern-card mb-3">
+            <div class="modern-card-header collapsible @(collapsedSections.Contains("configuration") ? "collapsed" : "")" data-bs-toggle="collapse" data-bs-target="#configuration" aria-expanded="@(!collapsedSections.Contains("configuration"))">
+                <h3>
                     <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Configuration
-                </a>
-            </h5>
-            <div class="card card-body collapse show @theme.ThemeStyle" id="configuration">
+                </h3>
+            </div>
+            <div class="collapse @(collapsedSections.Contains("configuration") ? "" : "show") modern-card-body" id="configuration">
                 <ConfigurationInstructions theme="@theme" admin="@admin" />
             </div>
         </div>
-        <div class="card mb-3">
-            <h5 class="card-header bg-secondary text-white" id="generatecontainer">
-                <a class="link-light text-decoration-none" data-bs-toggle="collapse" style="display:block;" href="#generate" role="button" aria-expanded="true" aria-controls="generate">
+        
+        <div class="modern-card mb-3">
+            <div class="modern-card-header collapsible @(collapsedSections.Contains("generate") ? "collapsed" : "")" data-bs-toggle="collapse" data-bs-target="#generate" aria-expanded="@(!collapsedSections.Contains("generate"))">
+                <h3>
                     <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Generate
-                </a>
-            </h5>
-            <div class="card card-body collapse show @theme.ThemeStyle" id="generate">
+                </h3>
+            </div>
+            <div class="collapse @(collapsedSections.Contains("generate") ? "" : "show") modern-card-body" id="generate">
                 <GenerateInstructions theme="@theme" admin="@admin" />
             </div>
         </div>
-        <div class="card mb-3">
-            <h5 class="card-header bg-secondary text-white" id="generatednameslogcontainer">
-                <a class="link-light text-decoration-none" data-bs-toggle="collapse" style="display:block;" href="#generatednameslog" role="button" aria-expanded="true" aria-controls="generatednameslog">
+        
+        <div class="modern-card mb-3">
+            <div class="modern-card-header collapsible @(collapsedSections.Contains("generatednameslog") ? "collapsed" : "")" data-bs-toggle="collapse" data-bs-target="#generatednameslog" aria-expanded="@(!collapsedSections.Contains("generatednameslog"))">
+                <h3>
                     <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Generated Names Log
-                </a>
-            </h5>
-            <div class="card card-body collapse show @theme.ThemeStyle" id="generatednameslog">
+                </h3>
+            </div>
+            <div class="collapse @(collapsedSections.Contains("generatednameslog") ? "" : "show") modern-card-body" id="generatednameslog">
                 <GeneratedNamesLogInstructions theme="@theme" admin="@admin" />
             </div>
         </div>
-        <div class="card mb-3">
-            <h5 class="card-header bg-secondary text-white" id="referencecontainer">
-                <a class="link-light text-decoration-none" data-bs-toggle="collapse" style="display:block;" href="#reference" role="button" aria-expanded="true" aria-controls="reference">
+        
+        <div class="modern-card mb-3">
+            <div class="modern-card-header collapsible @(collapsedSections.Contains("reference") ? "collapsed" : "")" data-bs-toggle="collapse" data-bs-target="#reference" aria-expanded="@(!collapsedSections.Contains("reference"))">
+                <h3>
                     <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Reference
-                </a>
-            </h5>
-            <div class="card card-body collapse show @theme.ThemeStyle" id="reference">
+                </h3>
+            </div>
+            <div class="collapse @(collapsedSections.Contains("reference") ? "" : "show") modern-card-body" id="reference">
                 <ReferenceInstructions theme="@theme" admin="@admin" />
             </div>
         </div>
     </div>
 </div>
+
 <AnchorNavigation />
 @code {
     [CascadingParameter]
     protected ThemeInfo? theme { get; set; }
     private bool admin = false;
     private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
+    
+    // Initialize with all section IDs for collapsed default state
+    private HashSet<string> collapsedSections = new HashSet<string>
+    {
+        "adminpassword",
+        "adminconfiguration",
+        "adminlog",
+        "configuration",
+        "generate",
+        "generatednameslog",
+        "reference"
+    };
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -107,5 +145,24 @@
             }
             StateHasChanged();
         }
+    }
+    
+    private void ExpandAll()
+    {
+        collapsedSections.Clear();
+    }
+    
+    private void CollapseAll()
+    {
+        collapsedSections = new HashSet<string>
+        {
+            "adminpassword",
+            "adminconfiguration",
+            "adminlog",
+            "configuration",
+            "generate",
+            "generatednameslog",
+            "reference"
+        };
     }
 }

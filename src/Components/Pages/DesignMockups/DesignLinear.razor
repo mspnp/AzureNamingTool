@@ -1,0 +1,590 @@
+@page "/design-linear"
+@* TEMPORARY DESIGN MOCKUP - DELETE AFTER EVALUATION *@
+@* Linear-inspired Clean Modern Design *@
+
+<div class="design-linear">
+    <!-- Left Sidebar Navigation -->
+    <nav class="sidebar-linear" id="sidebarLinear">
+        <div class="sidebar-header">
+            <span class="logo-text">Azure Naming Tool</span>
+            <button class="collapse-btn" onclick="toggleSidebarLinear()">
+                <span class="icon">←</span>
+            </button>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-label">Main</div>
+            <a href="#" class="nav-item active">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">Home</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-text">Configuration</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">📋</span>
+                <span class="nav-text">Reference</span>
+            </a>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-label">Components</div>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">📦</span>
+                <span class="nav-text">Resource Types</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">🌍</span>
+                <span class="nav-text">Locations</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">🏢</span>
+                <span class="nav-text">Organizations</span>
+            </a>
+            <a href="#" class="nav-item">
+                <span class="nav-icon">🔧</span>
+                <span class="nav-text">Functions</span>
+            </a>
+        </div>
+
+        <div class="sidebar-footer">
+            <a href="#" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">Admin</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="header-left">
+                <h1 class="page-title">Dashboard</h1>
+                <p class="page-subtitle">Welcome to Azure Naming Tool</p>
+            </div>
+            <div class="header-right">
+                <input type="text" class="search-input" placeholder="Search..." />
+                <button class="icon-btn">🔔</button>
+                <button class="icon-btn">⚙️</button>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content-body">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Resource Types</div>
+                    <div class="stat-value">247</div>
+                    <div class="stat-change">+12 this month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Locations</div>
+                    <div class="stat-value">60</div>
+                    <div class="stat-change">Worldwide coverage</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Generated Names</div>
+                    <div class="stat-value">1,234</div>
+                    <div class="stat-change">+45 today</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Custom Components</div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-change">Active</div>
+                </div>
+            </div>
+
+            <!-- Action Cards -->
+            <div class="cards-grid">
+                <div class="action-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Generate Resource Name</h3>
+                        <span class="card-icon">🎯</span>
+                    </div>
+                    <p class="card-description">
+                        Create standardized Azure resource names following your organization's naming conventions.
+                    </p>
+                    <button class="card-btn">Generate Name →</button>
+                </div>
+
+                <div class="action-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Configure Components</h3>
+                        <span class="card-icon">⚙️</span>
+                    </div>
+                    <p class="card-description">
+                        Manage resource types, locations, environments, and other naming components.
+                    </p>
+                    <button class="card-btn">Configure →</button>
+                </div>
+
+                <div class="action-card">
+                    <div class="card-header">
+                        <h3 class="card-title">View Reference</h3>
+                        <span class="card-icon">📚</span>
+                    </div>
+                    <p class="card-description">
+                        Browse Azure naming best practices and component reference documentation.
+                    </p>
+                    <button class="card-btn">View Reference →</button>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Recent Activity</h2>
+                    <a href="#" class="section-link">View all →</a>
+                </div>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon">✓</div>
+                        <div class="activity-content">
+                            <div class="activity-title">Generated name for Storage Account</div>
+                            <div class="activity-time">2 minutes ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">+</div>
+                        <div class="activity-content">
+                            <div class="activity-title">Added new custom component</div>
+                            <div class="activity-time">1 hour ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">⚙️</div>
+                        <div class="activity-content">
+                            <div class="activity-title">Updated resource type configuration</div>
+                            <div class="activity-time">3 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">✓</div>
+                        <div class="activity-content">
+                            <div class="activity-title">Generated name for Virtual Machine</div>
+                            <div class="activity-time">5 hours ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<style>
+    .design-linear * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .design-linear {
+        display: flex;
+        height: 100vh;
+        background-color: #fafafa;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Roboto", "Helvetica Neue", Arial, sans-serif;
+        color: #171717;
+    }
+
+    /* Sidebar */
+    .sidebar-linear {
+        width: 240px;
+        background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%);
+        border-right: 1px solid #1a202c;
+        display: flex;
+        flex-direction: column;
+        transition: width 0.15s ease;
+        flex-shrink: 0;
+    }
+
+    .sidebar-linear.collapsed {
+        width: 60px;
+    }
+
+    .sidebar-linear.collapsed .logo-text,
+    .sidebar-linear.collapsed .nav-text,
+    .sidebar-linear.collapsed .nav-section-label {
+        display: none;
+    }
+
+    .sidebar-header {
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logo-text {
+        font-size: 14px;
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+    .collapse-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 6px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 14px;
+        border-radius: 4px;
+        transition: all 0.15s ease;
+    }
+
+    .collapse-btn:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+    }
+
+    .nav-section {
+        padding: 16px 8px;
+    }
+
+    .nav-section + .nav-section {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-section-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.5);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 0 12px 8px;
+    }
+
+    .design-linear .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        margin: 2px 0;
+        color: rgba(255, 255, 255, 0.85);
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.15s ease;
+    }
+
+    .design-linear .nav-item:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+    }
+
+    .design-linear .nav-item.active {
+        background-color: rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+        font-weight: 500;
+    }
+
+    .nav-icon {
+        font-size: 16px;
+        margin-right: 12px;
+        flex-shrink: 0;
+    }
+
+    .sidebar-linear.collapsed .nav-icon {
+        margin-right: 0;
+    }
+
+    .sidebar-footer {
+        margin-top: auto;
+        padding: 16px 8px;
+        border-top: 1px solid #e5e5e5;
+    }
+
+    /* Main Content */
+    .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .content-header {
+        height: 60px;
+        background-color: #ffffff;
+        border-bottom: 1px solid #e5e5e5;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        flex-shrink: 0;
+    }
+
+    .header-left {
+        display: flex;
+        align-items: baseline;
+        gap: 16px;
+    }
+
+    .page-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #0078d4;
+    }
+
+    .page-subtitle {
+        font-size: 14px;
+        color: #737373;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .search-input {
+        width: 240px;
+        padding: 8px 12px;
+        border: 1px solid #e5e5e5;
+        border-radius: 6px;
+        font-size: 14px;
+        background-color: #fafafa;
+        transition: all 0.15s ease;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #0078d4;
+        background-color: #ffffff;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #a3a3a3;
+        background-color: #ffffff;
+    }
+
+    .icon-btn {
+        width: 36px;
+        height: 36px;
+        border: 1px solid #e5e5e5;
+        background: #ffffff;
+        cursor: pointer;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        transition: all 0.15s ease;
+    }
+
+    .icon-btn:hover {
+        background-color: #0078d4;
+        border-color: #0078d4;
+        color: #ffffff;
+    }
+
+    /* Content Body */
+    .content-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .stat-card {
+        background-color: #ffffff;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        padding: 20px;
+        transition: all 0.15s ease;
+    }
+
+    .stat-card:hover {
+        border-color: #00b7c3;
+        background-color: #f0fafb;
+    }
+    }
+
+    .stat-label {
+        font-size: 13px;
+        color: #737373;
+        margin-bottom: 8px;
+    }
+
+    .stat-value {
+        font-size: 28px;
+        font-weight: 600;
+        color: #00b7c3;
+        margin-bottom: 4px;
+    }
+
+    .stat-change {
+        font-size: 13px;
+        color: #059669;
+        font-weight: 500;
+    }
+
+    /* Cards Grid */
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .action-card {
+        background-color: #ffffff;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        padding: 24px;
+        transition: all 0.15s ease;
+    }
+
+    .action-card:hover {
+        border-color: #0078d4;
+        box-shadow: 0 0 0 1px #0078d4;
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .card-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #171717;
+    }
+
+    .card-icon {
+        font-size: 20px;
+    }
+
+    .card-description {
+        font-size: 14px;
+        color: #525252;
+        line-height: 1.5;
+        margin-bottom: 16px;
+    }
+
+    .card-btn {
+        background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 14px;
+        color: #ffffff;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(0, 120, 212, 0.2);
+    }
+
+    .card-btn:hover {
+        background: linear-gradient(135deg, #005a9e 0%, #004578 100%);
+        box-shadow: 0 4px 12px rgba(0, 120, 212, 0.3);
+        transform: translateY(-1px);
+    }
+
+    /* Section */
+    .design-linear .section {
+        background-color: #ffffff;
+        border: 1px solid #e5e5e5;
+        border-radius: 8px;
+        padding: 24px;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #50e6ff;
+    }
+
+    .section-link {
+        font-size: 14px;
+        color: #0078d4;
+        text-decoration: none;
+        transition: color 0.15s ease;
+    }
+
+    .section-link:hover {
+        color: #005a9e;
+    }
+        transition: color 0.15s ease;
+    }
+
+    .section-link:hover {
+        color: #171717;
+    }
+
+    /* Activity List */
+    .activity-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: start;
+        gap: 12px;
+        padding: 12px;
+        border-radius: 6px;
+        transition: background-color 0.15s ease;
+    }
+
+    .activity-item:hover {
+        background-color: #fafafa;
+    }
+
+    .activity-icon {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #8661c5 0%, #6b4ba1 100%);
+        color: #ffffff;
+        border-radius: 6px;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-title {
+        font-size: 14px;
+        color: #171717;
+        margin-bottom: 4px;
+    }
+
+    .activity-time {
+        font-size: 13px;
+        color: #737373;
+    }
+</style>
+
+<script>
+    function toggleSidebarLinear() {
+        const sidebar = document.getElementById('sidebarLinear');
+        sidebar.classList.toggle('collapsed');
+        const icon = sidebar.querySelector('.collapse-btn .icon');
+        icon.textContent = sidebar.classList.contains('collapsed') ? '→' : '←';
+    }
+</script>

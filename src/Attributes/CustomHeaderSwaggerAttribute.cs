@@ -1,4 +1,4 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace AzureNamingTool.Attributes
@@ -15,7 +15,7 @@ namespace AzureNamingTool.Attributes
         /// <param name="context">The OperationFilterContext object representing the context of the operation.</param>
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
         {
-            operation.Parameters ??= new List<OpenApiParameter>();
+            operation.Parameters ??= [];
 
             operation.Parameters.Add(new OpenApiParameter
             {
@@ -24,7 +24,7 @@ namespace AzureNamingTool.Attributes
                 Required = true,
                 Schema = new OpenApiSchema
                 {
-                    Type = "string"
+                    Type = JsonSchemaType.String
                 }
             });
         }

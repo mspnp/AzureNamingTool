@@ -1,6 +1,8 @@
-﻿using AzureNamingTool.Models;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+using AzureNamingTool.Models;
 using AzureNamingTool.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Asp.Versioning;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +13,7 @@ using System.Text;
 using System.Collections;
 using System.Threading;
 using AzureNamingTool.Services;
+using AzureNamingTool.Services.Interfaces;
 using AzureNamingTool.Attributes;
 
 namespace AzureNamingTool.Controllers
@@ -19,10 +22,26 @@ namespace AzureNamingTool.Controllers
     /// Controller for handling resource naming requests.
     /// </summary>
     [Route("api/[controller]")]
+    [ApiVersion("1.0")]
     [ApiController]
     [ApiKey]
+    [Produces("application/json")]
     public class ResourceNamingRequestsController : ControllerBase
     {
+        private readonly IResourceNamingRequestService _resourceNamingRequestService;
+        private readonly IResourceTypeService _resourceTypeService;
+        private readonly IAdminLogService _adminLogService;
+
+        public ResourceNamingRequestsController(
+            IResourceNamingRequestService resourceNamingRequestService,
+            IResourceTypeService resourceTypeService,
+            IAdminLogService adminLogService)
+        {
+            _resourceNamingRequestService = resourceNamingRequestService;
+            _resourceTypeService = resourceTypeService;
+            _adminLogService = adminLogService;
+        }
+
         private ServiceResponse serviceResponse = new();
         // POST api/<ResourceNamingRequestsController>
         /// <summary>
@@ -32,11 +51,15 @@ namespace AzureNamingTool.Controllers
         /// <returns>string - Name generation response</returns>
         [HttpPost]
         [Route("[action]")]
+        [ProducesResponseType(typeof(ResourceNameResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResourceNameResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RequestNameWithComponents([FromBody] ResourceNameRequestWithComponents request)
         {
             try
             {
-                ResourceNameResponse resourceNameRequestResponse = await ResourceNamingRequestService.RequestNameWithComponents(request);
+                ResourceNameResponse resourceNameRequestResponse = await _resourceNamingRequestService.RequestNameWithComponentsAsync(request);
                 if (resourceNameRequestResponse.Success)
                 {
                     return Ok(resourceNameRequestResponse);
@@ -48,7 +71,7 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex.Message);
             }
         }
@@ -61,12 +84,16 @@ namespace AzureNamingTool.Controllers
         /// <returns>string - Name generation response</returns>
         [HttpPost]
         [Route("[action]")]
+        [ProducesResponseType(typeof(ResourceNameResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResourceNameResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RequestName([FromBody] ResourceNameRequest request)
         {
             try
             {
                 request.CreatedBy = "API";
-                ResourceNameResponse resourceNameRequestResponse = await ResourceNamingRequestService.RequestName(request);
+                ResourceNameResponse resourceNameRequestResponse = await _resourceNamingRequestService.RequestNameAsync(request);
                 if (resourceNameRequestResponse.Success)
                 {
                     return Ok(resourceNameRequestResponse);
@@ -78,7 +105,7 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex.Message);
             }
         }
@@ -91,12 +118,16 @@ namespace AzureNamingTool.Controllers
         /// <returns>ValidateNameResponse - Name validation response</returns>
         [HttpPost]
         [Route("[action]")]
+        [ProducesResponseType(typeof(ValidateNameResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ValidateName([FromBody] ValidateNameRequest validateNameRequest)
         {
             try
             {
                 // Get the current delimiter
-                serviceResponse = await ResourceTypeService.ValidateResourceTypeName(validateNameRequest);
+                serviceResponse = await _resourceTypeService.ValidateResourceTypeNameAsync(validateNameRequest);
                 if (serviceResponse.Success)
                 {
                     if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
@@ -116,9 +147,11 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex.Message);
             }
         }
     }
 }
+
+#pragma warning restore CS1591

@@ -1,11 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<Version>4.3.2</Version>
+		<Version>5.0.0</Version>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);CS8602;CS8600;CS1998</NoWarn>
 		<UserSecretsId>eca63fb9-b7f9-454f-910b-5088ae877085</UserSecretsId>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 		<DockerfileContext>.</DockerfileContext>
@@ -20,20 +21,34 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
+		<PackageReference Include="Azure.Identity" Version="1.17.1" />
+		<PackageReference Include="Azure.ResourceManager" Version="1.13.2" />
+		<PackageReference Include="Azure.ResourceManager.ResourceGraph" Version="1.1.0" />
+		<PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.8.0" />
 		<PackageReference Include="BlazorDownloadFile" Version="2.4.0.2" />
 		<PackageReference Include="Blazored.Modal" Version="7.3.1" />
 		<PackageReference Include="Blazored.Toast" Version="4.2.1" />
-		<PackageReference Include="Markdig" Version="0.40.0" />
-		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.2" />
+		<PackageReference Include="Markdig" Version="0.44.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.OpenApi" Version="2.3.10" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
 		<PackageReference Include="PSC.Blazor.Components.MarkdownEditor" Version="8.0.8" />
-		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="8.1.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="8.1.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="8.1.0" />
-		<PackageReference Include="System.Runtime.Caching" Version="9.0.4" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="10.0.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="10.0.1" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.0.1" />
+		<PackageReference Include="System.Runtime.Caching" Version="10.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<None Update="settings\blank.txt">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="repository\**\*.*">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>

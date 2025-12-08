@@ -1,0 +1,694 @@
+@page "/design-mockup-4"
+@* TEMPORARY DESIGN MOCKUP - DELETE AFTER EVALUATION *@
+@* Modern Azure with Collapsible Left Sidebar *@
+
+<div class="design-mockup-4">
+    <!-- Left Sidebar Navigation -->
+    <nav class="sidebar-nav" id="sidebar4">
+        <div class="sidebar-header">
+            <img src="/images/AzureNamingToolLogo.png" alt="Logo" class="sidebar-logo" />
+            <span class="sidebar-title">Azure Naming Tool</span>
+        </div>
+        
+        <div class="sidebar-menu">
+            <a href="#" class="sidebar-item active">
+                <i class="bi bi-lightning-charge"></i>
+                <span>Generate</span>
+            </a>
+            
+            <div class="sidebar-group">
+                <div class="sidebar-group-label">
+                    <i class="bi bi-box"></i>
+                    <span>Components</span>
+                </div>
+                <a href="#" class="sidebar-item">
+                    <i class="bi bi-square"></i>
+                    <span>Resource Types</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <i class="bi bi-cloud"></i>
+                    <span>Environments</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <i class="bi bi-geo-alt"></i>
+                    <span>Locations</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <i class="bi bi-building"></i>
+                    <span>Organizations</span>
+                </a>
+                <a href="#" class="sidebar-item">
+                    <i class="bi bi-diagram-3"></i>
+                    <span>Functions</span>
+                </a>
+            </div>
+
+            <a href="#" class="sidebar-item">
+                <i class="bi bi-clock-history"></i>
+                <span>History</span>
+            </a>
+            
+            <a href="#" class="sidebar-item">
+                <i class="bi bi-gear"></i>
+                <span>Configuration</span>
+            </a>
+            
+            <a href="#" class="sidebar-item">
+                <i class="bi bi-shield-lock"></i>
+                <span>Admin</span>
+            </a>
+        </div>
+
+        <button class="sidebar-toggle" onclick="document.getElementById('sidebar4').classList.toggle('collapsed')">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <h1 class="page-title">Generate Resource Name</h1>
+            </div>
+            <div class="top-bar-right">
+                <button class="btn-top-action">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    New Name
+                </button>
+                <button class="btn-top-icon">
+                    <i class="bi bi-bell"></i>
+                </button>
+                <button class="btn-top-icon">
+                    <i class="bi bi-person-circle"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content-area">
+            <div class="row g-4">
+                <!-- Left Column -->
+                <div class="col-lg-8">
+                    <div class="card-modern">
+                        <div class="card-modern-header">
+                            <h2 class="card-modern-title">
+                                <i class="bi bi-sliders me-2"></i>
+                                Resource Configuration
+                            </h2>
+                        </div>
+                        <div class="card-modern-body">
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Resource Type</label>
+                                <select class="form-control-modern">
+                                    <option>Virtual Machine</option>
+                                    <option>Storage Account</option>
+                                    <option>App Service</option>
+                                </select>
+                            </div>
+
+                            <div class="row g-3 mt-2">
+                                <div class="col-md-6">
+                                    <div class="form-group-modern">
+                                        <label class="form-label-modern">Environment</label>
+                                        <select class="form-control-modern">
+                                            <option>Production</option>
+                                            <option>Development</option>
+                                            <option>Testing</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group-modern">
+                                        <label class="form-label-modern">Location</label>
+                                        <select class="form-control-modern">
+                                            <option>East US</option>
+                                            <option>West Europe</option>
+                                            <option>Southeast Asia</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <button class="btn-generate-modern w-100">
+                                    <i class="bi bi-stars me-2"></i>
+                                    Generate Name
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="row g-3 mt-3">
+                        <div class="col-md-4">
+                            <div class="stat-card-modern">
+                                <div class="stat-icon-modern bg-primary">
+                                    <i class="bi bi-check-circle"></i>
+                                </div>
+                                <div class="stat-content-modern">
+                                    <div class="stat-value-modern">1,234</div>
+                                    <div class="stat-label-modern">Generated</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-card-modern">
+                                <div class="stat-icon-modern bg-success">
+                                    <i class="bi bi-building"></i>
+                                </div>
+                                <div class="stat-content-modern">
+                                    <div class="stat-value-modern">42</div>
+                                    <div class="stat-label-modern">Types</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stat-card-modern">
+                                <div class="stat-icon-modern bg-info">
+                                    <i class="bi bi-globe"></i>
+                                </div>
+                                <div class="stat-content-modern">
+                                    <div class="stat-value-modern">12</div>
+                                    <div class="stat-label-modern">Locations</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-lg-4">
+                    <div class="card-modern">
+                        <div class="card-modern-header">
+                            <h2 class="card-modern-title">
+                                <i class="bi bi-code-square me-2"></i>
+                                Generated Output
+                            </h2>
+                        </div>
+                        <div class="card-modern-body">
+                            <div class="output-display">
+                                <div class="output-label-modern">Resource Name</div>
+                                <div class="output-code-modern">vm-prod-eastus-001</div>
+                                <button class="btn-copy-modern mt-3">
+                                    <i class="bi bi-clipboard me-2"></i>
+                                    Copy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-modern mt-3">
+                        <div class="card-modern-header">
+                            <h2 class="card-modern-title">
+                                <i class="bi bi-clock-history me-2"></i>
+                                Recent
+                            </h2>
+                        </div>
+                        <div class="card-modern-body p-0">
+                            <div class="recent-list-modern">
+                                <div class="recent-item-modern">
+                                    <i class="bi bi-hdd recent-icon-modern"></i>
+                                    <div class="recent-details-modern">
+                                        <div class="recent-name-modern">vm-prod-eastus-001</div>
+                                        <div class="recent-time-modern">2 minutes ago</div>
+                                    </div>
+                                </div>
+                                <div class="recent-item-modern">
+                                    <i class="bi bi-database recent-icon-modern"></i>
+                                    <div class="recent-details-modern">
+                                        <div class="recent-name-modern">st-dev-westeu-002</div>
+                                        <div class="recent-time-modern">15 minutes ago</div>
+                                    </div>
+                                </div>
+                                <div class="recent-item-modern">
+                                    <i class="bi bi-window recent-icon-modern"></i>
+                                    <div class="recent-details-modern">
+                                        <div class="recent-name-modern">app-test-sea-003</div>
+                                        <div class="recent-time-modern">1 hour ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* DESIGN MOCKUP 4 - MODERN SIDEBAR */
+    .design-mockup-4 {
+        display: flex;
+        min-height: 100vh;
+        background: #f5f7fa;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar-nav {
+        width: 260px;
+        background: #ffffff;
+        border-right: 1px solid #e1e4e8;
+        display: flex;
+        flex-direction: column;
+        transition: width 0.3s ease;
+        position: relative;
+        z-index: 100;
+    }
+
+    .sidebar-nav.collapsed {
+        width: 70px;
+    }
+
+    .sidebar-nav.collapsed .sidebar-title,
+    .sidebar-nav.collapsed .sidebar-item span,
+    .sidebar-nav.collapsed .sidebar-group-label span {
+        opacity: 0;
+        width: 0;
+        overflow: hidden;
+    }
+
+    .sidebar-header {
+        padding: 1.25rem 1rem;
+        border-bottom: 1px solid #e1e4e8;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .sidebar-logo {
+        height: 32px;
+        flex-shrink: 0;
+    }
+
+    .sidebar-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #0078d4;
+        white-space: nowrap;
+        transition: opacity 0.3s ease, width 0.3s ease;
+    }
+
+    .sidebar-menu {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem 0;
+    }
+
+    .sidebar-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        color: #586069;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        font-size: 0.9rem;
+        border-left: 3px solid transparent;
+    }
+
+    .sidebar-item i {
+        font-size: 1.1rem;
+        flex-shrink: 0;
+        width: 20px;
+        text-align: center;
+    }
+
+    .sidebar-item span {
+        white-space: nowrap;
+        transition: opacity 0.3s ease, width 0.3s ease;
+    }
+
+    .sidebar-item:hover {
+        background: #f6f8fa;
+        color: #0078d4;
+    }
+
+    .sidebar-item.active {
+        background: #e7f3ff;
+        color: #0078d4;
+        border-left-color: #0078d4;
+        font-weight: 600;
+    }
+
+    .sidebar-group {
+        margin: 0.5rem 0;
+    }
+
+    .sidebar-group-label {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 1rem;
+        color: #959da5;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .sidebar-group-label i {
+        font-size: 0.9rem;
+        flex-shrink: 0;
+        width: 20px;
+        text-align: center;
+    }
+
+    .sidebar-group-label span {
+        white-space: nowrap;
+        transition: opacity 0.3s ease, width 0.3s ease;
+    }
+
+    .sidebar-group .sidebar-item {
+        padding-left: 2.5rem;
+        font-size: 0.85rem;
+    }
+
+    .sidebar-toggle {
+        position: absolute;
+        bottom: 1rem;
+        right: -12px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: white;
+        border: 1px solid #e1e4e8;
+        color: #586069;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 0.75rem;
+    }
+
+    .sidebar-toggle:hover {
+        background: #0078d4;
+        color: white;
+        border-color: #0078d4;
+    }
+
+    .sidebar-nav.collapsed .sidebar-toggle i {
+        transform: rotate(180deg);
+    }
+
+    /* Main Content */
+    .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .top-bar {
+        background: white;
+        border-bottom: 1px solid #e1e4e8;
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #24292e;
+        margin: 0;
+    }
+
+    .top-bar-right {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .btn-top-action {
+        background: #0078d4;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .btn-top-action:hover {
+        background: #005a9e;
+        color: white;
+    }
+
+    .btn-top-icon {
+        background: transparent;
+        border: none;
+        color: #586069;
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        transition: all 0.2s ease;
+    }
+
+    .btn-top-icon:hover {
+        background: #f6f8fa;
+        color: #24292e;
+    }
+
+    .content-area {
+        flex: 1;
+        padding: 1.5rem;
+        overflow-y: auto;
+    }
+
+    /* Cards */
+    .card-modern {
+        background: white;
+        border: 1px solid #e1e4e8;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .card-modern-header {
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid #e1e4e8;
+        background: #fafbfc;
+    }
+
+    .card-modern-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #24292e;
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .card-modern-title i {
+        color: #0078d4;
+    }
+
+    .card-modern-body {
+        padding: 1.25rem;
+    }
+
+    /* Forms */
+    .form-group-modern {
+        margin-bottom: 0;
+    }
+
+    .form-label-modern {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #24292e;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control-modern {
+        width: 100%;
+        padding: 0.6rem 0.875rem;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        background: white;
+        transition: all 0.2s ease;
+    }
+
+    .form-control-modern:focus {
+        outline: none;
+        border-color: #0078d4;
+        box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.1);
+    }
+
+    .btn-generate-modern {
+        background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .btn-generate-modern:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 120, 212, 0.25);
+        color: white;
+    }
+
+    /* Stats */
+    .stat-card-modern {
+        background: white;
+        border: 1px solid #e1e4e8;
+        border-radius: 8px;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.875rem;
+        transition: all 0.2s ease;
+    }
+
+    .stat-card-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .stat-icon-modern {
+        width: 42px;
+        height: 42px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: white;
+    }
+
+    .stat-icon-modern.bg-primary {
+        background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+    }
+
+    .stat-icon-modern.bg-success {
+        background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+    }
+
+    .stat-icon-modern.bg-info {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    }
+
+    .stat-value-modern {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #24292e;
+    }
+
+    .stat-label-modern {
+        font-size: 0.8rem;
+        color: #586069;
+        font-weight: 500;
+    }
+
+    /* Output Display */
+    .output-display {
+        text-align: center;
+    }
+
+    .output-label-modern {
+        font-size: 0.75rem;
+        color: #586069;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .output-code-modern {
+        font-family: 'Consolas', 'Monaco', monospace;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #0078d4;
+        background: #f6f8fa;
+        padding: 1rem;
+        border-radius: 6px;
+        border: 1px solid #0078d4;
+    }
+
+    .btn-copy-modern {
+        background: #0078d4;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .btn-copy-modern:hover {
+        background: #005a9e;
+        color: white;
+    }
+
+    /* Recent List */
+    .recent-list-modern {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .recent-item-modern {
+        display: flex;
+        align-items: center;
+        gap: 0.875rem;
+        padding: 0.875rem 1.25rem;
+        border-bottom: 1px solid #e1e4e8;
+        transition: all 0.15s ease;
+    }
+
+    .recent-item-modern:last-child {
+        border-bottom: none;
+    }
+
+    .recent-item-modern:hover {
+        background: #f6f8fa;
+    }
+
+    .recent-icon-modern {
+        font-size: 1.2rem;
+        color: #0078d4;
+        flex-shrink: 0;
+    }
+
+    .recent-name-modern {
+        font-family: 'Consolas', 'Monaco', monospace;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #24292e;
+    }
+
+    .recent-time-modern {
+        font-size: 0.75rem;
+        color: #959da5;
+        margin-top: 0.2rem;
+    }
+</style>
+
+<script>
+    // Toggle sidebar on button click
+    document.addEventListener('DOMContentLoaded', function() {
+        const sidebar = document.getElementById('sidebar4');
+        const toggle = sidebar?.querySelector('.sidebar-toggle');
+        
+        if (toggle && sidebar) {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        }
+    });
+</script>

@@ -1,7 +1,8 @@
-﻿@page "/generate"
+@page "/generate"
 @using AzureNamingTool.Helpers
 @using AzureNamingTool.Models
 @using AzureNamingTool.Services
+@using AzureNamingTool.Services.Interfaces
 @using AzureNamingTool.Components.Modals;
 @using System.Text;
 @using AzureNamingTool.Components.General;
@@ -11,27 +12,35 @@
 @inject ProtectedSessionStorage session
 @inject IJSRuntime JsRuntime
 @inject IToastService toastService
+@inject ServicesHelper ServicesHelper
 
 <PageTitle>Azure Naming Tool - Generate</PageTitle>
-<div class="card @theme.ThemeStyle">
-    <div class="card-body">
-        <div style="float:left;">
-            <h1>
-                Generate
-            </h1>
-        </div>
-        <div style="float:right;">
-            <button class="btn btn-secondary" title="Instructions" @onclick="@(e => ModalHelper.ShowInformationModal(Modal!, theme, "bg-navcolor", "Generate", String.Empty, "generateinstructions", false))">
-                <span class="oi oi-document" aria-hidden="true"></span> Documentation
-            </button>
-        </div>
-        <div style="clear:both;"></div>
-        <div class="mb-3">This page generates a name for the selected resource type.</div>
-        <div class="card mb-3">
-            <h5 class="card-header bg-default text-dark">
-                Instructions
-            </h5>
-            <div class="card card-body @theme.ThemeStyle">
+
+<div class="modern-page-container">
+    <div class="modern-page-title">
+        <h1>Generate</h1>
+    </div>
+    
+    <div class="modern-page-description">
+        <p>Generate a name for the selected resource type</p>
+    </div>
+    
+    <div class="modern-page-actions">
+        <button class="modern-btn-secondary" title="Instructions" @onclick="@(e => ModalHelper.ShowInformationModal(Modal!, theme, "bg-navcolor", "Generate", String.Empty, "generateinstructions", false))">
+            <span class="oi oi-document" aria-hidden="true"></span> Documentation
+        </button>
+    </div>
+</div>
+
+<div class="modern-card">
+    <div class="modern-card-body">
+        <div class="modern-card mb-4">
+            <div class="modern-card-header collapsible collapsed" data-bs-toggle="collapse" data-bs-target="#instructions" aria-expanded="false">
+                <h3>
+                    <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Instructions
+                </h3>
+            </div>
+            <div class="collapse modern-card-body" id="instructions">
                 <ol>
                     <li>
                         Select the desired Resource Type / Resource Types
@@ -46,7 +55,7 @@
                         Click <span class="fw-bold">Generate</span> to generate the Azure resource name(s)
                     </li>
                     <li>
-                        View generated names in the <a href="/generatednameslog">Generated Names Log</a>
+                        View generated names in the <a href="/generatednameslog" class="modern-link">Generated Names Log</a>
                     </li>
                 </ol>
             </div>
@@ -63,39 +72,43 @@
                 <DataAnnotationsValidator />
                 <ValidationSummary />
                 <div id="generator">
-                    <div class="card @theme.ThemeStyle mb-3">
-                        <h5 class="card-header text-white bg-secondary">
-                            Generate Mode
-                        </h5>
-                        <div class="card card-body @theme.ThemeStyle">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="generateselect" id="singleselect" value="single" checked @onclick="@(e => OnGenerateModeChange("single"))">
-                                <label class="form-check-label" for="singleselect">
-                                    <span class="fw-bold">Generate Single Resouce Type Name</span><br />This option will allow the generation of a single resource type name using the selected components.
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="generateselect" id="multiselect" value="multi" @onclick="@(e => OnGenerateModeChange("multi"))">
-                                <label class="form-check-label" for="multiselect">
-                                    <span class="fw-bold">Generate Multiple Resource Type Names</span><br />This option will allow the generatation of names for multiple resource types using the selected components. <span class="warning-message">All components will be required (Optional and Excluded Components).</span>
-                                </label>
+                    <div class="modern-card mb-3">
+                        <div class="modern-card-header">
+                            <h5 class="modern-card-title mb-0">Generate Mode</h5>
+                        </div>
+                        <div class="modern-card-body">
+                            <div class="modern-radio-group">
+                                <div class="modern-radio-item">
+                                    <input class="modern-radio-input" type="radio" name="generateselect" id="singleselect" value="single" checked @onclick="@(e => OnGenerateModeChange("single"))">
+                                    <label class="modern-radio-label" for="singleselect">
+                                        <div class="modern-radio-title">Generate Single Resource Type Name</div>
+                                        <div class="modern-radio-description">This option will allow the generation of a single resource type name using the selected components.</div>
+                                    </label>
+                                </div>
+                                <div class="modern-radio-item">
+                                    <input class="modern-radio-input" type="radio" name="generateselect" id="multiselect" value="multi" @onclick="@(e => OnGenerateModeChange("multi"))">
+                                    <label class="modern-radio-label" for="multiselect">
+                                        <div class="modern-radio-title">Generate Multiple Resource Type Names</div>
+                                        <div class="modern-radio-description">This option will allow the generation of names for multiple resource types using the selected components. <span class="modern-text-warning">All components will be required (Optional and Excluded Components).</span></div>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card @theme.ThemeStyle mb-3 @resourcetypeVisible" id="single">
-                        <h5 class="card-header text-white bg-secondary">
-                            Resource Type
-                        </h5>
-                        <div class="card card-body @theme.ThemeStyle">
+                    <div class="modern-card mb-3 @resourcetypeVisible" id="single">
+                        <div class="modern-card-header">
+                            <h5 class="modern-card-title mb-0">Resource Type</h5>
+                        </div>
+                        <div class="modern-card-body">
                             <p>
                                 Select the desired resource type.
                             </p>
                             <div class="mb-3">
-                                <div class="input-group flex-nowrap">
-                                    <span class="input-group-text" id="addon-wrapping">
-                                        <span class="oi oi-magnifying-glass" id="addon-wrapping"></span>
+                                <div class="modern-input-group">
+                                    <span class="modern-input-group-icon">
+                                        <span class="oi oi-magnifying-glass"></span>
                                     </span>
-                                    <input @bind-value="@selectedResourceTypeCategory" @oninput="(EventArgs) => { OnCategoryChanged(EventArgs.Value!.ToString()!);}" class="@GetControlStyle()" list="categorieslist" id="generatecategories" placeholder="Type to filter by category..." autocomplete="off">
+                                    <input @bind-value="@selectedResourceTypeCategory" @oninput="(EventArgs) => { OnCategoryChanged(EventArgs.Value!.ToString()!);}" class="modern-form-input" list="categorieslist" id="generatecategories" placeholder="Type to filter by category..." autocomplete="off">
                                     <datalist id="categorieslist">
                                         @foreach (var category in @categories)
                                         {
@@ -103,11 +116,11 @@
                                         }
                                     </datalist>
                                 </div>
-                                <div class="input-group flex-nowrap">
-                                    <span class="input-group-text" id="addon-wrapping">
-                                        <span class="oi oi-magnifying-glass" id="addon-wrapping"></span>
+                                <div class="modern-input-group mt-2">
+                                    <span class="modern-input-group-icon">
+                                        <span class="oi oi-magnifying-glass"></span>
                                     </span>
-                                    <input @bind-value="@selectedResourceTypeDisplayName" @oninput="(EventArgs) => { OnTypeChanged(EventArgs.Value!.ToString()!).GetAwaiter();}" class="@GetControlStyle()" list="typeslist" id="generatetypes" placeholder="Type to search resource types..." autocomplete="off">
+                                    <input @bind-value="@selectedResourceTypeDisplayName" @oninput="(EventArgs) => { OnTypeChanged(EventArgs.Value!.ToString()!).GetAwaiter();}" class="modern-form-input" list="typeslist" id="generatetypes" placeholder="Type to search resource types..." autocomplete="off">
                                     <datalist id="typeslist">
                                         @foreach (var type in @ResourceTypeService.GetFilteredResourceTypes(servicesData.ResourceTypes, selectedResourceTypeCategory))
                                         {
@@ -124,63 +137,58 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <input type="button" class="btn btn-success" title="Clear" value="Clear" @onclick="@(e => ResetForm(true))" />
+                                <button type="button" class="modern-btn-success" title="Clear" @onclick="@(e => ResetForm(true))">
+                                    <span class="oi oi-reload" aria-hidden="true"></span> Clear
+                                </button>
                             </div>
                             @if (GeneralHelper.IsNotNull(currentResourceType))
                             {
                                 @if (!filteredscopes.Contains(currentResourceType.Scope))
                                 {
-                                    <table class="table table-warning w-100 mt-3" style="margin-bottom:0;">
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    <span class="fw-bold">This resource has a lower-level scope and does not require a unique name.</span><a id="@currentResourceType.Id"></a>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                }
-                                <div id="guidelines" class="card mt-3">
-                                    <div class="card-header bg-default text-dark">
-                                        <a id="NamingGuidlines" class="link-dark text-decoration-none" data-bs-toggle="collapse" href="#namingguidelines" role="button" aria-expanded="false" aria-controls="namingguidelines">
-                                            <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Naming Guidelines
-                                        </a>
+                                    <div class="modern-alert-warning mt-3">
+                                        <strong>Note:</strong> This resource has a lower-level scope and does not require a unique name.
                                     </div>
-                                    <div class="collapse card card-body @theme.ThemeStyle" id="namingguidelines">
+                                }
+                                <div id="guidelines" class="modern-card mt-3">
+                                    <div class="modern-card-header modern-card-header-collapsible" data-bs-toggle="collapse" data-bs-target="#namingguidelines" aria-expanded="false">
+                                        <span class="oi oi-chevron-bottom modern-collapse-icon" aria-hidden="true"></span>
+                                        <span class="modern-card-title">Naming Guidelines</span>
+                                    </div>
+                                    <div class="collapse modern-card-body" id="namingguidelines">
                                         @if (!String.IsNullOrEmpty(currentResourceType.LengthMin))
                                         {
-                                            <div><span class="fw-bold">Minimum Length:</span> @currentResourceType.LengthMin</div>
+                                            <div class="mb-2"><strong>Minimum Length:</strong> @currentResourceType.LengthMin</div>
                                         }
                                         @if (!String.IsNullOrEmpty(currentResourceType.LengthMax))
                                         {
-                                            <div><span class="fw-bold">Maximum Length:</span> @currentResourceType.LengthMax</div>
+                                            <div class="mb-2"><strong>Maximum Length:</strong> @currentResourceType.LengthMax</div>
                                         }
                                         @if (!String.IsNullOrEmpty(currentResourceType.ValidText))
                                         {
-                                            <div><span class="fw-bold">Valid Text:</span> @currentResourceType.ValidText</div>
+                                            <div class="mb-2"><strong>Valid Text:</strong> @currentResourceType.ValidText</div>
                                         }
                                         @if (!String.IsNullOrEmpty(currentResourceType.Optional))
                                         {
-                                            <div><span class="fw-bold">Optional:</span> @currentResourceType.Optional</div>
+                                            <div class="mb-2"><strong>Optional:</strong> @currentResourceType.Optional</div>
                                         }
                                         @if (!String.IsNullOrEmpty(currentResourceType.Exclude))
                                         {
-                                            <div><span class="fw-bold">Excluded:</span> @currentResourceType.Exclude</div>
+                                            <div class="mb-2"><strong>Excluded:</strong> @currentResourceType.Exclude</div>
                                         }
                                         @if (!String.IsNullOrEmpty(currentResourceType.Regx))
                                         {
-                                            <div><span class="fw-bold">Regx:</span> @currentResourceType.Regx</div>
+                                            <div class="mb-2"><strong>Regx:</strong> @currentResourceType.Regx</div>
                                         }
                                     </div>
                                 </div>
                             }
                         </div>
                     </div>
-                    <div class="card @theme.ThemeStyle mb-3 @resourcetypesVisible" id="multi">
-                        <h5 class="card-header text-white bg-secondary">
-                            Resource Types
-                        </h5>
-                        <div class="card card-body @theme.ThemeStyle">
+                    <div class="modern-card mb-3 @resourcetypesVisible" id="multi">
+                        <div class="modern-card-header">
+                            <h5 class="modern-card-title mb-0">Resource Types</h5>
+                        </div>
+                        <div class="modern-card-body">
                             <p>The current selected resource types.</p>
                             <ul>
                                 @foreach (string id in multiselectedResourceTypes)
@@ -201,9 +209,13 @@
                                     }
                                 }
                             </ul>
-                            <div class="m-3">
-                                <button type="button" title="Select" class="btn btn-primary" @onclick="@(e => OpenMultiSelectModal(false))">Select</button>
-                                <button type="button" class="btn btn-success" title="Clear" value="Clear" @onclick="@(e => ResetForm(true))">Clear</button>
+                            <div class="mt-3">
+                                <button type="button" title="Select" class="modern-btn-primary" @onclick="OnSelectResourceTypesClick">
+                                    <span class="oi oi-list" aria-hidden="true"></span> Select
+                                </button>
+                                <button type="button" class="modern-btn-success" title="Clear" @onclick="OnClearClick">
+                                    <span class="oi oi-reload" aria-hidden="true"></span> Clear
+                                </button>
                             </div>
 
                         </div>
@@ -214,7 +226,9 @@
                         @if (componentsVisible == "collapse")
                         {
                             <div class="mt-3 mb-3">
-                                <input type="button" title="Show/Hide Components" class="btn btn-primary" data-bs-toggle="collapse" href="#components" value="Show/Hide Components" />
+                                <button type="button" title="Show/Hide Components" class="modern-btn-primary" data-bs-toggle="collapse" data-bs-target="#components">
+                                    <span class="oi oi-eye" aria-hidden="true"></span> Show/Hide Components
+                                </button>
                             </div>
                         }
 
@@ -226,20 +240,19 @@
                                     switch (resourceComponent.Name)
                                     {
                                         case "ResourceEnvironment":
-                                            <div class="card @theme.ThemeStyle mb-3">
-                                                <h5 class="card-header text-white bg-secondary">
+                                            <div class="modern-card mb-3">
+                                                <div class="modern-card-header"><h5 class="modern-card-title mb-0">
                                                     @resourceComponent.DisplayName
                                                     @if (((selectedResourceTypeOptional.ToLower().Split(',').Contains("environment")) && (multiselectedResourceTypes.Count == 0)))
                                                     {
                                                         @((MarkupString)optional)
                                                     }
-                                                </h5>
-                                                <div class="card card-body @theme.ThemeStyle">
+                                                </h5></div><div class="modern-card-body">
                                                     @if (!String.IsNullOrEmpty(resourceComponent.Description))
                                                     {
                                                         <p>@resourceComponent.Description</p>
                                                     }
-                                                    <InputSelect title="@resourceComponent.DisplayName" class="@GetControlStyle()" ValueExpression="@(()=>selectedResourceEnvironment)"
+                                                    <InputSelect title="@resourceComponent.DisplayName" class="modern-form-input" ValueExpression="@(()=>selectedResourceEnvironment)"
                                                                  Value="@selectedResourceEnvironment"
                                                                  ValueChanged="@((string value) => OnComponentChanged("re",value))">
                                                         <option value="">Select an environment</option>
@@ -252,20 +265,19 @@
                                             </div>
                                             break;
                                         case "ResourceFunction":
-                                            <div class="card @theme.ThemeStyle mb-3">
-                                                <h5 class="card-header text-white bg-secondary">
+                                            <div class="modern-card mb-3">
+                                                <div class="modern-card-header"><h5 class="modern-card-title mb-0">
                                                     @resourceComponent.DisplayName
                                                     @if (((selectedResourceTypeOptional.ToLower().Split(',').Contains("function")) && (multiselectedResourceTypes.Count == 0)))
                                                     {
                                                         @((MarkupString)optional)
                                                     }
-                                                </h5>
-                                                <div class="card card-body @theme.ThemeStyle">
+                                                </h5></div><div class="modern-card-body">
                                                     @if (!String.IsNullOrEmpty(resourceComponent.Description))
                                                     {
                                                         <p>@resourceComponent.Description</p>
                                                     }
-                                                    <InputSelect title="@resourceComponent.DisplayName" class="@GetControlStyle()" ValueExpression="@(()=>selectedResourceFunction)"
+                                                    <InputSelect title="@resourceComponent.DisplayName" class="modern-form-input" ValueExpression="@(()=>selectedResourceFunction)"
                                                                  Value="@selectedResourceFunction"
                                                                  ValueChanged="@((string value) => OnComponentChanged("rf",value))">
                                                         <option value="">Select a Function</option>
@@ -278,8 +290,8 @@
                                             </div>
                                             break;
                                         case "ResourceInstance":
-                                            <div class="card @theme.ThemeStyle mb-3">
-                                                <h5 class="card-header text-white bg-secondary">
+                                            <div class="modern-card mb-3">
+                                                <div class="modern-card-header"><h5 class="modern-card-title mb-0">
                                                     @resourceComponent.DisplayName
                                                     @if (int.Parse(resourceComponent.MinLength) == int.Parse(resourceComponent.MaxLength))
                                                     {
@@ -293,33 +305,31 @@
                                                     {
                                                         @((MarkupString)optional)
                                                     }
-                                                </h5>
-                                                <div class="card card-body @theme.ThemeStyle">
+                                                </h5></div><div class="modern-card-body">
                                                     @if (!String.IsNullOrEmpty(resourceComponent.Description))
                                                     {
                                                         <p>@resourceComponent.Description</p>
                                                     }
-                                                    <InputText title="@resourceComponent.DisplayName" class="@GetControlStyle()" id="ri" ValueExpression="@(()=>selectedResourceInstance)"
+                                                    <InputText title="@resourceComponent.DisplayName" class="modern-form-input" id="ri" ValueExpression="@(()=>selectedResourceInstance)"
                                                                Value="@selectedResourceInstance" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))"
                                                                ValueChanged="@((string value) => OnComponentChanged("ri",value))" />
                                                 </div>
                                             </div>
                                             break;
                                         case "ResourceLocation":
-                                            <div class="card @theme.ThemeStyle mb-3">
-                                                <h5 class="card-header text-white bg-secondary">
+                                            <div class="modern-card mb-3">
+                                                <div class="modern-card-header"><h5 class="modern-card-title mb-0">
                                                     @resourceComponent.DisplayName
                                                     @if (((selectedResourceTypeOptional.ToLower().Split(',').Contains("location")) && (multiselectedResourceTypes.Count == 0)))
                                                     {
                                                         @((MarkupString)optional)
                                                     }
-                                                </h5>
-                                                <div class="card card-body @theme.ThemeStyle">
+                                                </h5></div><div class="modern-card-body">
                                                     @if (!String.IsNullOrEmpty(resourceComponent.Description))
                                                     {
                                                         <p>@resourceComponent.Description</p>
                                                     }
-                                                    <InputSelect title="@resourceComponent.DisplayName" class="@GetControlStyle()" ValueExpression="@(()=>selectedResourceLocation)"
+                                                    <InputSelect title="@resourceComponent.DisplayName" class="modern-form-input" ValueExpression="@(()=>selectedResourceLocation)"
                                                                  Value="@selectedResourceLocation"
                                                                  ValueChanged="@((string value) => OnComponentChanged("rl",value))">
                                                         <option value="">Select a location</option>
@@ -332,20 +342,19 @@
                                             </div>
                                             break;
                                         case "ResourceOrg":
-                                            <div class="card @theme.ThemeStyle mb-3">
-                                                <h5 class="card-header text-white bg-secondary">
+                                            <div class="modern-card mb-3">
+                                                <div class="modern-card-header"><h5 class="modern-card-title mb-0">
                                                     @resourceComponent.DisplayName
                                                     @if (((selectedResourceTypeOptional.ToLower().Split(',').Contains("org")) && (multiselectedResourceTypes.Count == 0)))
                                                     {
                                                         @((MarkupString)optional)
                                                     }
-                                                </h5>
-                                                <div class="card card-body @theme.ThemeStyle">
+                                                </h5></div><div class="modern-card-body">
                                                     @if (!String.IsNullOrEmpty(resourceComponent.Description))
                                                     {
                                                         <p>@resourceComponent.Description</p>
                                                     }
-                                                    <InputSelect title="@resourceComponent.DisplayName" class="@GetControlStyle()" ValueExpression="@(()=>selectedResourceOrg)"
+                                                    <InputSelect title="@resourceComponent.DisplayName" class="modern-form-input" ValueExpression="@(()=>selectedResourceOrg)"
                                                                  Value="@selectedResourceOrg"
                                                                  ValueChanged="@((string value) => OnComponentChanged("ro",value))">
                                                         <option value="">Select an org</option>
@@ -358,20 +367,19 @@
                                             </div>
                                             break;
                                         case "ResourceProjAppSvc":
-                                            <div class="card @theme.ThemeStyle mb-3">
-                                                <h5 class="card-header text-white bg-secondary">
+                                            <div class="modern-card mb-3">
+                                                <div class="modern-card-header"><h5 class="modern-card-title mb-0">
                                                     @resourceComponent.DisplayName
                                                     @if (((selectedResourceTypeOptional.ToLower().Split(',').Contains("projappsvc")) && (multiselectedResourceTypes.Count == 0)))
                                                     {
                                                         @((MarkupString)optional)
                                                     }
-                                                </h5>
-                                                <div class="card card-body @theme.ThemeStyle">
+                                                </h5></div><div class="modern-card-body">
                                                     @if (!String.IsNullOrEmpty(resourceComponent.Description))
                                                     {
                                                         <p>@resourceComponent.Description</p>
                                                     }
-                                                    <InputSelect title="@resourceComponent.DisplayName" class="@GetControlStyle()" ValueExpression="@(()=>selectedResourceProjAppSvc)"
+                                                    <InputSelect title="@resourceComponent.DisplayName" class="modern-form-input" ValueExpression="@(()=>selectedResourceProjAppSvc)"
                                                                  Value="@selectedResourceProjAppSvc"
                                                                  ValueChanged="@((string value) => OnComponentChanged("rpas",value))">
                                                         <option value="">Select a project/app/service</option>
@@ -384,20 +392,19 @@
                                             </div>
                                             break;
                                         case "ResourceUnitDept":
-                                            <div class="card @theme.ThemeStyle mb-3">
-                                                <h5 class="card-header text-white bg-secondary">
+                                            <div class="modern-card mb-3">
+                                                <div class="modern-card-header"><h5 class="modern-card-title mb-0">
                                                     @resourceComponent.DisplayName
                                                     @if (((selectedResourceTypeOptional.ToLower().Split(',').Contains("unitdept")) && (multiselectedResourceTypes.Count == 0)))
                                                     {
                                                         @((MarkupString)optional)
                                                     }
-                                                </h5>
-                                                <div class="card card-body @theme.ThemeStyle">
+                                                </h5></div><div class="modern-card-body">
                                                     @if (!String.IsNullOrEmpty(resourceComponent.Description))
                                                     {
                                                         <p>@resourceComponent.Description</p>
                                                     }
-                                                    <InputSelect title="@resourceComponent.DisplayName" class="@GetControlStyle()" ValueExpression="@(()=>selectedResourceUnitDept)"
+                                                    <InputSelect title="@resourceComponent.DisplayName" class="modern-form-input" ValueExpression="@(()=>selectedResourceUnitDept)"
                                                                  Value="@selectedResourceUnitDept"
                                                                  ValueChanged="@((string value) => OnComponentChanged("rud",value))">
                                                         <option value="">Select a unit/dept</option>
@@ -416,20 +423,19 @@
                                                 {
                                                     @if (servicesData.CustomComponents!.Where(x => x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)).Count() > 0)
                                                     {
-                                                        <div class="card @theme.ThemeStyle mb-3">
-                                                            <h5 class="card-header text-white bg-secondary">
+                                                        <div class="modern-card mb-3">
+                                                            <div class="modern-card-header"><h5 class="modern-card-title mb-0">
                                                                 @resourceComponent.Name
                                                                 @if (((selectedResourceTypeOptional.ToLower().Split(',').Contains(GeneralHelper.NormalizeName(resourceComponent.Name, true))) && (multiselectedResourceTypes.Count == 0)))
                                                                 {
                                                                     @((MarkupString)optional)
                                                                 }
-                                                            </h5>
-                                                            <div class="card card-body @theme.ThemeStyle">
+                                                            </h5></div><div class="modern-card-body">
                                                                 @if (!String.IsNullOrEmpty(resourceComponent.Description))
                                                                 {
                                                                     <p>@resourceComponent.Description</p>
                                                                 }
-                                                                <select title="@resourceComponent.DisplayName" class="@GetControlStyle()" value="@selectedCustomComponents[GeneralHelper.NormalizeName(resourceComponent.Name, true)]" @onchange='(e  => OnCustomComponentChanged(e, GeneralHelper.NormalizeName(resourceComponent.Name, true)))'>
+                                                                <select title="@resourceComponent.DisplayName" class="modern-form-input" value="@selectedCustomComponents[GeneralHelper.NormalizeName(resourceComponent.Name, true)]" @onchange='(e  => OnCustomComponentChanged(e, GeneralHelper.NormalizeName(resourceComponent.Name, true)))'>
                                                                     <option value="">Select a component</option>
                                                                     @foreach (var item in @servicesData.CustomComponents!.Where(x => x.ParentComponent == GeneralHelper.NormalizeName(resourceComponent.Name, true)))
                                                                     {
@@ -442,8 +448,8 @@
                                                 }
                                                 else
                                                 {
-                                                    <div class="card @theme.ThemeStyle mb-3">
-                                                        <h5 class="card-header text-white bg-secondary">
+                                                    <div class="modern-card mb-3">
+                                                        <div class="modern-card-header"><h5 class="modern-card-title mb-0">
                                                             @resourceComponent.Name
                                                             @if (int.Parse(resourceComponent.MinLength) == int.Parse(resourceComponent.MaxLength))
                                                             {
@@ -461,13 +467,12 @@
                                                             {
                                                                 <span class="fst-italic fw-normal"> - GENERATED</span>
                                                             }
-                                                        </h5>
-                                                        <div class="card card-body @theme.ThemeStyle">
+                                                        </h5></div><div class="modern-card-body">
                                                             @if (!String.IsNullOrEmpty(resourceComponent.Description))
                                                             {
                                                                 <p>@resourceComponent.Description</p>
                                                             }
-                                                            <input title="@resourceComponent.DisplayName" readonly="@resourceComponent.EnforceRandom" class="@GetControlStyle()" type="text" value="@selectedCustomComponents[GeneralHelper.NormalizeName(resourceComponent.Name, true)]" @onchange="@((ui) => { OnCustomComponentChanged(ui, GeneralHelper.NormalizeName(resourceComponent.Name, true));})" />
+                                                            <input title="@resourceComponent.DisplayName" readonly="@resourceComponent.EnforceRandom" class="modern-form-input" type="text" value="@selectedCustomComponents[GeneralHelper.NormalizeName(resourceComponent.Name, true)]" @onchange="@((ui) => { OnCustomComponentChanged(ui, GeneralHelper.NormalizeName(resourceComponent.Name, true));})" />
                                                         </div>
                                                     </div>
                                                 }
@@ -480,8 +485,7 @@
                             @*<div class="card mb-3">
                     <h5 class="card-header bg-default text-dark">
                     Delimiter (Configured by site administrator)
-                    </h5>
-                    <div class="card card-body @theme.ThemeStyle">
+                    </h5></div><div class="modern-card-body">
                     @resourceDelimiter.Name: @resourceDelimiter.Delimiter
                     </div>
                     </div>*@
@@ -499,36 +503,51 @@
                             }
                             <div class="mb-3">
                                 <br />
-                                <button class="btn btn-success" type="submit" title="Generate" disabled=@boolFormDisabled>
-                                    <span class="oi oi-loop-circular" aria-hidden="true"></span> Generate
-                                </button>
+                                <div class="d-flex align-items-center gap-3">
+                                    <button class="modern-btn-success" type="submit" title="Generate" disabled=@boolFormDisabled>
+                                        <span class="oi oi-loop-circular" aria-hidden="true"></span> Generate
+                                    </button>
+                                    @if (isGenerating)
+                                    {
+                                        <div class="d-flex align-items-center">
+                                            <div class="spinner-border spinner-border-sm me-2" role="status" style="color: var(--color-success); border-width: 2px;">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                            <span class="fst-italic" style="color: var(--color-text-primary);">@generatingMessage</span>
+                                        </div>
+                                    }
+                                </div>
                             </div>
                         </div>
+                        
                         @if (@namerequested)
                         {
-                            <div class="card @resultClass text-white mt-3">
-                                <div class="card-header">@resultHeader</div>
-                                <div class="card-body">
+                            <div class="modern-card @resultClass mt-3">
+                                <div class="modern-card-header">
+                                    <h5 class="modern-card-title mb-0">@resultHeader</h5>
+                                </div>
+                                <div class="modern-card-body">
                                     @if (GeneralHelper.IsNotNull(@generatedName))
                                     {
                                         @if (!String.IsNullOrEmpty(@generatedName))
                                         {
-                                            <div>
-                                                <span class="fw-bold">Generated Name(s): </span>
-                                                @((MarkupString)generatedName)
-
-                                                <button class="btn btn-primary" title="Export Generated Names" @onclick="@(e => OnExportGeneratedNames())">
-                                                    Export Generated Names
-                                                </button>
+                                            <div class="mb-3">
+                                                <div class="mb-2"><strong>Generated Name(s):</strong></div>
+                                                <div class="generated-names-output">
+                                                    @((MarkupString)generatedName)
+                                                </div>
                                             </div>
+                                            <button class="modern-btn-primary" title="Export Generated Names" @onclick="@(e => OnExportGeneratedNames())">
+                                                <span class="oi oi-data-transfer-download" aria-hidden="true"></span> Export Generated Names
+                                            </button>
                                         }
                                     }
                                     @if (GeneralHelper.IsNotNull(@message))
                                     {
                                         @if (!String.IsNullOrEmpty(@message))
                                         {
-                                            <div>
-                                                <span class="fw-bold">Message: </span>
+                                            <div class="mt-3">
+                                                <div class="mb-2"><strong>Message:</strong></div>
 
                                                 @foreach (var sub in message.Split('\n'))
                                                 {
@@ -553,6 +572,16 @@
     protected ThemeInfo theme { get; set; } = new();
     [CascadingParameter]
     public IModalService? Modal { get; set; }
+    
+    [Inject]
+    public IResourceTypeService? ResourceTypeService { get; set; }
+    
+    [Inject]
+    public IAdminLogService? AdminLogService { get; set; }
+    
+    [Inject]
+    public IResourceNamingRequestService? ResourceNamingRequestService { get; set; }
+    
     private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
     private ServicesData servicesData = new();
     private ResourceDelimiter resourceDelimiter = new();
@@ -578,6 +607,8 @@
     private string message = String.Empty;
     private string resultClass = String.Empty;
     private string resultHeader = String.Empty;
+    private bool isGenerating = false;
+    private string generatingMessage = "Generating name...";
     private string componentsVisible = "collapse in";
     private string resourcetypeVisible = "";
     private string resourcetypesVisible = "collapse";
@@ -632,22 +663,32 @@
         }
         catch (Exception ex)
         {
-            AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            await AdminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             toastService.ShowError("There was a problem loading the page. Please try again.");
         }
     }
 
     private async Task HandleValidSubmit()
     {
-        namerequested = false;
-        var workingmodaloptions = new ModalOptions()
-            {
-                HideCloseButton = true,
-                UseCustomLayout = true
-            };
-        if (GeneralHelper.IsNotNull(Modal))
+        // Queue the work asynchronously to prevent UI blocking on first render
+        await InvokeAsync(async () =>
         {
-            var workingmodal = Modal!.Show<WorkingModal>("Working", workingmodaloptions);
+            namerequested = false;
+            isGenerating = true;
+            
+            // Check if Azure validation is enabled to show appropriate message
+            var siteConfig = ConfigurationHelper.GetConfigurationData();
+            var azureValidationEnabled = siteConfig?.AzureTenantNameValidationEnabled?.Equals("True", StringComparison.OrdinalIgnoreCase) == true;
+            generatingMessage = azureValidationEnabled 
+                ? "Generating name and validating against Azure..." 
+                : "Generating name...";
+            
+            boolFormDisabled = true;
+            StateHasChanged();
+            
+            // Longer delay to ensure circuit is fully established
+            await Task.Delay(100);
+            
             try
             {
                 if (!GeneralHelper.IsNotNull(servicesData))
@@ -675,9 +716,10 @@
                 sbNames.Append("<table class=\"table text-light generatednames\">");
                 sbNames.Append("<thead>");
                 sbNames.Append("<tr>");
-                sbNames.Append("<th class\"w25\">Reource Type</th>");
-                sbNames.Append("<th class\"w25\">Generated Name</th>");
-                sbNames.Append("<th class\"w50\">Notes</th>");
+                sbNames.Append("<th class\"w20\">Resource Type</th>");
+                sbNames.Append("<th class\"w20\">Generated Name</th>");
+                sbNames.Append("<th class\"w40\">Notes</th>");
+                sbNames.Append("<th class\"w20\">Azure Validation</th>");
                 sbNames.Append("</tr>");
                 sbNames.Append("</thead>");
                 sbNames.Append("<tbody>");
@@ -728,7 +770,7 @@
                     {
                         resourceNameRequest.ResourceType = resourceType.ShortName;
                         resourceNameRequest.ResourceId = resourceType.Id;
-                        resourceNameRequestResponse = await ResourceNamingRequestService.RequestName(resourceNameRequest);
+                        resourceNameRequestResponse = await ResourceNamingRequestService!.RequestNameAsync(resourceNameRequest);
                         namerequested = true;
 
                         // Prepare the response
@@ -746,6 +788,46 @@
                         if (!String.IsNullOrEmpty(resourceNameRequestResponse.Message))
                         {
                             sbNames.Append(resourceNameRequestResponse.Message);
+                        }
+                        sbNames.Append("</td>");
+                        sbNames.Append("<td class=\"col-3\">");
+                        // Add Azure validation status
+                        if (resourceNameRequestResponse.ValidationMetadata != null)
+                        {
+                            var vm = resourceNameRequestResponse.ValidationMetadata;
+                            if (vm.ValidationPerformed)
+                            {
+                                if (vm.ExistsInAzure)
+                                {
+                                    sbNames.Append("<span class=\"badge bg-warning text-dark\">Existed in Azure</span><br/>");
+                                    if (!String.IsNullOrEmpty(vm.OriginalName))
+                                    {
+                                        sbNames.Append($"<small>Original: {vm.OriginalName}</small><br/>");
+                                        sbNames.Append($"<small>Resolved: {resourceNameRequestResponse.ResourceName}</small><br/>");
+                                        if (vm.IncrementAttempts.HasValue)
+                                        {
+                                            sbNames.Append($"<small>({vm.IncrementAttempts.Value} attempts)</small><br/>");
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    sbNames.Append("<span class=\"badge bg-success\">✓ Available</span><br/>");
+                                }
+                                
+                                if (!String.IsNullOrEmpty(vm.ValidationWarning))
+                                {
+                                    sbNames.Append($"<small class=\"text-warning\">⚠️ {vm.ValidationWarning}</small>");
+                                }
+                            }
+                            else
+                            {
+                                sbNames.Append("<span class=\"badge bg-secondary\">Not Validated</span>");
+                            }
+                        }
+                        else
+                        {
+                            sbNames.Append("<span class=\"badge bg-secondary\">Disabled</span>");
                         }
                         sbNames.Append("</td>");
                         sbNames.Append("</tr>");
@@ -776,7 +858,7 @@
                         {
                             resourceNameRequest.ResourceType = resourceType.ShortName;
                             resourceNameRequest.ResourceId = resourceType.Id;
-                            resourceNameRequestResponse = await ResourceNamingRequestService.RequestName(resourceNameRequest);
+                            resourceNameRequestResponse = await ResourceNamingRequestService!.RequestNameAsync(resourceNameRequest);
 
                             sbNames.Append("<tr>");
                             if (!String.IsNullOrEmpty(resourceType.Property))
@@ -792,6 +874,46 @@
                             if (!String.IsNullOrEmpty(resourceNameRequestResponse.Message))
                             {
                                 sbNames.Append(resourceNameRequestResponse.Message);
+                            }
+                            sbNames.Append("</td>");
+                            sbNames.Append("<td class=\"col-3\">");
+                            // Add Azure validation status
+                            if (resourceNameRequestResponse.ValidationMetadata != null)
+                            {
+                                var vm = resourceNameRequestResponse.ValidationMetadata;
+                                if (vm.ValidationPerformed)
+                                {
+                                    if (vm.ExistsInAzure)
+                                    {
+                                        sbNames.Append("<span class=\"badge bg-warning text-dark\">Existed in Azure</span><br/>");
+                                        if (!String.IsNullOrEmpty(vm.OriginalName))
+                                        {
+                                            sbNames.Append($"<small>Original: {vm.OriginalName}</small><br/>");
+                                            sbNames.Append($"<small>Resolved: {resourceNameRequestResponse.ResourceName}</small><br/>");
+                                            if (vm.IncrementAttempts.HasValue)
+                                            {
+                                                sbNames.Append($"<small>({vm.IncrementAttempts.Value} attempts)</small><br/>");
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        sbNames.Append("<span class=\"badge bg-success\">✓ Available</span><br/>");
+                                    }
+                                    
+                                    if (!String.IsNullOrEmpty(vm.ValidationWarning))
+                                    {
+                                        sbNames.Append($"<small class=\"text-warning\">⚠️ {vm.ValidationWarning}</small>");
+                                    }
+                                }
+                                else
+                                {
+                                    sbNames.Append("<span class=\"badge bg-secondary\">Not Validated</span>");
+                                }
+                            }
+                            else
+                            {
+                                sbNames.Append("<span class=\"badge bg-secondary\">Disabled</span>");
                             }
                             sbNames.Append("</td>");
                             sbNames.Append("</tr>");
@@ -813,97 +935,143 @@
                 // Always show the response
                 generatedName = sbNames.ToString();
                 namerequested = true;
+                StateHasChanged();
 
                 // TO DO: Implement retention of the selected values
                 //await SetRetainedSelections();
             }
-
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await AdminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 toastService.ShowError("There was a problem generting the name(s). Please try again");
             }
             finally
             {
-                workingmodal.Close();
+                isGenerating = false;
+                StateHasChanged();
             }
-        }
+        });
     }
 
-    private async void OnGenerateModeChange(string mode)
+    private async Task OnGenerateModeChange(string mode)
     {
-        ResetForm(true);
-
-        if (mode == "multi")
+        try
         {
-            resourcetypeVisible = "collapse";
-            resourcetypesVisible = "";
-            toastService.ShowInfo("This option will require all current components to be selected.");
-            // Show the multi select modal
-            await OpenMultiSelectModal(true);
+            Logger.LogInformation($"OnGenerateModeChange called with mode: {mode}");
+            
+            if (mode == "multi")
+            {
+                resourcetypeVisible = "collapse";
+                resourcetypesVisible = "";
+                toastService.ShowInfo("This option will require all current components to be selected.");
+                // Show the multi select modal
+                StateHasChanged();
+                await Task.Delay(100); // Give UI time to update
+                await OpenMultiSelectModal(true);
+            }
+            else
+            {
+                // Show the single type selection
+                resourcetypeVisible = "";
+                resourcetypesVisible = "collapse";
+                StateHasChanged();
+            }
         }
-        else
+        catch (Exception ex)
         {
-            // Show the single type selection
-            resourcetypeVisible = "";
-            resourcetypesVisible = "collapse";
+            Logger.LogError(ex, "Error in OnGenerateModeChange");
+            toastService.ShowError($"Error changing mode: {ex.Message}");
         }
-
-        resourceNameRequestResponse = new();
-        StateHasChanged();
     }
 
     private async Task OpenMultiSelectModal(bool clearselection)
     {
-        ResetForm(false);
+        try
+        {
+            Logger.LogInformation("OpenMultiSelectModal called");
+            ResetForm(false);
 
-        if (!GeneralHelper.IsNotNull(servicesData))
-        {
-            await SetServicesData();
-        }
-        var parameters = new ModalParameters();
-        parameters.Add("theme", theme);
-        parameters.Add("multiselectedResourceTypes", multiselectedResourceTypes);
-        var options = new ModalOptions()
+            if (!GeneralHelper.IsNotNull(servicesData))
             {
-                HideCloseButton = false,
-                UseCustomLayout = true,
-            };
-        if (GeneralHelper.IsNotNull(Modal))
-        {
-            var modal = Modal.Show<MultiTypeSelectModal>("Select Resource Types", parameters, options);
-            var result = await modal.Result;
-            if (GeneralHelper.IsNotNull(result))
-            {
-                if (result.Confirmed)
+                await SetServicesData();
+            }
+            
+            Logger.LogInformation($"Modal service is null: {Modal == null}");
+            
+            var parameters = new ModalParameters();
+            parameters.Add("theme", theme);
+            parameters.Add("multiselectedResourceTypes", multiselectedResourceTypes);
+            var options = new ModalOptions()
                 {
-                    if (GeneralHelper.IsNotNull(result.Data))
+                    HideCloseButton = false,
+                    UseCustomLayout = true,
+                };
+            if (GeneralHelper.IsNotNull(Modal))
+            {
+                Logger.LogInformation("Showing modal");
+                var modal = Modal.Show<MultiTypeSelectModal>("Select Resource Types", parameters, options);
+                Logger.LogInformation("Waiting for modal result");
+                var result = await modal.Result;
+                Logger.LogInformation("Got modal result");
+                if (GeneralHelper.IsNotNull(result))
+                {
+                    if (result.Confirmed)
                     {
-                        multiselectedResourceTypes = (List<string>)result.Data;
-                        if (GeneralHelper.IsNotNull(multiselectedResourceTypes))
+                        if (GeneralHelper.IsNotNull(result.Data))
                         {
-                            if (multiselectedResourceTypes.Count > 0)
+                            multiselectedResourceTypes = (List<string>)result.Data;
+                            if (GeneralHelper.IsNotNull(multiselectedResourceTypes))
                             {
-                                ResourceType currentmultiresourcertype = servicesData.ResourceTypes!.Find((t) => t.Id == Convert.ToInt32(multiselectedResourceTypes![0].ToString()))!;
-                                if (GeneralHelper.IsNotNull(currentmultiresourcertype))
+                                if (multiselectedResourceTypes.Count > 0)
                                 {
-                                    await OnTypeChanged(currentmultiresourcertype.Resource);
+                                    ResourceType currentmultiresourcertype = servicesData.ResourceTypes!.Find((t) => t.Id == Convert.ToInt32(multiselectedResourceTypes![0].ToString()))!;
+                                    if (GeneralHelper.IsNotNull(currentmultiresourcertype))
+                                    {
+                                        await OnTypeChanged(currentmultiresourcertype.Resource);
+                                    }
+                                    componentsVisible = "";
+                                    optional = String.Empty;
                                 }
-                                componentsVisible = "";
-                                optional = String.Empty;
-                            }
-                            else
-                            {
-                                componentsVisible = "collapse";
+                                else
+                                {
+                                    componentsVisible = "collapse";
+                                }
                             }
                         }
                     }
                 }
             }
+            else
+            {
+                Logger.LogWarning("Modal service is null!");
+                toastService.ShowError("Modal service is not available");
+            }
         }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error in OpenMultiSelectModal");
+            toastService.ShowError($"Error opening modal: {ex.Message}");
+        }
+    }
 
-        resourcetypeVisible = "collapse";
-        resourcetypesVisible = "";
+    private async Task OnSelectResourceTypesClick()
+    {
+        try
+        {
+            Logger.LogInformation("OnSelectResourceTypesClick called");
+            Logger.LogInformation($"Modal is null: {Modal == null}");
+            await OpenMultiSelectModal(false);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error in OnSelectResourceTypesClick");
+            toastService.ShowError($"Error opening modal: {ex.Message}");
+        }
+    }
+
+    private void OnClearClick()
+    {
+        ResetForm(true);
     }
 
     private void OnCategoryChanged(string value)
@@ -1012,7 +1180,7 @@
         catch (Exception ex)
         {
             toastService.ShowError("There was an error setting the resource type! Please try again.");
-            AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            await AdminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
         }
 
         //return Task.CompletedTask;
@@ -1635,3 +1803,7 @@
         }
     }
 }
+
+
+
+

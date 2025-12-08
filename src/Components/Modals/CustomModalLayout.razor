@@ -1,0 +1,35 @@
+@using Blazored.Modal
+
+<div class="blazored-modal">
+    <div class="blazored-modal-header" style="background: #004494 !important; background-color: #004494 !important; color: white !important; padding: 20px 24px; display: flex; align-items: center; justify-content: space-between;">
+        <h3 class="blazored-modal-title" style="color: white !important; margin: 0; font-size: 20px; font-weight: 600;">@Title</h3>
+        @if (!HideCloseButton)
+        {
+            <button type="button" class="blazored-modal-close" @onclick="Close" style="color: white !important; background: transparent; border: none; font-size: 1.5rem; line-height: 1; opacity: 0.8; cursor: pointer; padding: 0; width: 30px; height: 30px;">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        }
+    </div>
+    <div class="blazored-modal-body" style="padding: 1.5rem;">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+    [CascadingParameter] 
+    public BlazoredModalInstance ModalInstance { get; set; } = default!;
+
+    [Parameter] 
+    public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] 
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter] 
+    public bool HideCloseButton { get; set; }
+
+    private void Close()
+    {
+        ModalInstance.CancelAsync();
+    }
+}
