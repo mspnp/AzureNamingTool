@@ -1,7 +1,9 @@
 # Script to help identify service conversion targets
 # This helps us understand which services follow similar patterns
 
-$servicesPath = "c:\Projects\AzureNamingTool-DEV\src\Services"
+param(
+    [string]$servicesPath = "..\..\src\Services"
+)
 
 # Services that need conversion (excluding already done ones)
 $servicesToConvert = @(

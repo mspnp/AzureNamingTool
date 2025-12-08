@@ -12,6 +12,23 @@ namespace AzureNamingTool.Middleware
         private readonly ILogger<ApiLoggingMiddleware> _logger;
 
         /// <summary>
+        /// Sanitizes user input for safe logging by removing newlines and control characters.
+        /// </summary>
+        private static string SanitizeForLog(string? input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return string.Empty;
+            
+            // Remove newlines and carriage returns
+            var sanitized = input.Replace("\r", "").Replace("\n", "");
+            
+            // Remove other control characters
+            sanitized = new string(sanitized.Where(c => !char.IsControl(c) || c == ' ').ToArray());
+            
+            return sanitized;
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ApiLoggingMiddleware"/> class.
         /// </summary>
         /// <param name="next">The next middleware in the pipeline.</param>
@@ -64,8 +81,8 @@ namespace AzureNamingTool.Middleware
                     
                     _logger.LogError(ex,
                         "API request failed. Method: {Method}, Path: {Path}, CorrelationId: {CorrelationId}, Duration: {Duration}ms",
-                        context.Request.Method,
-                        context.Request.Path,
+                        SanitizeForLog(context.Request.Method),
+                        SanitizeForLog(context.Request.Path.ToString()),
                         correlationId,
                         stopwatch.ElapsedMilliseconds);
 
@@ -87,15 +104,16 @@ namespace AzureNamingTool.Middleware
             // Build request details
             var requestDetails = new StringBuilder();
             requestDetails.AppendLine($"API Request:");
-            requestDetails.AppendLine($"  Method: {request.Method}");
-            requestDetails.AppendLine($"  Path: {request.Path}{request.QueryString}");
-            requestDetails.AppendLine($"  CorrelationId: {correlationId}");
+            requestDetails.AppendLine($"  Method: {SanitizeForLog(request.Method)}");
+            requestDetails.AppendLine($"  Path: {SanitizeForLog(request.Path.ToString())}{SanitizeForLog(request.QueryString.ToString())}");
+            requestDetails.AppendLine($"  CorrelationId: {SanitizeForLog(correlationId)}");
             
             // Log API key info (first few characters only for security)
             if (request.Headers.TryGetValue("APIKey", out var apiKey))
             {
-                var maskedKey = apiKey.ToString().Length > 8 
-                    ? apiKey.ToString().Substring(0, 8) + "..." 
+                var sanitizedKey = SanitizeForLog(apiKey.ToString());
+                var maskedKey = sanitizedKey.Length > 8 
+                    ? sanitizedKey.Substring(0, 8) + "..." 
                     : "***";
                 requestDetails.AppendLine($"  APIKey: {maskedKey}");
             }
@@ -114,7 +132,7 @@ namespace AzureNamingTool.Middleware
                 var bodyAsText = Encoding.UTF8.GetString(buffer, 0, totalRead);
                 request.Body.Position = 0; // Reset stream position
 
-                requestDetails.AppendLine($"  Body: {bodyAsText}");
+                requestDetails.AppendLine($"  Body: {SanitizeForLog(bodyAsText)}");
             }
 
             _logger.LogInformation(requestDetails.ToString());
@@ -154,8 +172,8 @@ namespace AzureNamingTool.Middleware
             using (_logger.BeginScope(new Dictionary<string, object>
             {
                 ["CorrelationId"] = correlationId,
-                ["Method"] = context.Request.Method,
-                ["Path"] = context.Request.Path.ToString(),
+                ["Method"] = SanitizeForLog(context.Request.Method),
+                ["Path"] = SanitizeForLog(context.Request.Path.ToString()),
                 ["StatusCode"] = response.StatusCode,
                 ["DurationMs"] = durationMs
             }))
@@ -164,8 +182,8 @@ namespace AzureNamingTool.Middleware
                 {
                     _logger.LogError(
                         "API request completed with error. Method: {Method}, Path: {Path}, StatusCode: {StatusCode}, Duration: {Duration}ms",
-                        context.Request.Method,
-                        context.Request.Path,
+                        SanitizeForLog(context.Request.Method),
+                        SanitizeForLog(context.Request.Path.ToString()),
                         response.StatusCode,
                         durationMs);
                 }
@@ -173,8 +191,8 @@ namespace AzureNamingTool.Middleware
                 {
                     _logger.LogWarning(
                         "API request completed with client error. Method: {Method}, Path: {Path}, StatusCode: {StatusCode}, Duration: {Duration}ms",
-                        context.Request.Method,
-                        context.Request.Path,
+                        SanitizeForLog(context.Request.Method),
+                        SanitizeForLog(context.Request.Path.ToString()),
                         response.StatusCode,
                         durationMs);
                 }
@@ -182,8 +200,8 @@ namespace AzureNamingTool.Middleware
                 {
                     _logger.LogWarning(
                         "Slow API request detected. Method: {Method}, Path: {Path}, StatusCode: {StatusCode}, Duration: {Duration}ms",
-                        context.Request.Method,
-                        context.Request.Path,
+                        SanitizeForLog(context.Request.Method),
+                        SanitizeForLog(context.Request.Path.ToString()),
                         response.StatusCode,
                         durationMs);
                 }
