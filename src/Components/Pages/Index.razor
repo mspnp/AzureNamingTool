@@ -1,8 +1,9 @@
-﻿@page "/"
+@page "/"
 @using System.Reflection
 @using AzureNamingTool.Helpers
 @using AzureNamingTool.Models
 @using AzureNamingTool.Services
+@using AzureNamingTool.Services.Interfaces
 @using Markdig;
 @inject ILogger<Index> Logger
 @inject NavigationManager NavigationManager
@@ -11,89 +12,381 @@
 
 <PageTitle>@toolname - Home</PageTitle>
 
-<div class="card @theme!.ThemeStyle">
-
-    <div class="card-body">
-        <p>
-            <img src="@logopath" height="160" alt="@toolname" />
-        </p>
-        @if (!String.IsNullOrEmpty(customhomecontent))
-        {
-            <div class="card-body">
-                @((MarkupString)Markdown.ToHtml(customhomecontent))
-            </div>
-        }
-        else
-        {
-            <p class="alert alert-info">
-                <span class="fs-4">Disclaimer</span>
-                <br />
-                This tool was designed using the best practices in the <a href="https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/" target="_blank">Azure Cloud Adoption Framework</a> which adheres to a few rules and allows the complete customization of your naming convention.  While most of the customizations can be made in your web browser, this tool also includes an API.
-                <br />
-                <br />
-                For guidance on the API, review your swagger page at: <span class="fw-bold"><a href="swagger/index.html" target="_blank">swagger/index.html</a></span>
-            </p>
-            <h4>Admin</h4>
-            <p>
-                The Admin page is used to configure the Azure Naming Tool. This page is only accessible by Admin users.
-            </p>
-            @if (Convert.ToBoolean(config.InstructionsEnabled) || admin)
-            {
-                <h4>Instructions</h4>
-                <p>
-                    The Instructions page provides documentation for the site pages. Each page of the site contains a documentation link (top right) that will open contextual instructions for the current page.
-                </p>
-            }
-            <h4>Configuration</h4>
-            <p>
-                The Configuration page provides all the data points that make up your naming convention.  There are 8 standard components that may be used to name each Azure resource.  The data within each of those components can be completely customized, except for the resource types.  For the resource types, only the short name, optional, and excluded values may be updated.  A delimiter may be selected to separate each component in your resource names.  However, the delimiter will be included in a resource name if that character is allowed. The tool also supports the ability to define custom components. This allows administrators to create new components for the naming convention.  Your configuration may be exported under the Global Configuration header.  We recommend doing that after defining your naming convention as a backup.  @*Lastly, use the Policy export feature to create an Azure Policy Definition.  That can be applied to your Azure environment to enforce your naming convention.*@
-            </p>
-
-            <h4>Reference</h4>
-            <p>
-                The Reference page provides an example of each Azure resource type using your defined naming convention. The example values do not include any excluded naming components. Optional components are always displayed and are identified below the example. Since unique names are only required at specific scopes, the examples provided are only generated for the scopes above the resource scope: resource group, resource group & region, region, global, subscription, and tenant.
-            </p>
-            <h4>Generate</h4>
-            <p>
-                The Generate page provides a drop-down menu to select an Azure resource type. Once a resource is selected, the naming component options are provided. Read-only components cannot be changed, like the value for a resource type. Optional components, if unselected, will be null and not shown in the output. Required components do not allow a null value and will require a selection from the menu.
-            </p>
-            @if (Convert.ToBoolean(config.GeneratedNamesLogEnabled) || admin)
-            {
-                <h4>Generated Names Log</h4>
-                <p>
-                    The Generated Names Log contains a record of all names generated in the Azure Naming Tool. This includes the date, user, generated name, resource type, and components selected. This log can be exported to a .csv file.
-                </p>
-            }
-            @if (Convert.ToBoolean(config.InstructionsEnabled) || admin)
-            {
-                <p>
-                    <button class="btn btn-primary" title="Instructions" @onclick="@(e => OnInstructionsClick())">
-                        View Instructions
-                    </button>
-                </p>
-            }
-        }
+<div class="modern-page-header">
+    <div class="modern-page-title">
+        <h1>Dashboard</h1>
+        <p class="modern-page-subtitle">Welcome to the Azure Naming Tool</p>
     </div>
+</div>
+
+<div class="modern-dashboard-container">
+    <!-- Logo and Welcome Content Section -->
+    <div class="dashboard-hero">
+        <div class="hero-logo-section">
+            <img src="@logopath" alt="@toolname" class="hero-logo" />
+        </div>
+        <div class="hero-content-section">
+            @if (!String.IsNullOrEmpty(customhomecontent))
+            {
+                @((MarkupString)Markdown.ToHtml(customhomecontent))
+            }
+            else
+            {
+                <div class="hero-description">
+                    <p class="lead">
+                        The Azure Naming Tool helps you define and manage your Azure resource naming conventions using best practices from the Cloud Adoption Framework.
+                    </p>
+                </div>
+                
+                <h4>Disclaimer</h4>
+                <p>
+                    This tool was designed using the best practices in the <a href="https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/" target="_blank" class="modern-link">Azure Cloud Adoption Framework</a> which adheres to a few rules and allows the complete customization of your naming convention. While most of the customizations can be made in your web browser, this tool also includes an API.
+                </p>
+                <p>
+                    For guidance on the API, review your swagger page at: <a href="swagger/index.html" target="_blank" class="modern-link fw-bold">swagger/index.html</a>
+                </p>
+            }
+        </div>
+    </div>
+
+    <!-- Dashboard Stats -->
+    <div class="modern-card">
+        <div class="modern-card-header">
+            <h3>Configuration Overview</h3>
+        </div>
+        <div class="modern-card-body">
+            <div class="dashboard-stats-grid">
+                <!-- Names Generated - Featured -->
+                <div class="stat-card featured">
+                    <div class="stat-content">
+                        <div class="stat-value">@generatedCount</div>
+                        <div class="stat-label">Names Generated</div>
+                    </div>
+                </div>
+                
+                <!-- Component Stats -->
+                @foreach (var component in enabledComponents)
+                {
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <div class="stat-value">@component.Count</div>
+                            <div class="stat-label">@component.DisplayName</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Start Guide -->
+    <div class="modern-card">
+        <div class="modern-card-header">
+            <h3>Quick Start Guide</h3>
+        </div>
+        <div class="modern-card-body">
+            <div class="modern-feature-list">
+                <div class="modern-feature-item">
+                    <div class="feature-icon">🔧</div>
+                    <div class="feature-content">
+                        <h4>Admin</h4>
+                        <p>The Admin page is used to configure the Azure Naming Tool. This page is only accessible by Admin users.</p>
+                    </div>
+                </div>
+
+                @if (Convert.ToBoolean(config.InstructionsEnabled) || admin)
+                {
+                        <div class="modern-feature-item">
+                            <div class="feature-icon">📖</div>
+                            <div class="feature-content">
+                                <h4>Instructions</h4>
+                                <p>The Instructions page provides documentation for the site pages. Each page of the site contains a documentation link (top right) that will open contextual instructions for the current page.</p>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="modern-feature-item">
+                        <div class="feature-icon">⚙️</div>
+                        <div class="feature-content">
+                            <h4>Configuration</h4>
+                            <p>The Configuration page provides all the data points that make up your naming convention. There are 8 standard components that may be used to name each Azure resource. The data within each of those components can be completely customized, except for the resource types.</p>
+                        </div>
+                    </div>
+
+                    <div class="modern-feature-item">
+                        <div class="feature-icon">📚</div>
+                        <div class="feature-content">
+                            <h4>Reference</h4>
+                            <p>The Reference page provides an example of each Azure resource type using your defined naming convention. The example values do not include any excluded naming components.</p>
+                        </div>
+                    </div>
+
+                    <div class="modern-feature-item">
+                        <div class="feature-icon">🎯</div>
+                        <div class="feature-content">
+                            <h4>Generate</h4>
+                            <p>The Generate page provides a drop-down menu to select an Azure resource type. Once a resource is selected, the naming component options are provided.</p>
+                        </div>
+                    </div>
+
+                    @if (Convert.ToBoolean(config.GeneratedNamesLogEnabled) || admin)
+                    {
+                        <div class="modern-feature-item">
+                            <div class="feature-icon">📊</div>
+                            <div class="feature-content">
+                                <h4>Generated Names Log</h4>
+                                <p>The Generated Names Log contains a record of all names generated in the Azure Naming Tool. This includes the date, user, generated name, resource type, and components selected.</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                @if (Convert.ToBoolean(config.InstructionsEnabled) || admin)
+                {
+                    <div class="mt-3">
+                        <button class="modern-btn-primary" title="Instructions" @onclick="@(e => OnInstructionsClick())">
+                            View Instructions
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
 </div>
 @code {
     [CascadingParameter]
     protected ThemeInfo? theme { get; set; }
     [CascadingParameter]
     public IModalService? Modal { get; set; }
+    
+    [Inject]
+    public IAdminLogService? AdminLogService { get; set; }
+    
+    [Inject]
+    public IResourceTypeService? ResourceTypeService { get; set; }
+    
+    [Inject]
+    public IResourceLocationService? ResourceLocationService { get; set; }
+    
+    [Inject]
+    public IResourceEnvironmentService? ResourceEnvironmentService { get; set; }
+    
+    [Inject]
+    public IGeneratedNamesService? GeneratedNamesService { get; set; }
+    
+    [Inject]
+    public IResourceComponentService? ResourceComponentService { get; set; }
+    
+    [Inject]
+    public IResourceUnitDeptService? ResourceUnitDeptService { get; set; }
+    
+    [Inject]
+    public IResourceOrgService? ResourceOrgService { get; set; }
+    
+    [Inject]
+    public IResourceProjAppSvcService? ResourceProjAppSvcService { get; set; }
+    
+    [Inject]
+    public IResourceFunctionService? ResourceFunctionService { get; set; }
+    
+    [Inject]
+    public ICustomComponentService? CustomComponentService { get; set; }
+    
     private bool admin;
     private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
     private string? customhomecontent = String.Empty;
     private string? logopath = String.Empty;
     private string? toolname = String.Empty;
+    
+    // Stats for dashboard - enabled components with their counts
+    private List<ComponentStat> enabledComponents = new();
+    private int generatedCount = 0;
 
     private string appversion = ConfigurationHelper.GetAssemblyVersion();
     private string updateurl = "https://github.com/mspnp/AzureNamingTool/wiki/Updating";
+    
+    // Helper class for component statistics
+    private class ComponentStat
+    {
+        public string Name { get; set; } = string.Empty;
+        public string DisplayName { get; set; } = string.Empty;
+        public int Count { get; set; }
+        public int SortOrder { get; set; }
+    }
 
     protected override async Task OnInitializedAsync()
     {
         customhomecontent = ConfigurationHelper.GetAppSetting("CustomHomeContent", false);
         logopath = !String.IsNullOrEmpty(ConfigurationHelper.GetAppSetting("CustomLogoPath", false)) ? ConfigurationHelper.GetAppSetting("CustomLogoPath", false) : "images/AzureNamingToolLogo.png";
         toolname = !String.IsNullOrEmpty(ConfigurationHelper.GetAppSetting("CustomToolName", false)) ? ConfigurationHelper.GetAppSetting("CustomToolName", false) : "Azure Naming Tool";
+        
+        // Load dashboard stats
+        try
+        {
+            // Get enabled resource components
+            List<ResourceComponent>? components = null;
+            if (ResourceComponentService != null)
+            {
+                var componentResponse = await ResourceComponentService.GetItemsAsync(false);
+                if (componentResponse.Success && componentResponse.ResponseObject != null)
+                {
+                    var componentList = (List<ResourceComponent>)componentResponse.ResponseObject;
+                    if (componentList != null)
+                    {
+                        components = componentList
+                            .Where(c => c.Enabled)
+                            .OrderBy(c => c.SortOrder)
+                            .ToList();
+                    }
+                }
+            }
+            
+            if (components != null)
+            {
+                foreach (var component in components)
+                {
+                    // Skip ResourceInstance - it's always 0
+                    if (component.Name == "ResourceInstance")
+                    {
+                        continue;
+                    }
+                    
+                    int count = 0;
+                    
+                    // Get count for each component type
+                    switch (component.Name)
+                    {
+                        case "ResourceType":
+                            if (ResourceTypeService != null)
+                            {
+                                var response = await ResourceTypeService.GetItemsAsync(false);
+                                if (response.Success && response.ResponseObject != null)
+                                {
+                                    count = ((List<ResourceType>)response.ResponseObject).Count;
+                                }
+                            }
+                            break;
+                            
+                        case "ResourceLocation":
+                            if (ResourceLocationService != null)
+                            {
+                                var response = await ResourceLocationService.GetItemsAsync(false);
+                                if (response.Success && response.ResponseObject != null)
+                                {
+                                    count = ((List<Models.ResourceLocation>)response.ResponseObject).Count;
+                                }
+                            }
+                            break;
+                            
+                        case "ResourceEnvironment":
+                            if (ResourceEnvironmentService != null)
+                            {
+                                var response = await ResourceEnvironmentService.GetItemsAsync(false);
+                                if (response.Success && response.ResponseObject != null)
+                                {
+                                    count = ((List<ResourceEnvironment>)response.ResponseObject).Count;
+                                }
+                            }
+                            break;
+                            
+                        case "ResourceUnitDept":
+                            if (ResourceUnitDeptService != null)
+                            {
+                                var response = await ResourceUnitDeptService.GetItemsAsync(false);
+                                if (response.Success && response.ResponseObject != null)
+                                {
+                                    count = ((List<ResourceUnitDept>)response.ResponseObject).Count;
+                                }
+                            }
+                            break;
+                            
+                        case "ResourceOrg":
+                            if (ResourceOrgService != null)
+                            {
+                                var response = await ResourceOrgService.GetItemsAsync(false);
+                                if (response.Success && response.ResponseObject != null)
+                                {
+                                    count = ((List<ResourceOrg>)response.ResponseObject).Count;
+                                }
+                            }
+                            break;
+                            
+                        case "ResourceProjAppSvc":
+                            if (ResourceProjAppSvcService != null)
+                            {
+                                var response = await ResourceProjAppSvcService.GetItemsAsync(false);
+                                if (response.Success && response.ResponseObject != null)
+                                {
+                                    count = ((List<ResourceProjAppSvc>)response.ResponseObject).Count;
+                                }
+                            }
+                            break;
+                            
+                        case "ResourceFunction":
+                            if (ResourceFunctionService != null)
+                            {
+                                var response = await ResourceFunctionService.GetItemsAsync(false);
+                                if (response.Success && response.ResponseObject != null)
+                                {
+                                    count = ((List<ResourceFunction>)response.ResponseObject).Count;
+                                }
+                            }
+                            break;
+                            
+                        default:
+                            // Handle custom components - count all items for this parent component
+                            if (CustomComponentService != null)
+                            {
+                                var response = await CustomComponentService.GetItemsByParentComponentIdAsync((int)component.Id);
+                                if (response.Success && response.ResponseObject != null)
+                                {
+                                    count = ((List<CustomComponent>)response.ResponseObject).Count;
+                                }
+                            }
+                            break;
+                    }
+                    
+                    // Only add to stats if:
+                    // 1. It's not a custom component, OR
+                    // 2. It's a custom component with count > 0
+                    bool isCustomComponent = component.Name != "ResourceType" && 
+                                            component.Name != "ResourceLocation" && 
+                                            component.Name != "ResourceEnvironment" &&
+                                            component.Name != "ResourceUnitDept" &&
+                                            component.Name != "ResourceOrg" &&
+                                            component.Name != "ResourceProjAppSvc" &&
+                                            component.Name != "ResourceFunction";
+                    
+                    if (!isCustomComponent || count > 0)
+                    {
+                        enabledComponents.Add(new ComponentStat
+                        {
+                            Name = component.Name,
+                            DisplayName = component.DisplayName,
+                            Count = count,
+                            SortOrder = component.SortOrder
+                        });
+                    }
+                }
+            }
+            
+            // Get generated names count
+            if (GeneratedNamesService != null && (Convert.ToBoolean(config.GeneratedNamesLogEnabled) || admin))
+            {
+                var response = await GeneratedNamesService.GetItemsAsync(false);
+                if (response.Success && response.ResponseObject != null)
+                {
+                    var generatedNames = (List<GeneratedName>)response.ResponseObject;
+                    generatedCount = generatedNames.Count;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log error but don't fail the page
+            if (AdminLogService != null)
+            {
+                await AdminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = "Error loading dashboard stats: " + ex.Message });
+            }
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -122,7 +415,7 @@
                             // Check if the client's version matches the current offical version
                             if (appversion != latestversion)
                             {
-                                ModalHelper.ShowInformationModal(Modal!, theme!, "bg-navcolor", "ATTENTION", "<p style='font-weight:bold;'>Your current version is out of date!</p><p>Please click <a href='" + updateurl + "' target='_blank'>here</a> to update to the current version for the latest features!</p><p><span style='font-weight:bold;'>Installed Version:</span> <span style='font-style:italic; '>" + appversion + "</p><p><span style='font-weight:bold;'>Latest version:</span> <span style='font-style:italic; '>" + latestversion + "</span></p>", "", true);
+                                ModalHelper.ShowInformationModal(Modal!, theme!, "bg-navcolor", "ATTENTION", "<div style='margin: 1.5rem 0;'><p style='font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem;'>Your current version is out of date!</p><p style='margin-bottom: 1rem;'>Please <a href='" + updateurl + "' target='_blank' style='color: var(--color-primary); text-decoration: underline;'>update to the current version</a> for the latest features!</p><div style='display: grid; gap: 0.5rem;'><div><strong>Installed Version:</strong> <span style='color: var(--color-text-secondary);'>" + appversion + "</span></div><div><strong>Latest Version:</strong> <span style='color: var(--color-text-secondary);'>" + latestversion + "</span></div></div></div>", "", true);
                                 await session.SetAsync("versionnotification", true);
                                 StateHasChanged();
                             }
@@ -132,7 +425,7 @@
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await AdminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
         }
     }

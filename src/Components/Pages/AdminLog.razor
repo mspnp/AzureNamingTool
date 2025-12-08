@@ -1,7 +1,8 @@
-﻿@page "/adminlog"
+@page "/adminlog"
 @using AzureNamingTool.Helpers
 @using AzureNamingTool.Models
 @using AzureNamingTool.Services
+@using AzureNamingTool.Services.Interfaces
 @using System.IO
 @using BlazorDownloadFile
 @using Microsoft.AspNetCore.Components.Authorization
@@ -18,26 +19,29 @@
 @inject NavigationManager NavigationManager
 
 <PageTitle>Azure Naming Tool - Admin Log</PageTitle>
-<div class="card  @theme!.ThemeStyle">
-    <div class="card-body">
-        <div style="float:left;">
-            <h1>
-                Admin Log
-            </h1>
-        </div>
-        <div style="float:right;">
-            <button class="btn btn-secondary" title="Instructions" @onclick="@(e => ModalHelper.ShowInformationModal(Modal!, theme, "bg-navcolor", "Admin Log", String.Empty, "adminloginstructions", admin))">
-                <span class="oi oi-document" aria-hidden="true"></span> Documentation
-            </button>
-        </div>
-        <div style="clear:both;"></div>
-        <div class="mb-3">This page displays a log of Admin/Configuration changes.</div>
 
+<div class="modern-page-container">
+    <div class="modern-page-title">
+        <h1>Admin Log</h1>
+    </div>
+    
+    <div class="modern-page-description">
+        <p>View a log of Admin and Configuration changes</p>
+    </div>
+    
+    <div class="modern-page-actions">
+        <button class="modern-btn-secondary" title="Instructions" @onclick="@(e => ModalHelper.ShowInformationModal(Modal!, theme!, "bg-navcolor", "Admin Log", String.Empty, "adminloginstructions", admin))">
+            <span class="oi oi-document" aria-hidden="true"></span> Documentation
+        </button>
+    </div>
+</div>
 
+<div class="modern-card">
+    <div class="modern-card-body">
         @if (!dataLoaded)
         {
-            <div class="spinner-border blue" role="status">
-                <span class="sr-only"></span>
+            <div class="modern-spinner-container">
+                <div class="modern-spinner"></div>
             </div>
         }
         else
@@ -45,58 +49,67 @@
             <div>
                 @if (lstAdminLogMessages.Count > 0)
                 {
-                    <div class="mb-3">
-                        <button class="btn btn-primary" title="Export Admin Log" @onclick="@(e => OnExportLogClick())">
+                    <div class="modern-button-group mb-4">
+                        <button class="modern-btn-primary" title="Export Admin Log" @onclick="@(e => OnExportLogClick())">
+                            <span class="oi oi-data-transfer-download" aria-hidden="true"></span>
                             Export Admin Log
                         </button>
                         @if (currentuser == "GlobalAdmin")
                         {
-                            <button class="btn btn-danger mx-1" title="Purge Admin Log" @onclick="@(e => OnPurgeLogClick())">
+                            <button class="modern-btn-danger" title="Purge Admin Log" @onclick="@(e => OnPurgeLogClick())">
+                                <span class="oi oi-trash" aria-hidden="true"></span>
                                 Purge Admin Log
                             </button>
                         }
                     </div>
-                    <div class="card mb-3">
-                        <div class="card-header bg-default text-dark">
-                            <a class="text-decoration-none text-dark" data-bs-toggle="collapse" style="display:block;font-weight:bold;" href="#filter" role="button" aria-expanded="false" aria-controls="filter">
+                    
+                    <div class="modern-card mb-4">
+                        <div class="modern-card-header collapsible collapsed" data-bs-toggle="collapse" data-bs-target="#adminlogfilter" aria-expanded="false">
+                            <h3>
                                 <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Filter Data
-                            </a>
+                            </h3>
                         </div>
-                        <div class="collapse show card card-body @theme.ThemeStyle" id="filter">
-                            <div class="form-group row mb-3">
-                                <div style="width:auto;">
-                                    <input class="form-control" type="date" style="width: 150px;" @bind="startdate" @bind:event="oninput" />
+                        <div class="collapse modern-card-body" id="adminlogfilter">
+                            <div class="row mb-3">
+                                <div class="col-auto">
+                                    <label class="modern-form-label">Start Date</label>
+                                    <input class="modern-form-input" type="date" @bind="startdate" @bind:event="oninput" />
                                 </div>
-                                <div style="width:auto;padding-top:7px;">
-                                    to
+                                <div class="col-auto d-flex align-items-end pb-2">
+                                    <span>to</span>
                                 </div>
-                                <div style="width:auto;">
-                                    <input class="form-control" type="date" style="width: 150px;" @bind="enddate" @bind:event="oninput" />
+                                <div class="col-auto">
+                                    <label class="modern-form-label">End Date</label>
+                                    <input class="modern-form-input" type="date" @bind="enddate" @bind:event="oninput" />
                                 </div>
                             </div>
-                            <div class="form-group row mb-3">
-                                <div class="input-group flex-nowrap">
-                                    <div class="input-group flex-nowrap">
-                                        <span class="input-group-text" id="addon-wrapping">
-                                            <span class="oi oi-magnifying-glass" id="addon-wrapping"></span>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="modern-form-label">Search</label>
+                                    <div class="modern-input-group">
+                                        <span class="modern-input-group-icon">
+                                            <span class="oi oi-magnifying-glass" aria-hidden="true" title="Search"></span>
                                         </span>
-                                        <input class="form-control" type="search" placeholder="Filter by Source, Title, Message"
-                                        @bind="filterData"
-                                        @bind:event="oninput">
+                                        <input class="modern-form-input modern-input-with-icon" 
+                                               type="search" 
+                                               placeholder="Filter by Source, Title, Message..."
+                                               @bind="filterData"
+                                               @bind:event="oninput">
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <div>
-                                    <button class="btn btn-success" title="Reset" @onclick="@(e => OnResetClick())">
-                                        Reset
+                            <div class="row">
+                                <div class="col-auto">
+                                    <button class="modern-btn-success" title="Reset filters" @onclick="@(e => OnResetClick())">
+                                        <span class="oi oi-reload" aria-hidden="true"></span>
+                                        Reset Filters
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table @theme.ThemeStyle">
+                    <div class="modern-table-container">
+                        <table class="modern-table">
                             <thead>
                                 <tr>
                                     <th scope="col">Created On</th>
@@ -111,16 +124,16 @@
                                     if (!IsVisible(message))
                                         continue;
                                     <tr>
-                                        <td class="align-top">
-                                            @message.CreatedOn.ToString()
+                                        <td>
+                                            @message.CreatedOn.ToString("yyyy-MM-dd HH:mm:ss")
                                         </td>
-                                        <td class="align-top">
-                                            @message.Source
+                                        <td>
+                                            <span class="modern-badge modern-badge-primary">@message.Source</span>
                                         </td>
-                                        <td class="align-top">
-                                            @message.Title
+                                        <td>
+                                            <strong>@message.Title</strong>
                                         </td>
-                                        <td class="align-top">
+                                        <td>
                                             @message.Message
                                         </td>
                                     </tr>
@@ -131,9 +144,10 @@
                 }
                 else
                 {
-                    <p style="font-style:italic">
-                        There are no log items to display.
-                    </p>
+                    <div class="modern-empty-state">
+                        <span class="oi oi-info" aria-hidden="true"></span>
+                        <p>There are no log items to display.</p>
+                    </div>
                 }
             </div>
         }
@@ -146,6 +160,10 @@
     protected ThemeInfo? theme { get; set; }
     [CascadingParameter]
     public IModalService? Modal { get; set; }
+    
+    [Inject]
+    public IAdminLogService? AdminLogService { get; set; }
+    
     private bool admin = false;
     private bool dataLoaded = false;
     List<AdminLogMessage> lstAdminLogMessages = new();
@@ -166,7 +184,7 @@
                 NavigationManager.NavigateTo("");
             }
             ServiceResponse serviceResponse = new();
-            serviceResponse = await AdminLogService.GetItems();
+            serviceResponse = await AdminLogService.GetItemsAsync();
             if (serviceResponse.Success)
             {
                 if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
@@ -195,21 +213,32 @@
     {
         ServiceResponse serviceResponse = new();
         bool confirm = false;
-        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div class=\"my-4\">This will purge the Admin Log and cannot be undone!</div><div class=\"my-4\">Are you sure?</div>", "bg-danger", theme!);
+        confirm = await ModalHelper.ShowConfirmationModal(Modal!, "ATTENTION", "<div style='margin: 1.5rem 0;'>This will purge the Admin Log and cannot be undone!</div><div style='margin: 1.5rem 0;'>Are you sure?</div>", "bg-danger", theme!);
         if (confirm)
         {
-            await LogHelper.PurgeAdminLog();
-            toastService.ShowSuccess("Admin Log purged!");
-            AdminLogService.PostItem(new AdminLogMessage() { Source = currentuser, Title = "INFORMATION", Message = "Admin Log purged." });
-            CacheHelper.InvalidateCacheObject("AdminLogMessage");
-            serviceResponse = await AdminLogService.GetItems();
+            // Use AdminLogService.DeleteAllItemsAsync() which works with both SQLite and FileSystem
+            serviceResponse = await AdminLogService!.DeleteAllItemsAsync();
+            
             if (serviceResponse.Success)
             {
-                if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                toastService.ShowSuccess("Admin Log purged!");
+                
+                // Clear cache and reload (should now be empty)
+                CacheHelper.InvalidateCacheObject("AdminLogMessage");
+                serviceResponse = await AdminLogService.GetItemsAsync();
+                if (serviceResponse.Success)
                 {
-                    lstAdminLogMessages = (List<AdminLogMessage>)serviceResponse.ResponseObject!;
+                    if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
+                    {
+                        lstAdminLogMessages = (List<AdminLogMessage>)serviceResponse.ResponseObject!;
+                    }
                 }
             }
+            else
+            {
+                toastService.ShowError("Failed to purge Admin Log. Please check the application logs.");
+            }
+            
             dataLoaded = true;
             StateHasChanged();
         }

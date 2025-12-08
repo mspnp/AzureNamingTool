@@ -95,3 +95,39 @@ main {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+/* Modern Scroll to Top Button - Scoped to MainLayout */
+::deep #btnScrollToTop {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0072C6 0%, #005a9e 100%);
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 20px;
+    padding: 0;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+::deep #btnScrollToTop:hover {
+    background: linear-gradient(135deg, #005a9e 0%, #0072C6 100%);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px) scale(1);
+}
+
+::deep #btnScrollToTop:active {
+    transform: translateY(0) scale(0.95);
+}

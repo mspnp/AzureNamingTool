@@ -1,4 +1,4 @@
-﻿using AzureNamingTool.Models;
+using AzureNamingTool.Models;
 using AzureNamingTool.Services;
 using System;
 using System.Collections.Generic;
@@ -104,9 +104,8 @@ namespace AzureNamingTool.Helpers
                 await FileSystemHelper.WriteFile(configFileName, JsonSerializer.Serialize(configdata, options));
                 return "Config updated.";
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception ex) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return ex;
             }
         }
@@ -132,9 +131,8 @@ namespace AzureNamingTool.Helpers
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
             return result;
         }

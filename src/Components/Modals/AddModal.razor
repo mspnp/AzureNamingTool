@@ -1,268 +1,262 @@
-﻿@using AzureNamingTool.Helpers
+@using AzureNamingTool.Helpers
 @using AzureNamingTool.Models
 @using AzureNamingTool.Services
+@using AzureNamingTool.Services.Interfaces
 @using Microsoft.AspNetCore.Html
 @using System.Text.RegularExpressions
 @inject IToastService toastService
 @inject StateContainer state
 @inject ProtectedSessionStorage session
 
-<div class="modal fade show d-block" tabindex="-1" role="dialog">
-    <div class="modal-backdrop fade show" @onclick="Cancel"></div>
-    <div class="modal-dialog modal-lg" style="z-index: 1050">
-        <!-- Pop it above the backdrop -->
-        <div class="modal-content @theme.ThemeStyle">
-            <div class="modal-header @headerstyle text-white">
-                <h3 class="modal-title">@title</h3>
+<div class="modern-modal-content">
+    <div class="modern-modal-body">
+        @((MarkupString)message)
+        <div class="modern-card" style="margin-bottom: 1rem;">
+            <div class="modern-card-header">
+                Configuration
             </div>
-            <div class="modal-body">
-                @((MarkupString)message)
-                <div class="card mb-3">
-                    <div class="card-header bg-default text-dark fw-bold">
-                        Configuration
-                    </div>
-                    <div class="card card-body @theme.ThemeStyle">
-                        <div class="mb-3">
-                            Enter the desired configuration.
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="name" style="font-weight:bold;">@namelabel</label>
-                            <input title="Name" value="@itemName" type="text" class="form-control @theme.ThemeStyle" id="name" @onchange="@((ui) => { itemName = (string)ui.Value!;})" />
-                        </div>
+            <div class="modern-card-body">
+                <div style="margin-bottom: 1rem;">
+                    Enter the desired configuration.
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label for="name" class="modern-form-label">@namelabel</label>
+                    <input title="Name" value="@itemName" type="text" class="modern-form-input" id="name" @onchange="@((ui) => { itemName = (string)ui.Value!;})" />
+                </div>
                         @switch (type)
                         {
                             case "ResourceComponent":
-                                <div class="form-group mb-3">
-                                    <div class="mb-3">
-                                        <div class="fw-bold">
+                                <div class="form-group" style="margin-bottom: 1rem;">
+                                    <div style="margin-bottom: 1rem;">
+                                        <label class="modern-form-label">
                                             Field Type
-                                        </div>
-                                        <select @bind="itemComponentType" class="form-control @theme.ThemeStyle">
+                                        </label>
+                                        <select @bind="itemComponentType" class="modern-form-select">
                                             <option value="standard">Standard - User selects an option from a pre-defined list</option>
                                             <option value="freetext">Free Form / Random</option>
                                         </select>
                                     </div>
                                     @if (itemComponentType == "freetext")
                                     {
-                                        <div class="card card-body @theme.ThemeStyle mb-3">
+                                        <div class="modern-card-body" style="margin-bottom: 1rem;">
                                             <div>
-                                                <div class="fw-bold">
+                                                <label class="modern-form-label">
                                                     Generate Random Value
-                                                </div>
-                                                <div class="mb-3">
+                                                </label>
+                                                <div style="margin-bottom: 1rem;">
                                                     By default, Free Form allows any value. If enabled, this setting will generate a random value for the component.
                                                 </div>
                                                 <div>
-                                                    <label class="switch" title="Generate Random Value">
+                                                    <label class="modern-toggle-switch" title="Generate Random Value">
                                                         <input type="checkbox" checked="@itemEnforceRandom" @oninput='args => ComponentSettingChanged(args, "enforcerandom")'>
-                                                        <span class="slider round"></span>
+                                                        <span class="modern-toggle-slider"></span>
                                                     </label>
-                                                    <span class="align-text-top"> Enable</span>
+                                                    <span class="align-text-top ms-2"> Enable</span>
                                                 </div>
                                             </div>
                                             @if (itemEnforceRandom)
                                             {
-                                                <div class="mt-3">
-                                                    <div class="fw-bold">
+                                                <div style="margin-top: 1rem;">
+                                                    <label class="modern-form-label">
                                                         Generate Alphanumeric Values
-                                                    </div>
-                                                    <div class="mb-3">
+                                                    </label>
+                                                    <div style="margin-bottom: 1rem;">
                                                         If enabled, the tool will generate a random alphanumeric value for the component. If disabled, only letters will be generated.
                                                     </div>
                                                     <div>
-                                                        <label class="switch" title="Alphanumeric">
+                                                        <label class="modern-toggle-switch" title="Alphanumeric">
                                                             <input type="checkbox" checked="@itemAlphanumeric" @oninput='args => ComponentSettingChanged(args, "alphanumeric")'>
-                                                            <span class="slider round"></span>
+                                                            <span class="modern-toggle-slider"></span>
                                                         </label>
-                                                        <span class="align-text-top"> Enable</span>
+                                                        <span class="align-text-top ms-2"> Enable</span>
                                                     </div>
                                                 </div>
                                             }
                                         </div>
                                     }
-                                    <div class="mb-3">
-                                        <div class="fw-bold">
+                                    <div style="margin-bottom: 1rem;">
+                                        <label class="modern-form-label">
                                             Description
-                                        </div>
+                                        </label>
                                         <div>
-                                            <input title="Decription" value="@itemDescription" type="text" class="form-control @theme.ThemeStyle" id="minlength" @onchange="@((ui) => { itemDescription = (string)ui.Value!;})" />
+                                            <input title="Description" value="@itemDescription" type="text" class="modern-form-input" id="description" @onchange="@((ui) => { itemDescription = (string)ui.Value!;})" />
                                         </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <div class="fw-bold">
+                                    <div style="margin-bottom: 1rem;">
+                                        <label class="modern-form-label">
                                             Minimum Length
-                                        </div>
+                                        </label>
                                         <div>
-                                            <input title="Minimum Length" value="@itemMinLength" type="text" class="form-control @theme.ThemeStyle" id="minlength" @onchange="@((ui) => { itemMinLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+                                            <input title="Minimum Length" value="@itemMinLength" type="text" class="modern-form-input" id="minlength" @onchange="@((ui) => { itemMinLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
                                         </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <div class="fw-bold">
+                                    <div style="margin-bottom: 1rem;">
+                                        <label class="modern-form-label">
                                             Maximum Length
-                                        </div>
+                                        </label>
                                         <div>
-                                            <input title="Maximum Length" value="@itemMaxLength" type="text" class="form-control @theme.ThemeStyle" id="maxlength" @onchange="@((ui) => { itemMaxLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+                                            <input title="Maximum Length" value="@itemMaxLength" type="text" class="modern-form-input" id="maxlength" @onchange="@((ui) => { itemMaxLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
                                         </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <div class="fw-bold">
+                                    <div style="margin-bottom: 1rem;">
+                                        <label class="modern-form-label">
                                             Apply Before
-                                        </div>
-                                        <div class="mb-3">
+                                        </label>
+                                        <div style="margin-bottom: 1rem;">
                                             If disabled, this setting will not add the current delimiter BEFORE the component value.
                                         </div>
                                         <div>
-                                            <label class="switch" title="Apply Delimiter">
+                                            <label class="modern-toggle-switch" title="Apply Delimiter">
                                                 <input type="checkbox" checked="@itemApplyDelimiterBefore" @oninput='args => ComponentSettingChanged(args, "applydelimiterbefore")'>
-                                                <span class="slider round"></span>
+                                                <span class="modern-toggle-slider"></span>
                                             </label>
-                                            <span class="align-text-top"> Enable</span>
+                                            <span class="align-text-top ms-2"> Enable</span>
                                         </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <div class="fw-bold">
+                                    <div style="margin-bottom: 1rem;">
+                                        <label class="modern-form-label">
                                             Apply Delimiter After
-                                        </div>
-                                        <div class="mb-3">
+                                        </label>
+                                        <div style="margin-bottom: 1rem;">
                                             If disabled, this setting will not add the current delimiter AFTER the component value.
                                         </div>
                                         <div>
-                                            <label class="switch" title="Apply Delimiter">
+                                            <label class="modern-toggle-switch" title="Apply Delimiter">
                                                 <input type="checkbox" checked="@itemApplyDelimiterAfter" @oninput='args => ComponentSettingChanged(args, "applydelimiterafter")'>
-                                                <span class="slider round"></span>
+                                                <span class="modern-toggle-slider"></span>
                                             </label>
-                                            <span class="align-text-top"> Enable</span>
+                                            <span class="align-text-top ms-2"> Enable</span>
                                         </div>
                                     </div>
                                 </div>
                                 break;
                             case "ResourceType":
-                                <div class="form-group mb-3">
-                                    <label for="shortName" style="font-weight:bold;">Short Name</label>
-                                    <input title="Short Name" value="@itemShortName" type="text" class="form-control @theme.ThemeStyle" id="shortname" @onchange="@((ui) => { itemShortName = (string)ui.Value!;})" />
+                                <div class="form-group" style="margin-bottom: 1rem;">
+                                    <label for="shortName" class="modern-form-label">Short Name</label>
+                                    <input title="Short Name" value="@itemShortName" type="text" class="modern-form-input" id="shortname" @onchange="@((ui) => { itemShortName = (string)ui.Value!;})" />
                                 </div>
-                                <div class="mb-3">
-                                    <div class="fw-bold">
+                                <div style="margin-bottom: 1rem;">
+                                    <label class="modern-form-label">
                                         Minimum Length
-                                    </div>
+                                    </label>
                                     <div>
-                                        <input title="Minimum Length" value="@itemMinLength" type="text" class="form-control @theme.ThemeStyle" id="minlength" @onchange="@((ui) => { itemMinLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+                                        <input title="Minimum Length" value="@itemMinLength" type="text" class="modern-form-input" id="minlength" @onchange="@((ui) => { itemMinLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
                                     </div>
                                 </div>
-                                <div class="mb-3">
-                                    <div class="fw-bold">
+                                <div style="margin-bottom: 1rem;">
+                                    <label class="modern-form-label">
                                         Maximum Length
-                                    </div>
+                                    </label>
                                     <div>
-                                        <input title="Maximum Length" value="@itemMaxLength" type="text" class="form-control @theme.ThemeStyle" id="maxlength" @onchange="@((ui) => { itemMaxLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
+                                        <input title="Maximum Length" value="@itemMaxLength" type="text" class="modern-form-input" id="maxlength" @onchange="@((ui) => { itemMaxLength = (string)ui.Value!;})" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" />
                                     </div>
                                 </div>
-                                <div class="mb-3">
-                                    <div class="fw-bold">
+                                <div style="margin-bottom: 1rem;">
+                                    <label class="modern-form-label">
                                         Apply Delimiter
-                                    </div>
-                                    <div class="mb-3">
+                                    </label>
+                                    <div style="margin-bottom: 1rem;">
                                         If disabled, the current delimiter will not be used for name generation.
                                     </div>
                                     <div>
-                                        <label class="switch" title="Apply Delimiter">
+                                        <label class="modern-toggle-switch" title="Apply Delimiter">
                                             <input type="checkbox" checked="@itemApplyDelimiter" @oninput='args => ComponentSettingChanged(args, "applydelimiter")'>
-                                            <span class="slider round"></span>
+                                            <span class="modern-toggle-slider"></span>
                                         </label>
-                                        <span class="align-text-top"> Enable</span>
+                                        <span class="align-text-top ms-2"> Enable</span>
                                     </div>
                                 </div>
-                                <div id="typemetdadatacontainer" class="card mb-3">
-                                    <div class="card-header bg-default text-dark fw-bold">
+                                <div id="typemetdadatacontainer" class="modern-card" style="margin-bottom: 1rem;">
+                                    <div class="modern-card-header">
                                         <a id="typemetdadatalink" class="link-dark text-decoration-none" data-bs-toggle="collapse" href="#typemetdadata" role="button" aria-expanded="false" aria-controls="typemetdadata">
                                             <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Resoure Type Metadata
                                         </a>
                                     </div>
-                                    <div class="collapse card card-body @theme.ThemeStyle" id="typemetdadata">
-                                        <div class="mb-3">
+                                    <div class="collapse modern-card-body" id="typemetdadata">
+                                        <div style="margin-bottom: 1rem;">
                                             <p>
                                             This section allows you to edit the Resouce Type metadata.
                                             </p>
-                                                <div class="alert alert-danger mb-3" role="alert">
+                                                <div class="alert alert-danger" style="margin-bottom: 1rem;" role="alert">
                                                     <h4>ATTENTION</h4>
-                                                    <span class="fw-bold">Please see the <a href="https://github.com/mspnp/AzureNamingTool/wiki/Resource-Type-Editing" target="_blank">Resource Type Editing documentation</a> for guidance on metadata editing.</span>
+                                                    <span class="modern-font-semibold">Please see the <a href="https://github.com/mspnp/AzureNamingTool/wiki/Resource-Type-Editing" target="_blank">Resource Type Editing documentation</a> for guidance on metadata editing.</span>
                                                 </div>
 
                                         </div>
-                                        <div class="mb-3">
-                                            <div class="mb-3">
-                                                <div class="fw-bold">
+                                        <div style="margin-bottom: 1rem;">
+                                            <div style="margin-bottom: 1rem;">
+                                                <label class="modern-form-label">
                                                     Regex
-                                                </div>
-                                                <div class="mb-3">
+                                                </label>
+                                                <div style="margin-bottom: 1rem;">
                                                     Regex to apply to generated names.
                                                 </div>
                                                 <div>
-                                                    <input title="RegEx" value="@itemRegEx" type="text" class="form-control @theme.ThemeStyle" id="regex" @onchange="@((ui) => { itemRegEx = (string)ui.Value!;})" />
+                                                    <input title="RegEx" value="@itemRegEx" type="text" class="modern-form-input" id="regex" @onchange="@((ui) => { itemRegEx = (string)ui.Value!;})" />
                                                 </div>
                                             </div>
 
-                                            <div class="fw-bold">
+                                            <label class="modern-form-label">
                                                 Scope
-                                            </div>
+                                            </label>
                                             <div>
-                                                <input title="Scope" value="@itemScope" type="text" class="form-control @theme.ThemeStyle" id="scope" @onchange="@((ui) => { itemScope = (string)ui.Value!;})" />
+                                                <input title="Scope" value="@itemScope" type="text" class="modern-form-input" id="scope" @onchange="@((ui) => { itemScope = (string)ui.Value!;})" />
                                             </div>
                                         </div>
-                                        <div class="mb-3">
-                                            <div class="fw-bold">
+                                        <div style="margin-bottom: 1rem;">
+                                            <label class="modern-form-label">
                                                 Valid Text
-                                            </div>
+                                            </label>
                                             <div>
-                                                <input title="Valid Text" value="@itemValidText" type="text" class="form-control @theme.ThemeStyle" id="validtext" @onchange="@((ui) => { itemValidText = (string)ui.Value!;})" />
+                                                <input title="Valid Text" value="@itemValidText" type="text" class="modern-form-input" id="validtext" @onchange="@((ui) => { itemValidText = (string)ui.Value!;})" />
                                             </div>
                                         </div>
-                                        <div class="mb-3">
-                                            <div class="fw-bold">
+                                        <div style="margin-bottom: 1rem;">
+                                            <label class="modern-form-label">
                                                 Invalid Text
-                                            </div>
+                                            </label>
                                             <div>
-                                                <input title="Invalid Text" value="@itemInvalidText" type="text" class="form-control @theme.ThemeStyle" id="invalidtext" @onchange="@((ui) => { itemInvalidText = (string)ui.Value!;})" />
+                                                <input title="Invalid Text" value="@itemInvalidText" type="text" class="modern-form-input" id="invalidtext" @onchange="@((ui) => { itemInvalidText = (string)ui.Value!;})" />
                                             </div>
                                         </div>
-                                        <div class="mb-3">
-                                            <div class="fw-bold">
+                                        <div style="margin-bottom: 1rem;">
+                                            <label class="modern-form-label">
                                                 Invalid Characters
-                                            </div>
+                                            </label>
                                             <div>
-                                                <input title="Invalid Characters" value="@itemInvalidCharacters" type="text" class="form-control @theme.ThemeStyle" id="invalidcharacters" @onchange="@((ui) => { itemInvalidCharacters = (string)ui.Value!;})" />
+                                                <input title="Invalid Characters" value="@itemInvalidCharacters" type="text" class="modern-form-input" id="invalidcharacters" @onchange="@((ui) => { itemInvalidCharacters = (string)ui.Value!;})" />
                                             </div>
                                         </div>
-                                        <div class="mb-3">
-                                            <div class="fw-bold">
+                                        <div style="margin-bottom: 1rem;">
+                                            <label class="modern-form-label">
                                                 Invalid Characters Start
-                                            </div>
+                                            </label>
                                             <div>
-                                                <input title="Invalid Characters Start" value="@itemInvalidCharactersStart" type="text" class="form-control @theme.ThemeStyle" id="invalidcharactersstart" @onchange="@((ui) => { itemInvalidCharactersStart = (string)ui.Value!;})" />
+                                                <input title="Invalid Characters Start" value="@itemInvalidCharactersStart" type="text" class="modern-form-input" id="invalidcharactersstart" @onchange="@((ui) => { itemInvalidCharactersStart = (string)ui.Value!;})" />
                                             </div>
                                         </div>
-                                        <div class="mb-3">
-                                            <div class="fw-bold">
+                                        <div style="margin-bottom: 1rem;">
+                                            <label class="modern-form-label">
                                                 Invalid Characters End
-                                            </div>
+                                            </label>
                                             <div>
-                                                <input title="Invalid Characters End" value="@itemInvalidCharactersEnd" type="text" class="form-control @theme.ThemeStyle" id="invalidcharactersend" @onchange="@((ui) => { itemInvalidCharactersEnd = (string)ui.Value!;})" />
+                                                <input title="Invalid Characters End" value="@itemInvalidCharactersEnd" type="text" class="modern-form-input" id="invalidcharactersend" @onchange="@((ui) => { itemInvalidCharactersEnd = (string)ui.Value!;})" />
                                             </div>
                                         </div>
-                                        <div class="mb-3">
-                                            <div class="fw-bold">
+                                        <div style="margin-bottom: 1rem;">
+                                            <label class="modern-form-label">
                                                 Invalid Characters Consecutive
-                                            </div>
+                                            </label>
                                             <div>
-                                                <input title="Invalid Characters Consecutive" value="@itemInvalidCharactersConsecutive" type="text" class="form-control @theme.ThemeStyle" id="invalidcharactersconsecutive" @onchange="@((ui) => { itemInvalidCharactersConsecutive = (string)ui.Value!;})" />
+                                                <input title="Invalid Characters Consecutive" value="@itemInvalidCharactersConsecutive" type="text" class="modern-form-input" id="invalidcharactersconsecutive" @onchange="@((ui) => { itemInvalidCharactersConsecutive = (string)ui.Value!;})" />
                                             </div>
                                         </div>
-                                        <div class="mb-3">
-                                            <div class="fw-bold">
+                                        <div style="margin-bottom: 1rem;">
+                                            <label class="modern-form-label">
                                                 Static Values
-                                            </div>
+                                            </label>
                                             <div>
-                                                <input title="Static Values" value="@itemStaticValues" type="text" class="form-control @theme.ThemeStyle" id="staticvalues" @onchange="@((ui) => { itemStaticValues = (string)ui.Value!;})" />
+                                                <input title="Static Values" value="@itemStaticValues" type="text" class="modern-form-input" id="staticvalues" @onchange="@((ui) => { itemStaticValues = (string)ui.Value!;})" />
                                             </div>
                                         </div>
                                     </div>
@@ -271,24 +265,21 @@
                             case "AdminUser":
                                 break;
                             default:
-                                <div class="form-group mb-3">
-                                    <label for="shortName" style="font-weight:bold;">Short Name</label>
-                                    <input title="Short Name" value="@itemShortName" type="text" class="form-control @theme.ThemeStyle" id="shortname" @onchange="@((ui) => { itemShortName = (string)ui.Value!;})" />
+                                <div class="form-group" style="margin-bottom: 1rem;">
+                                    <label for="shortName" class="modern-form-label">Short Name</label>
+                                    <input title="Short Name" value="@itemShortName" type="text" class="modern-form-input" id="shortname" @onchange="@((ui) => { itemShortName = (string)ui.Value!;})" />
                                 </div>
                                 break;
                         }
-                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button title="Add" @onclick="Save" class="btn btn-success">Add</button>
-                <button title="Cancel" @onclick="Cancel" class="btn btn-secondary">Cancel</button>
             </div>
         </div>
     </div>
+
+<div class="modern-modal-footer">
+    <button title="Add" @onclick="Save" class="modern-btn-success">Add</button>
+    <button title="Cancel" @onclick="Cancel" class="modern-btn-secondary">Cancel</button>
 </div>
-
-
 
 @code {
     [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; } = new();
@@ -302,6 +293,42 @@
     [Parameter] public string headerstyle { get; set; } = String.Empty;
     [Parameter] public bool admin { get; set; } = false;
     [Parameter] public ServicesData servicesData { get; set; } = new();
+    
+    [Inject]
+    public IResourceComponentService? ResourceComponentService { get; set; }
+    
+    [Inject]
+    public IAdminUserService? AdminUserService { get; set; }
+    
+    [Inject]
+    public IResourceEnvironmentService? ResourceEnvironmentService { get; set; }
+    
+    [Inject]
+    public IResourceLocationService? ResourceLocationService { get; set; }
+    
+    [Inject]
+    public IResourceOrgService? ResourceOrgService { get; set; }
+    
+    [Inject]
+    public IResourceProjAppSvcService? ResourceProjAppSvcService { get; set; }
+    
+    [Inject]
+    public IResourceTypeService? ResourceTypeService { get; set; }
+    
+    [Inject]
+    public IResourceUnitDeptService? ResourceUnitDeptService { get; set; }
+    
+    [Inject]
+    public IResourceFunctionService? ResourceFunctionService { get; set; }
+    
+    [Inject]
+    public IResourceDelimiterService? ResourceDelimiterService { get; set; }
+    
+    [Inject]
+    public ICustomComponentService? CustomComponentService { get; set; }
+    
+    [Inject]
+    public IAdminLogService? AdminLogService { get; set; }
 
 
     private ServiceResponse serviceResponse = new();
@@ -338,7 +365,7 @@
         }
     }
 
-    async void Save()
+    async Task Save()
     {
         bool valid = false;
         switch (type)
@@ -381,7 +408,7 @@
                                     ApplyDelimiterBefore = itemApplyDelimiterBefore,
                                     ApplyDelimiterAfter = itemApplyDelimiterAfter
                                 };
-                            serviceResponse = await ResourceComponentService.PostItem(resourceComponent);
+                            serviceResponse = await ResourceComponentService.PostItemAsync(resourceComponent);
                         }
                     }
                 }
@@ -394,7 +421,7 @@
                 if (!String.IsNullOrEmpty(itemName))
                 {
                     // Check if the item already exists
-                    serviceResponse = await AdminUserService.GetItems();
+                    serviceResponse = await AdminUserService.GetItemsAsync();
                     ArgumentNullException.ThrowIfNull(servicesData.AdminUsers);
                     List<AdminUser> adminUsers = servicesData.AdminUsers;
                     if (adminUsers.Any(x => x.Name == itemName))
@@ -408,7 +435,7 @@
                             {
                                 Name = itemName
                             };
-                        serviceResponse = await AdminUserService.PostItem(adminUser);
+                        serviceResponse = await AdminUserService.PostItemAsync(adminUser);
                     }
                 }
                 break;
@@ -423,7 +450,7 @@
                             break;
                         }
 
-                        if (await ValidationHelper.ValidateShortName(type, itemShortName, this.parentcomponent))
+                        if (await ValidationHelper.ValidateShortName(ResourceComponentService!, type, itemShortName, this.parentcomponent))
                         {
                             string normailzedname = GeneralHelper.NormalizeName(itemName, true);
                             switch (type)
@@ -445,12 +472,12 @@
                                                 ShortName = itemShortName
 
                                             };
-                                        serviceResponse = await ResourceEnvironmentService.PostItem(resourceEnvironment);
+                                        serviceResponse = await ResourceEnvironmentService.PostItemAsync(resourceEnvironment);
                                     }
                                     break;
                                 case "ResourceLocation":
                                     // Check if the item already exists
-                                    serviceResponse = await ResourceLocationService.GetItems();
+                                    serviceResponse = await ResourceLocationService.GetItemsAsync();
                                     ArgumentNullException.ThrowIfNull(servicesData.ResourceLocations);
                                     List<ResourceLocation> resourceLocations = servicesData.ResourceLocations;
                                     if (resourceLocations.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
@@ -466,12 +493,12 @@
                                                 ShortName = itemShortName
 
                                             };
-                                        serviceResponse = await ResourceLocationService.PostItem(resourceLocation);
+                                        serviceResponse = await ResourceLocationService.PostItemAsync(resourceLocation);
                                     }
                                     break;
                                 case "ResourceOrg":
                                     // Check if the item already exists
-                                    serviceResponse = await ResourceOrgService.GetItems();
+                                    serviceResponse = await ResourceOrgService.GetItemsAsync();
                                     ArgumentNullException.ThrowIfNull(servicesData.ResourceOrgs);
                                     List<ResourceOrg> resourceOrgs = servicesData.ResourceOrgs;
                                     if (resourceOrgs.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
@@ -487,12 +514,12 @@
                                                 ShortName = itemShortName
 
                                             };
-                                        serviceResponse = await ResourceOrgService.PostItem(resourceOrg);
+                                        serviceResponse = await ResourceOrgService.PostItemAsync(resourceOrg);
                                     }
                                     break;
                                 case "ResourceProjAppSvc":
                                     // Check if the item already exists
-                                    serviceResponse = await ResourceProjAppSvcService.GetItems();
+                                    serviceResponse = await ResourceProjAppSvcService.GetItemsAsync();
                                     ArgumentNullException.ThrowIfNull(servicesData.ResourceProjAppSvcs);
                                     List<ResourceProjAppSvc> resourceProjAppSvcs = servicesData.ResourceProjAppSvcs;
                                     if (resourceProjAppSvcs.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
@@ -508,12 +535,12 @@
                                                 ShortName = itemShortName
 
                                             };
-                                        serviceResponse = await ResourceProjAppSvcService.PostItem(resourceProjAppSvc);
+                                        serviceResponse = await ResourceProjAppSvcService.PostItemAsync(resourceProjAppSvc);
                                     }
                                     break;
                                 case "ResourceType":
                                     // Check if the item already exists
-                                    serviceResponse = await ResourceTypeService.GetItems();
+                                    serviceResponse = await ResourceTypeService.GetItemsAsync();
                                     ArgumentNullException.ThrowIfNull(servicesData.ResourceTypes);
                                     List<ResourceType> resourceTypes = servicesData.ResourceTypes;
                                     if (resourceTypes.Any(x => GeneralHelper.NormalizeName(x.Resource, true) == normailzedname || x.ShortName == itemShortName))
@@ -552,12 +579,12 @@
                                                 InvalidCharactersConsecutive = itemInvalidCharactersConsecutive,
                                                 StaticValues = itemStaticValues
                                             };
-                                        serviceResponse = await ResourceTypeService.PostItem(resourceType);
+                                        serviceResponse = await ResourceTypeService.PostItemAsync(resourceType);
                                     }
                                     break;
                                 case "ResourceUnitDept":
                                     // Check if the item already exists
-                                    serviceResponse = await ResourceUnitDeptService.GetItems();
+                                    serviceResponse = await ResourceUnitDeptService.GetItemsAsync();
                                     ArgumentNullException.ThrowIfNull(servicesData.ResourceUnitDepts);
                                     List<ResourceUnitDept> resourceUnitDepts = servicesData.ResourceUnitDepts;
                                     if (resourceUnitDepts.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
@@ -573,12 +600,12 @@
                                                 ShortName = itemShortName
 
                                             };
-                                        serviceResponse = await ResourceUnitDeptService.PostItem(resourceUnitDept);
+                                        serviceResponse = await ResourceUnitDeptService.PostItemAsync(resourceUnitDept);
                                     }
                                     break;
                                 case "ResourceFunction":
                                     // Check if the item already exists
-                                    serviceResponse = await ResourceFunctionService.GetItems();
+                                    serviceResponse = await ResourceFunctionService.GetItemsAsync();
                                     ArgumentNullException.ThrowIfNull(servicesData.ResourceFunctions);
                                     List<ResourceFunction> resourceFunctions = servicesData.ResourceFunctions;
                                     if (resourceFunctions.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
@@ -594,12 +621,12 @@
                                                 ShortName = itemShortName
 
                                             };
-                                        serviceResponse = await ResourceFunctionService.PostItem(resourceFunction);
+                                        serviceResponse = await ResourceFunctionService.PostItemAsync(resourceFunction);
                                     }
                                     break;
                                 case "CustomComponent":
                                     // Check if the item already exists
-                                    serviceResponse = await CustomComponentService.GetItems();
+                                    serviceResponse = await CustomComponentService.GetItemsAsync();
                                     ArgumentNullException.ThrowIfNull(servicesData.CustomComponents);
                                     List<CustomComponent> customComponents = servicesData.CustomComponents;
                                     if (customComponents.Any(x => GeneralHelper.NormalizeName(x.Name, true) == normailzedname || x.ShortName == itemShortName))
@@ -617,7 +644,7 @@
                                                 MinLength = itemMinLength,
                                                 MaxLength = itemMaxLength
                                             };
-                                        serviceResponse = await CustomComponentService.PostItem(customComponent);
+                                        serviceResponse = await CustomComponentService.PostItemAsync(customComponent);
                                     }
                                     break;
                             }
@@ -641,7 +668,7 @@
             {
                 await ModalInstance.CloseAsync();
                 toastService.ShowSuccess(type.Replace("Resource", "Resource ") + " added!");
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "SUCCESS", Message = "(" + type + ") " + itemName + " added!", Source = currentuser });
+                await AdminLogService?.PostItemAsync(new AdminLogMessage() { Title = "SUCCESS", Message = "(" + type + ") " + itemName + " added!", Source = currentuser });
             }
             else
             {
@@ -650,7 +677,7 @@
         }
     }
 
-    private void ComponentSettingChanged(ChangeEventArgs e, string setting)
+    private async Task ComponentSettingChanged(ChangeEventArgs e, string setting)
     {
         try
         {
@@ -682,7 +709,7 @@
         }
         catch (Exception ex)
         {
-            AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            await AdminLogService?.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             toastService.ShowError("There was an error updating the " + GeneralHelper.NormalizeName(type, false) + "! " + ex.Message);
         }
     }
@@ -690,3 +717,4 @@
 
     async Task Cancel() => await ModalInstance.CancelAsync();
 }
+

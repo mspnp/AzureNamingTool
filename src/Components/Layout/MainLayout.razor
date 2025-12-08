@@ -1,4 +1,4 @@
-﻿@using AzureNamingTool.Components.Modals
+@using AzureNamingTool.Components.Modals
 @using AzureNamingTool.Helpers
 @using AzureNamingTool.Models
 @using Blazored.Toast.Configuration
@@ -10,90 +10,159 @@
 @inject ILogger<MainLayout> Logger
 @inject NavigationManager NavigationManager
 @using AzureNamingTool.Services;
+@using AzureNamingTool.Services.Interfaces;
 @using System.Security.Claims;
 @inject ProtectedLocalStorage storage
 @inject ProtectedSessionStorage session
 @inject IHttpContextAccessor httpContextAccessor
+@inject IStorageMigrationService MigrationService
+@inject IAdminUserService AdminUserService
 
 <PageTitle>Azure Naming Tool</PageTitle>
 <BlazoredToasts Position="ToastPosition.BottomRight" ShowProgressBar="true" />
-<div class="page @theme.ThemeStyle">
-    <div class="sidebar" style="overflow-y:auto;">
+
+<div class="modern-layout">
+    <!-- Mobile Menu Button (outside sidebar) -->
+    <button type="button" 
+            class="mobile-menu-toggle" 
+            onclick="window.toggleMobileMenu()"
+            title="Toggle Menu"
+            aria-label="Toggle Menu">
+        <span class="oi oi-menu"></span>
+    </button>
+    
+    <!-- Mobile Sidebar Backdrop -->
+    <div class="modern-sidebar-backdrop" onclick="window.closeMobileMenu()"></div>
+    
+    <!-- Sidebar -->
+    <aside class="modern-sidebar @(sidebarCollapsed ? "collapsed" : "")">
         <NavMenu PageType="@PageType" />
-    </div>
+    </aside>
 
-    <main>
-        <div class="top-row px-4 auth @theme.ThemeStyle">
-            @if (!String.IsNullOrEmpty(currentuser))
-            {
-                if (currentuser != "System")
-                {
-                    <div class="w-100">
-                        @(
-                                "User: " + currentuser
-                                )
-                    </div>
-                }
-            }
-            @if (admin)
-            {
-                @if (!String.IsNullOrEmpty(feedbackurl))
-                {
-                    <div class="ms-3">
-                        <button type="button" class="btn btn-success" @onclick="@(e => ShowFeedback())" title="Want to give feedback?">Feedback</button>
-                    </div>
-                }
-            }
-            @if (!String.IsNullOrEmpty(currentuser))
-            {
-                if (currentuser != "System")
-                {
-                    <div class="ms-3">
-                        <button type="button" class="btn btn-danger" @onclick="@(e => Logout())" title="Logout" data-bs-toggle="collapse" href="#admin">Logout</button>
-                    </div>
-                }
-            }
-            <div class="px-3">
-                <label class="switch" title="App Theme">
-                    <input type="checkbox" checked="@isdarktheme" @oninput="ThemeChanged">
-                    <span class="slider round"></span>
-                </label>
+    <!-- Main Content Area -->
+    <div class="modern-main">
+        <!-- Header -->
+        <header class="modern-header">
+            <div class="header-left">
+                <button type="button" 
+                        class="btn-icon sidebar-toggle" 
+                        @onclick="ToggleSidebar"
+                        title="@(sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar")"
+                        aria-label="@(sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar")">
+                    <span class="oi oi-menu"></span>
+                </button>
+                <h1 class="header-title">Azure Naming Tool</h1>
             </div>
-        </div>
+            
+            <div class="header-right">
+                <!-- Feedback Button -->
+                @if (admin)
+                {
+                    @if (!String.IsNullOrEmpty(feedbackurl))
+                    {
+                        <button type="button" 
+                                class="btn btn-sm btn-success" 
+                                @onclick="@(e => ShowFeedback())" 
+                                title="Want to give feedback?">
+                            <span class="oi oi-comment-square"></span>
+                            Feedback
+                        </button>
+                    }
+                }
+                
+                <!-- Theme Toggle -->
+                <div class="modern-theme-toggle">
+                    <button type="button" class="theme-toggle-btn" @onclick="ToggleTheme" title="Toggle Light/Dark Theme">
+                        @if (isdarktheme)
+                        {
+                            <i class="bi bi-moon-stars-fill theme-icon"></i>
+                            <span class="theme-label">Dark</span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-sun-fill theme-icon"></i>
+                            <span class="theme-label">Light</span>
+                        }
+                    </button>
+                </div>
+                
+                <!-- User Info -->
+                @if (!String.IsNullOrEmpty(currentuser))
+                {
+                    if (currentuser != "System")
+                    {
+                        <div class="user-info">
+                            <span class="oi oi-person"></span>
+                            <span class="user-name">@currentuser</span>
+                        </div>
+                    }
+                }
+                
+                <!-- Logout Button -->
+                @if (!String.IsNullOrEmpty(currentuser))
+                {
+                    if (currentuser != "System")
+                    {
+                        <button type="button" 
+                                class="btn btn-sm btn-danger" 
+                                @onclick="@(e => Logout())" 
+                                title="Logout">
+                            <span class="oi oi-account-logout"></span>
+                            Logout
+                        </button>
+                    }
+                }
+            </div>
+        </header>
 
-        <article class="content px-4">
+        <!-- Content Area -->
+        <main class="modern-content">
             @if ((admin) && (bool.Parse(ConfigurationHelper.GetAppSetting("DevMode"))))
             {
-                <div class="warning-message">DEV MODE Enabled! This can cause unexpected behavior! Use at your own risk!</div>
+                <div class="alert alert-warning">
+                    <span class="alert-icon">⚠️</span>
+                    <div class="alert-content">
+                        <div class="alert-title">DEV MODE Enabled!</div>
+                        <div class="alert-message">This can cause unexpected behavior! Use at your own risk!</div>
+                    </div>
+                </div>
             }
+            
             <CascadingValue Value=@theme>
                 @Body
             </CascadingValue>
-        </article>
-    </main>
+        </main>
+    </div>
 </div>
 
-<button onclick="topFunction()" type="button" id="btnScrollToTop" class="btn btn-success btn-sm" title="Go to top"><span class="oi oi-arrow-circle-top" style="vertical-align:text-top;"></span> Top</button>
-@if (PasswordModalOpen)
-{
-    <PasswordModal OnClose="@OnPasswordModalClose">
-    </PasswordModal>
-}
+<!-- Modern Scroll to Top Button -->
+<button type="button" 
+        id="btnScrollToTop" 
+        title="Scroll to top" 
+        aria-label="Scroll to top"
+        onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;"
+        style="position: fixed !important; bottom: 24px !important; right: 24px !important; z-index: 99999 !important; display: flex !important; align-items: center !important; justify-content: center !important; width: 48px !important; height: 48px !important; border-radius: 50% !important; background: linear-gradient(135deg, #0072C6 0%, #005a9e 100%) !important; color: white !important; border: none !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important; cursor: pointer !important; font-size: 20px !important; padding: 0 !important; opacity: 1 !important; visibility: visible !important; pointer-events: auto !important;">
+    <span class="oi oi-chevron-top"></span>
+</button>
 
 @code {
     [CascadingParameter]
     private IdentityProviderDetails? identityProviderDetails { get; set; }
     [CascadingParameter] public IModalService? Modal { get; set; }
+    
+    [Inject]
+    public IAdminLogService? AdminLogService { get; set; }
+    
     private ThemeInfo theme = new() { ThemeName = "Light", ThemeStyle = "bg-default text-dark" };
     private bool isdarktheme = false;
     private bool admin;
     private string feedbackurl = String.Empty;
+    private bool sidebarCollapsed = false;
 
     private string? currentuser = String.Empty;
 
     private string? details = String.Empty;
 
-    public bool PasswordModalOpen { get; set; }
     public Type? PageType { get; set; }
 
     protected override void OnParametersSet()
@@ -103,11 +172,7 @@
 
     protected override void OnInitialized()
     {
-        // Check that the Global admin password is set
-        if (!state.Password)
-        {
-            OpenPasswordModal();
-        }
+        // Initial password check will happen in OnAfterRenderAsync
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -122,6 +187,16 @@
         }
         if (firstRender)
         {
+            // Check password after first render (after VerifySecurity completes)
+            await InvokeAsync(async () =>
+            {
+                if (!state.Password)
+                {
+                    await OpenPasswordModal();
+                    StateHasChanged();
+                }
+            });
+            
             // Check if the user has manually logged out. If so, don't attempt to identity them.
             var logout = await session.GetAsync<bool>("logout");
             if (!(bool)logout.Value)
@@ -140,7 +215,7 @@
                             var workingmodaloptions = new ModalOptions()
                                 {
                                     HideCloseButton = true,
-                                    UseCustomLayout = true
+                                    DisableBackgroundCancel = true
                                 };
 
                             if (GeneralHelper.IsNotNull(Modal))
@@ -152,10 +227,10 @@
                                 await session.SetAsync("currentuser", currentuser);
 
                                 // Log the user access
-                                AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "User accessed the site.", Source = currentuser });
+                                await AdminLogService.PostItemAsync(new AdminLogMessage() { Title = "INFORMATION", Message = "User accessed the site.", Source = currentuser });
 
                                 // CHeck if the user is an admin
-                                admin = await IdentityHelper.IsAdminUser(state, session, currentuser);
+                                admin = await IdentityHelper.IsAdminUser(state, session, currentuser, AdminUserService);
                                 // Close modal
                                 workingmodal.Close();
                             }
@@ -172,23 +247,35 @@
             {
                 theme.ThemeStyle = "bg-default text-dark";
             }
+            
+            string jsTheme;
             if (theme.ThemeStyle == "bg-default text-dark")
             {
                 theme.ThemeName = "Light";
                 isdarktheme = false;
+                jsTheme = "light";
             }
             else
             {
                 theme.ThemeName = "Dark";
                 isdarktheme = true;
+                jsTheme = "dark";
             }
+            
+            // Initialize theme using JavaScript
+            await JsRuntime.InvokeVoidAsync("setTheme", jsTheme);
+            
             state.AppTheme = theme.ThemeStyle!;
 
             // Check if Feedback is enabled
             if (admin)
             {
                 feedbackurl = await ConfigurationHelper.GetProgramSetting("FeedbackURL");
+                
+                // Check if SQLite migration prompt should be shown (only for admin users)
+                await CheckMigrationPrompt();
             }
+
             StateHasChanged();
         }
     }
@@ -198,15 +285,180 @@
         state.OnChange -= StateHasChanged;
     }
 
-    private void OpenPasswordModal()
+    private async Task OpenPasswordModal()
     {
-        PasswordModalOpen = true;
+        var modalParameters = new ModalParameters();
+        
+        var modalOptions = new ModalOptions()
+        {
+            HideCloseButton = true,
+            DisableBackgroundCancel = true
+        };
+
+        if (GeneralHelper.IsNotNull(Modal))
+        {
+            var modalReference = Modal.Show<PasswordModal>("Set Global Admin Password", modalParameters, modalOptions);
+            var result = await modalReference.Result;
+            
+            if (!result.Cancelled && result.Data != null)
+            {
+                // Password was set successfully
+                state.Password = true;
+                await session.SetAsync("password", true);
+                state.SetAdmin(true);
+                await session.SetAsync("admin", true);
+                StateHasChanged();
+            }
+        }
+        else
+        {
+            Logger.LogError("Modal service is null - cannot show password modal");
+        }
+    }
+
+    private async void OnPasswordModalClose(bool accepted)
+    {
+        if (accepted)
+        {
+            state.Password = true;
+            await session.SetAsync("password", true);
+            state.SetAdmin(true);
+            await session.SetAsync("admin", true);
+        }
         StateHasChanged();
     }
 
-    private void OnPasswordModalClose(bool accepted)
+    private async Task CheckMigrationPrompt()
     {
-        PasswordModalOpen = false;
+        try
+        {
+            Logger.LogInformation("CheckMigrationPrompt: Starting check");
+            
+            // Only check if password is set (don't show migration prompt before password is set)
+            if (!state.Password)
+            {
+                Logger.LogInformation("CheckMigrationPrompt: Password not set, skipping");
+                return;
+            }
+
+            var config = ConfigurationHelper.GetConfigurationData();
+            Logger.LogInformation("CheckMigrationPrompt: StorageProvider={StorageProvider}, MigrationPromptDismissed={Dismissed}", 
+                config.StorageProvider ?? "null", config.MigrationPromptDismissed ?? "null");
+            
+            // If already using SQLite, don't show prompt
+            if (!String.IsNullOrEmpty(config.StorageProvider) && 
+                config.StorageProvider.Equals("SQLite", StringComparison.OrdinalIgnoreCase))
+            {
+                Logger.LogInformation("CheckMigrationPrompt: Already using SQLite, skipping");
+                return;
+            }
+
+            // If user explicitly chose to keep JSON files, don't show prompt
+            if (config.MigrationPromptDismissed == "True")
+            {
+                Logger.LogInformation("CheckMigrationPrompt: Migration prompt dismissed, skipping");
+                return;
+            }
+
+            // Check migration status
+            var migrationStatus = await MigrationService.GetMigrationStatusAsync();
+            Logger.LogInformation("CheckMigrationPrompt: JsonFilesExist={JsonFiles}, IsMigrated={Migrated}", 
+                migrationStatus.JsonFilesExist, migrationStatus.IsMigrated);
+            
+            // NEW INSTALL SCENARIO: No JSON files in settings folder
+            // This means it's a fresh install - automatically configure SQLite and load repository data
+            if (!migrationStatus.JsonFilesExist && !migrationStatus.IsMigrated)
+            {
+                Logger.LogInformation("New installation detected - configuring SQLite storage and loading repository data");
+                
+                // Load repository JSON files into SQLite database
+                var result = await MigrationService.LoadRepositoryDataIntoSQLiteAsync();
+                
+                if (result.Success)
+                {
+                    // Update configuration to use SQLite
+                    config.StorageProvider = "SQLite";
+                    await ConfigurationHelper.UpdateSettings(config);
+                    
+                    Logger.LogInformation("New installation configured with SQLite storage successfully");
+                    
+                    // Restart to use SQLite provider
+                    toastService.ShowSuccess("Initial configuration complete. Restarting application...", settings =>
+                    {
+                        settings.Timeout = 3;
+                    });
+                    
+                    await Task.Delay(3000);
+                    NavigationManager.NavigateTo("/", true);
+                }
+                else
+                {
+                    Logger.LogError("Failed to configure new installation: {Message}", result.Message);
+                    toastService.ShowError("Failed to initialize configuration. Please check logs.");
+                }
+                
+                return;
+            }
+            
+            // EXISTING INSTALL SCENARIO: JSON files exist but not migrated yet
+            // Show the migration prompt to let user decide
+            if (migrationStatus.JsonFilesExist && !migrationStatus.IsMigrated)
+            {
+                Logger.LogInformation("CheckMigrationPrompt: Opening migration prompt modal");
+                // Show the migration prompt
+                await OpenMigrationPromptModal();
+            }
+            else
+            {
+                Logger.LogInformation("CheckMigrationPrompt: No migration needed - JsonFilesExist={JsonFiles}, IsMigrated={Migrated}", 
+                    migrationStatus.JsonFilesExist, migrationStatus.IsMigrated);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error checking migration prompt");
+        }
+    }
+
+    private async Task OpenMigrationPromptModal()
+    {
+        Logger.LogInformation("OpenMigrationPromptModal: Starting");
+        
+        var modalOptions = new ModalOptions()
+        {
+            HideCloseButton = true,
+            DisableBackgroundCancel = true
+        };
+
+        if (GeneralHelper.IsNotNull(Modal))
+        {
+            Logger.LogInformation("OpenMigrationPromptModal: Showing modal");
+            var modalReference = Modal.Show<MigrationPromptModal>("Upgrade to SQLite Storage", new ModalParameters(), modalOptions);
+            Logger.LogInformation("OpenMigrationPromptModal: Waiting for result");
+            var result = await modalReference.Result;
+            
+            Logger.LogInformation("OpenMigrationPromptModal: Result received - Cancelled={Cancelled}, HasData={HasData}", 
+                result.Cancelled, result.Data != null);
+            
+            if (!result.Cancelled && result.Data != null)
+            {
+                var choice = (MigrationPromptModal.MigrationChoice)result.Data;
+                Logger.LogInformation("OpenMigrationPromptModal: User choice={Choice}", choice);
+                
+                if (choice == MigrationPromptModal.MigrationChoice.Migrated)
+                {
+                    // Migration completed - need to restart the app
+                    toastService.ShowWarning("Please restart the application to complete the migration.", settings =>
+                    {
+                        settings.Timeout = 10;
+                    });
+                }
+            }
+        }
+        else
+        {
+            Logger.LogError("Modal service is null - cannot show migration prompt modal");
+        }
     }
 
     private async void MagicReset()
@@ -228,25 +480,37 @@
 
             toastService.ShowSuccess("The site has been reset.");
 
-            OpenPasswordModal();
+            await OpenPasswordModal();
         }
     }
 
-    private async void ThemeChanged(ChangeEventArgs e)
+    private async void ToggleTheme()
     {
-        isdarktheme = (bool)e.Value!;
+        // Toggle the theme state
+        isdarktheme = !isdarktheme;
+        
+        string newTheme;
         if (!isdarktheme)
         {
-            theme.ThemeName = "Dark";
+            theme.ThemeName = "Light";
             theme.ThemeStyle = "bg-default text-dark";
+            newTheme = "light";
         }
         else
         {
-            theme.ThemeName = "Light";
+            theme.ThemeName = "Dark";
             theme.ThemeStyle = "bg-dark text-white";
+            newTheme = "dark";
         }
+        
+        // Apply theme using JavaScript
+        await JsRuntime.InvokeVoidAsync("setTheme", newTheme);
+        
+        // Save to storage
         await storage.SetAsync("apptheme", theme.ThemeStyle);
         state.AppTheme = theme.ThemeStyle;
+        
+        StateHasChanged();
     }
 
     private async void Logout()
@@ -268,5 +532,11 @@
     private async void ShowFeedback()
     {
         await JsRuntime.InvokeVoidAsync("open", feedbackurl, "_blank");
+    }
+
+    private void ToggleSidebar()
+    {
+        sidebarCollapsed = !sidebarCollapsed;
+        StateHasChanged();
     }
 }

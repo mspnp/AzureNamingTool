@@ -24,5 +24,10 @@
         /// Gets or sets the details of the generated resource name.
         /// </summary>
         public GeneratedName ResourceNameDetails { get; set; } = new();
+
+        /// <summary>
+        /// Gets or sets the Azure tenant validation metadata (if validation was performed).
+        /// </summary>
+        public AzureValidationMetadata? ValidationMetadata { get; set; }
     }
 }

@@ -1,24 +1,39 @@
-﻿using AzureNamingTool.Helpers;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+using AzureNamingTool.Helpers;
 using AzureNamingTool.Models;
+using AzureNamingTool.Repositories;
+using AzureNamingTool.Repositories.Interfaces;
+using AzureNamingTool.Services.Interfaces;
 
 namespace AzureNamingTool.Services
 {
     /// <summary>
     /// Service for managing the AdminUser configuration.
     /// </summary>
-    public class AdminUserService
+    public class AdminUserService : IAdminUserService
     {
+        private readonly IConfigurationRepository<AdminUser> _repository;
+        private readonly IAdminLogService _adminLogService;
+
+        public AdminUserService(
+            IConfigurationRepository<AdminUser> repository,
+            IAdminLogService adminLogService)
+        {
+            _repository = repository;
+            _adminLogService = adminLogService;
+        }
+
         /// <summary>
         /// Retrieves a list of items.
         /// </summary>
         /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation.</returns>
-        public static async Task<ServiceResponse> GetItems()
+        public async Task<ServiceResponse> GetItemsAsync(bool admin = true)
         {
             ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
-                var items = await ConfigurationHelper.GetList<AdminUser>();
+                var items = (await _repository.GetAllAsync()).ToList();
                 if (GeneralHelper.IsNotNull(items))
                 {
                     serviceResponse.ResponseObject = items.OrderBy(x => x.Name).ToList();
@@ -27,7 +42,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.Success = false;
                 serviceResponse.ResponseObject = ex;
             }
@@ -39,13 +54,13 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="name">The name of the item to retrieve.</param>
         /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation.</returns>
-        public static async Task<ServiceResponse> GetItem(string name)
+        public async Task<ServiceResponse> GetItemAsync(string name)
         {
             ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
-                var items = await ConfigurationHelper.GetList<AdminUser>();
+                var items = (await _repository.GetAllAsync()).ToList();
                 if (GeneralHelper.IsNotNull(items))
                 {
                     var item = items.Find(x => x.Name == name);
@@ -55,7 +70,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.Success = false;
                 serviceResponse.ResponseObject = ex;
             }
@@ -67,13 +82,13 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="item">The AdminUser item to be added.</param>
         /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation.</returns>
-        public static async Task<ServiceResponse> PostItem(AdminUser item)
+        public async Task<ServiceResponse> PostItemAsync(AdminUser item)
         {
             ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
-                var items = await ConfigurationHelper.GetList<AdminUser>();
+                var items = (await _repository.GetAllAsync()).ToList();
                 if (GeneralHelper.IsNotNull(items))
                 {
                     // Set the new id
@@ -125,14 +140,14 @@ namespace AzureNamingTool.Services
                     }
 
                     // Write items to file
-                    await ConfigurationHelper.WriteList<AdminUser>(items);
+                    await _repository.SaveAllAsync(items);
                     serviceResponse.ResponseObject = "Item added!";
                     serviceResponse.Success = true;
                 }
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.ResponseObject = ex;
                 serviceResponse.Success = false;
             }
@@ -144,13 +159,13 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="id">The id of the item to delete.</param>
         /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation.</returns>
-        public static async Task<ServiceResponse> DeleteItem(int id)
+        public async Task<ServiceResponse> DeleteItemAsync(int id)
         {
             ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
-                var items = await ConfigurationHelper.GetList<AdminUser>();
+                var items = (await _repository.GetAllAsync()).ToList();
                 if (GeneralHelper.IsNotNull(items))
                 {
                     // Get the specified item
@@ -161,14 +176,14 @@ namespace AzureNamingTool.Services
                         items.Remove(item);
 
                         // Write items to file
-                        await ConfigurationHelper.WriteList<AdminUser>(items);
+                        await _repository.SaveAllAsync(items);
                         serviceResponse.Success = true;
                     }
                 }
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.ResponseObject = ex;
                 serviceResponse.Success = false;
             }
@@ -180,7 +195,7 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="items">The list of configuration items.</param>
         /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation.</returns>
-        public static async Task<ServiceResponse> PostConfig(List<AdminUser> items)
+        public async Task<ServiceResponse> PostConfigAsync(List<AdminUser> items)
         {
             ServiceResponse serviceResponse = new();
             try
@@ -198,12 +213,12 @@ namespace AzureNamingTool.Services
                 }
 
                 // Write items to file
-                await ConfigurationHelper.WriteList<AdminUser>(newitems);
+                await _repository.SaveAllAsync(newitems);
                 serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.ResponseObject = ex;
                 serviceResponse.Success = false;
             }
@@ -211,3 +226,4 @@ namespace AzureNamingTool.Services
         }
     }
 }
+#pragma warning restore CS1591

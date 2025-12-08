@@ -1,0 +1,734 @@
+/* ===================================================================
+   Azure Naming Tool - Responsive Styles
+   Version: 1.0
+   Date: October 17, 2025
+   Description: Responsive breakpoints and mobile/tablet adaptations
+   =================================================================== */
+
+/* ===================================================================
+   BREAKPOINTS
+   Mobile: < 768px
+   Tablet: 768px - 1024px
+   Desktop: > 1024px
+   =================================================================== */
+
+/* ===================================================================
+   TABLET & BELOW (max-width: 1024px)
+   =================================================================== */
+
+@media (max-width: 1024px) {
+    
+    /* Typography adjustments */
+    h1 { font-size: var(--font-size-3xl); }
+    h2 { font-size: var(--font-size-2xl); }
+    h3 { font-size: var(--font-size-xl); }
+    
+    /* Card adjustments */
+    .card {
+        padding: var(--spacing-md);
+    }
+    
+    .card-statistic {
+        padding: var(--spacing-lg);
+    }
+    
+    .card-statistic .stat-value {
+        font-size: var(--font-size-3xl);
+    }
+    
+    /* Table responsive */
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Modal adjustments */
+    .modal {
+        max-width: 90%;
+    }
+    
+    .modal-xl,
+    .modal-lg {
+        max-width: 90%;
+    }
+    
+    /* Button adjustments */
+    .btn {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    /* Form adjustments */
+    .form-control {
+        padding: var(--spacing-sm);
+    }
+    
+    /* Grid system adjustments */
+    .col-md-6,
+    .col-md-4,
+    .col-md-3 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+/* ===================================================================
+   MOBILE (max-width: 768px)
+   =================================================================== */
+
+@media (max-width: 768px) {
+    
+    /* Root font size adjustment */
+    :root {
+        font-size: 14px;
+    }
+    
+    /* Typography adjustments */
+    h1 { 
+        font-size: var(--font-size-2xl);
+        margin-bottom: var(--spacing-md);
+    }
+    
+    h2 { 
+        font-size: var(--font-size-xl);
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    h3 { 
+        font-size: var(--font-size-lg);
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    h4, h5, h6 {
+        font-size: var(--font-size-base);
+        margin-bottom: var(--spacing-xs);
+    }
+    
+    /* Layout adjustments */
+    .page {
+        flex-direction: column;
+    }
+    
+    /* Sidebar mobile */
+    .sidebar {
+        width: 100% !important;
+        height: auto;
+        position: relative;
+    }
+    
+    main {
+        width: 100%;
+        margin-left: 0;
+    }
+    
+    .top-row {
+        flex-wrap: wrap;
+        padding: var(--spacing-sm) var(--spacing-md) !important;
+        gap: var(--spacing-sm);
+    }
+    
+    article.content {
+        padding: var(--spacing-md) var(--spacing-sm) !important;
+    }
+    
+    /* Card adjustments */
+    .card {
+        padding: var(--spacing-sm) var(--spacing-md);
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .card-header,
+    .card-title {
+        font-size: var(--font-size-base);
+    }
+    
+    .card-footer {
+        flex-direction: column;
+        gap: var(--spacing-xs);
+    }
+    
+    .card-footer .btn {
+        width: 100%;
+    }
+    
+    .card-statistic {
+        padding: var(--spacing-md);
+    }
+    
+    .card-statistic .stat-value {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .card-statistic .stat-label {
+        font-size: var(--font-size-xs);
+    }
+    
+    /* Button adjustments */
+    .btn {
+        padding: var(--spacing-xs) var(--spacing-md);
+        font-size: var(--font-size-sm);
+        width: auto;
+    }
+    
+    .btn-lg {
+        padding: var(--spacing-sm) var(--spacing-lg);
+        font-size: var(--font-size-base);
+    }
+    
+    .btn-sm {
+        padding: 4px var(--spacing-sm);
+        font-size: var(--font-size-xs);
+    }
+    
+    /* Button groups stack on mobile */
+    .btn-group {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .btn-group .btn {
+        width: 100%;
+        border-radius: var(--radius-md) !important;
+        margin: 0 0 var(--spacing-xs) 0 !important;
+    }
+    
+    .btn-group .btn:last-child {
+        margin-bottom: 0 !important;
+    }
+    
+    /* Form adjustments */
+    .form-group {
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .form-control {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: var(--font-size-sm);
+    }
+    
+    .form-control-lg {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: var(--font-size-base);
+    }
+    
+    .form-label {
+        font-size: var(--font-size-xs);
+    }
+    
+    .form-text,
+    .invalid-feedback,
+    .valid-feedback {
+        font-size: var(--font-size-xs);
+    }
+    
+    /* Input groups stack on mobile */
+    .input-group {
+        flex-direction: column;
+    }
+    
+    .input-group .form-control,
+    .input-group-text {
+        width: 100%;
+        border-radius: var(--radius-md) !important;
+        margin: 0 0 var(--spacing-xs) 0 !important;
+    }
+    
+    .input-group .form-control:last-child,
+    .input-group-text:last-child {
+        margin-bottom: 0 !important;
+    }
+    
+    /* Table adjustments */
+    .table {
+        font-size: var(--font-size-sm);
+    }
+    
+    .table thead th,
+    .table tbody td {
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+    
+    .table thead th {
+        font-size: var(--font-size-xs);
+    }
+    
+    /* Stack table on very small screens */
+    .table-mobile-stack thead {
+        display: none;
+    }
+    
+    .table-mobile-stack tbody,
+    .table-mobile-stack tr,
+    .table-mobile-stack td {
+        display: block;
+        width: 100%;
+    }
+    
+    .table-mobile-stack tr {
+        margin-bottom: var(--spacing-md);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        padding: var(--spacing-sm);
+    }
+    
+    .table-mobile-stack td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+        border: none;
+    }
+    
+    .table-mobile-stack td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: var(--spacing-sm);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text-secondary);
+    }
+    
+    /* Badge adjustments */
+    .badge {
+        font-size: 10px;
+        padding: 2px var(--spacing-xs);
+    }
+    
+    /* Alert adjustments */
+    .alert {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: var(--font-size-sm);
+    }
+    
+    .alert-icon {
+        font-size: var(--font-size-lg);
+    }
+    
+    .alert-title {
+        font-size: var(--font-size-sm);
+    }
+    
+    .alert-message {
+        font-size: var(--font-size-xs);
+    }
+    
+    /* Modal adjustments */
+    .modal-backdrop {
+        padding: 0;
+        align-items: flex-end;
+    }
+    
+    .modal {
+        max-width: 100%;
+        max-height: 95vh;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        margin: 0;
+    }
+    
+    .modal-xl,
+    .modal-lg,
+    .modal-sm {
+        max-width: 100%;
+    }
+    
+    .modal-header {
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
+    
+    .modal-title {
+        font-size: var(--font-size-lg);
+    }
+    
+    .modal-body {
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
+    
+    .modal-footer {
+        padding: var(--spacing-md) var(--spacing-lg);
+        flex-direction: column;
+    }
+    
+    .modal-footer .btn {
+        width: 100%;
+    }
+    
+    /* Navigation adjustments */
+    .breadcrumb {
+        font-size: var(--font-size-xs);
+        flex-wrap: wrap;
+    }
+    
+    /* Pagination adjustments */
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .page-link {
+        min-width: 32px;
+        height: 32px;
+        font-size: var(--font-size-xs);
+        padding: var(--spacing-xs);
+    }
+    
+    /* Hide page numbers on very small screens, show only prev/next */
+    .pagination-mobile-simple .page-item:not(.page-prev):not(.page-next) {
+        display: none;
+    }
+    
+    /* Tabs stack on mobile */
+    .nav-tabs {
+        flex-direction: column;
+        border-bottom: none;
+        border-left: 2px solid var(--color-border);
+    }
+    
+    .nav-tab {
+        border-bottom: none;
+        border-left: 2px solid transparent;
+        text-align: left;
+        padding: var(--spacing-sm) var(--spacing-md);
+        margin: 0 0 0 -2px;
+    }
+    
+    .nav-tab:hover {
+        border-left-color: var(--color-border-hover);
+    }
+    
+    .nav-tab.active {
+        border-left-color: var(--color-azure-blue);
+    }
+    
+    /* Dropdown menu full width on mobile */
+    .dropdown-menu {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100%;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        margin: 0;
+    }
+    
+    /* Grid system - all columns full width on mobile */
+    [class*="col-"] {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    
+    /* Utility classes for mobile */
+    .d-mobile-none {
+        display: none !important;
+    }
+    
+    .d-mobile-block {
+        display: block !important;
+    }
+    
+    .d-mobile-flex {
+        display: flex !important;
+    }
+    
+    /* Text alignment on mobile */
+    .text-mobile-center {
+        text-align: center !important;
+    }
+    
+    .text-mobile-left {
+        text-align: left !important;
+    }
+    
+    /* Spacing adjustments */
+    .px-mobile-0 {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+    
+    .py-mobile-0 {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    
+    /* Modern Scroll to top button - smaller on mobile */
+    .modern-scroll-top-btn,
+    #btnScrollToTop {
+        bottom: var(--spacing-md);
+        right: var(--spacing-md);
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
+    }
+}
+
+/* ===================================================================
+   SMALL MOBILE (max-width: 480px)
+   =================================================================== */
+
+@media (max-width: 480px) {
+    
+    /* Root font size adjustment */
+    :root {
+        font-size: 13px;
+    }
+    
+    /* Typography adjustments */
+    h1 { font-size: var(--font-size-xl); }
+    h2 { font-size: var(--font-size-lg); }
+    h3 { font-size: var(--font-size-base); }
+    
+    /* Card adjustments */
+    .card {
+        padding: var(--spacing-sm);
+        border-radius: var(--radius-md);
+    }
+    
+    .card-header,
+    .card-title {
+        font-size: var(--font-size-sm);
+    }
+    
+    .card-statistic .stat-value {
+        font-size: var(--font-size-xl);
+    }
+    
+    /* Button adjustments */
+    .btn {
+        padding: 6px var(--spacing-sm);
+        font-size: var(--font-size-xs);
+    }
+    
+    /* Table adjustments */
+    .table thead th,
+    .table tbody td {
+        padding: 4px var(--spacing-xs);
+    }
+    
+    /* Modal adjustments */
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    /* Alert adjustments */
+    .alert {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: var(--font-size-xs);
+    }
+    
+    /* Form adjustments */
+    .form-control {
+        font-size: var(--font-size-xs);
+    }
+}
+
+/* ===================================================================
+   LARGE DESKTOP (min-width: 1440px)
+   =================================================================== */
+
+@media (min-width: 1440px) {
+    
+    /* Increase max content width */
+    .container {
+        max-width: 1320px;
+    }
+    
+    /* Larger typography on big screens */
+    h1 { font-size: var(--font-size-5xl); }
+    h2 { font-size: var(--font-size-4xl); }
+    h3 { font-size: var(--font-size-2xl); }
+    
+    /* Card adjustments */
+    .card {
+        padding: var(--spacing-xl);
+    }
+    
+    .card-statistic {
+        padding: var(--spacing-2xl);
+    }
+    
+    .card-statistic .stat-value {
+        font-size: var(--font-size-6xl);
+    }
+}
+
+/* ===================================================================
+   PRINT STYLES
+   =================================================================== */
+
+@media print {
+    
+    /* Hide non-essential elements */
+    .sidebar,
+    .top-row,
+    .btn,
+    .modal-backdrop,
+    #btnScrollToTop,
+    .no-print {
+        display: none !important;
+    }
+    
+    /* Adjust main content */
+    main {
+        width: 100%;
+        margin: 0;
+    }
+    
+    article.content {
+        padding: 0 !important;
+    }
+    
+    /* Remove shadows and backgrounds */
+    .card,
+    .table,
+    .modal {
+        box-shadow: none !important;
+        background: white !important;
+        border: 1px solid #000 !important;
+    }
+    
+    /* Ensure text is black */
+    body,
+    .card,
+    .table,
+    h1, h2, h3, h4, h5, h6,
+    p, span, div {
+        color: #000 !important;
+    }
+    
+    /* Page breaks */
+    .page-break {
+        page-break-after: always;
+    }
+    
+    .page-break-before {
+        page-break-before: always;
+    }
+    
+    .no-page-break {
+        page-break-inside: avoid;
+    }
+    
+    /* Table print adjustments */
+    .table {
+        border-collapse: collapse !important;
+    }
+    
+    .table thead {
+        display: table-header-group;
+    }
+    
+    .table tbody tr {
+        page-break-inside: avoid;
+    }
+}
+
+/* ===================================================================
+   ACCESSIBILITY - PREFERS REDUCED MOTION
+   =================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .theme-transitioning {
+        transition: none !important;
+    }
+}
+
+/* ===================================================================
+   ACCESSIBILITY - HIGH CONTRAST MODE
+   =================================================================== */
+
+@media (prefers-contrast: high) {
+    
+    /* Increase border thickness */
+    .card,
+    .form-control,
+    .btn,
+    .table,
+    .modal {
+        border-width: 2px !important;
+    }
+    
+    /* Increase text contrast */
+    body {
+        --color-text-secondary: var(--color-text-primary);
+        --color-text-tertiary: var(--color-text-primary);
+    }
+    
+    /* Remove subtle shadows */
+    .card,
+    .modal,
+    .dropdown-menu {
+        box-shadow: none !important;
+    }
+}
+
+/* ===================================================================
+   TOUCH DEVICE ADJUSTMENTS
+   =================================================================== */
+
+@media (hover: none) and (pointer: coarse) {
+    
+    /* Increase touch targets */
+    .btn,
+    .form-check-input,
+    .page-link,
+    .dropdown-item,
+    .nav-tab {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Remove hover effects on touch devices */
+    .btn:hover,
+    .card:hover,
+    .table tbody tr:hover,
+    .dropdown-item:hover {
+        transform: none;
+    }
+    
+    /* Increase spacing between interactive elements */
+    .btn-group .btn {
+        margin: 0 var(--spacing-xs) var(--spacing-xs) 0;
+    }
+}
+
+/* ===================================================================
+   LANDSCAPE ORIENTATION (MOBILE/TABLET)
+   =================================================================== */
+
+@media (max-width: 1024px) and (orientation: landscape) {
+    
+    /* Reduce vertical spacing in landscape */
+    .card,
+    .form-group,
+    .alert {
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    /* Compact modal in landscape */
+    .modal {
+        max-height: 85vh;
+    }
+    
+    .modal-body {
+        padding: var(--spacing-md);
+    }
+    
+    /* Sidebar adjustments */
+    .sidebar {
+        max-height: 60px;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+}

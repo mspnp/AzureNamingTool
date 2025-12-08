@@ -1,0 +1,661 @@
+@page "/design-vercel"
+@* TEMPORARY DESIGN MOCKUP - DELETE AFTER EVALUATION *@
+@* Vercel-style Monochrome Dark Design *@
+
+<div class="design-vercel">
+    <!-- Left Sidebar Navigation -->
+    <nav class="sidebar-vercel" id="sidebarVercel">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">▲</span>
+                <span class="logo-text">Azure Naming</span>
+            </div>
+            <button class="toggle-btn" onclick="toggleSidebarVercel()">
+                <span class="toggle-icon">☰</span>
+            </button>
+        </div>
+
+        <div class="nav-group">
+            <a href="#" class="nav-link active">
+                <span class="nav-icon">◆</span>
+                <span class="nav-label">Overview</span>
+            </a>
+            <a href="#" class="nav-link">
+                <span class="nav-icon">◆</span>
+                <span class="nav-label">Generate</span>
+            </a>
+            <a href="#" class="nav-link">
+                <span class="nav-icon">◆</span>
+                <span class="nav-label">Reference</span>
+            </a>
+        </div>
+
+        <div class="nav-divider"></div>
+
+        <div class="nav-group">
+            <div class="nav-group-title">Components</div>
+            <a href="#" class="nav-link">
+                <span class="nav-icon">□</span>
+                <span class="nav-label">Resource Types</span>
+            </a>
+            <a href="#" class="nav-link">
+                <span class="nav-icon">□</span>
+                <span class="nav-label">Locations</span>
+            </a>
+            <a href="#" class="nav-link">
+                <span class="nav-icon">□</span>
+                <span class="nav-label">Environments</span>
+            </a>
+            <a href="#" class="nav-link">
+                <span class="nav-icon">□</span>
+                <span class="nav-label">Organizations</span>
+            </a>
+            <a href="#" class="nav-link">
+                <span class="nav-icon">□</span>
+                <span class="nav-label">Functions</span>
+            </a>
+        </div>
+
+        <div class="nav-divider"></div>
+
+        <div class="nav-group">
+            <div class="nav-group-title">Settings</div>
+            <a href="#" class="nav-link">
+                <span class="nav-icon">⚙</span>
+                <span class="nav-label">Configuration</span>
+            </a>
+            <a href="#" class="nav-link">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Admin</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="breadcrumb">
+                <span class="breadcrumb-item">Home</span>
+                <span class="breadcrumb-separator">/</span>
+                <span class="breadcrumb-item current">Dashboard</span>
+            </div>
+            <div class="header-actions">
+                <button class="header-btn">Documentation</button>
+                <button class="header-btn primary">Deploy</button>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="content">
+            <div class="page-header">
+                <h1 class="page-title">Dashboard</h1>
+                <p class="page-description">Manage your Azure resource naming conventions</p>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-label">Resource Types</div>
+                    <div class="stat-value">247</div>
+                    <div class="stat-detail">Azure services supported</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Locations</div>
+                    <div class="stat-value">60</div>
+                    <div class="stat-detail">Global regions</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Names Generated</div>
+                    <div class="stat-value">1,234</div>
+                    <div class="stat-detail">This month</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Custom Components</div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-detail">Active configurations</div>
+                </div>
+            </div>
+
+            <!-- Action Sections -->
+            <div class="vercel-section">
+                <div class="vercel-section-header">
+                    <h2 class="vercel-section-title">Quick Actions</h2>
+                </div>
+                <div class="action-grid">
+                    <div class="action-item">
+                        <div class="action-header">
+                            <h3 class="action-title">Generate Resource Name</h3>
+                            <span class="action-arrow">→</span>
+                        </div>
+                        <p class="action-description">
+                            Create standardized names for Azure resources following best practices and organizational conventions.
+                        </p>
+                        <div class="action-footer">
+                            <span class="action-tag">Popular</span>
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <h3 class="action-title">Configure Components</h3>
+                            <span class="action-arrow">→</span>
+                        </div>
+                        <p class="action-description">
+                            Manage naming components including resource types, locations, environments, and custom elements.
+                        </p>
+                        <div class="action-footer">
+                            <span class="action-tag">Settings</span>
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <h3 class="action-title">View Reference</h3>
+                            <span class="action-arrow">→</span>
+                        </div>
+                        <p class="action-description">
+                            Browse complete documentation for Azure naming conventions and component reference materials.
+                        </p>
+                        <div class="action-footer">
+                            <span class="action-tag">Docs</span>
+                        </div>
+                    </div>
+
+                    <div class="action-item">
+                        <div class="action-header">
+                            <h3 class="action-title">Export Configuration</h3>
+                            <span class="action-arrow">→</span>
+                        </div>
+                        <p class="action-description">
+                            Export your naming tool configuration for backup, version control, or deployment to other instances.
+                        </p>
+                        <div class="action-footer">
+                            <span class="action-tag">Admin</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="vercel-section">
+                <div class="vercel-section-header">
+                    <h2 class="vercel-section-title">Recent Activity</h2>
+                    <a href="#" class="vercel-section-link">View All</a>
+                </div>
+                <div class="activity-container">
+                    <div class="activity-row">
+                        <div class="activity-indicator"></div>
+                        <div class="activity-content">
+                            <div class="activity-main">
+                                <span class="activity-title">Generated name for Storage Account</span>
+                                <span class="activity-time">2m ago</span>
+                            </div>
+                            <div class="activity-sub">stprodeastus001</div>
+                        </div>
+                    </div>
+                    <div class="activity-row">
+                        <div class="activity-indicator"></div>
+                        <div class="activity-content">
+                            <div class="activity-main">
+                                <span class="activity-title">Updated resource type configuration</span>
+                                <span class="activity-time">1h ago</span>
+                            </div>
+                            <div class="activity-sub">Added new resource type: Azure Container Apps</div>
+                        </div>
+                    </div>
+                    <div class="activity-row">
+                        <div class="activity-indicator"></div>
+                        <div class="activity-content">
+                            <div class="activity-main">
+                                <span class="activity-title">Generated name for Virtual Machine</span>
+                                <span class="activity-time">3h ago</span>
+                            </div>
+                            <div class="activity-sub">vm-prod-eastus-web-001</div>
+                        </div>
+                    </div>
+                    <div class="activity-row">
+                        <div class="activity-indicator"></div>
+                        <div class="activity-content">
+                            <div class="activity-main">
+                                <span class="activity-title">Configuration backup created</span>
+                                <span class="activity-time">5h ago</span>
+                            </div>
+                            <div class="activity-sub">Full system backup completed</div>
+                        </div>
+                    </div>
+                    <div class="activity-row">
+                        <div class="activity-indicator"></div>
+                        <div class="activity-content">
+                            <div class="activity-main">
+                                <span class="activity-title">Custom component added</span>
+                                <span class="activity-time">1d ago</span>
+                            </div>
+                            <div class="activity-sub">Added project code component</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<style>
+    .design-vercel * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .design-vercel {
+        display: flex;
+        height: 100vh;
+        background-color: #000000;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
+        color: #ffffff;
+    }
+
+    /* Sidebar */
+    .sidebar-vercel {
+        width: 260px;
+        background-color: #000000;
+        border-right: 1px solid #1a1a1a;
+        display: flex;
+        flex-direction: column;
+        transition: width 0.2s ease;
+        flex-shrink: 0;
+    }
+
+    .sidebar-vercel.collapsed {
+        width: 64px;
+    }
+
+    .sidebar-vercel.collapsed .logo-text,
+    .sidebar-vercel.collapsed .nav-label,
+    .sidebar-vercel.collapsed .nav-group-title {
+        display: none;
+    }
+
+    .sidebar-header {
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        border-bottom: 1px solid #1a1a1a;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .logo-icon {
+        font-size: 18px;
+        color: #ffffff;
+    }
+
+    .logo-text {
+        font-size: 14px;
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+    .toggle-btn {
+        background: none;
+        border: 1px solid #333333;
+        color: #888888;
+        cursor: pointer;
+        padding: 6px 8px;
+        border-radius: 4px;
+        font-size: 14px;
+        transition: all 0.2s ease;
+    }
+
+    .toggle-btn:hover {
+        border-color: #555555;
+        color: #ffffff;
+    }
+
+    .nav-group {
+        padding: 16px 12px;
+    }
+
+    .nav-group-title {
+        font-size: 11px;
+        font-weight: 600;
+        color: #666666;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 0 8px 12px;
+    }
+
+    .design-vercel .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 10px 12px;
+        margin: 2px 0;
+        color: #888888;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        gap: 12px;
+    }
+
+    .design-vercel .nav-link:hover {
+        background-color: #1a1a1a;
+        color: #ffffff;
+    }
+
+    .design-vercel .nav-link.active {
+        background-color: #1a1a1a;
+        color: #ffffff;
+    }
+
+    .nav-icon {
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    .nav-divider {
+        height: 1px;
+        background-color: #1a1a1a;
+        margin: 8px 12px;
+    }
+
+    /* Main Content */
+    .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background-color: #000000;
+    }
+
+    .header {
+        height: 64px;
+        border-bottom: 1px solid #1a1a1a;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 32px;
+        flex-shrink: 0;
+    }
+
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+    }
+
+    .breadcrumb-item {
+        color: #666666;
+    }
+
+    .breadcrumb-item.current {
+        color: #ffffff;
+    }
+
+    .breadcrumb-separator {
+        color: #333333;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .header-btn {
+        padding: 8px 16px;
+        border: 1px solid #333333;
+        background: none;
+        color: #ffffff;
+        font-size: 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-weight: 500;
+    }
+
+    .header-btn:hover {
+        border-color: #555555;
+    }
+
+    .header-btn.primary {
+        background-color: #ffffff;
+        color: #000000;
+        border-color: #ffffff;
+    }
+
+    .header-btn.primary:hover {
+        background-color: #e6e6e6;
+        border-color: #e6e6e6;
+    }
+
+    /* Content */
+    .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 48px 32px;
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        margin-bottom: 48px;
+    }
+
+    .page-title {
+        font-size: 36px;
+        font-weight: 600;
+        color: #ffffff;
+        margin-bottom: 8px;
+    }
+
+    .page-description {
+        font-size: 16px;
+        color: #666666;
+    }
+
+    /* Stats */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px;
+        margin-bottom: 48px;
+    }
+
+    .stat-box {
+        background-color: #000000;
+        border: 1px solid #1a1a1a;
+        border-radius: 8px;
+        padding: 24px;
+        transition: border-color 0.2s ease;
+    }
+
+    .stat-box:hover {
+        border-color: #333333;
+    }
+
+    .stat-label {
+        font-size: 13px;
+        color: #666666;
+        margin-bottom: 12px;
+    }
+
+    .stat-value {
+        font-size: 32px;
+        font-weight: 600;
+        color: #ffffff;
+        margin-bottom: 8px;
+    }
+
+    .stat-detail {
+        font-size: 13px;
+        color: #666666;
+    }
+
+    /* Section */
+    .vercel-section {
+        margin-bottom: 48px;
+    }
+
+    .vercel-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+    }
+
+    .vercel-section-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+    .vercel-section-link {
+        font-size: 14px;
+        color: #666666;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+    .vercel-section-link:hover {
+        color: #ffffff;
+    }
+
+    /* Action Grid */
+    .action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+    }
+
+    .action-item {
+        background-color: #000000;
+        border: 1px solid #1a1a1a;
+        border-radius: 8px;
+        padding: 24px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .action-item:hover {
+        border-color: #333333;
+        transform: translateY(-2px);
+    }
+
+    .action-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .action-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+    .action-arrow {
+        font-size: 18px;
+        color: #666666;
+        transition: transform 0.2s ease;
+    }
+
+    .action-item:hover .action-arrow {
+        transform: translateX(4px);
+    }
+
+    .action-description {
+        font-size: 14px;
+        color: #666666;
+        line-height: 1.6;
+        margin-bottom: 16px;
+    }
+
+    .action-footer {
+        display: flex;
+    }
+
+    .action-tag {
+        font-size: 12px;
+        color: #888888;
+        padding: 4px 10px;
+        border: 1px solid #1a1a1a;
+        border-radius: 4px;
+    }
+
+    /* Activity */
+    .activity-container {
+        background-color: #000000;
+        border: 1px solid #1a1a1a;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .activity-row {
+        display: flex;
+        gap: 16px;
+        padding: 20px 24px;
+        border-bottom: 1px solid #1a1a1a;
+        transition: background-color 0.2s ease;
+    }
+
+    .activity-row:last-child {
+        border-bottom: none;
+    }
+
+    .activity-row:hover {
+        background-color: #0a0a0a;
+    }
+
+    .activity-indicator {
+        width: 8px;
+        height: 8px;
+        background-color: #333333;
+        border-radius: 50%;
+        margin-top: 6px;
+        flex-shrink: 0;
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-main {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 6px;
+    }
+
+    .activity-title {
+        font-size: 14px;
+        color: #ffffff;
+    }
+
+    .activity-time {
+        font-size: 13px;
+        color: #666666;
+    }
+
+    .activity-sub {
+        font-size: 13px;
+        color: #666666;
+    }
+</style>
+
+<script>
+    function toggleSidebarVercel() {
+        const sidebar = document.getElementById('sidebarVercel');
+        sidebar.classList.toggle('collapsed');
+        const icon = sidebar.querySelector('.toggle-icon');
+        icon.textContent = sidebar.classList.contains('collapsed') ? '☰' : '✕';
+    }
+</script>
