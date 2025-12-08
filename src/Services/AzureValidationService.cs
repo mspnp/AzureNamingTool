@@ -99,12 +99,12 @@ namespace AzureNamingTool.Services
                 // Use appropriate validation method based on scope
                 if (isGlobalScope)
                 {
-                    _logger.LogInformation("Using CheckNameAvailability API for globally unique resource: {ResourceType}", resourceType);
+                    _logger.LogInformation("Using CheckNameAvailability API for globally unique resource: {ResourceType}", SanitizeForLog(resourceType));
                     validationResult = await CheckNameAvailabilityAsync(resourceName, resourceType, settings);
                 }
                 else
                 {
-                    _logger.LogInformation("Using Resource Graph query for scoped resource: {ResourceType}", resourceType);
+                    _logger.LogInformation("Using Resource Graph query for scoped resource: {ResourceType}", SanitizeForLog(resourceType));
                     validationResult = await CheckResourceExistsAsync(resourceName, resourceType, settings);
                 }
 
@@ -580,7 +580,7 @@ namespace AzureNamingTool.Services
                 var resourceTypeInfo = await GetResourceTypeInfoAsync(resourceType);
                 if (resourceTypeInfo == null)
                 {
-                    _logger.LogWarning("Could not find resource type info for {ResourceType}", resourceType);
+                    _logger.LogWarning("Could not find resource type info for {ResourceType}", SanitizeForLog(resourceType));
                     return (false, new List<string>());
                 }
 
@@ -668,7 +668,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Error getting resource type info for {ResourceType}", resourceTypeShortName);
+                _logger.LogWarning(ex, "Error getting resource type info for {ResourceType}", SanitizeForLog(resourceTypeShortName));
                 return null;
             }
         }
@@ -687,7 +687,7 @@ namespace AzureNamingTool.Services
                 var resourceTypeInfo = await GetResourceTypeInfoAsync(resourceType);
                 if (resourceTypeInfo == null)
                 {
-                    _logger.LogWarning("Could not find resource type info for {ResourceType}, falling back to Resource Graph", resourceType);
+                    _logger.LogWarning("Could not find resource type info for {ResourceType}, falling back to Resource Graph", SanitizeForLog(resourceType));
                     return await CheckResourceExistsAsync(resourceName, resourceType, settings);
                 }
 
