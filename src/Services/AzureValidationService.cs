@@ -54,6 +54,18 @@ namespace AzureNamingTool.Services
         }
 
         /// <summary>
+        /// Sanitizes user input for safe logging by removing newlines and control characters.
+        /// </summary>
+        private static string SanitizeForLog(string? input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return string.Empty;
+            
+            // Remove newlines and carriage returns
+            return input.Replace("\r", "").Replace("\n", "");
+        }
+
+        /// <summary>
         /// Validates a single resource name against Azure tenant
         /// </summary>
         public async Task<AzureValidationMetadata> ValidateNameAsync(string resourceName, string resourceType)
