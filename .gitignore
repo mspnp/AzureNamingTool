@@ -349,3 +349,9 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
+# Deployment artifacts
+deploy*.zip
+app-logs/
+app-logs.zip
+publish-*/

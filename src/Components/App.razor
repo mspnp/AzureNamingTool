@@ -1,4 +1,4 @@
-﻿@using AzureNamingTool.Helpers
+@using AzureNamingTool.Helpers
 @using AzureNamingTool.Models
 @inject StateContainer state
 @inject IHttpContextAccessor httpContextAccessor;
@@ -53,46 +53,204 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/">
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="css/modern-design.css" rel="stylesheet" />
+    <link href="css/modern-components.css" rel="stylesheet" />
+    <link href="css/modern-layout.css" rel="stylesheet" />
+    <link href="css/modern-responsive.css" rel="stylesheet" />
     <link href="css/site.css" rel="stylesheet" />
     <link href="AzureNamingTool.styles.css" rel="stylesheet" />
+    <link href="css/modal-override.css" rel="stylesheet" />
     <link href="/_content/PSC.Blazor.Components.MarkdownEditor/css/easymde.min.css" rel="stylesheet" />
+    <style>
+        /* Force modal styling - JavaScript will handle the gradient due to CSS isolation */
+        .bm-header {
+            background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%) !important;
+            color: #ffffff !important;
+            padding: 20px 24px !important;
+            margin: 0 !important;
+            border-radius: 8px 8px 0 0 !important;
+        }
+        
+        .bm-title,
+        .bm-header h3 {
+            color: #ffffff !important;
+            margin: 0 !important;
+        }
+        
+        .modern-modal-content {
+            padding: 24px !important;
+        }
+        
+        .modern-modal-footer {
+            padding: 24px !important;
+            display: flex !important;
+            gap: 12px !important;
+            justify-content: flex-end !important;
+            align-items: center !important;
+            min-height: 80px !important;
+        }
+    </style>
     <HeadOutlet @rendermode="InteractiveServer" />
 </head>
 
 <body>
+    <!-- Global Loading Indicator -->
+    <div id="blazor-loading-indicator" style="display: none; position: fixed; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #0072C6 0%, #00BCF2 100%); z-index: 999999; animation: loadingProgress 1.5s ease-in-out infinite;">
+        <div style="position: absolute; right: 0; top: 0; bottom: 0; width: 100px; background: linear-gradient(90deg, transparent, white); opacity: 0.3;"></div>
+    </div>
+    
     <Routes @rendermode="InteractiveServer" identityProviderDetails="identityProviderDetails" />
     <script src="_framework/blazor.web.js"></script>
-    <script src="js/jquery-3.7.0.min.js"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="js/modern-components.js"></script>
+    <script src="js/drag-drop-sort.js"></script>
+    <script src="js/theme.js"></script>
     <script src="/_content/PSC.Blazor.Components.MarkdownEditor/js/easymde.min.js"></script>
     <script src="/_content/PSC.Blazor.Components.MarkdownEditor/js/markdownEditor.js"></script>
 </body>
 
 </html>
 <script>
-
-    //Get the button:
-    scrollToTop = document.getElementById("btnScrollToTop");
-
-    // When the user scrolls down 20px from the top of the document, show the button
-    window.onscroll = function () { scrollFunction() };
-
-    function scrollFunction() {
-        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-            scrollToTop.style.display = "block";
+    // Define mobile menu functions immediately
+    (function() {
+    // Mobile menu toggle
+    window.toggleMobileMenu = function() {
+        const sidebar = document.querySelector('.modern-sidebar');
+        const backdrop = document.querySelector('.modern-sidebar-backdrop');
+        const menuButton = document.querySelector('.mobile-menu-toggle');
+        
+        console.log('toggleMobileMenu called');
+        console.log('Sidebar element:', sidebar);
+        console.log('Backdrop element:', backdrop);
+        
+        if (sidebar) {
+            const isOpen = sidebar.classList.toggle('show');
+            console.log('Sidebar classes after toggle:', sidebar.className);
+            
+            // Move button when menu is open
+            if (menuButton) {
+                if (isOpen) {
+                    menuButton.classList.add('menu-open');
+                } else {
+                    menuButton.classList.remove('menu-open');
+                }
+            }
         } else {
-            scrollToTop.style.display = "none";
+            console.error('Sidebar element not found!');
         }
+        
+        if (backdrop) {
+            backdrop.classList.toggle('show');
+            console.log('Backdrop classes after toggle:', backdrop.className);
+        } else {
+            console.error('Backdrop element not found!');
+        }
+    };        // Close mobile menu
+        window.closeMobileMenu = function() {
+            const sidebar = document.querySelector('.modern-sidebar');
+            const backdrop = document.querySelector('.modern-sidebar-backdrop');
+            const menuButton = document.querySelector('.mobile-menu-toggle');
+            
+            if (sidebar) {
+                sidebar.classList.remove('show');
+            }
+            if (backdrop) {
+                backdrop.classList.remove('show');
+            }
+            if (menuButton) {
+                menuButton.classList.remove('menu-open');
+            }
+        };
+    })();
+    
+    // Setup mobile menu after DOM is ready
+    function setupMobileMenu() {
+        
+        // Add backdrop click handler
+        const backdrop = document.querySelector('.modern-sidebar-backdrop');
+        if (backdrop) {
+            backdrop.onclick = window.closeMobileMenu;
+        }
+        
+        // Add nav link click handlers for mobile
+        const navLinks = document.querySelectorAll('.modern-sidebar .nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth <= 768) {
+                    window.closeMobileMenu();
+                }
+            });
+        });
+    }
+    
+    // Run setup when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupMobileMenu);
+    } else {
+        setupMobileMenu();
+    }
+    
+    // Re-setup after Blazor enhanced navigation
+    if (typeof Blazor !== 'undefined') {
+        Blazor.addEventListener('enhancedload', setupMobileMenu);
+    }
+    
+    // Use event delegation ONLY on sidebar for nav link clicks (much more efficient)
+    const sidebar = document.querySelector('.modern-sidebar');
+    if (sidebar) {
+        sidebar.addEventListener('click', function(e) {
+            // Check if click is on or inside a nav-link
+            const navLink = e.target.closest('.nav-link');
+            if (navLink && window.innerWidth <= 768) {
+                console.log('Nav link clicked on mobile via event delegation, closing menu');
+                // Small delay to allow navigation to start
+                setTimeout(function() {
+                    window.closeMobileMenu();
+                }, 100);
+            }
+        });
     }
 
-    // When the user clicks on the button, scroll to the top of the document
-    function topFunction() {
-        document.body.scrollTop = 0; // For Safari
-        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-    }
-
+    // Scroll into view helper function
     function scrollIntoView(id) {
         const element = document.getElementById(id);
+        if (!element) {
+            console.warn('Element not found:', id);
+            return;
+        }
+        
+        // Check if element is a Bootstrap collapse and expand it
+        if (element.classList.contains('collapse') && !element.classList.contains('show')) {
+            const bsCollapse = new bootstrap.Collapse(element, {
+                toggle: true
+            });
+            
+            // Wait for collapse animation before scrolling
+            setTimeout(() => {
+                scrollToElement(element);
+            }, 300);
+        } 
+        // Check if element uses custom collapse (Configuration page style)
+        else if (element.querySelector('.modern-card-header.collapsible.collapsed')) {
+            // Find the collapsed header and click it to expand
+            const collapsedHeader = element.querySelector('.modern-card-header.collapsible.collapsed');
+            if (collapsedHeader) {
+                collapsedHeader.click();
+                
+                // Wait for collapse animation before scrolling
+                setTimeout(() => {
+                    scrollToElement(element);
+                }, 300);
+            } else {
+                scrollToElement(element);
+            }
+        }
+        else {
+            scrollToElement(element);
+        }
+    }
+    
+    function scrollToElement(element) {
         var headerOffset = 70;
         var elementPosition = element.getBoundingClientRect().top;
         var offsetPosition = elementPosition + window.pageYOffset - headerOffset;
@@ -213,4 +371,44 @@
                 .css("top", dropdownMenuTopLocation);
         });
     }
+
+    // Loading Indicator Management
+    (function() {
+        const loadingIndicator = document.getElementById('blazor-loading-indicator');
+        let navigationTimeout;
+        
+        // Show loading indicator during navigation
+        Blazor.addEventListener('enhancednavigationstart', () => {
+            if (loadingIndicator) {
+                // Small delay to avoid flashing for fast navigations
+                navigationTimeout = setTimeout(() => {
+                    loadingIndicator.style.display = 'block';
+                }, 100);
+            }
+        });
+        
+        // Hide loading indicator when navigation completes
+        Blazor.addEventListener('enhancednavigationend', () => {
+            if (navigationTimeout) {
+                clearTimeout(navigationTimeout);
+            }
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'none';
+            }
+        });
+    })();
 </script>
+
+<style>
+    @@keyframes loadingProgress {
+        0% {
+            transform: translateX(-100%);
+        }
+        50% {
+            transform: translateX(0%);
+        }
+        100% {
+            transform: translateX(100%);
+        }
+    }
+</style>

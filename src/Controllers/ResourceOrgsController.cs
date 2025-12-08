@@ -1,12 +1,15 @@
-﻿using AzureNamingTool.Models;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+using AzureNamingTool.Models;
 using AzureNamingTool.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Asp.Versioning;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AzureNamingTool.Services;
+using AzureNamingTool.Services.Interfaces;
 using AzureNamingTool.Attributes;
 
 namespace AzureNamingTool.Controllers
@@ -15,11 +18,22 @@ namespace AzureNamingTool.Controllers
     /// Controller for managing Resource Orgs.
     /// </summary>
     [Route("api/[controller]")]
+    [ApiVersion("1.0")]
     [ApiController]
     [ApiKey]
+    [Produces("application/json")]
     public class ResourceOrgsController : ControllerBase
     {
+        private readonly IResourceOrgService _resourceorgService;
+        private readonly IAdminLogService _adminLogService;
         private ServiceResponse serviceResponse = new();
+        public ResourceOrgsController(
+            IResourceOrgService resourceorgService,
+            IAdminLogService adminLogService)
+        {
+            _resourceorgService = resourceorgService;
+            _adminLogService = adminLogService;
+        }
 
         // GET: api/<ResourceOrgsController>
         /// <summary>
@@ -32,7 +46,7 @@ namespace AzureNamingTool.Controllers
             try
             {
                 // Get list of items
-                serviceResponse = await ResourceOrgService.GetItems();
+                serviceResponse = await _resourceorgService.GetItemsAsync();
                 if (serviceResponse.Success)
                 {
                     return Ok(serviceResponse.ResponseObject);
@@ -44,7 +58,7 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
@@ -61,7 +75,7 @@ namespace AzureNamingTool.Controllers
             try
             {
                 // Get list of items
-                serviceResponse = await ResourceOrgService.GetItem(id);
+                serviceResponse = await _resourceorgService.GetItemAsync(id);
                 if (serviceResponse.Success)
                 {
                     return Ok(serviceResponse.ResponseObject);
@@ -73,7 +87,7 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
@@ -89,10 +103,10 @@ namespace AzureNamingTool.Controllers
         {
             try
             {
-                serviceResponse = await ResourceOrgService.PostItem(item);
+                serviceResponse = await _resourceorgService.PostItemAsync(item);
                 if (serviceResponse.Success)
                 {
-                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Org (" + item.Name + ") added/updated." });
+                    await _adminLogService.PostItemAsync(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Org (" + item.Name + ") added/updated." });
                     CacheHelper.InvalidateCacheObject("ResourceOrg");
                     return Ok(serviceResponse.ResponseObject);
                 }
@@ -103,7 +117,7 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
@@ -120,10 +134,10 @@ namespace AzureNamingTool.Controllers
         {
             try
             {
-                serviceResponse = await ResourceOrgService.PostConfig(items);
+                serviceResponse = await _resourceorgService.PostConfigAsync(items);
                 if (serviceResponse.Success)
                 {
-                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Orgs added/updated." });
+                    await _adminLogService.PostItemAsync(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Orgs added/updated." });
                     CacheHelper.InvalidateCacheObject("ResourceOrg");
                     return Ok(serviceResponse.ResponseObject);
                 }
@@ -134,7 +148,7 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
@@ -151,14 +165,14 @@ namespace AzureNamingTool.Controllers
             try
             {
                 // Get the item details
-                serviceResponse = await ResourceOrgService.GetItem(id);
+                serviceResponse = await _resourceorgService.GetItemAsync(id);
                 if (serviceResponse.Success)
                 {
                     ResourceOrg item = (ResourceOrg)serviceResponse.ResponseObject!;
-                    serviceResponse = await ResourceOrgService.DeleteItem(id);
+                    serviceResponse = await _resourceorgService.DeleteItemAsync(id);
                     if (serviceResponse.Success)
                     {
-                        AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Org (" + item.Name + ") deleted." });
+                        await _adminLogService.PostItemAsync(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Org (" + item.Name + ") deleted." });
                         CacheHelper.InvalidateCacheObject("ResourceOrg");
                         return Ok("Resource Org (" + item.Name + ") deleted.");
                     }
@@ -174,9 +188,10 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
     }
 }
+#pragma warning restore CS1591

@@ -49,8 +49,9 @@ namespace AzureNamingTool.Attributes
                 else
                 {
                     // Request is a POST. Make sure the provided API Key is for full access
-                    // Check if it is a name generation request
-                    if (context.HttpContext.Request.Path.Value.StartsWith("/api/ResourceNamingRequests/"))
+                    // Check if it is a name generation request (V1 or V2 API)
+                    if (context.HttpContext.Request.Path.Value.StartsWith("/api/ResourceNamingRequests/") || 
+                        context.HttpContext.Request.Path.Value.Contains("/ResourceNamingRequests/"))
                     {
                         if ((!GeneralHelper.DecryptString(config.APIKey!, config.SALTKey!).Equals(extractedApiKey)) && (!GeneralHelper.DecryptString(config.NameGenerationAPIKey!, config.SALTKey!).Equals(extractedApiKey)))
                         {

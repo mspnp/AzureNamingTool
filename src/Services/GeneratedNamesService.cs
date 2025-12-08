@@ -1,5 +1,9 @@
-﻿using AzureNamingTool.Helpers;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+using AzureNamingTool.Helpers;
 using AzureNamingTool.Models;
+using AzureNamingTool.Repositories;
+using AzureNamingTool.Repositories.Interfaces;
+using AzureNamingTool.Services.Interfaces;
 using System.Text.Json;
 
 namespace AzureNamingTool.Services
@@ -7,20 +11,31 @@ namespace AzureNamingTool.Services
     /// <summary>
     /// Service for managing generated names.
     /// </summary>
-    public class GeneratedNamesService
+    public class GeneratedNamesService : IGeneratedNamesService
     {
+        private readonly IConfigurationRepository<GeneratedName> _repository;
+        private readonly IAdminLogService _adminLogService;
+
+        public GeneratedNamesService(
+            IConfigurationRepository<GeneratedName> repository,
+            IAdminLogService adminLogService)
+        {
+            _repository = repository;
+            _adminLogService = adminLogService;
+        }
+
         /// <summary>
         /// Retrieves a list of items.
         /// </summary>
         /// <returns>Task&lt;ServiceResponse&gt; - The response containing the list of items or an error message.</returns>
-        public static async Task<ServiceResponse> GetItems()
+        public async Task<ServiceResponse> GetItemsAsync(bool admin = true)
         {
             ServiceResponse serviceResponse = new();
             List<GeneratedName> lstGeneratedNames = [];
             try
             {
                 // Get list of items
-                var items = await ConfigurationHelper.GetList<GeneratedName>();
+                var items = (await _repository.GetAllAsync()).ToList();
                 if (GeneralHelper.IsNotNull(items))
                 {
                     serviceResponse.ResponseObject = items.OrderByDescending(x => x.CreatedOn).ToList();
@@ -29,7 +44,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage { Title = "ERROR", Message = ex.Message });
                 serviceResponse.Success = false;
             }
             return serviceResponse;
@@ -40,13 +55,13 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="id">int - The ID of the item to retrieve.</param>
         /// <returns>Task&lt;ServiceResponse&gt; - The response containing the retrieved item or an error message.</returns>
-        public static async Task<ServiceResponse> GetItem(int id)
+        public async Task<ServiceResponse> GetItemAsync(int id)
         {
             ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
-                var items = await ConfigurationHelper.GetList<GeneratedName>();
+                var items = (await _repository.GetAllAsync()).ToList();
                 if (GeneralHelper.IsNotNull(items))
                 {
                     var item = items.Find(x => x.Id == id);
@@ -67,7 +82,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.Success = false;
                 serviceResponse.ResponseObject = ex;
             }
@@ -79,13 +94,13 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="generatedName">GeneratedName - The generated name to be added.</param>
         /// <returns>Task&lt;ServiceResponse&gt; - The response indicating the success or failure of the operation.</returns>
-        public static async Task<ServiceResponse> PostItem(GeneratedName generatedName)
+        public async Task<ServiceResponse> PostItemAsync(GeneratedName generatedName)
         {
             ServiceResponse serviceResponse = new();
             try
             {
                 // Get the previously generated names
-                var items = await ConfigurationHelper.GetList<GeneratedName>();
+                var items = (await _repository.GetAllAsync()).ToList();
                 if (GeneralHelper.IsNotNull(items))
                 {
                     if (items.Count > 0)
@@ -100,19 +115,19 @@ namespace AzureNamingTool.Services
                     items.Add(generatedName);
 
                     // Write items to file
-                    await ConfigurationHelper.WriteList<GeneratedName>(items);
+                    await _repository.SaveAllAsync(items);
 
                     CacheHelper.InvalidateCacheObject("generatednames.json");
 
                     serviceResponse.Success = true;
                     // Get the item
-                    var newitem = GeneratedNamesService.GetItem((int)generatedName.Id);
+                    var newitem = await GetItemAsync((int)generatedName.Id);
                     serviceResponse.ResponseObject = newitem;
                 }
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage { Title = "ERROR", Message = ex.Message });
                 serviceResponse.Success = false;
             }
             return serviceResponse;
@@ -123,13 +138,13 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="id">int - The ID of the item to delete.</param>
         /// <returns>Task&lt;ServiceResponse&gt; - The response indicating the success or failure of the operation.</returns>
-        public static async Task<ServiceResponse> DeleteItem(int id)
+        public async Task<ServiceResponse> DeleteItemAsync(int id)
         {
             ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
-                var items = await ConfigurationHelper.GetList<GeneratedName>();
+                var items = (await _repository.GetAllAsync()).ToList();
                 if (GeneralHelper.IsNotNull(items))
                 {
                     // Get the specified item
@@ -140,7 +155,7 @@ namespace AzureNamingTool.Services
                         items.Remove(item);
 
                         // Write items to file
-                        await ConfigurationHelper.WriteList<GeneratedName>(items);
+                        await _repository.SaveAllAsync(items);
                         serviceResponse.Success = true;
                     }
                     else
@@ -155,7 +170,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.ResponseObject = ex;
                 serviceResponse.Success = false;
             }
@@ -166,18 +181,18 @@ namespace AzureNamingTool.Services
         /// This function deletes all the items.
         /// </summary>
         /// <returns>ServiceResponse - The response indicating the success or failure of the operation.</returns>
-        public static async Task<ServiceResponse> DeleteAllItems()
+        public async Task<ServiceResponse> DeleteAllItemsAsync()
         {
             ServiceResponse serviceResponse = new();
             try
             {
                 List<GeneratedName> items = [];
-                await ConfigurationHelper.WriteList<GeneratedName>(items);
+                await _repository.SaveAllAsync(items);
                 serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage { Title = "Error", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage { Title = "Error", Message = ex.Message });
                 serviceResponse.Success = false;
             }
             return serviceResponse;
@@ -188,7 +203,7 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="items">List of GeneratedName - The configuration items to be posted.</param>
         /// <returns>ServiceResponse - The response indicating the success or failure of the operation.</returns>
-        public static async Task<ServiceResponse> PostConfig(List<GeneratedName> items)
+        public async Task<ServiceResponse> PostConfigAsync(List<GeneratedName> items)
         {
             ServiceResponse serviceResponse = new();
             try
@@ -206,12 +221,12 @@ namespace AzureNamingTool.Services
                 }
 
                 // Write items to file
-                await ConfigurationHelper.WriteList<GeneratedName>(newitems);
+                await _repository.SaveAllAsync(newitems);
                 serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.ResponseObject = ex;
                 serviceResponse.Success = false;
             }
@@ -219,3 +234,4 @@ namespace AzureNamingTool.Services
         }
     }
 }
+#pragma warning restore CS1591
