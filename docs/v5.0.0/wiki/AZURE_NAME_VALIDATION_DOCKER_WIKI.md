@@ -164,10 +164,12 @@ Copy this template and replace the values:
 
 ### Enum Reference
 
-| Field | Values |
-|-------|--------|
-| `AuthMode` | `0` = Managed Identity, `1` = Service Principal |
-| `Strategy` | `0` = NotifyOnly, `1` = AutoIncrement, `2` = Fail |
+> **Note:** In configuration files, always use the string values shown in quotes (e.g., `"ServicePrincipal"`, `"NotifyOnly"`). Numeric values are shown for reference only.
+
+| Field      | String Values (use in config) | Numeric Mapping (for reference) |
+|------------|------------------------------|----------------------------------|
+| `AuthMode` | `"ManagedIdentity"`, `"ServicePrincipal"` | `0` = ManagedIdentity, `1` = ServicePrincipal |
+| `Strategy` | `"NotifyOnly"`, `"AutoIncrement"`, `"Fail"` | `0` = NotifyOnly, `1` = AutoIncrement, `2` = Fail |
 
 ---
 
