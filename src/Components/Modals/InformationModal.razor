@@ -1,4 +1,4 @@
-﻿@using AzureNamingTool.Helpers
+@using AzureNamingTool.Helpers
 @using AzureNamingTool.Models
 @using AzureNamingTool.Components.General
 @using AzureNamingTool.Components.Instructions
@@ -7,67 +7,56 @@
 @inject IToastService toastService
 @inject ILogger<PasswordModal> Logger
 
-<div class="modal fade show d-block" tabindex="-1" role="dialog">
-    <div class="modal-backdrop fade show" @onclick="Cancel"></div>
-    <div class="modal-dialog" style="z-index: 1050">
-        <!-- Pop it above the backdrop -->
-        <div class="modal-content @theme.ThemeStyle">
-            <div class="modal-header @headerstyle text-white">
-                <h3 class="modal-title">@title</h3>
-            </div>
-            <div class="modal-body">
-                @if (GeneralHelper.IsNotNull(message))
-                {
-                    <div class="my-3">
-                        @(
-                            (MarkupString)message
-                            )
-                    </div>
-                }
-                @switch (component)
-                {
-                    case "generateinstructions":
-                        <div class="mb-3">
-                            <GenerateInstructions theme="@theme" admin="@admin" />
-                        </div>
-                        break;
-                    case "generatednamesloginstructions":
-                        <div class="mb-3">
-                            <GeneratedNamesLogInstructions theme="@theme" admin="@admin" />
-                        </div>
-                        break;
-                    case "toolconfigurationinstructions":
-                        <div class="mb-3">
-                            <ConfigurationInstructions theme="@theme" admin="@admin" />
-                        </div>
-                        break;
-                    case "referenceinstructions":
-                        <div class="mb-3">
-                            <ReferenceInstructions theme="@theme" admin="@admin" />
-                        </div>
-                        break;
-                    case "adminconfigurationinstructions":
-                        <div class="mb-3">
-                            <AdminConfigurationInstructions theme="@theme" admin="@admin" />
-                        </div>
-                        break;
-                    case "adminloginstructions":
-                        <div class="mb-3">
-                            <AdminLogInstructions theme="@theme" admin="@admin" />
-                        </div>
-                        break;
-                    case "externalcontent":
-                        <div class="mb-3">
-                            <ExternalContent theme="@theme" admin="@admin" externalurl="@externalurl"/>
-                        </div>
-                        break;
-                }
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" @onclick=@Confirm>OK</button>
-            </div>
+<div class="modern-modal-content" style="max-height: 70vh; overflow-y: auto;">
+    @if (GeneralHelper.IsNotNull(message))
+    {
+        <div style="margin-bottom: 1rem;">
+            @((MarkupString)message)
         </div>
-    </div>
+    }
+    @switch (component)
+    {
+        case "generateinstructions":
+            <div style="margin-bottom: 1rem;">
+                <GenerateInstructions theme="@theme" admin="@admin" />
+            </div>
+            break;
+        case "generatednamesloginstructions":
+            <div style="margin-bottom: 1rem;">
+                <GeneratedNamesLogInstructions theme="@theme" admin="@admin" />
+            </div>
+            break;
+        case "toolconfigurationinstructions":
+            <div style="margin-bottom: 1rem;">
+                <ConfigurationInstructions theme="@theme" admin="@admin" />
+            </div>
+            break;
+        case "actionslegendinstructions":
+            <div style="margin-bottom: 1rem;">
+                <ActionsLegendInstructions theme="@theme" admin="@admin" />
+            </div>
+            break;
+        case "referenceinstructions":
+            <div style="margin-bottom: 1rem;">
+                <ReferenceInstructions theme="@theme" admin="@admin" />
+            </div>
+            break;
+        case "adminconfigurationinstructions":
+            <div style="margin-bottom: 1rem;">
+                <AdminConfigurationInstructions theme="@theme" admin="@admin" />
+            </div>
+            break;
+        case "adminloginstructions":
+            <div style="margin-bottom: 1rem;">
+                <AdminLogInstructions theme="@theme" admin="@admin" />
+            </div>
+            break;
+        case "externalcontent":
+            <div style="margin-bottom: 1rem;">
+                <ExternalContent theme="@theme" admin="@admin" externalurl="@externalurl"/>
+            </div>
+            break;
+    }
 </div>
 
 @code {

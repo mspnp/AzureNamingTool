@@ -1,5 +1,9 @@
-﻿using AzureNamingTool.Helpers;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+using AzureNamingTool.Helpers;
 using AzureNamingTool.Models;
+using AzureNamingTool.Repositories;
+using AzureNamingTool.Repositories.Interfaces;
+using AzureNamingTool.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AzureNamingTool.Services
@@ -7,26 +11,58 @@ namespace AzureNamingTool.Services
     /// <summary>
     /// Service for managing policies.
     /// </summary>
-    public class PolicyService
+    public class PolicyService : IPolicyService
     {
+        private readonly IConfigurationRepository<ResourceComponent> _componentRepository;
+        private readonly IConfigurationRepository<ResourceType> _typeRepository;
+        private readonly IConfigurationRepository<ResourceUnitDept> _unitDeptRepository;
+        private readonly IConfigurationRepository<ResourceEnvironment> _environmentRepository;
+        private readonly IConfigurationRepository<ResourceLocation> _locationRepository;
+        private readonly IConfigurationRepository<ResourceOrg> _orgRepository;
+        private readonly IConfigurationRepository<ResourceFunction> _functionRepository;
+        private readonly IConfigurationRepository<ResourceProjAppSvc> _projAppSvcRepository;
+        private readonly IAdminLogService _adminLogService;
+
+        public PolicyService(
+            IConfigurationRepository<ResourceComponent> componentRepository,
+            IConfigurationRepository<ResourceType> typeRepository,
+            IConfigurationRepository<ResourceUnitDept> unitDeptRepository,
+            IConfigurationRepository<ResourceEnvironment> environmentRepository,
+            IConfigurationRepository<ResourceLocation> locationRepository,
+            IConfigurationRepository<ResourceOrg> orgRepository,
+            IConfigurationRepository<ResourceFunction> functionRepository,
+            IConfigurationRepository<ResourceProjAppSvc> projAppSvcRepository,
+            IAdminLogService adminLogService)
+        {
+            _componentRepository = componentRepository;
+            _typeRepository = typeRepository;
+            _unitDeptRepository = unitDeptRepository;
+            _environmentRepository = environmentRepository;
+            _locationRepository = locationRepository;
+            _orgRepository = orgRepository;
+            _functionRepository = functionRepository;
+            _projAppSvcRepository = projAppSvcRepository;
+            _adminLogService = adminLogService;
+        }
+
         /// <summary>
         /// Retrieves the policy.
         /// </summary>
         /// <returns>The service response.</returns>
-        public static async Task<ServiceResponse> GetPolicy()
+        public async Task<ServiceResponse> GetPolicyAsync()
         {
             ServiceResponse serviceResponse = new();
             try
             {
                 var delimiter = '-';
-                var nameComponents = await Helpers.ConfigurationHelper.GetList<ResourceComponent>();
-                var resourceTypes = await Helpers.ConfigurationHelper.GetList<ResourceType>();
-                var unitDepts = await Helpers.ConfigurationHelper.GetList<ResourceUnitDept>();
-                var environments = await Helpers.ConfigurationHelper.GetList<ResourceEnvironment>();
-                var locations = await Helpers.ConfigurationHelper.GetList<ResourceLocation>();
-                var orgs = await Helpers.ConfigurationHelper.GetList<ResourceOrg>();
-                var Functions = await Helpers.ConfigurationHelper.GetList<ResourceFunction>();
-                var projectAppSvcs = await Helpers.ConfigurationHelper.GetList<ResourceProjAppSvc>();
+                var nameComponents = (await _componentRepository.GetAllAsync()).ToList();
+                var resourceTypes = (await _typeRepository.GetAllAsync()).ToList();
+                var unitDepts = (await _unitDeptRepository.GetAllAsync()).ToList();
+                var environments = (await _environmentRepository.GetAllAsync()).ToList();
+                var locations = (await _locationRepository.GetAllAsync()).ToList();
+                var orgs = (await _orgRepository.GetAllAsync()).ToList();
+                var Functions = (await _functionRepository.GetAllAsync()).ToList();
+                var projectAppSvcs = (await _projAppSvcRepository.GetAllAsync()).ToList();
 
                 List<String> validations = [];
                 var maxSortOrder = 0;
@@ -103,7 +139,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.Success = false;
                 serviceResponse.ResponseObject = ex;
             }
@@ -149,3 +185,5 @@ namespace AzureNamingTool.Services
         }
     }
 }
+
+#pragma warning restore CS1591

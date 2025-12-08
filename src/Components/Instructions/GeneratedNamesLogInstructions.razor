@@ -1,4 +1,4 @@
-﻿@using AzureNamingTool.Models;
+@using AzureNamingTool.Models;
 <p>
     The <span class="fw-bold">Generate Names Log</span> displays all names generated using the Azure Naming Tool, along with the selected components.
 </p>
@@ -14,13 +14,13 @@ else
         <img style="width:600px;" class="img-fluid" src="Screenshots/GeneratedNamesLog.png" alt="Generated Names Log" />
     </p>
 }
-<div class="card">
-    <h5 class="card-header bg-default text-dark">
-        Page Sections/Actions
-    </h5>
-    <div class="card card-body @theme!.ThemeStyle">
-        <div class="card">
-            <div class="card-body @theme!.ThemeStyle">
+<div class="modern-card">
+    <div class="modern-card-header">
+        <span class="modern-card-title">Page Sections/Actions</span>
+    </div>
+    <div class="modern-card-body">
+        <div class="modern-card mb-3">
+            <div class="modern-card-body">
                 <h5>Export Generated Names Log</h5>
                 <p>
                     This functionality allows the generated names to be exported to a CSV file. The <span class="fw-bold">Filter</span> option can be used to specify the names exported.
@@ -29,8 +29,8 @@ else
         </div>
         @if (admin)
         {
-            <div class="card">
-                <div class="card-body @theme!.ThemeStyle">
+            <div class="modern-card mb-3">
+                <div class="modern-card-body">
                     <h5>Purge Generated Names Log</h5>
                     <p>
                         This option will delete all <span class="fw-bold">Generated Names Log</span> data. This action cannot be undone!

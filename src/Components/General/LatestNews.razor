@@ -1,6 +1,7 @@
-﻿@using AzureNamingTool.Helpers
+@using AzureNamingTool.Helpers
 @using AzureNamingTool.Models
 @using AzureNamingTool.Services
+@using AzureNamingTool.Services.Interfaces
 @using Microsoft.JSInterop
 
 <a class="twitter-timeline" data-height="400" data-theme="dark" href="https://twitter.com/AzureNamingTool?ref_src=twsrc%5Etfw">Tweets by AzureNamingTool</a>
@@ -8,6 +9,9 @@
 @code {
     [Inject]
     public IJSRuntime? JsRuntime { get; set; }
+    
+    [Inject]
+    public IAdminLogService? AdminLogService { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -23,7 +27,10 @@
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                if (GeneralHelper.IsNotNull(AdminLogService))
+                {
+                    await AdminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                }
             }
         }
     }

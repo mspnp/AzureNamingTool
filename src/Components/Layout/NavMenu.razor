@@ -1,4 +1,4 @@
-﻿@using AzureNamingTool.Helpers
+@using AzureNamingTool.Helpers
 @using AzureNamingTool.Models
 @using AzureNamingTool.Components.General
 @inject StateContainer state
@@ -7,33 +7,45 @@
 @inject ILogger<NavMenu> Logger
 @inject ProtectedLocalStorage storage
 @inject NavigationManager NavigationManager
+@inject ServicesHelper ServicesHelper
 
-<div class="top-row ps-2 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/"><img src="@logopath" height="20" style="vertical-align:top;margin-top:2px;padding-right:10px;" alt="@toolname" />@toolname</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<div class="modern-sidebar-header">
+    <div class="sidebar-brand">
+        <div class="brand-logo">
+            <img src="@logopath" alt="@toolname Logo" />
+        </div>
+        <div class="brand-text">
+            <span class="brand-title">@toolname</span>
+        </div>
     </div>
+    <button type="button" 
+            title="Navigation menu" 
+            class="navbar-toggler" 
+            @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 </div>
 
-<div class="@NavMenuCssClass" style="background-color:#004494" @onclick="ToggleNavMenu">
+<div class="@NavMenuCssClass">
     <nav class="flex-column">
         <div class="nav-item px-2">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+                <span class="nav-icon oi oi-home" aria-hidden="true" title="Home"></span>
+                <span class="nav-text">Home</span>
             </NavLink>
         </div>
         <div class="nav-item px-2">
             <NavLink class="nav-link" href="admin">
-                <span class="oi oi-lock-locked" aria-hidden="true"></span> Admin
+                <span class="nav-icon oi oi-wrench" aria-hidden="true" title="Admin"></span>
+                <span class="nav-text">Admin</span>
             </NavLink>
         </div>
         @if (admin)
         {
             <div class="nav-item px-2">
                 <NavLink class="nav-link" href="adminlog">
-                    <span class="oi oi-box" aria-hidden="true"></span> Admin Log
+                    <span class="nav-icon oi oi-box" aria-hidden="true" title="Admin Log"></span>
+                    <span class="nav-text">Admin Log</span>
                 </NavLink>
             </div>
         }
@@ -41,7 +53,8 @@
         {
             <div class="nav-item px-2">
                 <NavLink class="nav-link" href="instructions">
-                    <span class="oi oi-info" aria-hidden="true"></span> Instructions
+                    <span class="nav-icon oi oi-book" aria-hidden="true" title="Instructions"></span>
+                    <span class="nav-text">Instructions</span>
                 </NavLink>
             </div>
         }
@@ -49,7 +62,8 @@
         {
             <div class="nav-item px-2">
                 <NavLink class="nav-link" href="configuration">
-                    <span class="oi oi-cog" aria-hidden="true"></span> Configuration
+                    <span class="nav-icon oi oi-cog" aria-hidden="true" title="Configuration"></span>
+                    <span class="nav-text">Configuration</span>
                 </NavLink>
             </div>
         }
@@ -57,20 +71,23 @@
         {
             <div class="nav-item px-2">
                 <NavLink class="nav-link" href="reference">
-                    <span class="oi oi-spreadsheet" aria-hidden="true"></span> Reference
+                    <span class="nav-icon oi oi-book" aria-hidden="true" title="Reference"></span>
+                    <span class="nav-text">Reference</span>
                 </NavLink>
             </div>
         }
         <div class="nav-item px-2">
             <NavLink class="nav-link" href="generate">
-                <span class="oi oi-check" aria-hidden="true"></span> Generate
+                <span class="nav-icon oi oi-target" aria-hidden="true" title="Generate"></span>
+                <span class="nav-text">Generate</span>
             </NavLink>
         </div>
         @if (Convert.ToBoolean(config.GeneratedNamesLogEnabled) || admin)
         {
             <div class="nav-item px-2">
                 <NavLink class="nav-link" href="generatednameslog">
-                    <span class="oi oi-list" aria-hidden="true"></span> Generated Names Log
+                    <span class="nav-icon oi oi-spreadsheet" aria-hidden="true" title="Generated Names Log"></span>
+                    <span class="nav-text">Generated Names Log</span>
                 </NavLink>
             </div>
         }
@@ -79,26 +96,20 @@
         {
             @if (PageType.ToString() == "AzureNamingTool.Components.Pages.Configuration")
             {
-                <div class="card bg-transparent">
-                    <div class="card card-header bg-default text-white" style="font-weight:bold;">
+                <div class="modern-jump-to-section">
+                    <div class="modern-jump-to-header">
                         Jump To
                     </div>
-                    <div class="card bg-transparent">
-                        <div class="nav-item px-2">
-                            <a class="text-decoration-none nav-link" @onclick='(() => OnConfigNavClick("ResourceComponent"))' @onclick:preventDefault href="">Components</a>
-                        </div>
-                        <div class="nav-item px-2">
-                            <a class="text-decoration-none nav-link" @onclick='(() => OnConfigNavClick("ResourceDelimiter"))' @onclick:preventDefault href="">Delimiters</a>
-                        </div>
+                    <div class="modern-jump-to-links">
+                        <a class="modern-jump-to-link" @onclick='(() => OnConfigNavClick("ResourceComponent"))' @onclick:preventDefault href="">Components</a>
+                        <a class="modern-jump-to-link" @onclick='(() => OnConfigNavClick("ResourceDelimiter"))' @onclick:preventDefault href="">Delimiters</a>
                         @if (GeneralHelper.IsNotNull(servicesData.ResourceComponents))
                         {
                             @foreach (ResourceComponent resourceComponent in servicesData.ResourceComponents.OrderBy(x => x.Name))
                             {
                                 @if (resourceComponent.Name != "ResourceInstance")
                                 {
-                                    <div class="nav-item px-2">
-                                        <a class="text-decoration-none nav-link" @onclick='(() => OnConfigNavClick(resourceComponent.Name))' @onclick:preventDefault href="">@(resourceComponent.DisplayName)</a>
-                                    </div>
+                                    <a class="modern-jump-to-link" @onclick='(() => OnConfigNavClick(resourceComponent.Name))' @onclick:preventDefault href="">@(resourceComponent.DisplayName)</a>
                                 }
                             }
                         }
@@ -107,35 +118,21 @@
             }
             @if (PageType.ToString() == "AzureNamingTool.Components.Pages.Instructions")
             {
-                <div class="card bg-transparent">
-                    <div class="card card-header bg-default text-white" style="font-weight:bold;">
+                <div class="modern-jump-to-section">
+                    <div class="modern-jump-to-header">
                         Jump To
                     </div>
-                    <div class="card bg-transparent">
+                    <div class="modern-jump-to-links">
                         @if (admin)
                         {
-                            <div class="nav-item px-2">
-                                <a class="text-decoration-none nav-link" @onclick='(() => OnConfigNavClick("adminpasswordcontainer"))' @onclick:preventDefault href="">Global Admin Password</a>
-                            </div>
-                            <div class="nav-item px-2">
-                                <a class="text-decoration-none nav-link" @onclick='(() => OnConfigNavClick("adminconfigurationcontainer"))' @onclick:preventDefault href="">Admin Configuration</a>
-                            </div>
-                            <div class="nav-item px-2">
-                                <a class="text-decoration-none nav-link" @onclick='(() => OnConfigNavClick("adminlogcontainer"))' @onclick:preventDefault href="">Admin Log</a>
-                            </div>
+                            <a class="modern-jump-to-link" @onclick='(() => OnConfigNavClick("adminpassword"))' @onclick:preventDefault href="">Global Admin Password</a>
+                            <a class="modern-jump-to-link" @onclick='(() => OnConfigNavClick("adminconfiguration"))' @onclick:preventDefault href="">Admin Configuration</a>
+                            <a class="modern-jump-to-link" @onclick='(() => OnConfigNavClick("adminlog"))' @onclick:preventDefault href="">Admin Log</a>
                         }
-                        <div class="nav-item px-2">
-                            <a class="text-decoration-none nav-link" @onclick='(() => OnConfigNavClick("configurationcontainer"))' @onclick:preventDefault href="">Configuration</a>
-                        </div>
-                        <div class="nav-item px-2">
-                            <a class="text-decoration-none nav-link" @onclick='(() => OnConfigNavClick("generatecontainer"))' @onclick:preventDefault href="">Generate</a>
-                        </div>
-                        <div class="nav-item px-2">
-                            <a class="text-decoration-none nav-link" @onclick='(() => OnConfigNavClick("generatednameslogcontainer"))' @onclick:preventDefault href="">Generated Names Log</a>
-                        </div>
-                        <div class="nav-item px-2">
-                            <a class="text-decoration-none nav-link" @onclick='(() => OnConfigNavClick("referencecontainer"))' @onclick:preventDefault href="">Reference</a>
-                        </div>
+                        <a class="modern-jump-to-link" @onclick='(() => OnConfigNavClick("configuration"))' @onclick:preventDefault href="">Configuration</a>
+                        <a class="modern-jump-to-link" @onclick='(() => OnConfigNavClick("generate"))' @onclick:preventDefault href="">Generate</a>
+                        <a class="modern-jump-to-link" @onclick='(() => OnConfigNavClick("generatednameslog"))' @onclick:preventDefault href="">Generated Names Log</a>
+                        <a class="modern-jump-to-link" @onclick='(() => OnConfigNavClick("reference"))' @onclick:preventDefault href="">Reference</a>
                     </div>
                 </div>
             }
@@ -169,6 +166,7 @@
 @code {
     [Parameter]
     public Type? PageType { get; set; }
+    
     private bool collapseNavMenu = true;
     private ServicesData servicesData = new();
     private SiteConfiguration config = ConfigurationHelper.GetConfigurationData();
@@ -224,6 +222,35 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private async Task HandleMobileMenuToggle()
+    {
+        Logger.LogInformation("HandleMobileMenuToggle called from C#");
+        
+        try
+        {
+            await JsRuntime.InvokeVoidAsync("eval", @"
+                console.log('*** BUTTON CLICKED - Blazor invoking toggleMobileMenu ***');
+                console.log('Window object:', window);
+                console.log('toggleMobileMenu function:', window.toggleMobileMenu);
+                
+                if (typeof window.toggleMobileMenu === 'function') {
+                    console.log('Calling toggleMobileMenu...');
+                    window.toggleMobileMenu();
+                } else {
+                    console.error('toggleMobileMenu function not found!');
+                    console.log('Available window properties:', Object.keys(window).filter(k => k.includes('toggle')));
+                }
+            ");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error toggling mobile menu: {Message}", ex.Message);
+            
+            // Try console.log to see if JS interop works at all
+            await JsRuntime.InvokeVoidAsync("eval", "console.error('Exception in HandleMobileMenuToggle: " + ex.Message + "')");
+        }
     }
 
     private async void OnConfigNavClick(string e)

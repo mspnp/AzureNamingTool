@@ -47,6 +47,11 @@ namespace AzureNamingTool.Models
         }
 
         /// <summary>
+        /// Gets or sets the description.
+        /// </summary>
+        public string? Description { get; set; }
+
+        /// <summary>
         /// Gets or sets the scope value.
         /// </summary>
         public string Scope { get; set; } = string.Empty;

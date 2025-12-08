@@ -1,0 +1,71 @@
+@using Blazored.Modal
+@using Blazored.Modal.Services
+@inject IJSRuntime JsRuntime
+
+<div class="modern-modal-content">
+    <div style="margin-bottom: 1.5rem;">
+        <h3 style="margin-bottom: 1rem;">Azure Naming Tool v@(VersionNumber)</h3>
+        <p>
+            <a href="@ReleaseNotesUrl" target="_blank" class="modern-link">
+                <span class="oi oi-external-link" aria-hidden="true"></span> View Release Notes
+            </a>
+        </p>
+        @if (!String.IsNullOrEmpty(VersionAlert))
+        {
+            <div class="modern-notification-info" style="margin-top: 1rem;">
+                <i class="bi bi-info-circle"></i>
+                <div>
+                    @((MarkupString)VersionAlert)
+                </div>
+            </div>
+        }
+    </div>
+    
+    <div class="modern-modal-actions">
+        <h4 style="margin-bottom: 1rem;">Community & Support</h4>
+        <p style="color: var(--color-text-secondary); margin-bottom: 1rem;">
+            Help us improve the Azure Naming Tool by reporting bugs, requesting features, or joining discussions.
+        </p>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+            <button type="button" class="modern-btn-primary" @onclick="@(() => OpenGitHubLink("feature"))" title="Feature request">
+                <span class="oi oi-plus" aria-hidden="true"></span> Feature Request
+            </button>
+            <button type="button" class="modern-btn-danger" @onclick="@(() => OpenGitHubLink("bug"))" title="Submit a bug">
+                <span class="oi oi-bug" aria-hidden="true"></span> Submit Bug
+            </button>
+            <button type="button" class="modern-btn-secondary" @onclick="@(() => OpenGitHubLink("discussion"))" title="Start a discussion">
+                <span class="oi oi-comment-square" aria-hidden="true"></span> Discussion
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    BlazoredModalInstance? BlazoredModal { get; set; }
+
+    [Parameter]
+    public string VersionNumber { get; set; } = string.Empty;
+
+    [Parameter]
+    public string ReleaseNotesUrl { get; set; } = string.Empty;
+
+    [Parameter]
+    public string VersionAlert { get; set; } = string.Empty;
+
+    private async Task OpenGitHubLink(string type)
+    {
+        string githubURL = type switch
+        {
+            "bug" => "https://github.com/mspnp/AzureNamingTool/issues/new?assignees=&labels=&projects=&template=bug_report.md&title=",
+            "feature" => "https://github.com/mspnp/AzureNamingTool/issues/new?assignees=&labels=&projects=&template=feature_request.md&title=",
+            "discussion" => "https://github.com/mspnp/AzureNamingTool/discussions/new/choose",
+            _ => ""
+        };
+
+        if (!String.IsNullOrEmpty(githubURL))
+        {
+            await JsRuntime.InvokeVoidAsync("open", githubURL, "_blank");
+        }
+    }
+}

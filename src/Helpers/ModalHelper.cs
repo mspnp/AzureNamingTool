@@ -1,4 +1,4 @@
-﻿using AzureNamingTool.Models;
+using AzureNamingTool.Models;
 using AzureNamingTool.Services;
 using AzureNamingTool.Components.Modals;
 using Blazored.Modal;
@@ -35,8 +35,8 @@ namespace AzureNamingTool.Helpers
 
                 var options = new ModalOptions()
                 {
-                    HideCloseButton = true,
-                    UseCustomLayout = true
+                    HideCloseButton = false,
+                    UseCustomLayout = false
                 };
 
                 if (GeneralHelper.IsNotNull(modal))
@@ -49,9 +49,57 @@ namespace AzureNamingTool.Helpers
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// Shows a text confirmation modal that requires the user to type specific text to confirm.
+        /// </summary>
+        /// <param name="modal">The modal service.</param>
+        /// <param name="title">The title of the modal.</param>
+        /// <param name="message">The message of the modal.</param>
+        /// <param name="requiredText">The text that the user must type to confirm.</param>
+        /// <param name="headerstyle">The header style of the modal.</param>
+        /// <param name="theme">The theme of the modal.</param>
+        /// <param name="caseSensitive">Whether the text comparison is case-sensitive. Default is true.</param>
+        /// <returns>A task representing the asynchronous operation. The task result contains a boolean indicating the user's response.</returns>
+        public static async Task<bool> ShowTextConfirmationModal(IModalService modal, string title, string message, string requiredText, string headerstyle, ThemeInfo theme, bool caseSensitive = true)
+        {
+            bool response = false;
+            try
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                var parameters = new ModalParameters
+                    {
+                        { nameof(TextConfirmationModal.title), title },
+                        { nameof(TextConfirmationModal.message), message },
+                        { nameof(TextConfirmationModal.requiredText), requiredText },
+                        { nameof(TextConfirmationModal.headerstyle), headerstyle },
+                        { nameof(TextConfirmationModal.caseSensitive), caseSensitive },
+                        { "theme", theme }
+                    };
+
+                var options = new ModalOptions()
+                {
+                    HideCloseButton = false,
+                    UseCustomLayout = false,
+                    Size = ModalSize.Large
+                };
+
+                if (GeneralHelper.IsNotNull(modal))
+                {
+                    var displaymodal = modal.Show<TextConfirmationModal>(title, parameters, options);
+                    var result = await displaymodal.Result;
+                    if (!result.Cancelled)
+                    {
+                        response = true;
+                    }
+                }
+            }
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
             return response;
         }
@@ -84,18 +132,18 @@ namespace AzureNamingTool.Helpers
 
                 var options = new ModalOptions()
                 {
-                    HideCloseButton = true,
-                    UseCustomLayout = true
+                    HideCloseButton = false,
+                    UseCustomLayout = false,
+                    Size = ModalSize.Large
                 };
 
                 if (GeneralHelper.IsNotNull(modal))
                 {
-                    var displaymodal = modal.Show<InformationModal>("Instructions", parameters, options);
+                    var displaymodal = modal.Show<InformationModal>(title, parameters, options);
                 }
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
         }
 
@@ -137,8 +185,9 @@ namespace AzureNamingTool.Helpers
 
                 var options = new ModalOptions()
                 {
-                    HideCloseButton = true,
-                    UseCustomLayout = true
+                    HideCloseButton = false,
+                    UseCustomLayout = false,
+                    Size = ModalSize.Large
                 };
 
                 if (GeneralHelper.IsNotNull(modal))
@@ -151,9 +200,8 @@ namespace AzureNamingTool.Helpers
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
             return response;
         }
@@ -192,18 +240,22 @@ namespace AzureNamingTool.Helpers
 
                 var options = new ModalOptions()
                 {
-                    HideCloseButton = true,
-                    UseCustomLayout = true
+                    HideCloseButton = false,
+                    UseCustomLayout = false,
+                    Size = ModalSize.Large
                 };
                 if (GeneralHelper.IsNotNull(modal))
                 {
                     var displaymodal = modal.Show<EditModal>(title, parameters, options);
                     var result = await displaymodal.Result;
+                    if (!result.Cancelled)
+                    {
+                        response = true;
+                    }
                 }
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
             return response;
         }

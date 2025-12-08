@@ -1,23 +1,23 @@
-﻿@using AzureNamingTool.Models;
+@using AzureNamingTool.Models;
 <p>
     The <span class="fw-bold">Admin</span> utility allows the user to view version information, configure site settings, update passwords/keys, and clear the site cache.
 </p>
 <p>
     <img style="width:600px;" class="img-fluid" src="Screenshots/AdminConfiguration.png" alt="Admin configuration" />
 </p>
-<div class="card">
-    <h5 class="card-header bg-default text-dark">
-        Page Sections/Actions
-    </h5>
-    <div class="card card-body @theme!.ThemeStyle">
-        <div class="card">
-            <div class="card-body @theme!.ThemeStyle">
+<div class="modern-card">
+    <div class="modern-card-header">
+        <span class="modern-card-title">Page Sections/Actions</span>
+    </div>
+    <div class="modern-card-body">
+        <div class="modern-card mb-3">
+            <div class="modern-card-body">
                 <h5>Version Details</h5>
                 <p>This section displays the current tool version, along with any version alerts.</p>
             </div>
         </div>
-        <div class="card">
-            <div class="card-body @theme!.ThemeStyle">
+        <div class="modern-card mb-3">
+            <div class="modern-card-body">
                 <h5>Customization</h5>
                 <div>
                     <p>This section allows you to customize the Azure Naming Tool site with custom Home content, custom logos, and other configurations.</p>
@@ -32,8 +32,8 @@
                 </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-body @theme!.ThemeStyle">
+        <div class="modern-card mb-3">
+            <div class="modern-card-body">
                 <h5>Security</h5>
                 <div>
                     <p>This section allows for the configuration of the identity settings, if using an Identity provider for Authentication.</p>
@@ -54,8 +54,8 @@
                 </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-body @theme!.ThemeStyle">
+        <div class="modern-card mb-3">
+            <div class="modern-card-body">
                 <h5>Identity Settings</h5>
                 <div>
                     <p>This section allows for the configuration of the identity settings, if using an Identity provider for Authentication.</p>
@@ -71,10 +71,14 @@
                                 <li>Determine the <span class="fw-bold">header name</span> that contains your desired user identifier (email, name, GUID, etc.). This may be different, depending on the Identity provider you use.</li>
                                 <li> Enter the header name in the <span class="fw-bold">Identity Header Name</span> setting.</li>
                             </ol>
-                            <p class="alert alert-info" role="alert">
-                                <span class="fw-bold">NOTE</span><br />
-                                The Azure Naming Tool is configured for <span class="fw-bold"><a href="https://learn.microsoft.com/en-us/azure/app-service/overview-authentication-authorization" target="_blank">Azure App Service Authentication</a></span> using the <a href="https://learn.microsoft.com/en-us/azure/app-service/configure-authentication-user-identities#access-user-claims-in-app-code" target="_blank"><span class="fw-bold">X-MS-CLIENT-PRINCIPAL-NAME</span></a> header name. If using a different Identity provider, update the setting to the header name that contains the user's id.
-                            </p>
+                            <div class="modern-alert modern-alert-info mb-3">
+                                <div class="modern-alert-icon">
+                                    <span class="oi oi-info"></span>
+                                </div>
+                                <div class="modern-alert-content">
+                                    <strong>NOTE:</strong> The Azure Naming Tool is configured for <span class="fw-bold"><a href="https://learn.microsoft.com/en-us/azure/app-service/overview-authentication-authorization" target="_blank">Azure App Service Authentication</a></span> using the <a href="https://learn.microsoft.com/en-us/azure/app-service/configure-authentication-user-identities#access-user-claims-in-app-code" target="_blank"><span class="fw-bold">X-MS-CLIENT-PRINCIPAL-NAME</span></a> header name. If using a different Identity provider, update the setting to the header name that contains the user's id.
+                                </div>
+                            </div>
                         </li>
                         <li>
                             <span class="fw-bold">Admin Users</span>
@@ -89,16 +93,16 @@
                 </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-body @theme!.ThemeStyle">
+        <div class="modern-card mb-3">
+            <div class="modern-card-body">
                 <h5>Clear Cache</h5>
                 <p>
                     The Azure Naming Tool leverages caching to improve perofrmance. This section provides the ability to clear all cached data for the tool.
                 </p>
             </div>
         </div>
-        <div class="card">
-            <div class="card-body @theme!.ThemeStyle">
+        <div class="modern-card mb-3">
+            <div class="modern-card-body">
                 <h5>Site Settings</h5>
                 <div>
                     <p>This section allows for the configuration of site settings.</p>
@@ -120,10 +124,14 @@
                             <p>
                                 By default, the Azure Naming Tool uses managed configuration data for Resource Types. Use this setting to override this functionality and edit Resource Type values.
                             </p>
-                            <p class="alert alert-danger">
-                                <span class="fw-bold">NOTE</span><br />
-                                Disabling this setting may result in name generation that will fail regex validation for the resource type.
-                            </p>
+                            <div class="modern-alert modern-alert-danger mb-3">
+                                <div class="modern-alert-icon">
+                                    <span class="oi oi-warning"></span>
+                                </div>
+                                <div class="modern-alert-content">
+                                    <strong>NOTE:</strong> Disabling this setting may result in name generation that will fail regex validation for the resource type.
+                                </div>
+                            </div>
                         </li>
 
                         <li>
@@ -149,10 +157,14 @@
                             <p>
                                 The Azure Naming Tool will verify the tool has internet connectivity to enable update features. Use this setting to disable the connectivity check functionality.
                             </p>
-                            <p class="alert alert-warning">
-                                <span class="fw-bold">NOTE</span><br />
-                                Disabling this setting may result in connectivity errors being logged to the Admin Log.
-                            </p>
+                            <div class="modern-alert modern-alert-warning mb-3">
+                                <div class="modern-alert-icon">
+                                    <span class="oi oi-warning"></span>
+                                </div>
+                                <div class="modern-alert-content">
+                                    <strong>NOTE:</strong> Disabling this setting may result in connectivity errors being logged to the Admin Log.
+                                </div>
+                            </div>
                         </li>
                         <li>
                             <span class="fw-bold">Generation Webhook</span>

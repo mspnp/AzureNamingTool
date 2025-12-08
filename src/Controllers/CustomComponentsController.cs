@@ -1,12 +1,15 @@
-﻿using AzureNamingTool.Models;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+using AzureNamingTool.Models;
 using AzureNamingTool.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Asp.Versioning;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AzureNamingTool.Services;
+using AzureNamingTool.Services.Interfaces;
 using AzureNamingTool.Attributes;
 using Microsoft.Extensions.Options;
 
@@ -16,10 +19,26 @@ namespace AzureNamingTool.Controllers
     /// Controller for managing custom components.
     /// </summary>
     [Route("api/[controller]")]
+    [ApiVersion("1.0")]
     [ApiController]
     [ApiKey]
+    [Produces("application/json")]
     public class CustomComponentsController : ControllerBase
     {
+        private readonly ICustomComponentService _customComponentService;
+        private readonly IResourceComponentService _resourceComponentService;
+        private readonly IAdminLogService _adminLogService;
+
+        public CustomComponentsController(
+            ICustomComponentService customComponentService,
+            IResourceComponentService resourceComponentService,
+            IAdminLogService adminLogService)
+        {
+            _customComponentService = customComponentService;
+            _resourceComponentService = resourceComponentService;
+            _adminLogService = adminLogService;
+        }
+
         /// <summary>
         /// Response for controller functions
         /// </summary>
@@ -36,7 +55,7 @@ namespace AzureNamingTool.Controllers
             try
             {
                 // Get list of items
-                serviceResponse = await CustomComponentService.GetItems();
+                serviceResponse = await _customComponentService.GetItemsAsync();
                 if (serviceResponse.Success)
                 {
                     return Ok(serviceResponse.ResponseObject);
@@ -48,7 +67,7 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
@@ -66,7 +85,7 @@ namespace AzureNamingTool.Controllers
             try
             {
                 // Get list of items
-                serviceResponse = await CustomComponentService.GetItemsByParentComponentId(parentcomponentid);
+                serviceResponse = await _customComponentService.GetItemsByParentComponentIdAsync(parentcomponentid);
                 if (serviceResponse.Success)
                 {
                     return Ok(serviceResponse.ResponseObject);
@@ -78,7 +97,7 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
@@ -96,7 +115,7 @@ namespace AzureNamingTool.Controllers
             try
             {
                 // Get list of items
-                serviceResponse = await CustomComponentService.GetItemsByParentType(GeneralHelper.NormalizeName(parenttype, true));
+                serviceResponse = await _customComponentService.GetItemsByParentTypeAsync(GeneralHelper.NormalizeName(parenttype, true));
                 if (serviceResponse.Success)
                 {
                     return Ok(serviceResponse.ResponseObject);
@@ -108,7 +127,7 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
@@ -125,7 +144,7 @@ namespace AzureNamingTool.Controllers
             try
             {
                 // Get list of items
-                serviceResponse = await CustomComponentService.GetItem(id);
+                serviceResponse = await _customComponentService.GetItemAsync(id);
                 if (serviceResponse.Success)
                 {
                     return Ok(serviceResponse.ResponseObject);
@@ -137,7 +156,7 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
@@ -153,10 +172,10 @@ namespace AzureNamingTool.Controllers
         {
             try
             {
-                serviceResponse = await CustomComponentService.PostItem(item);
+                serviceResponse = await _customComponentService.PostItemAsync(item);
                 if (serviceResponse.Success)
                 {
-                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Custom Component (" + item.Name + ") updated." });
+                    await _adminLogService.PostItemAsync(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Custom Component (" + item.Name + ") updated." });
                     CacheHelper.InvalidateCacheObject("CustomComponent");
                     return Ok(serviceResponse.ResponseObject);
                 }
@@ -167,7 +186,7 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
@@ -184,10 +203,10 @@ namespace AzureNamingTool.Controllers
         {
             try
             {
-                serviceResponse = await CustomComponentService.PostConfig(items);
+                serviceResponse = await _customComponentService.PostConfigAsync(items);
                 if (serviceResponse.Success)
                 {
-                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Custom Components updated." });
+                    await _adminLogService.PostItemAsync(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Custom Components updated." });
                     CacheHelper.InvalidateCacheObject("CustomComponent");
                     return Ok(serviceResponse.ResponseObject);
                 }
@@ -198,7 +217,7 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
@@ -218,7 +237,7 @@ namespace AzureNamingTool.Controllers
                 List<ResourceComponent> currentresourcecomponents = [];
                 List<CustomComponent> newcustomcomponents = [];
                 // Get the current resource components
-                serviceResponse = await ResourceComponentService.GetItems(true);
+                serviceResponse = await _resourceComponentService.GetItemsAsync(true);
                 if (serviceResponse.Success)
                 {
                     if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
@@ -240,7 +259,7 @@ namespace AzureNamingTool.Controllers
                                         DisplayName = thisparentcomponent.Name,
                                         IsCustom = true
                                     };
-                                    serviceResponse = await ResourceComponentService.PostItem(newcustomcomponent);
+                                    serviceResponse = await _resourceComponentService.PostItemAsync(newcustomcomponent);
 
                                     if (serviceResponse.Success)
                                     {
@@ -270,14 +289,14 @@ namespace AzureNamingTool.Controllers
                             }
 
                             // Update the custom component options
-                            serviceResponse = await CustomComponentService.PostConfig(newcustomcomponents);
+                            serviceResponse = await _customComponentService.PostConfigAsync(newcustomcomponents);
                             if (!serviceResponse.Success)
                             {
                                 return BadRequest(serviceResponse.ResponseObject);
                             }
                         }
                     }
-                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Custom Components updated." });
+                    await _adminLogService.PostItemAsync(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Custom Components updated." });
                     CacheHelper.InvalidateCacheObject("CustomComponent");
                     return Ok("Custom Component configuration updated!");
                 }
@@ -288,7 +307,7 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
@@ -305,14 +324,14 @@ namespace AzureNamingTool.Controllers
             try
             {
                 // Get the item details
-                serviceResponse = await CustomComponentService.GetItem(id);
+                serviceResponse = await _customComponentService.GetItemAsync(id);
                 if (serviceResponse.Success)
                 {
                     CustomComponent item = (CustomComponent)serviceResponse.ResponseObject!;
-                    serviceResponse = await CustomComponentService.DeleteItem(id);
+                    serviceResponse = await _customComponentService.DeleteItemAsync(id);
                     if (serviceResponse.Success)
                     {
-                        AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Custom Component (" + item.Name + ") deleted." });
+                        await _adminLogService.PostItemAsync(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Custom Component (" + item.Name + ") deleted." });
                         CacheHelper.InvalidateCacheObject("CustomComponent");
                         return Ok("Custom Component (" + item.Name + ") deleted.");
                     }
@@ -328,7 +347,7 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
@@ -344,14 +363,14 @@ namespace AzureNamingTool.Controllers
             try
             {
                 // Get the item details
-                serviceResponse = await ResourceComponentService.GetItem(parentcomponentid);
+                serviceResponse = await _resourceComponentService.GetItemAsync(parentcomponentid);
                 if (serviceResponse.Success)
                 {
                     var component = (ResourceComponent)serviceResponse.ResponseObject!;
-                    serviceResponse = await CustomComponentService.DeleteByParentComponentId(parentcomponentid);
+                    serviceResponse = await _customComponentService.DeleteByParentComponentIdAsync(parentcomponentid);
                     if (serviceResponse.Success)
                     {
-                        AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Custom Component data for component (" + component.Name + ") deleted." });
+                        await _adminLogService.PostItemAsync(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Custom Component data for component (" + component.Name + ") deleted." });
                         CacheHelper.InvalidateCacheObject("CustomComponent");
                         return Ok("Custom Component data for component (" + component.Name + ") deleted.");
                     }
@@ -367,9 +386,10 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
     }
 }
+#pragma warning restore CS1591

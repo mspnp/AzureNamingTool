@@ -1,0 +1,770 @@
+/* ===================================================================
+   Azure Naming Tool - Modern Layout Styles
+   Version: 1.0
+   Date: October 17, 2025
+   Description: Layout structure for DesignLinear design with 
+                collapsible sidebar and modern header
+   =================================================================== */
+
+/* ===================================================================
+   MAIN LAYOUT STRUCTURE
+   =================================================================== */
+
+.modern-layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--color-bg-primary);
+    isolation: auto;
+}
+
+/* ===================================================================
+   SIDEBAR
+   =================================================================== */
+
+.modern-sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: linear-gradient(180deg, var(--sidebar-bg-start) 0%, var(--sidebar-bg-end) 100%);
+    color: var(--sidebar-text);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: all var(--transition-normal);
+    position: relative;
+    z-index: var(--z-sidebar);
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.modern-sidebar.collapsed {
+    width: 70px;
+    min-width: 70px;
+}
+
+/* Sidebar scrollbar styling */
+.modern-sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modern-sidebar::-webkit-scrollbar-track {
+    background: var(--sidebar-bg-end);
+}
+
+.modern-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-full);
+}
+
+.modern-sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* ===================================================================
+   MAIN CONTENT AREA
+   =================================================================== */
+
+.modern-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Prevent flex item overflow */
+    isolation: isolate;
+}
+
+/* ===================================================================
+   HEADER
+   =================================================================== */
+
+.modern-header {
+    height: 64px;
+    background-color: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--spacing-lg);
+    gap: var(--spacing-md);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow-sm);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex: 1;
+    min-width: 0;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-shrink: 0;
+}
+
+.header-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Sidebar Toggle Button */
+.sidebar-toggle {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.sidebar-toggle:hover {
+    background-color: var(--color-bg-hover);
+    border-color: var(--color-border-hover);
+    color: var(--color-text-primary);
+}
+
+.sidebar-toggle:active {
+    transform: scale(0.95);
+}
+
+/* Icon Button (Generic) */
+.btn-icon {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-icon:hover {
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-primary);
+}
+
+/* User Info in Header */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-md);
+    background-color: var(--color-bg-tertiary);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+.user-name {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-primary);
+}
+
+/* Theme Toggle Wrapper (modern button style) */
+.modern-theme-toggle {
+    display: flex;
+    align-items: center;
+}
+
+.theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-md);
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.theme-toggle-btn:hover {
+    background: var(--color-hover-bg);
+    border-color: var(--color-border-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.theme-toggle-btn:active {
+    transform: translateY(0);
+}
+
+.theme-toggle-btn .theme-icon {
+    font-size: 16px;
+    transition: transform var(--transition-fast);
+}
+
+.theme-toggle-btn:hover .theme-icon {
+    transform: rotate(20deg);
+}
+
+.theme-toggle-btn .theme-label {
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+}
+
+/* Dark mode specific icon colors */
+[data-theme="dark"] .theme-toggle-btn .bi-moon-stars-fill {
+    color: #fbbf24;
+}
+
+[data-theme="light"] .theme-toggle-btn .bi-sun-fill {
+    color: #f59e0b;
+}
+
+/* ===================================================================
+   CONTENT AREA
+   =================================================================== */
+
+.modern-content {
+    flex: 1;
+    padding: var(--spacing-xl);
+    overflow-y: auto;
+    background-color: var(--color-bg-primary);
+}
+
+/* ===================================================================
+   NAVIGATION MENU STYLES (for NavMenu.razor)
+   =================================================================== */
+
+/* Modern Sidebar Header */
+.modern-sidebar-header {
+    padding: var(--spacing-lg) var(--spacing-md);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 64px;
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    flex: 1;
+    min-width: 0; /* Allows text truncation */
+    text-decoration: none;
+    color: var(--sidebar-text);
+}
+
+.brand-logo {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-xs);
+    transition: all var(--transition-fast);
+}
+
+.brand-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.brand-text {
+    flex: 1;
+    min-width: 0;
+    opacity: 1;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.brand-title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+/* Collapsed state - hide brand text */
+.modern-sidebar.collapsed .brand-text {
+    opacity: 0;
+    transform: translateX(-10px);
+    width: 0;
+    overflow: hidden;
+}
+
+.modern-sidebar.collapsed .sidebar-brand {
+    justify-content: center;
+}
+
+.modern-sidebar.collapsed .brand-logo {
+    margin: 0 auto;
+}
+
+/* Top row with logo - Legacy support */
+.modern-sidebar .top-row {
+    padding: var(--spacing-lg) var(--spacing-md);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 64px;
+}
+
+.modern-sidebar .navbar-brand {
+    color: var(--sidebar-text);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    transition: opacity var(--transition-fast);
+}
+
+.modern-sidebar .navbar-brand:hover {
+    opacity: 0.9;
+}
+
+.modern-sidebar.collapsed .navbar-brand span {
+    display: none;
+}
+
+/* Mobile toggle button */
+.modern-sidebar .navbar-toggler {
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--sidebar-text);
+    padding: var(--spacing-xs);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+}
+
+.modern-sidebar .navbar-toggler:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Navigation items */
+.modern-sidebar nav {
+    padding: var(--spacing-sm) 0;
+}
+
+.modern-sidebar .nav-item {
+    margin: 2px var(--spacing-xs);
+}
+
+/* Higher specificity to override Bootstrap */
+.modern-sidebar .nav-item .nav-link,
+.modern-sidebar nav .nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: var(--sidebar-text) !important;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    background-color: transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.modern-sidebar .nav-item .nav-link:hover,
+.modern-sidebar nav .nav-link:hover {
+    background-color: var(--sidebar-hover) !important;
+    color: #ffffff !important;
+}
+
+.modern-sidebar .nav-item .nav-link.active,
+.modern-sidebar nav .nav-link.active {
+    background-color: var(--sidebar-active) !important;
+    color: #ffffff !important;
+    font-weight: var(--font-weight-semibold);
+}
+
+/* Navigation icons */
+.modern-sidebar .nav-link .nav-icon,
+.modern-sidebar .nav-link .oi {
+    font-size: 18px;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+    color: inherit;
+    transition: transform var(--transition-fast);
+}
+
+.modern-sidebar .nav-link:hover .nav-icon,
+.modern-sidebar .nav-link:hover .oi {
+    transform: scale(1.1);
+}
+
+/* Navigation text */
+.modern-sidebar .nav-link .nav-text {
+    flex: 1;
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+/* Collapsed state - center icons and hide text */
+.modern-sidebar.collapsed .nav-link {
+    justify-content: center;
+    padding: var(--spacing-sm);
+}
+
+.modern-sidebar.collapsed .nav-link .nav-text {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    transform: translateX(-10px);
+}
+
+.modern-sidebar.collapsed .nav-link span:not(.oi):not(.nav-icon) {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+}
+
+/* Section headers in sidebar */
+.modern-sidebar .nav-section-header {
+    padding: var(--spacing-md) var(--spacing-md) var(--spacing-xs);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--sidebar-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: var(--spacing-md);
+}
+
+.modern-sidebar.collapsed .nav-section-header {
+    display: none;
+}
+
+/* Jump To section in sidebar */
+.modern-sidebar .card {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin: var(--spacing-md) var(--spacing-xs);
+}
+
+.modern-sidebar .card-header {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modern-sidebar.collapsed .card {
+    display: none;
+}
+
+/* ===================================================================
+   SCROLL TO TOP BUTTON
+   =================================================================== */
+
+/* Modern Scroll to Top Button */
+.modern-scroll-top-btn,
+#btnScrollToTop {
+    position: fixed;
+    bottom: var(--spacing-xl);
+    right: var(--spacing-xl);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, var(--color-azure-blue) 0%, #005a9e 100%);
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 114, 198, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 20px;
+    padding: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px) scale(0.9);
+    pointer-events: none;
+}
+
+.modern-scroll-top-btn.visible,
+#btnScrollToTop.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.modern-scroll-top-btn:hover,
+#btnScrollToTop:hover {
+    background: linear-gradient(135deg, #005a9e 0%, var(--color-azure-blue) 100%);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), 0 3px 8px rgba(0, 114, 198, 0.4);
+    transform: translateY(-2px) scale(1);
+}
+
+.modern-scroll-top-btn:active,
+#btnScrollToTop:active {
+    transform: translateY(0) scale(0.95);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15), 0 1px 4px rgba(0, 114, 198, 0.3);
+}
+
+/* Show state with animation */
+.modern-scroll-top-btn.show,
+#btnScrollToTop.show {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    opacity: 1 !important;
+    transform: translateY(0) scale(1) !important;
+    pointer-events: auto !important;
+}
+
+/* Icon styling - Perfect centering */
+.modern-scroll-top-btn .oi,
+#btnScrollToTop .oi {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
+}
+
+/* ===================================================================
+   RESPONSIVE LAYOUT
+   =================================================================== */
+
+@media (max-width: 1024px) {
+    .modern-sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        transform: translateX(-100%);
+        z-index: var(--z-modal);
+    }
+    
+    .modern-sidebar.show {
+        transform: translateX(0);
+    }
+    
+    .modern-main {
+        width: 100%;
+    }
+    
+    .header-title {
+        font-size: var(--font-size-base);
+    }
+}
+
+/* Mobile menu toggle button (always visible on mobile) */
+.mobile-menu-toggle {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: flex !important;
+        position: fixed;
+        top: 8px;
+        left: 16px;
+        z-index: 1600;
+        background-color: var(--color-azure-blue);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .mobile-menu-toggle:hover {
+        background-color: #0066cc;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    .mobile-menu-toggle:active {
+        transform: scale(0.95);
+    }
+    
+    /* Move button when sidebar is open */
+    .mobile-menu-toggle.menu-open {
+        left: 276px;
+        background-color: rgba(0, 0, 0, 0.6);
+    }
+    
+    .mobile-menu-toggle.menu-open:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+    
+    .modern-header {
+        height: 56px;
+        padding: 0 var(--spacing-md);
+    }
+    
+    .header-title {
+        display: none;
+    }
+    
+    .modern-content {
+        padding: var(--spacing-md);
+    }
+    
+    .user-info .user-name {
+        display: none;
+    }
+    
+    .header-right .btn span:not(.oi) {
+        display: none;
+    }
+    
+    .header-right .btn {
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+    
+    /* Mobile sidebar behavior */
+    .modern-sidebar {
+        position: fixed !important;
+        left: -260px !important;
+        top: 0;
+        bottom: 0;
+        width: 260px !important;
+        min-width: 260px !important;
+        z-index: 1150 !important;
+        transition: left 0.3s ease-in-out !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+    
+    .modern-sidebar.show {
+        left: 0 !important;
+    }
+    
+    .modern-sidebar.collapsed {
+        left: -260px !important;
+        width: 260px !important;
+    }
+    
+    /* Ensure sidebar content is visible on mobile */
+    .modern-sidebar .modern-sidebar-header,
+    .modern-sidebar nav,
+    .modern-sidebar .nav-item,
+    .modern-sidebar .nav-link {
+        display: flex !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Force nav items to always show on mobile (override collapse) */
+    .modern-sidebar .collapse {
+        display: block !important;
+        height: auto !important;
+        visibility: visible !important;
+    }
+    
+    /* Hide the hamburger button inside the sidebar on mobile */
+    .modern-sidebar .navbar-toggler {
+        display: none !important;
+    }
+    
+    .modern-main {
+        width: 100%;
+        margin-left: 0;
+    }
+    
+    /* Mobile sidebar backdrop */
+    .modern-sidebar-backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1140;
+    }
+    
+    .modern-sidebar-backdrop.show {
+        display: block;
+    }
+}
+
+@media (max-width: 480px) {
+    .modern-header {
+        gap: var(--spacing-xs);
+    }
+    
+    .header-right {
+        gap: 4px;
+    }
+    
+    .modern-content {
+        padding: var(--spacing-sm);
+    }
+}
+
+/* ===================================================================
+   PRINT STYLES
+   =================================================================== */
+
+@media print {
+    .modern-sidebar,
+    .modern-header {
+        display: none;
+    }
+    
+    .modern-main {
+        width: 100%;
+    }
+    
+    .modern-content {
+        padding: 0;
+    }
+}
+
+/* Jump To menu specific styles */
+.modern-sidebar .card .nav-item .nav-link {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.875rem;
+    white-space: normal;
+    word-wrap: break-word;
+    line-height: 1.3;
+    min-height: auto;
+}
+
+.modern-sidebar .card .nav-item {
+    margin: 1px var(--spacing-xs);
+}
+

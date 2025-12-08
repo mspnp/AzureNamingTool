@@ -68,15 +68,116 @@ a, .btn-link {
         content: "An error has occurred."
     }
 
-.blazored-toast-container{
-    z-index:99999 !important;
+/* ===================================================================
+   Modern Toast Notifications (Blazored.Toast Override)
+   =================================================================== */
+
+.blazored-toast-container {
+    z-index: 99999 !important;
 }
 
-#btnScrollToTop {
-    position: fixed; /* Fixed/sticky position */
-    bottom: 20px; /* Place the button at the bottom of the page */
-    right: 30px; /* Place the button 30px from the right */
-    z-index: 99; /* Make sure it does not overlap */
+/* Toast Base Styles - Override Blazored defaults */
+#blazored-toast-container > div {
+    background-color: var(--color-bg-secondary) !important;
+    border: 1px solid var(--color-border) !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-lg) !important;
+    padding: 16px !important;
+    margin-bottom: 12px !important;
+    overflow: hidden !important;
+    min-width: 350px !important;
+    max-width: 450px !important;
+    transition: all var(--transition-normal) !important;
+    font-family: var(--font-family-base) !important;
+}
+
+#blazored-toast-container > div:hover {
+    box-shadow: var(--shadow-xl) !important;
+    transform: translateX(-4px) !important;
+}
+
+/* Success Toast */
+#blazored-toast-container > .blazored-toast-success {
+    border-left: 4px solid var(--color-success) !important;
+    background-color: var(--color-bg-secondary) !important;
+}
+
+/* Error Toast */
+#blazored-toast-container > .blazored-toast-error {
+    border-left: 4px solid var(--color-error) !important;
+    background-color: var(--color-bg-secondary) !important;
+}
+
+/* Warning Toast */
+#blazored-toast-container > .blazored-toast-warning {
+    border-left: 4px solid var(--color-warning) !important;
+    background-color: var(--color-bg-secondary) !important;
+}
+
+/* Info Toast */
+#blazored-toast-container > .blazored-toast-info {
+    border-left: 4px solid var(--color-info) !important;
+    background-color: var(--color-bg-secondary) !important;
+}
+
+/* Toast Message Text */
+#blazored-toast-container .blazored-toast-message {
+    font-size: var(--font-size-sm) !important;
+    color: var(--color-text-primary) !important;
+    line-height: var(--line-height-normal) !important;
+    hyphens: none !important;
+    word-wrap: break-word !important;
+}
+
+/* Toast Close Button */
+#blazored-toast-container .blazored-toast-close-button {
+    background: transparent !important;
+    border: none !important;
+    color: var(--color-text-secondary) !important;
+    cursor: pointer !important;
+    padding: 4px !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+    opacity: 0.6 !important;
+    transition: all var(--transition-fast) !important;
+}
+
+#blazored-toast-container .blazored-toast-close-button:hover {
+    opacity: 1 !important;
+    color: var(--color-text-primary) !important;
+}
+
+/* Progress Bar */
+#blazored-toast-container .blazored-toast-progress {
+    height: 3px !important;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg) !important;
+    opacity: 0.8 !important;
+}
+
+#blazored-toast-container .blazored-toast-success .blazored-toast-progress {
+    background-color: var(--color-success) !important;
+}
+
+#blazored-toast-container .blazored-toast-error .blazored-toast-progress {
+    background-color: var(--color-error) !important;
+}
+
+#blazored-toast-container .blazored-toast-warning .blazored-toast-progress {
+    background-color: var(--color-warning) !important;
+}
+
+#blazored-toast-container .blazored-toast-info .blazored-toast-progress {
+    background-color: var(--color-info) !important;
+}
+
+/* Dark Theme Support */
+[data-theme="dark"] #blazored-toast-container > div {
+    background-color: var(--color-bg-secondary) !important;
+    border-color: var(--color-border) !important;
+}
+
+[data-theme="dark"] #blazored-toast-container .blazored-toast-message {
+    color: var(--color-text-primary) !important;
 }
 
 .text-white, .link-light, .nav-link, .nav-item {
@@ -127,6 +228,7 @@ a, .btn-link {
     background-color: #ccc;
     -webkit-transition: .4s;
     transition: .4s;
+    border: 2px solid transparent;
 }
 
     .slider:before {
@@ -139,14 +241,15 @@ a, .btn-link {
         background-color: white;
         -webkit-transition: .4s;
         transition: .4s;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
 input:checked + .slider {
-    background-color: #4C4E52;
+    background-color: #0078d4;
 }
 
 input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
+    box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.2);
 }
 
 input:checked + .slider:before {
@@ -164,6 +267,21 @@ input:checked + .slider:before {
         border-radius: 50%;
     }
 
+/* Dark theme adjustments for switch */
+[data-theme="dark"] .slider {
+    background-color: #4a4a4a;
+    border-color: #6a6a6a;
+}
+
+[data-theme="dark"] input:checked + .slider {
+    background-color: #0078d4;
+}
+
+[data-theme="dark"] .slider:before {
+    background-color: #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
 .disabled-text {
     color: #A9A9A9;
 }
@@ -171,8 +289,4 @@ input:checked + .slider:before {
 .btn-dummy {
     pointer-events: none;
     cursor: not-allowed;
-}
-
-.blazored-toast-message {
-    hyphens:none !important;
 }

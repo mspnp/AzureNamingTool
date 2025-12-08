@@ -1,0 +1,72 @@
+/* CRITICAL MODAL HEADER OVERRIDE - MUST LOAD LAST */
+/* This file must be loaded after all other CSS including AzureNamingTool.styles.css */
+
+/* Remove padding from modal content container so header can extend to edges */
+.blazored-modal .bm-content {
+    padding: 0 !important;
+}
+
+/* Style the header to match sidebar gradient - extend to full width */
+.bm-header {
+    background: linear-gradient(180deg, #2d3748 0%, #1a202c 100%) !important;
+    color: #ffffff !important;
+    padding: 20px 24px !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+/* Add padding back to the body content */
+.modern-modal-content {
+    padding: 24px !important;
+}
+
+/* Modal footer with proper vertical spacing */
+.modern-modal-footer {
+    padding: 24px !important;
+    display: flex !important;
+    gap: 12px !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    border-top: 1px solid var(--color-border) !important;
+    min-height: 80px !important;
+}
+
+.bm-title,
+.bm-header h3 {
+    color: #ffffff !important;
+    margin: 0 !important;
+    font-size: 20px !important;
+    font-weight: 600 !important;
+}
+
+/* Also target old class names in case they're used elsewhere */
+.blazored-modal-header {
+    background-color: #004494 !important;
+    color: #ffffff !important;
+    padding: 20px 24px !important;
+    margin: 0 !important;
+}
+
+.blazored-modal-title,
+.blazored-modal-header h3 {
+    color: #ffffff !important;
+    margin: 0 !important;
+}
+
+/* Close button */
+.bm-close,
+.blazored-modal-close {
+    color: #ffffff !important;
+    opacity: 0.8 !important;
+    background: transparent !important;
+    border: none !important;
+    font-size: 1.5rem !important;
+    cursor: pointer !important;
+}
+
+.bm-close:hover,
+.blazored-modal-close:hover {
+    opacity: 1 !important;
+}

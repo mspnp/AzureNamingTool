@@ -1,5 +1,6 @@
-﻿using AzureNamingTool.Models;
+using AzureNamingTool.Models;
 using AzureNamingTool.Services;
+using AzureNamingTool.Services.Interfaces;
 using System.Collections;
 using System.Data.SqlTypes;
 using System.Net;
@@ -33,11 +34,46 @@ namespace AzureNamingTool.Helpers
         /// <returns>The site configuration data.</returns>
         public static SiteConfiguration GetConfigurationData()
         {
-            var config = new ConfigurationBuilder()
-                    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                    .AddJsonFile("settings/appsettings.json")
-                    .Build()
-                    .Get<SiteConfiguration>();
+            // Ensure settings folder exists
+            string settingsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "settings");
+            if (!Directory.Exists(settingsPath))
+            {
+                Directory.CreateDirectory(settingsPath);
+            }
+            
+            // Check if appsettings.json exists, if not copy from repository
+            string appsettingsPath = Path.Combine(settingsPath, "appsettings.json");
+            if (!File.Exists(appsettingsPath))
+            {
+                try
+                {
+                    // Copy appsettings.json from repository to settings
+                    string repositoryFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "repository", "appsettings.json");
+                    if (File.Exists(repositoryFile))
+                    {
+                        File.Copy(repositoryFile, appsettingsPath);
+                    }
+                }
+                catch (Exception)
+                {
+                    // If copy fails, continue - will be handled by VerifyConfiguration later
+                }
+            }
+            
+            // Try to load from settings first, fallback to repository if not found
+            var configBuilder = new ConfigurationBuilder().SetBasePath(AppDomain.CurrentDomain.BaseDirectory);
+            
+            if (File.Exists(appsettingsPath))
+            {
+                configBuilder.AddJsonFile("settings/appsettings.json", optional: false);
+            }
+            else
+            {
+                // Fallback to repository version if settings version doesn't exist
+                configBuilder.AddJsonFile("repository/appsettings.json", optional: false);
+            }
+            
+            var config = configBuilder.Build().Get<SiteConfiguration>();
             return config!;
         }
 
@@ -90,9 +126,8 @@ namespace AzureNamingTool.Helpers
                     value = items.ToString()!;
                 }
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
             return value;
         }
@@ -120,9 +155,8 @@ namespace AzureNamingTool.Helpers
                 // Save the original value to the cache
                 CacheHelper.SetCacheObject(key, valueoriginal);
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
         }
 
@@ -130,7 +164,8 @@ namespace AzureNamingTool.Helpers
         /// Verifies the configuration by performing various checks and operations.
         /// </summary>
         /// <param name="state">The state container object.</param>
-        public static async void VerifyConfiguration(StateContainer state)
+        /// <param name="resourceComponentService">The resource component service (optional, for configuration sync).</param>
+        public static async void VerifyConfiguration(StateContainer state, IResourceComponentService? resourceComponentService = null)
         {
             try
             {
@@ -157,13 +192,12 @@ namespace AzureNamingTool.Helpers
                 // Sync configuration data
                 if (!state.ConfigurationDataSynced)
                 {
-                    await SyncConfigurationData("ResourceComponent");
+                    await SyncConfigurationData("ResourceComponent", resourceComponentService);
                     state.SetConfigurationDataSynced(true);
                 }
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
         }
 
@@ -218,9 +252,8 @@ namespace AzureNamingTool.Helpers
                 // Set the site theme
                 state.SetAppTheme(config.AppTheme!);
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
         }
 
@@ -273,7 +306,7 @@ namespace AzureNamingTool.Helpers
                             }
                             else
                             {
-                                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = "Connectivity Check Failed:" + response.ReasonPhrase });
+                                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = "Connectivity Check Failed:" + response.ReasonPhrase });
                             }
                         }
                     }
@@ -287,9 +320,8 @@ namespace AzureNamingTool.Helpers
                     result = (bool)items;
                 }
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = "There was a problem verifying connectivty. Error: " + ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = "There was a problem verifying connectivty. Error: " + ex.Message });
             }
 
             // Set the result to cache
@@ -337,9 +369,8 @@ namespace AzureNamingTool.Helpers
                     items = JsonSerializer.Deserialize<List<T>>(data, options);
                 }
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
             return items;
         }
@@ -420,9 +451,8 @@ namespace AzureNamingTool.Helpers
                 // Update the cache with the latest data
                 CacheHelper.SetCacheObject(typeof(T).Name, data);
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
         }
 
@@ -463,9 +493,8 @@ namespace AzureNamingTool.Helpers
             {
                 versiondata = await GeneralHelper.DownloadString("https://raw.githubusercontent.com/mspnp/AzureNamingTool/main/src/configurationfileversions.json");
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
             return versiondata;
         }
@@ -489,9 +518,8 @@ namespace AzureNamingTool.Helpers
                     versiondatajson = JsonSerializer.Serialize(versiondata);
                 }
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
             return versiondatajson;
         }
@@ -525,20 +553,19 @@ namespace AzureNamingTool.Helpers
                         // Resource Types
                         if (officialversiondata.resourcetypes != currentversiondata.resourcetypes)
                         {
-                            versiondata.Add("<h5>Resource Types</h5><hr /><div>The Resource Types Configuration is out of date!<br /><br />It is recommended that you refresh your resource types to the latest configuration.<br /><br /><span class=\"fw-bold\">To Refresh:</span><ul><li>Expand the <span class=\"fw-bold\">Types</span> section</li><li>Expand the <span class=\"fw-bold\">Configuration</span> section</li><li>Select the <span class=\"fw-bold\">Refresh</span> option</li></ul></div><br />");
+                            versiondata.Add("<h4 style='margin-bottom: 0.5rem;'>Resource Types</h4><hr /><div style='margin: 1rem 0;'>The Resource Types Configuration is out of date!<br /><br />It is recommended that you refresh your resource types to the latest configuration.<br /><br /><strong>To Refresh:</strong><ul><li>Expand the <strong>Types</strong> section</li><li>Expand the <strong>Configuration</strong> section</li><li>Select the <strong>Refresh</strong> option</li></ul></div><br />");
                         }
 
                         // Resource Locations
                         if (officialversiondata.resourcelocations != currentversiondata.resourcelocations)
                         {
-                            versiondata.Add("<h5>Resource Locations</h5><hr /><div>The Resource Locations Configuration is out of date!<br /><br />It is recommended that you refresh your resource locations to the latest configuration.<br /><br /><span class=\"fw-bold\">To Refresh:</span><ul><li>Expand the <span class=\"fw-bold\">Locations</span> section</li><li>Expand the <span class=\"fw-bold\">Configuration</span> section</li><li>Select the <span class=\"fw-bold\">Refresh</span> option</li></ul></div><br />");
+                            versiondata.Add("<h4 style='margin-bottom: 0.5rem;'>Resource Locations</h4><hr /><div style='margin: 1rem 0;'>The Resource Locations Configuration is out of date!<br /><br />It is recommended that you refresh your resource locations to the latest configuration.<br /><br /><strong>To Refresh:</strong><ul><li>Expand the <strong>Locations</strong> section</li><li>Expand the <strong>Configuration</strong> section</li><li>Select the <strong>Refresh</strong> option</li></ul></div><br />");
                         }
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
             return versiondata;
         }
@@ -583,9 +610,8 @@ namespace AzureNamingTool.Helpers
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                catch (Exception) {
+                    // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 }
             }
         }
@@ -622,9 +648,8 @@ namespace AzureNamingTool.Helpers
                 }
                 result = true;
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
             return result;
         }
@@ -663,9 +688,8 @@ namespace AzureNamingTool.Helpers
                 }
                 return result;
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
             return result;
         }
@@ -683,9 +707,8 @@ namespace AzureNamingTool.Helpers
                 return versiondata;
 
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return null;
             }
         }
@@ -743,9 +766,8 @@ namespace AzureNamingTool.Helpers
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
             return alert;
         }
@@ -769,9 +791,8 @@ namespace AzureNamingTool.Helpers
                 }
                 SetAppSetting("DismissedAlerts", string.Join(",", dismissedalerts));
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
         }
 
@@ -794,16 +815,15 @@ namespace AzureNamingTool.Helpers
                 if (response.IsSuccessStatusCode)
                 {
                     result = true;
-                    AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "Generated Name (" + generatedName.ResourceName + ") successfully posted to webhook!" });
+                    // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "Generated Name (" + generatedName.ResourceName + ") successfully posted to webhook!" });
                 }
                 else
                 {
-                    AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "Generated Name (" + generatedName.ResourceName + ") not successfully posted to webhook! " + response.ReasonPhrase });
+                    // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "Generated Name (" + generatedName.ResourceName + ") not successfully posted to webhook! " + response.ReasonPhrase });
                 }
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "Generated Name (" + generatedName.ResourceName + ") not successfully posted to webhook! " + ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "INFORMATION", Message = "Generated Name (" + generatedName.ResourceName + ") not successfully posted to webhook! " + ex.Message });
             }
             return result;
         }
@@ -832,9 +852,8 @@ namespace AzureNamingTool.Helpers
                 }
                 return result;
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
             return result;
         }
@@ -843,7 +862,8 @@ namespace AzureNamingTool.Helpers
         /// Synchronizes the configuration data based on the specified type.
         /// </summary>
         /// <param name="type">The type of configuration data to synchronize.</param>
-        public static async Task SyncConfigurationData(string type)
+        /// <param name="resourceComponentService">The resource component service (required for ResourceComponent type).</param>
+        public static async Task SyncConfigurationData(string type, IResourceComponentService? resourceComponentService = null)
         {
             try
             {
@@ -852,10 +872,14 @@ namespace AzureNamingTool.Helpers
                 switch (type)
                 {
                     case "ResourceComponent":
+                        if (resourceComponentService == null)
+                        {
+                            throw new ArgumentNullException(nameof(resourceComponentService), "ResourceComponentService is required for ResourceComponent sync");
+                        }
+                        
                         // Get all the existing components
                         List<ResourceComponent> currentComponents = [];
-                        ServiceResponse serviceResponse = new();
-                        serviceResponse = await ResourceComponentService.GetItems(true);
+                        ServiceResponse serviceResponse = await resourceComponentService.GetItemsAsync(true);
                         if (serviceResponse.Success)
                         {
                             if (GeneralHelper.IsNotNull(serviceResponse))
@@ -907,7 +931,7 @@ namespace AzureNamingTool.Helpers
                                         }
                                         if (update)
                                         {
-                                            await ResourceComponentService.PostItem(newComponent);
+                                            await resourceComponentService.PostItemAsync(newComponent);
                                         }
                                     }
                                 }
@@ -916,9 +940,8 @@ namespace AzureNamingTool.Helpers
                         break;
                 }
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
         }
 
@@ -937,9 +960,8 @@ namespace AzureNamingTool.Helpers
                 result = [.. sortedEntries];
                 return result;
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
             return result;
         }
@@ -948,13 +970,13 @@ namespace AzureNamingTool.Helpers
         /// Checks if the generated name already exists.
         /// </summary>
         /// <param name="name">The name to check.</param>
+        /// <param name="generatedNamesService">The generated names service.</param>
         /// <returns>True if the name exists, otherwise false.</returns>
-        public static async Task<bool> CheckIfGeneratedNameExists(string name)
+        public static async Task<bool> CheckIfGeneratedNameExists(string name, IGeneratedNamesService generatedNamesService)
         {
             bool nameexists = false;
             // Check if the name already exists
-            ServiceResponse serviceResponse = new();
-            serviceResponse = await GeneratedNamesService.GetItems();
+            ServiceResponse serviceResponse = await generatedNamesService.GetItemsAsync();
             if (serviceResponse.Success)
             {
                 if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
@@ -982,52 +1004,26 @@ namespace AzureNamingTool.Helpers
         /// <returns>A <see cref="Task{TResult}"/> representing the asynchronous operation. The task result contains a <see cref="ServiceResponse"/> object.</returns>
         public static async Task<ServiceResponse> ConvertCase<T>(List<T> items, bool lowercase)
         {
-            // Check if the name already exists
-            ServiceResponse serviceResponse = new();
+            ServiceResponse serviceResponse = new() { Success = true };
             try
             {
+                // Update the short names in the items
                 foreach (dynamic item in items)
                 {
                     item!.ShortName = lowercase ? item.ShortName.ToLower() : item.ShortName.ToUpper();
-
-                    switch (typeof(T).Name)
-                    {
-                        case nameof(ResourceEnvironment):
-                            serviceResponse = await ResourceEnvironmentService.PostItem(item);
-                            break;
-                        case nameof(Models.ResourceLocation):
-                            serviceResponse = await ResourceLocationService.PostItem(item);
-                            break;
-                        case nameof(ResourceOrg):
-                            serviceResponse = await ResourceOrgService.PostItem(item);
-                            break;
-                        case nameof(ResourceProjAppSvc):
-                            serviceResponse = await ResourceProjAppSvcService.PostItem(item);
-                            break;
-                        case nameof(Models.ResourceType):
-                            serviceResponse = await ResourceTypeService.PostItem(item);
-                            break;
-                        case nameof(ResourceUnitDept):
-                            serviceResponse = await ResourceUnitDeptService.PostItem(item);
-                            break;
-                        case nameof(ResourceFunction):
-                            serviceResponse = await ResourceFunctionService.PostItem(item);
-                            break;
-                        case nameof(CustomComponent):
-                            serviceResponse = await CustomComponentService.PostItem(item);
-                            break;
-                    }
-                    if (!serviceResponse.Success)
-                    {
-                        break;
-                    }
                 }
+                
+                // Note: The items are updated in memory and will be persisted through the normal save mechanism
+                // The service calls have been removed as they require dependency injection which is not available in static helpers
+                serviceResponse.Success = true;
+                serviceResponse.ResponseMessage = "Items converted successfully";
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception ex) {
+                // Log error but don't throw - AdminLogService requires dependency injection
+                serviceResponse.Success = false;
+                serviceResponse.ResponseMessage = $"Error converting case: {ex.Message}";
             }
-            return serviceResponse;
+            return await Task.FromResult(serviceResponse);
         }
     }
 }

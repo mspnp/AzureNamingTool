@@ -1,0 +1,760 @@
+@page "/design-github"
+@* TEMPORARY DESIGN MOCKUP - DELETE AFTER EVALUATION *@
+@* GitHub-inspired Clean Design *@
+
+<div class="design-github">
+    <!-- Left Sidebar Navigation -->
+    <nav class="sidebar-github" id="sidebarGithub">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-mark">⬡</span>
+                <span class="logo-text">Azure Naming Tool</span>
+            </div>
+        </div>
+
+        <button class="collapse-toggle" onclick="toggleSidebarGithub()">
+            <span class="toggle-icon">«</span>
+        </button>
+
+        <div class="nav-section">
+            <a href="#" class="github-nav-item active">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Home</span>
+            </a>
+            <a href="#" class="github-nav-item">
+                <span class="nav-icon">⚡</span>
+                <span class="nav-label">Generate</span>
+            </a>
+            <a href="#" class="github-nav-item">
+                <span class="nav-icon">📖</span>
+                <span class="nav-label">Reference</span>
+            </a>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="nav-section">
+            <div class="section-label">Components</div>
+            <a href="#" class="github-nav-item">
+                <span class="nav-icon">📦</span>
+                <span class="nav-label">Resource Types</span>
+            </a>
+            <a href="#" class="github-nav-item">
+                <span class="nav-icon">🌐</span>
+                <span class="nav-label">Locations</span>
+            </a>
+            <a href="#" class="github-nav-item">
+                <span class="nav-icon">🔷</span>
+                <span class="nav-label">Environments</span>
+            </a>
+            <a href="#" class="github-nav-item">
+                <span class="nav-icon">🏢</span>
+                <span class="nav-label">Organizations</span>
+            </a>
+            <a href="#" class="github-nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-label">Functions</span>
+            </a>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="nav-section">
+            <div class="section-label">System</div>
+            <a href="#" class="github-nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-label">Configuration</span>
+            </a>
+            <a href="#" class="github-nav-item">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Admin</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="bar-left">
+                <h1 class="page-heading">Dashboard</h1>
+            </div>
+            <div class="bar-right">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-field" placeholder="Search or jump to..." />
+                    <kbd class="search-kbd">/</kbd>
+                </div>
+                <button class="bar-btn">📊</button>
+                <button class="bar-btn">⚙️</button>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Overview Section -->
+            <div class="overview-section">
+                <div class="overview-header">
+                    <h2 class="overview-title">Overview</h2>
+                    <span class="overview-meta">Last updated 2 minutes ago</span>
+                </div>
+
+                <div class="metrics-row">
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-icon">📦</span>
+                            <span class="metric-name">Resource Types</span>
+                        </div>
+                        <div class="metric-value">247</div>
+                        <div class="metric-footer">
+                            <span class="metric-badge success">+12</span>
+                            <span class="metric-text">this month</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-icon">🌐</span>
+                            <span class="metric-name">Locations</span>
+                        </div>
+                        <div class="metric-value">60</div>
+                        <div class="metric-footer">
+                            <span class="metric-badge neutral">Global</span>
+                            <span class="metric-text">coverage</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-icon">✓</span>
+                            <span class="metric-name">Generated</span>
+                        </div>
+                        <div class="metric-value">1,234</div>
+                        <div class="metric-footer">
+                            <span class="metric-badge success">+45</span>
+                            <span class="metric-text">today</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-header">
+                            <span class="metric-icon">🏷️</span>
+                            <span class="metric-name">Custom</span>
+                        </div>
+                        <div class="metric-value">8</div>
+                        <div class="metric-footer">
+                            <span class="metric-badge neutral">Active</span>
+                            <span class="metric-text">components</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h3 class="panel-title">Quick Actions</h3>
+                </div>
+                <div class="panel-content">
+                    <div class="list-group">
+                        <a href="#" class="list-item">
+                            <div class="list-item-icon">⚡</div>
+                            <div class="list-item-content">
+                                <div class="list-item-title">Generate Resource Name</div>
+                                <div class="list-item-description">Create standardized Azure resource names</div>
+                            </div>
+                            <div class="list-item-arrow">→</div>
+                        </a>
+
+                        <a href="#" class="list-item">
+                            <div class="list-item-icon">⚙️</div>
+                            <div class="list-item-content">
+                                <div class="list-item-title">Configure Components</div>
+                                <div class="list-item-description">Manage naming components and settings</div>
+                            </div>
+                            <div class="list-item-arrow">→</div>
+                        </a>
+
+                        <a href="#" class="list-item">
+                            <div class="list-item-icon">📖</div>
+                            <div class="list-item-content">
+                                <div class="list-item-title">View Reference</div>
+                                <div class="list-item-description">Browse Azure naming documentation</div>
+                            </div>
+                            <div class="list-item-arrow">→</div>
+                        </a>
+
+                        <a href="#" class="list-item">
+                            <div class="list-item-icon">💾</div>
+                            <div class="list-item-content">
+                                <div class="list-item-title">Export Configuration</div>
+                                <div class="list-item-description">Backup your naming tool settings</div>
+                            </div>
+                            <div class="list-item-arrow">→</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h3 class="panel-title">Recent Activity</h3>
+                    <a href="#" class="panel-link">View all →</a>
+                </div>
+                <div class="panel-content">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <span class="timeline-title">Generated name for Storage Account</span>
+                                    <span class="timeline-time">2m</span>
+                                </div>
+                                <div class="timeline-detail">
+                                    <code class="code-inline">stprodeastus001</code>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <span class="timeline-title">Updated resource type configuration</span>
+                                    <span class="timeline-time">1h</span>
+                                </div>
+                                <div class="timeline-detail">Added Azure Container Apps</div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <span class="timeline-title">Generated name for Virtual Machine</span>
+                                    <span class="timeline-time">3h</span>
+                                </div>
+                                <div class="timeline-detail">
+                                    <code class="code-inline">vm-prod-eastus-web-001</code>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-header">
+                                    <span class="timeline-title">Configuration backup created</span>
+                                    <span class="timeline-time">5h</span>
+                                </div>
+                                <div class="timeline-detail">Full system backup completed</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<style>
+    .design-github * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .design-github {
+        display: flex;
+        height: 100vh;
+        background-color: #ffffff;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica", "Arial", sans-serif;
+        color: #1f2328;
+    }
+
+    /* Sidebar */
+    .sidebar-github {
+        width: 256px;
+        background-color: #f6f8fa;
+        border-right: 1px solid #d1d9e0;
+        display: flex;
+        flex-direction: column;
+        transition: width 0.2s ease;
+        flex-shrink: 0;
+        position: relative;
+    }
+
+    .sidebar-github.collapsed {
+        width: 64px;
+    }
+
+    .sidebar-github.collapsed .logo-text,
+    .sidebar-github.collapsed .nav-label,
+    .sidebar-github.collapsed .section-label {
+        display: none;
+    }
+
+    .sidebar-header {
+        height: 64px;
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        border-bottom: 1px solid #d1d9e0;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .logo-mark {
+        font-size: 24px;
+        color: #0969da;
+    }
+
+    .logo-text {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1f2328;
+    }
+
+    .collapse-toggle {
+        position: absolute;
+        top: 20px;
+        right: 8px;
+        background: none;
+        border: 1px solid #d1d9e0;
+        border-radius: 4px;
+        padding: 4px 8px;
+        cursor: pointer;
+        color: #59636e;
+        font-size: 16px;
+        transition: all 0.15s ease;
+    }
+
+    .collapse-toggle:hover {
+        background-color: #f3f4f6;
+        border-color: #afb8c1;
+    }
+
+    .nav-section {
+        padding: 8px;
+    }
+
+    .section-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #59636e;
+        padding: 8px 12px 4px;
+        text-transform: capitalize;
+    }
+
+    .section-divider {
+        height: 1px;
+        background-color: #d1d9e0;
+        margin: 8px 12px;
+    }
+
+    .github-nav-item {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        margin: 1px 0;
+        color: #1f2328;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: background-color 0.15s ease;
+        gap: 10px;
+    }
+
+    .github-nav-item:hover {
+        background-color: #e7edf4;
+    }
+
+    .github-nav-item.active {
+        background-color: #e7edf4;
+        font-weight: 600;
+    }
+
+    .nav-icon {
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
+    /* Main Container */
+    .main-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        background-color: #ffffff;
+    }
+
+    .top-bar {
+        height: 64px;
+        border-bottom: 1px solid #d1d9e0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        background-color: #ffffff;
+        flex-shrink: 0;
+    }
+
+    .page-heading {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1f2328;
+    }
+
+    .bar-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border: 1px solid #d1d9e0;
+        border-radius: 6px;
+        background-color: #f6f8fa;
+        min-width: 280px;
+        transition: all 0.15s ease;
+    }
+
+    .search-box:focus-within {
+        background-color: #ffffff;
+        border-color: #0969da;
+    }
+
+    .search-icon {
+        font-size: 14px;
+        color: #59636e;
+    }
+
+    .search-field {
+        flex: 1;
+        border: none;
+        background: none;
+        font-size: 14px;
+        color: #1f2328;
+        outline: none;
+    }
+
+    .search-field::placeholder {
+        color: #59636e;
+    }
+
+    .search-kbd {
+        padding: 2px 6px;
+        border: 1px solid #d1d9e0;
+        border-radius: 4px;
+        font-size: 12px;
+        color: #59636e;
+        background-color: #ffffff;
+        font-family: monospace;
+    }
+
+    .bar-btn {
+        width: 36px;
+        height: 36px;
+        border: 1px solid #d1d9e0;
+        background-color: #f6f8fa;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        transition: all 0.15s ease;
+    }
+
+    .bar-btn:hover {
+        background-color: #e7edf4;
+        border-color: #afb8c1;
+    }
+
+    /* Content Area */
+    .content-area {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+    }
+
+    /* Overview Section */
+    .overview-section {
+        margin-bottom: 24px;
+    }
+
+    .overview-header {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .overview-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1f2328;
+    }
+
+    .overview-meta {
+        font-size: 13px;
+        color: #59636e;
+    }
+
+    .metrics-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+    }
+
+    .metric-card {
+        background-color: #ffffff;
+        border: 1px solid #d1d9e0;
+        border-radius: 6px;
+        padding: 16px;
+        transition: border-color 0.15s ease;
+    }
+
+    .metric-card:hover {
+        border-color: #afb8c1;
+    }
+
+    .metric-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .metric-icon {
+        font-size: 16px;
+    }
+
+    .metric-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: #59636e;
+    }
+
+    .metric-value {
+        font-size: 28px;
+        font-weight: 600;
+        color: #1f2328;
+        margin-bottom: 8px;
+    }
+
+    .metric-footer {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .metric-badge {
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .metric-badge.success {
+        background-color: #d1f4e0;
+        color: #1a7f37;
+    }
+
+    .metric-badge.neutral {
+        background-color: #e7edf4;
+        color: #0969da;
+    }
+
+    .metric-text {
+        font-size: 13px;
+        color: #59636e;
+    }
+
+    /* Panel */
+    .panel {
+        background-color: #ffffff;
+        border: 1px solid #d1d9e0;
+        border-radius: 6px;
+        margin-bottom: 24px;
+        overflow: hidden;
+    }
+
+    .panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        border-bottom: 1px solid #d1d9e0;
+        background-color: #f6f8fa;
+    }
+
+    .panel-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1f2328;
+    }
+
+    .panel-link {
+        font-size: 13px;
+        color: #0969da;
+        text-decoration: none;
+        transition: color 0.15s ease;
+    }
+
+    .panel-link:hover {
+        color: #0550ae;
+        text-decoration: underline;
+    }
+
+    .panel-content {
+        padding: 8px;
+    }
+
+    /* List Group */
+    .list-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+    }
+
+    .list-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: background-color 0.15s ease;
+    }
+
+    .list-item:hover {
+        background-color: #f6f8fa;
+    }
+
+    .list-item-icon {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f6f8fa;
+        border-radius: 6px;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
+    .list-item-content {
+        flex: 1;
+    }
+
+    .list-item-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1f2328;
+        margin-bottom: 2px;
+    }
+
+    .list-item-description {
+        font-size: 13px;
+        color: #59636e;
+    }
+
+    .list-item-arrow {
+        font-size: 16px;
+        color: #afb8c1;
+        transition: transform 0.15s ease;
+    }
+
+    .list-item:hover .list-item-arrow {
+        transform: translateX(4px);
+    }
+
+    /* Timeline */
+    .timeline {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .timeline-item {
+        display: flex;
+        gap: 12px;
+        padding: 12px;
+        position: relative;
+    }
+
+    .timeline-item:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        left: 27px;
+        top: 40px;
+        bottom: -12px;
+        width: 2px;
+        background-color: #d1d9e0;
+    }
+
+    .timeline-marker {
+        width: 8px;
+        height: 8px;
+        background-color: #0969da;
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        margin-top: 6px;
+        flex-shrink: 0;
+        z-index: 1;
+    }
+
+    .timeline-content {
+        flex: 1;
+    }
+
+    .timeline-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 4px;
+    }
+
+    .timeline-title {
+        font-size: 14px;
+        color: #1f2328;
+        font-weight: 500;
+    }
+
+    .timeline-time {
+        font-size: 12px;
+        color: #59636e;
+    }
+
+    .timeline-detail {
+        font-size: 13px;
+        color: #59636e;
+    }
+
+    .code-inline {
+        padding: 2px 6px;
+        background-color: #e7edf4;
+        border-radius: 3px;
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        color: #1f2328;
+    }
+</style>
+
+<script>
+    function toggleSidebarGithub() {
+        const sidebar = document.getElementById('sidebarGithub');
+        sidebar.classList.toggle('collapsed');
+        const icon = sidebar.querySelector('.toggle-icon');
+        icon.textContent = sidebar.classList.contains('collapsed') ? '»' : '«';
+    }
+</script>

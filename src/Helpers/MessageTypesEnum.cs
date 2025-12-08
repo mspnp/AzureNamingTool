@@ -1,4 +1,4 @@
-﻿namespace AzureNamingTool.Helpers
+namespace AzureNamingTool.Helpers
 {
     /// <summary>
     /// Represents the types of messages.
