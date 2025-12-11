@@ -41,6 +41,20 @@
         </div>
     </div>
 
+    <div class="modern-notification-danger" style="margin-bottom: 1rem;">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <div>
+            <strong>⚠️ CRITICAL - Azure Container Apps Users:</strong>
+            <p style="margin: 0.5rem 0 0 0;">
+                <strong>DO NOT migrate to SQLite</strong> if you are using <strong>Azure Container Apps with Azure File Share</strong> for persistent storage.
+                SQLite does not work with network file systems (Azure File Share uses SMB/CIFS) and will cause "database is locked" errors.
+            </p>
+            <p style="margin: 0.5rem 0 0 0;">
+                <strong>Keep using JSON (FileSystem)</strong> storage for Azure Container Apps deployments with File Share.
+            </p>
+        </div>
+    </div>
+
     @if (showMigrationStatus)
     {
         <div class="modern-notification-warning">
