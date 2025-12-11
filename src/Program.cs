@@ -290,17 +290,17 @@ if (File.Exists(settingsAppsettingsPath))
 else
 {
     // No settings/appsettings.json = Fresh install
-    // VerifyConfiguration will copy repository/appsettings.json with StorageProvider=SQLite
-    Console.WriteLine("[Storage] Fresh install detected - will use default (SQLite)");
+    // VerifyConfiguration will copy repository/appsettings.json with StorageProvider=FileSystem (default)
+    Console.WriteLine("[Storage] Fresh install detected - will use default (FileSystem)");
 }
 
 // Run VerifyConfiguration to ensure all config files exist
-// For fresh installs, this copies repository/appsettings.json → settings/appsettings.json (with StorageProvider=SQLite)
+// For fresh installs, this copies repository/appsettings.json → settings/appsettings.json (with StorageProvider=FileSystem)
 ConfigurationHelper.VerifyConfiguration(new StateContainer());
 
 // Read the configuration and use the StorageProvider value
 var siteConfig = ConfigurationHelper.GetConfigurationData();
-var provider = siteConfig.StorageProvider?.ToLower() ?? "sqlite";
+var provider = siteConfig.StorageProvider?.ToLower() ?? "filesystem";
 
 if (provider == "sqlite")
 {
