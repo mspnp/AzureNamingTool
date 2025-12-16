@@ -1,0 +1,55 @@
+@using AzureNamingTool.Models;
+
+<p>The following actions are available for managing configuration items:</p>
+
+<div class="modern-table-container mt-3">
+    <table class="modern-table">
+        <tbody>
+            <tr>
+                <td style="width: 120px;">
+                    <button type="button" class="modern-btn-success modern-btn-sm" title="Enable" disabled>
+                        <span class="oi oi-plus" aria-hidden="true"></span>
+                    </button>
+                </td>
+                <td>
+                    Enable the item.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button" class="modern-btn-dark modern-btn-sm" title="Disable" disabled>
+                        <span class="oi oi-ban" aria-hidden="true"></span>
+                    </button>
+                </td>
+                <td>
+                    Disable the item.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button" class="modern-btn-secondary modern-btn-sm" title="Edit" disabled>
+                        <span class="oi oi-pencil" aria-hidden="true"></span>
+                    </button>
+                </td>
+                <td>
+                    Edit the item.
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button" class="modern-btn-danger modern-btn-sm" title="Delete" disabled>
+                        <span class="oi oi-x" aria-hidden="true"></span>
+                    </button>
+                </td>
+                <td>
+                    Delete the item.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter] public ThemeInfo? theme { get; set; }
+    [Parameter] public bool admin { get; set; }
+}

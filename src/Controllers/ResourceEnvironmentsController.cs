@@ -1,12 +1,15 @@
-﻿using AzureNamingTool.Models;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+using AzureNamingTool.Models;
 using AzureNamingTool.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Asp.Versioning;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using AzureNamingTool.Services;
+using AzureNamingTool.Services.Interfaces;
 using AzureNamingTool.Attributes;
 
 namespace AzureNamingTool.Controllers
@@ -15,11 +18,24 @@ namespace AzureNamingTool.Controllers
     /// Controller for managing resource environments.
     /// </summary>
     [Route("api/[controller]")]
+    [ApiVersion("1.0")]
     [ApiController]
     [ApiKey]
+    [Produces("application/json")]
     public class ResourceEnvironmentsController : ControllerBase
     {
+        private readonly IResourceEnvironmentService _resourceEnvironmentService;
+        private readonly IAdminLogService _adminLogService;
         private ServiceResponse serviceResponse = new();
+
+        public ResourceEnvironmentsController(
+            IResourceEnvironmentService resourceEnvironmentService,
+            IAdminLogService adminLogService)
+        {
+            _resourceEnvironmentService = resourceEnvironmentService;
+            _adminLogService = adminLogService;
+        }
+
         // GET: api/<ResourceEnvironmentsController>
         /// <summary>
         /// This function will return the environments data. 
@@ -30,7 +46,7 @@ namespace AzureNamingTool.Controllers
         {
             try
             {
-                serviceResponse = await ResourceEnvironmentService.GetItems();
+                serviceResponse = await _resourceEnvironmentService.GetItemsAsync();
                 if (serviceResponse.Success)
                 {
                     return Ok(serviceResponse.ResponseObject);
@@ -42,7 +58,7 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
@@ -58,7 +74,7 @@ namespace AzureNamingTool.Controllers
         {
             try
             {
-                serviceResponse = await ResourceEnvironmentService.GetItem(id);
+                serviceResponse = await _resourceEnvironmentService.GetItemAsync(id);
                 if (serviceResponse.Success)
                 {
                     return Ok(serviceResponse.ResponseObject);
@@ -70,7 +86,7 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
@@ -86,10 +102,10 @@ namespace AzureNamingTool.Controllers
         {
             try
             {
-                serviceResponse = await ResourceEnvironmentService.PostItem(item);
+                serviceResponse = await _resourceEnvironmentService.PostItemAsync(item);
                 if (serviceResponse.Success)
                 {
-                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Environment (" + item.Name + ") added/updated." });
+                    await _adminLogService.PostItemAsync(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Environment (" + item.Name + ") added/updated." });
                     CacheHelper.InvalidateCacheObject("ResourceEnvironment");
                     return Ok(serviceResponse.ResponseObject);
                 }
@@ -100,7 +116,7 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
@@ -117,10 +133,10 @@ namespace AzureNamingTool.Controllers
         {
             try
             {
-                serviceResponse = await ResourceEnvironmentService.PostConfig(items);
+                serviceResponse = await _resourceEnvironmentService.PostConfigAsync(items);
                 if (serviceResponse.Success)
                 {
-                    AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Environments added/updated." });
+                    await _adminLogService.PostItemAsync(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Environments added/updated." });
                     CacheHelper.InvalidateCacheObject("ResourceEnvironment");
                     return Ok(serviceResponse.ResponseObject);
                 }
@@ -131,7 +147,7 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
@@ -148,14 +164,14 @@ namespace AzureNamingTool.Controllers
             try
             {
                 // Get the item details
-                serviceResponse = await ResourceEnvironmentService.GetItem(id);
+                serviceResponse = await _resourceEnvironmentService.GetItemAsync(id);
                 if (serviceResponse.Success)
                 {
                     ResourceEnvironment item = (ResourceEnvironment)serviceResponse.ResponseObject!;
-                    serviceResponse = await ResourceEnvironmentService.DeleteItem(id);
+                    serviceResponse = await _resourceEnvironmentService.DeleteItemAsync(id);
                     if (serviceResponse.Success)
                     {
-                        AdminLogService.PostItem(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Environment (" + item.Name + ") deleted." });
+                        await _adminLogService.PostItemAsync(new AdminLogMessage() { Source = "API", Title = "INFORMATION", Message = "Resource Environment (" + item.Name + ") deleted." });
                         CacheHelper.InvalidateCacheObject("ResourceEnvironment");
                         return Ok("Resource Environment (" + item.Name + ") deleted.");
                     }
@@ -171,9 +187,11 @@ namespace AzureNamingTool.Controllers
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 return BadRequest(ex);
             }
         }
     }
 }
+
+#pragma warning restore CS1591

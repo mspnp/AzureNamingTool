@@ -1,24 +1,38 @@
-﻿using AzureNamingTool.Helpers;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+using AzureNamingTool.Helpers;
 using AzureNamingTool.Models;
+using AzureNamingTool.Repositories;
+using AzureNamingTool.Repositories.Interfaces;
+using AzureNamingTool.Services.Interfaces;
 
 namespace AzureNamingTool.Services
 {
     /// <summary>
     /// Service for managing Resource Unit/Department
     /// </summary>
-    public class ResourceUnitDeptService
+    public class ResourceUnitDeptService : IResourceUnitDeptService
     {
+        private readonly IConfigurationRepository<ResourceUnitDept> _repository;
+        private readonly IAdminLogService _adminLogService;
+
+        public ResourceUnitDeptService(
+            IConfigurationRepository<ResourceUnitDept> repository,
+            IAdminLogService adminLogService)
+        {
+            _repository = repository;
+            _adminLogService = adminLogService;
+        }
         /// <summary>
         /// Retrieves a list of resource unit/departments.
         /// </summary>
         /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the list of resource unit/departments if found, or an error message if not found.</returns>
-        public static async Task<ServiceResponse> GetItems()
+        public async Task<ServiceResponse> GetItemsAsync(bool admin = true)
         {
             ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
-                var items = await ConfigurationHelper.GetList<ResourceUnitDept>();
+                var items = (await _repository.GetAllAsync()).ToList();
                 if (GeneralHelper.IsNotNull(items))
                 {
                     serviceResponse.ResponseObject = items.OrderBy(x => x.SortOrder).ToList();
@@ -31,7 +45,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.Success = false;
                 serviceResponse.ResponseObject = ex;
             }
@@ -43,13 +57,13 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="id">The ID of the item to retrieve.</param>
         /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the retrieved item if found, or an error message if not found.</returns>
-        public static async Task<ServiceResponse> GetItem(int id)
+        public async Task<ServiceResponse> GetItemAsync(int id)
         {
             ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
-                var items = await ConfigurationHelper.GetList<ResourceUnitDept>();
+                var items = (await _repository.GetAllAsync()).ToList();
                 if (GeneralHelper.IsNotNull(items))
                 {
                     var item = items.Find(x => x.Id == id);
@@ -70,7 +84,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.Success = false;
                 serviceResponse.ResponseObject = ex;
             }
@@ -82,7 +96,7 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="item">The item to be added or updated.</param>
         /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the success status of the operation.</returns>
-        public static async Task<ServiceResponse> PostItem(ResourceUnitDept item)
+        public async Task<ServiceResponse> PostItemAsync(ResourceUnitDept item)
         {
             ServiceResponse serviceResponse = new();
             try
@@ -96,7 +110,7 @@ namespace AzureNamingTool.Services
                 }
 
                 // Get list of items
-                var items = await ConfigurationHelper.GetList<ResourceUnitDept>();
+                var items = (await _repository.GetAllAsync()).ToList();
 
                 if (GeneralHelper.IsNotNull(items))
                 {
@@ -171,9 +185,9 @@ namespace AzureNamingTool.Services
                     }
 
                     // Write items to file
-                    await ConfigurationHelper.WriteList<ResourceUnitDept>(items);
+                    await _repository.SaveAllAsync(items);
                     // Get the item
-                    var newitem = ResourceUnitDeptService.GetItem((int)item.Id).Result.ResponseObject;
+                    var newitem = (await GetItemAsync((int)item.Id)).ResponseObject;
                     serviceResponse.ResponseObject = newitem;
                     serviceResponse.Success = true;
                 }
@@ -184,7 +198,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.ResponseObject = ex;
                 serviceResponse.Success = false;
             }
@@ -196,13 +210,13 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="id">The ID of the item to delete.</param>
         /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the success status of the operation.</returns>
-        public static async Task<ServiceResponse> DeleteItem(int id)
+        public async Task<ServiceResponse> DeleteItemAsync(int id)
         {
             ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
-                var items = await ConfigurationHelper.GetList<ResourceUnitDept>();
+                var items = (await _repository.GetAllAsync()).ToList();
                 if (GeneralHelper.IsNotNull(items))
                 {
                     // Get the specified item
@@ -221,7 +235,7 @@ namespace AzureNamingTool.Services
                         }
 
                         // Write items to file
-                        await ConfigurationHelper.WriteList<ResourceUnitDept>(items);
+                        await _repository.SaveAllAsync(items);
                         serviceResponse.Success = true;
                     }
                     else
@@ -236,7 +250,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.ResponseObject = ex;
                 serviceResponse.Success = false;
             }
@@ -248,7 +262,7 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="items">The list of resource unit/departments to be configured.</param>
         /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The <see cref="ServiceResponse"/> contains the success status of the operation.</returns>
-        public static async Task<ServiceResponse> PostConfig(List<ResourceUnitDept> items)
+        public async Task<ServiceResponse> PostConfigAsync(List<ResourceUnitDept> items)
         {
             ServiceResponse serviceResponse = new();
             try
@@ -275,16 +289,39 @@ namespace AzureNamingTool.Services
                 }
 
                 // Write items to file
-                await ConfigurationHelper.WriteList<ResourceUnitDept>(newitems);
+                await _repository.SaveAllAsync(newitems);
                 serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.ResponseObject = ex;
                 serviceResponse.Success = false;
             }
             return serviceResponse;
         }
+
+        /// <summary>
+        /// Updates the sort order of resource unit/depts without resetting IDs or normalizing
+        /// </summary>
+        /// <param name="items">List of resource unit/depts with updated sort orders</param>
+        /// <returns>ServiceResponse indicating success or failure</returns>
+        public async Task<ServiceResponse> UpdateSortOrderAsync(List<ResourceUnitDept> items)
+        {
+            ServiceResponse serviceResponse = new();
+            try
+            {
+                await _repository.SaveAllAsync(items);
+                serviceResponse.Success = true;
+            }
+            catch (Exception ex)
+            {
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                serviceResponse.Success = false;
+                serviceResponse.ResponseObject = ex;
+            }
+            return serviceResponse;
+        }
     }
 }
+#pragma warning restore CS1591

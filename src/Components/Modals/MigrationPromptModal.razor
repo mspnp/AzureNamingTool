@@ -1,0 +1,172 @@
+@using AzureNamingTool.Helpers
+@using AzureNamingTool.Models
+@using AzureNamingTool.Services
+@inject StateContainer state
+@inject IToastService toastService
+@inject ILogger<MigrationPromptModal> Logger
+@inject IStorageMigrationService MigrationService
+
+<div class="modern-modal-content">
+    <h3 style="margin-bottom: 1rem;"><i class="bi bi-database-gear"></i> Upgrade to SQLite Storage</h3>
+    
+    <p style="margin-bottom: 1rem;">
+        A new SQLite storage provider is now available, offering improved performance and reliability.
+    </p>
+
+    <div class="modern-flex modern-gap-3" style="margin-bottom: 1rem;">
+        <div class="flex-1">
+            <h4><i class="bi bi-file-earmark-text"></i> Current: JSON Files</h4>
+            <ul class="modern-text-sm">
+                <li>Simple file-based storage</li>
+                <li>Works well for single-user scenarios</li>
+                <li>May have concurrency limitations</li>
+            </ul>
+        </div>
+        <div class="flex-1">
+            <h4><i class="bi bi-database"></i> New: SQLite Database</h4>
+            <ul class="modern-text-sm" style="color: #10b981;">
+                <li>✓ Better performance for large datasets</li>
+                <li>✓ Improved multi-user concurrency</li>
+                <li>✓ ACID transactions (data integrity)</li>
+                <li>✓ Still embedded (no external server)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="modern-notification-info" style="margin-bottom: 1rem;">
+        <i class="bi bi-info-circle"></i>
+        <div>
+            <strong>Safe Migration:</strong> Your JSON files will be backed up before migration.
+            You can rollback if needed from the Admin page.
+        </div>
+    </div>
+
+    <div class="modern-notification-danger" style="margin-bottom: 1rem;">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <div>
+            <strong>⚠️ CRITICAL - Azure Container Apps Users:</strong>
+            <p style="margin: 0.5rem 0 0 0;">
+                <strong>DO NOT migrate to SQLite</strong> if you are using <strong>Azure Container Apps with Azure File Share</strong> for persistent storage.
+                SQLite does not work with network file systems (Azure File Share uses SMB/CIFS) and will cause "database is locked" errors.
+            </p>
+            <p style="margin: 0.5rem 0 0 0;">
+                <strong>Keep using JSON (FileSystem)</strong> storage for Azure Container Apps deployments with File Share.
+            </p>
+        </div>
+    </div>
+
+    @if (showMigrationStatus)
+    {
+        <div class="modern-notification-warning">
+            <i class="bi bi-hourglass-split"></i>
+            <div>
+                <strong>Migration in progress...</strong>
+                <div class="modern-progress-bar mt-2">
+                    <div class="modern-progress-fill animated"></div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (!String.IsNullOrEmpty(errorMessage))
+    {
+        <div class="modern-notification-danger">
+            <i class="bi bi-exclamation-triangle"></i>
+            <strong>Error:</strong> @errorMessage
+        </div>
+    }
+</div>
+
+<div class="modern-modal-footer">
+    <button type="button" class="modern-btn-primary" @onclick="MigrateNow" disabled="@isProcessing">
+        <i class="bi bi-arrow-right-circle"></i> Migrate Now
+    </button>
+    <button type="button" class="modern-btn-secondary" @onclick="KeepJSON" disabled="@isProcessing">
+        <i class="bi bi-file-earmark-text"></i> Keep Using JSON
+    </button>
+    <button type="button" class="modern-btn-secondary" @onclick="RemindLater" disabled="@isProcessing">
+        <i class="bi bi-clock"></i> Remind Me Later
+    </button>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<MigrationChoice> OnClose { get; set; }
+
+    [CascadingParameter]
+    BlazoredModalInstance ModalInstance { get; set; } = new();
+
+    private bool isProcessing = false;
+    private bool showMigrationStatus = false;
+    private string errorMessage = string.Empty;
+
+    private async Task MigrateNow()
+    {
+        try
+        {
+            isProcessing = true;
+            showMigrationStatus = true;
+            errorMessage = string.Empty;
+            StateHasChanged();
+
+            // Perform the migration
+            var result = await MigrationService.MigrateToSQLiteAsync();
+
+            if (result.Success)
+            {
+                // Update configuration to use SQLite
+                var config = ConfigurationHelper.GetConfigurationData();
+                config.StorageProvider = "SQLite";
+                await ConfigurationHelper.UpdateSettings(config);
+
+                toastService.ShowSuccess("Migration completed successfully! Please restart the application.");
+                await ModalInstance.CloseAsync(ModalResult.Ok(MigrationChoice.Migrated));
+                await OnClose.InvokeAsync(MigrationChoice.Migrated);
+            }
+            else
+            {
+                errorMessage = $"Migration failed: {result.Message}";
+                Logger.LogError("Migration failed: {Message}. Errors: {Errors}", result.Message, string.Join(", ", result.Errors));
+                isProcessing = false;
+                showMigrationStatus = false;
+                StateHasChanged();
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Unexpected error during migration: {ex.Message}";
+            Logger.LogError(ex, "Unexpected error during migration");
+            isProcessing = false;
+            showMigrationStatus = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task KeepJSON()
+    {
+        // User wants to keep using JSON - update configuration
+        var config = ConfigurationHelper.GetConfigurationData();
+        config.MigrationPromptDismissed = "True";
+        config.StorageProvider = "FileSystem";
+        await ConfigurationHelper.UpdateSettings(config);
+
+        toastService.ShowInfo("Continuing with JSON file storage.");
+        await ModalInstance.CloseAsync(ModalResult.Ok(MigrationChoice.KeepJSON));
+        await OnClose.InvokeAsync(MigrationChoice.KeepJSON);
+    }
+
+    private async Task RemindLater()
+    {
+        // Don't update MigrationPromptDismissed - user will see prompt again next time
+        toastService.ShowInfo("You can migrate from the Admin page anytime.");
+        await ModalInstance.CloseAsync(ModalResult.Ok(MigrationChoice.RemindLater));
+        await OnClose.InvokeAsync(MigrationChoice.RemindLater);
+    }
+
+    public enum MigrationChoice
+    {
+        Migrated,
+        KeepJSON,
+        RemindLater
+    }
+}

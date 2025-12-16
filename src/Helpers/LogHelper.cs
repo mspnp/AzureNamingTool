@@ -1,4 +1,4 @@
-﻿using AzureNamingTool.Models;
+using AzureNamingTool.Models;
 using System.Text.Json;
 
 namespace AzureNamingTool.Helpers

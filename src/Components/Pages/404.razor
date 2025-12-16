@@ -1,6 +1,46 @@
-﻿@page "/404"
-<img src="/images/runnoft.png" />
-<p role="alert">Whoa, it looks like that page doesn't exist! Please check the URL and try again!</p>
+@page "/404"
+@using AzureNamingTool.Helpers
+
+<PageTitle>404 - Page Not Found | Azure Naming Tool</PageTitle>
+
+<div class="container-fluid mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body text-center py-5">
+                    <div class="mb-4">
+                        <i class="bi bi-compass display-1 text-muted"></i>
+                    </div>
+                    <h1 class="display-4 fw-bold text-primary mb-3">404</h1>
+                    <h2 class="h4 mb-4">Page Not Found</h2>
+                    <p class="lead text-muted mb-4">
+                        This page seems to have wandered off... much like a resource without a proper naming convention.
+                    </p>
+                    <p class="text-muted mb-4">
+                        The page you're looking for doesn't exist or may have been moved. Please check the URL and try again.
+                    </p>
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <a href="/" class="btn btn-primary">
+                            <i class="bi bi-house-door me-2"></i>Go to Home
+                        </a>
+                        <a href="/reference" class="btn btn-outline-secondary">
+                            <i class="bi bi-search me-2"></i>Generate Names
+                        </a>
+                        <a href="/configuration" class="btn btn-outline-secondary">
+                            <i class="bi bi-gear me-2"></i>Configuration
+                        </a>
+                    </div>
+                    <hr class="my-4" />
+                    <p class="small text-muted mb-0">
+                        <i class="bi bi-lightbulb me-1"></i>
+                        Need help? Check the <a href="https://github.com/mspnp/AzureNamingTool/wiki" target="_blank" rel="noopener">documentation</a> or <a href="https://github.com/mspnp/AzureNamingTool/issues" target="_blank" rel="noopener">report an issue</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @code {
 
 }

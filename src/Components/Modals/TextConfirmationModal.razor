@@ -1,0 +1,126 @@
+@using AzureNamingTool.Helpers
+@using AzureNamingTool.Models
+@using AzureNamingTool.Components
+@inject StateContainer state
+@inject ProtectedSessionStorage session
+@inject IToastService toastService
+@inject ILogger<TextConfirmationModal> Logger
+
+<div class="modern-modal-content">
+    @if (GeneralHelper.IsNotNull(message))
+    {
+        <div style="margin-bottom: 1rem;">
+            @((MarkupString)message)
+        </div>
+    }
+    
+    <div class="modern-notification-warning">
+        <i class="bi bi-exclamation-triangle"></i>
+        <div>
+            <strong>Type the following text to confirm:</strong>
+            <div style="margin-top: 0.5rem;">
+                <code class="modern-code-block">@requiredText</code>
+            </div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 1rem;">
+        <label for="confirmationText" class="modern-form-label">Confirmation Text</label>
+        <input 
+            id="confirmationText" 
+            type="text" 
+            class="modern-form-input @(showError ? "modern-input-error" : "")" 
+            @bind="userInput" 
+            @bind:event="oninput"
+            @onkeyup="HandleKeyPress"
+            placeholder="Type the text above"
+            autofocus />
+        @if (showError)
+        {
+            <div class="modern-error-message">
+                The text you entered does not match. Please type exactly: <strong>@requiredText</strong>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="modern-modal-footer">
+    <button 
+        type="button" 
+        class="modern-btn-success" 
+        @onclick="Confirm"
+        disabled="@(!IsTextMatching)">
+        OK
+    </button>
+    <button type="button" class="modern-btn-secondary" @onclick="Cancel">Cancel</button>
+</div>
+
+@code {
+    [Parameter]
+    public EventCallback<bool> OnClose { get; set; }
+    
+    [CascadingParameter] 
+    BlazoredModalInstance ModalInstance { get; set; } = new();
+    
+    [Parameter] 
+    public ThemeInfo theme { get; set; } = new();
+
+    [Parameter] 
+    public string title { get; set; } = String.Empty;
+    
+    [Parameter] 
+    public string message { get; set; } = String.Empty;
+    
+    [Parameter] 
+    public string headerstyle { get; set; } = String.Empty;
+    
+    [Parameter]
+    public string requiredText { get; set; } = "CONFIRM";
+    
+    [Parameter]
+    public bool caseSensitive { get; set; } = true;
+
+    private string userInput = String.Empty;
+    private bool showError = false;
+
+    private bool IsTextMatching
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(userInput))
+                return false;
+                
+            if (caseSensitive)
+                return userInput == requiredText;
+            else
+                return userInput.Equals(requiredText, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    private void HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && IsTextMatching)
+        {
+            _ = Confirm();
+        }
+    }
+
+    async Task Confirm()
+    {
+        if (IsTextMatching)
+        {
+            showError = false;
+            await ModalInstance.CloseAsync(ModalResult.Ok(true));
+        }
+        else
+        {
+            showError = true;
+            StateHasChanged();
+        }
+    }
+
+    async Task Cancel()
+    {
+        await ModalInstance.CancelAsync();
+    }
+}

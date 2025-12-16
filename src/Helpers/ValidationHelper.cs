@@ -1,5 +1,6 @@
-﻿using AzureNamingTool.Models;
+using AzureNamingTool.Models;
 using AzureNamingTool.Services;
+using AzureNamingTool.Services.Interfaces;
 using System.Text.RegularExpressions;
 using System.Text;
 using System.Configuration;
@@ -30,11 +31,12 @@ namespace AzureNamingTool.Helpers
         /// <summary>
         /// Validates a short name.
         /// </summary>
+        /// <param name="resourceComponentService">The resource component service for retrieving component validation rules.</param>
         /// <param name="type">The type of the short name.</param>
         /// <param name="value">The value of the short name.</param>
         /// <param name="parentcomponent">The parent component of the short name (optional).</param>
         /// <returns>True if the short name is valid, otherwise false.</returns>
-        public static async Task<bool> ValidateShortName(string type, string value, string? parentcomponent = null)
+        public static async Task<bool> ValidateShortName(IResourceComponentService resourceComponentService, string type, string value, string? parentcomponent = null)
         {
             bool valid = false;
             try
@@ -44,7 +46,7 @@ namespace AzureNamingTool.Helpers
                 ServiceResponse serviceResponse = new();
 
                 // Get the current components
-                serviceResponse = await ResourceComponentService.GetItems(true);
+                serviceResponse = await resourceComponentService.GetItemsAsync(true);
                 if (serviceResponse.Success)
                 {
                     if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
@@ -78,9 +80,8 @@ namespace AzureNamingTool.Helpers
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
             }
             return valid;
         }
@@ -99,6 +100,17 @@ namespace AzureNamingTool.Helpers
             {
                 bool valid = true;
                 StringBuilder sbMessage = new();
+
+                // Check if resourceType has Regx property populated
+                if (String.IsNullOrEmpty(resourceType.Regx))
+                {
+                    sbMessage.Append("Resource Type validation failed - Regex pattern is not configured. Please reset configuration to repository defaults.");
+                    sbMessage.Append(Environment.NewLine);
+                    response.Message = sbMessage.ToString();
+                    response.Valid = false;
+                    response.Name = name;
+                    return response;
+                }
 
                 // Check if the resource type only allows lowercase
                 if (!resourceType.Regx.Contains("A-Z"))
@@ -256,9 +268,8 @@ namespace AzureNamingTool.Helpers
                 response.Name = name;
                 response.Message = sbMessage.ToString();
             }
-            catch (Exception ex)
-            {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+            catch (Exception) {
+                // TODO: Modernize helper - AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 response.Valid = false;
                 response.Name = name;
                 response.Message = "There was a problem validating the name.";

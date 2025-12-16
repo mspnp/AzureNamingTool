@@ -1,5 +1,9 @@
-﻿using AzureNamingTool.Helpers;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
+using AzureNamingTool.Helpers;
 using AzureNamingTool.Models;
+using AzureNamingTool.Repositories;
+using AzureNamingTool.Repositories.Interfaces;
+using AzureNamingTool.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.ComponentModel.Design;
@@ -14,20 +18,37 @@ namespace AzureNamingTool.Services
     /// <summary>
     /// Service for managing Resource Types
     /// </summary>
-    public class ResourceTypeService
+    public class ResourceTypeService : IResourceTypeService
     {
+        private readonly IConfigurationRepository<ResourceType> _repository;
+        private readonly IAdminLogService _adminLogService;
+        private readonly IResourceConfigurationCoordinator _coordinator;
+        private readonly IResourceDelimiterService _resourceDelimiterService;
+
+        public ResourceTypeService(
+            IConfigurationRepository<ResourceType> repository,
+            IAdminLogService adminLogService,
+            IResourceConfigurationCoordinator coordinator,
+            IResourceDelimiterService resourceDelimiterService)
+        {
+            _repository = repository;
+            _adminLogService = adminLogService;
+            _coordinator = coordinator;
+            _resourceDelimiterService = resourceDelimiterService;
+        }
+
         /// <summary>
         /// Retrieves a list of resource types.
         /// </summary>
         /// <param name="admin">Flag indicating whether to include all resource types or only enabled ones for admin.</param>
         /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The service response contains the list of resource types.</returns>
-        public static async Task<ServiceResponse> GetItems(bool admin = true)
+        public async Task<ServiceResponse> GetItemsAsync(bool admin = true)
         {
             ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
-                var items = await ConfigurationHelper.GetList<ResourceType>();
+                var items = (await _repository.GetAllAsync()).ToList();
                 if (GeneralHelper.IsNotNull(items))
                 {
                     if (!admin)
@@ -47,7 +68,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.Success = false;
                 serviceResponse.ResponseObject = ex;
             }
@@ -59,13 +80,13 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="id">The ID of the resource type.</param>
         /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The service response contains the resource type.</returns>
-        public static async Task<ServiceResponse> GetItem(int id)
+        public async Task<ServiceResponse> GetItemAsync(int id)
         {
             ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
-                var items = await ConfigurationHelper.GetList<ResourceType>();
+                var items = (await _repository.GetAllAsync()).ToList();
                 if (GeneralHelper.IsNotNull(items))
                 {
                     var item = items.Find(x => x.Id == id);
@@ -86,7 +107,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.Success = false;
                 serviceResponse.ResponseObject = ex;
             }
@@ -98,7 +119,7 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="item">The resource type to add or update.</param>
         /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The service response contains the result of the operation.</returns>
-        public static async Task<ServiceResponse> PostItem(ResourceType item)
+        public async Task<ServiceResponse> PostItemAsync(ResourceType item)
         {
             ServiceResponse serviceResponse = new();
             try
@@ -112,7 +133,7 @@ namespace AzureNamingTool.Services
                 }
 
                 // Get list of items
-                var items = await ConfigurationHelper.GetList<ResourceType>();
+                var items = (await _repository.GetAllAsync()).ToList();
                 if (GeneralHelper.IsNotNull(items))
                 {
                     // Set the new id
@@ -146,9 +167,9 @@ namespace AzureNamingTool.Services
                     }
 
                     // Write items to file
-                    await ConfigurationHelper.WriteList<ResourceType>([.. items.OrderBy(x => x.Id)]);
+                    await _repository.SaveAllAsync([.. items.OrderBy(x => x.Id)]);
                     // Get the item
-                    var newitem = ResourceTypeService.GetItem((int)item.Id).Result.ResponseObject;
+                    var newitem = (await GetItemAsync((int)item.Id)).ResponseObject;
                     serviceResponse.ResponseObject = newitem;
                     serviceResponse.Success = true;
                 }
@@ -159,7 +180,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.ResponseObject = ex;
                 serviceResponse.Success = false;
             }
@@ -171,13 +192,13 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="id">The ID of the resource type to delete.</param>
         /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The service response indicates the success of the operation.</returns>
-        public static async Task<ServiceResponse> DeleteItem(int id)
+        public async Task<ServiceResponse> DeleteItemAsync(int id)
         {
             ServiceResponse serviceResponse = new();
             try
             {
                 // Get list of items
-                var items = await ConfigurationHelper.GetList<ResourceType>();
+                var items = (await _repository.GetAllAsync()).ToList();
                 if (GeneralHelper.IsNotNull(items))
                 {
                     // Get the specified item
@@ -188,7 +209,7 @@ namespace AzureNamingTool.Services
                         items.Remove(item);
 
                         // Write items to file
-                        await ConfigurationHelper.WriteList<ResourceType>(items);
+                        await _repository.SaveAllAsync(items);
                         serviceResponse.Success = true;
                     }
                     else
@@ -203,7 +224,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.ResponseObject = ex;
                 serviceResponse.Success = false;
             }
@@ -215,7 +236,7 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="items">The resource type to add or update.</param>
         /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The service response contains the result of the operation.</returns>
-        public static async Task<ServiceResponse> PostConfig(List<ResourceType> items)
+        public async Task<ServiceResponse> PostConfigAsync(List<ResourceType> items)
         {
             ServiceResponse serviceResponse = new();
             try
@@ -233,12 +254,12 @@ namespace AzureNamingTool.Services
                 }
 
                 // Write items to file
-                await ConfigurationHelper.WriteList<ResourceType>(newitems);
+                await _repository.SaveAllAsync(newitems);
                 serviceResponse.Success = true;
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.Success = false;
                 serviceResponse.ResponseObject = ex;
             }
@@ -250,13 +271,19 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="types">The list of resource types.</param>
         /// <returns>A list of resource type categories.</returns>
-        public static List<string> GetTypeCategories(List<ResourceType> types)
+        public List<string> GetTypeCategories(List<ResourceType> types)
         {
             ServiceResponse serviceResponse = new();
             List<string> categories = [];
 
+            if (types == null)
+            {
+                return categories;
+            }
+
             foreach (ResourceType type in types)
             {
+                if (type == null) continue;
 
                 string category = type.Resource;
                 if (!String.IsNullOrEmpty(category))
@@ -286,18 +313,18 @@ namespace AzureNamingTool.Services
         /// <param name="types">The list of resource types.</param>
         /// <param name="filter">The filter to apply.</param>
         /// <returns>The filtered list of resource types.</returns>
-        public static List<ResourceType> GetFilteredResourceTypes(List<ResourceType> types, string filter)
+        public List<ResourceType> GetFilteredResourceTypes(List<ResourceType> types, string filter)
         {
             ServiceResponse serviceResponse = new();
             List<ResourceType> currenttypes = [];
             // Filter out resource types that should have name generation
             if (!String.IsNullOrEmpty(filter))
             {
-                currenttypes = types.Where(x => x.Resource.StartsWith(filter + "/", StringComparison.CurrentCultureIgnoreCase) && !x.Property.Equals("display name", StringComparison.CurrentCultureIgnoreCase) && !String.IsNullOrEmpty(x.ShortName)).ToList();
+                currenttypes = types.Where(x => x != null && x.Resource != null && x.Resource.StartsWith(filter + "/", StringComparison.CurrentCultureIgnoreCase) && !x.Property.Equals("display name", StringComparison.CurrentCultureIgnoreCase) && !String.IsNullOrEmpty(x.ShortName)).ToList();
             }
             else
             {
-                currenttypes = types;
+                currenttypes = types.Where(x => x != null).ToList();
             }
             return currenttypes;
         }
@@ -307,13 +334,13 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="shortNameReset">Flag indicating whether to reset the short names of existing resource types.</param>
         /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The service response indicates the success of the operation.</returns>
-        public static async Task<ServiceResponse> RefreshResourceTypes(bool shortNameReset = false)
+        public async Task<ServiceResponse> RefreshResourceTypesAsync(bool shortNameReset = false)
         {
             ServiceResponse serviceResponse = new();
             try
             {
                 // Get the existing Resource Type items
-                serviceResponse = await ResourceTypeService.GetItems();
+                serviceResponse = await GetItemsAsync();
                 if (serviceResponse.Success)
                 {
                     List<ResourceType> types = (List<ResourceType>)serviceResponse.ResponseObject!;
@@ -363,7 +390,7 @@ namespace AzureNamingTool.Services
                                 }
 
                                 // Update the settings file
-                                serviceResponse = await PostConfig(types);
+                                serviceResponse = await PostConfigAsync(types);
 
                                 // Update the repository file
                                 await FileSystemHelper.WriteFile("resourcetypes.json", refreshdata, "repository/");
@@ -382,7 +409,7 @@ namespace AzureNamingTool.Services
                         else
                         {
                             serviceResponse.ResponseObject = "Refresh Resource Types not found!";
-                            AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = "There was a problem refreshing the resource types configuration." });
+                            await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = "There was a problem refreshing the resource types configuration." });
                         }
                     }
                     else
@@ -397,7 +424,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.Success = false;
                 serviceResponse.ResponseObject = ex;
             }
@@ -410,19 +437,19 @@ namespace AzureNamingTool.Services
         /// <param name="operation">The operation to perform on the resource type components.</param>
         /// <param name="componentid">The ID of the component to update.</param>
         /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The service response indicates the success of the operation.</returns>
-        public static async Task<ServiceResponse> UpdateTypeComponents(string operation, int componentid)
+        public async Task<ServiceResponse> UpdateTypeComponentsAsync(string operation, int componentid)
         {
             ServiceResponse serviceResponse = new();
             try
             {
-                serviceResponse = await ResourceComponentService.GetItem(componentid);
+                serviceResponse = await _coordinator.GetComponentForTypeValidationAsync(componentid);
                 if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
                 {
                     ResourceComponent resourceComponent = (ResourceComponent)serviceResponse.ResponseObject!;
                     if (GeneralHelper.IsNotNull(resourceComponent))
                     {
                         string component = GeneralHelper.NormalizeName(resourceComponent.Name, false);
-                        serviceResponse = await ResourceTypeService.GetItems();
+                        serviceResponse = await GetItemsAsync();
                         if (serviceResponse.Success)
                         {
                             if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
@@ -442,7 +469,7 @@ namespace AzureNamingTool.Services
                                                 {
                                                     currentvalues.Add(component);
                                                     currenttype.Optional = String.Join(",", [.. currentvalues]);
-                                                    await ResourceTypeService.PostItem(currenttype);
+                                                    await PostItemAsync(currenttype);
                                                 }
                                                 break;
                                             case "optional-remove":
@@ -451,7 +478,7 @@ namespace AzureNamingTool.Services
                                                 {
                                                     currentvalues.Remove(component);
                                                     currenttype.Optional = String.Join(",", [.. currentvalues]);
-                                                    await ResourceTypeService.PostItem(currenttype);
+                                                    await PostItemAsync(currenttype);
                                                 }
                                                 break;
                                             case "exclude-add":
@@ -460,7 +487,7 @@ namespace AzureNamingTool.Services
                                                 {
                                                     currentvalues.Add(component);
                                                     currenttype.Exclude = String.Join(",", [.. currentvalues]);
-                                                    await ResourceTypeService.PostItem(currenttype);
+                                                    await PostItemAsync(currenttype);
                                                 }
                                                 break;
                                             case "exclude-remove":
@@ -469,7 +496,7 @@ namespace AzureNamingTool.Services
                                                 {
                                                     currentvalues.Remove(component);
                                                     currenttype.Exclude = String.Join(",", [.. currentvalues]);
-                                                    await ResourceTypeService.PostItem(currenttype);
+                                                    await PostItemAsync(currenttype);
                                                 }
                                                 break;
                                         }
@@ -492,7 +519,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.Success = false;
                 serviceResponse.ResponseObject = ex;
             }
@@ -504,7 +531,7 @@ namespace AzureNamingTool.Services
         /// </summary>
         /// <param name="validateNameRequest">The validate name request containing the resource type information.</param>
         /// <returns>A <see cref="Task{ServiceResponse}"/> representing the asynchronous operation. The service response contains the validation result.</returns>
-        public static async Task<ServiceResponse> ValidateResourceTypeName(ValidateNameRequest validateNameRequest)
+        public async Task<ServiceResponse> ValidateResourceTypeNameAsync(ValidateNameRequest validateNameRequest)
         {
             ServiceResponse serviceResponse = new();
             ValidateNameResponse validateNameResponse = new();
@@ -512,7 +539,7 @@ namespace AzureNamingTool.Services
             {
                 ResourceDelimiter? resourceDelimiter = new();
                 // Get the current delimiter
-                serviceResponse = await ResourceDelimiterService.GetCurrentItem();
+                serviceResponse = await _resourceDelimiterService.GetCurrentItemAsync();
                 if (serviceResponse.Success)
                 {
                     if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
@@ -528,7 +555,7 @@ namespace AzureNamingTool.Services
                 }
 
                 // Get the specifed resource type
-                serviceResponse = await ResourceTypeService.GetItems(true);
+                serviceResponse = await GetItemsAsync(true);
                 if (serviceResponse.Success)
                 {
                     if (GeneralHelper.IsNotNull(serviceResponse.ResponseObject))
@@ -576,7 +603,7 @@ namespace AzureNamingTool.Services
             }
             catch (Exception ex)
             {
-                AdminLogService.PostItem(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
+                await _adminLogService.PostItemAsync(new AdminLogMessage() { Title = "ERROR", Message = ex.Message });
                 serviceResponse.Success = false;
                 serviceResponse.ResponseObject = ex;
             }
@@ -584,3 +611,5 @@ namespace AzureNamingTool.Services
         }
     }
 }
+
+#pragma warning restore CS1591
