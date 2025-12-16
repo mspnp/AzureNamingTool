@@ -25,7 +25,7 @@ name: Build and deploy ASP.Net Core app to Azure Web App - azurenamingtool
 env:
   AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
   AZURE_WEBAPP_SLOT_NAME: 'Production'
-  DOTNET_VERSION: '8.0.x'
+  DOTNET_VERSION: '10.0.x'
 
 
 on:
