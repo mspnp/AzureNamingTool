@@ -31,7 +31,7 @@ public class GeneralHelperTests
     {
         const string input = "Web/sites - Static Web App (stapp)";
 
-        var result = GeneralHelper.FormatResoureType(input);
+        var result = GeneralHelper.FormatResourceType(input);
 
         result.Length.Should().Be(4);
         result[0].Should().Be("Web/sites - Static Web App");

@@ -567,12 +567,12 @@ namespace AzureNamingTool.Services
                             ResourceType? resourceType = null;
                             if (GeneralHelper.IsNotNull(validateNameRequest.ResourceTypeId))
                             {
-                                // Get the specified resoure type by id
+                                // Get the specified Resource type by id
                                 resourceType = resourceTypes.FirstOrDefault(x => x.Id == validateNameRequest.ResourceTypeId)!;
                             }
                             else
                             {
-                                // Get the specified resoure type by short name
+                                // Get the specified Resource type by short name
                                 resourceType = resourceTypes.FirstOrDefault(x => x.ShortName == validateNameRequest.ResourceType)!;
                             }
                             if (GeneralHelper.IsNotNull(resourceType))
