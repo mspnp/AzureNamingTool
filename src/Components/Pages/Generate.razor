@@ -729,7 +729,7 @@
                 {
                     // Single type generation
                     StringBuilder sbName = new();
-                    selectedResourceTypeFull = GeneralHelper.FormatResoureType(selectedResourceTypeDisplayName);
+                    selectedResourceTypeFull = GeneralHelper.FormatResourceType(selectedResourceTypeDisplayName);
                     if (GeneralHelper.IsNotNull(selectedResourceTypeFull[1]))
                     {
                         selectedResourceType = selectedResourceTypeFull[1];
@@ -1096,7 +1096,7 @@
 
             if (!String.IsNullOrEmpty(selectedResourceTypeDisplayName))
             {
-                selectedResourceTypeFull = GeneralHelper.FormatResoureType(selectedResourceTypeDisplayName);
+                selectedResourceTypeFull = GeneralHelper.FormatResourceType(selectedResourceTypeDisplayName);
                 if (GeneralHelper.IsNotNull(selectedResourceTypeFull[1]))
                 {
                     selectedResourceType = selectedResourceTypeFull[1];

@@ -160,7 +160,7 @@ public class GeneralHelperTests
     public void FormatResourceType_ShouldFormatCorrectly(string input, string expectedBase)
     {
         // Act
-        var result = GeneralHelper.FormatResoureType(input);
+        var result = GeneralHelper.FormatResourceType(input);
 
         // Assert
         result[0].Should().Be(expectedBase);
