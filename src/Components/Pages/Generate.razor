@@ -35,12 +35,12 @@
 <div class="modern-card">
     <div class="modern-card-body">
         <div class="modern-card mb-4">
-            <div class="modern-card-header collapsible collapsed" data-bs-toggle="collapse" data-bs-target="#instructions" aria-expanded="false">
+            <div class="modern-card-header collapsible @(GetCollapseClass("instructions"))" @onclick="@(() => ToggleCollapse("instructions"))">
                 <h3>
                     <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Instructions
                 </h3>
             </div>
-            <div class="collapse modern-card-body" id="instructions">
+            <div class="modern-card-body @(GetCollapseClass("instructions"))" id="instructions">
                 <ol>
                     <li>
                         Select the desired Resource Type / Resource Types
@@ -150,11 +150,11 @@
                                     </div>
                                 }
                                 <div id="guidelines" class="modern-card mt-3">
-                                    <div class="modern-card-header modern-card-header-collapsible" data-bs-toggle="collapse" data-bs-target="#namingguidelines" aria-expanded="false">
+                                    <div class="modern-card-header modern-card-header-collapsible @(GetCollapseClass("namingguidelines"))" @onclick="@(() => ToggleCollapse("namingguidelines"))">
                                         <span class="oi oi-chevron-bottom modern-collapse-icon" aria-hidden="true"></span>
                                         <span class="modern-card-title">Naming Guidelines</span>
                                     </div>
-                                    <div class="collapse modern-card-body" id="namingguidelines">
+                                    <div class="modern-card-body @(GetCollapseClass("namingguidelines"))" id="namingguidelines">
                                         @if (!String.IsNullOrEmpty(currentResourceType.LengthMin))
                                         {
                                             <div class="mb-2"><strong>Minimum Length:</strong> @currentResourceType.LengthMin</div>
@@ -226,13 +226,13 @@
                         @if (componentsVisible == "collapse")
                         {
                             <div class="mt-3 mb-3">
-                                <button type="button" title="Show/Hide Components" class="modern-btn-primary" data-bs-toggle="collapse" data-bs-target="#components">
+                                <button type="button" title="Show/Hide Components" class="modern-btn-primary" @onclick="@(() => ToggleCollapse("components"))">
                                     <span class="oi oi-eye" aria-hidden="true"></span> Show/Hide Components
                                 </button>
                             </div>
                         }
 
-                        <div class="@componentsVisible" id="components">
+                        <div class="@componentsVisible @(GetCollapseClass("components"))" id="components">
                             @foreach (ResourceComponent resourceComponent in servicesData.ResourceComponents!)
                             {
                                 if ((!selectedResourceTypeExclude.ToLower().Split(',').Contains(GeneralHelper.NormalizeName(resourceComponent.Name, true))) || (multiselectedResourceTypes.Count > 0))
@@ -729,7 +729,7 @@
                 {
                     // Single type generation
                     StringBuilder sbName = new();
-                    selectedResourceTypeFull = GeneralHelper.FormatResoureType(selectedResourceTypeDisplayName);
+                    selectedResourceTypeFull = GeneralHelper.FormatResourceType(selectedResourceTypeDisplayName);
                     if (GeneralHelper.IsNotNull(selectedResourceTypeFull[1]))
                     {
                         selectedResourceType = selectedResourceTypeFull[1];
@@ -1096,7 +1096,7 @@
 
             if (!String.IsNullOrEmpty(selectedResourceTypeDisplayName))
             {
-                selectedResourceTypeFull = GeneralHelper.FormatResoureType(selectedResourceTypeDisplayName);
+                selectedResourceTypeFull = GeneralHelper.FormatResourceType(selectedResourceTypeDisplayName);
                 if (GeneralHelper.IsNotNull(selectedResourceTypeFull[1]))
                 {
                     selectedResourceType = selectedResourceTypeFull[1];
@@ -1801,6 +1801,26 @@
             await session.SetAsync("selectedResourceUnitDept", selectedResourceUnitDept);
             await session.SetAsync("selectedCustomComponents", selectedCustomComponents);
         }
+    }
+    
+    // Collapse management for sections
+    private HashSet<string> collapsedSections = new HashSet<string> { "instructions", "namingguidelines", "components" };
+    
+    private void ToggleCollapse(string section)
+    {
+        if (collapsedSections.Contains(section))
+        {
+            collapsedSections.Remove(section);
+        }
+        else
+        {
+            collapsedSections.Add(section);
+        }
+    }
+
+    private string GetCollapseClass(string section)
+    {
+        return collapsedSections.Contains(section) ? "collapsed" : "";
     }
 }
 

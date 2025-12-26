@@ -171,7 +171,7 @@ namespace AzureNamingTool.Helpers
         /// </summary>
         /// <param name="type">The resource type string</param>
         /// <returns>An array containing the formatted resource type</returns>
-        public static string[] FormatResoureType(string type)
+        public static string[] FormatResourceType(string type)
         {
             String[] returntype = new String[4];
             returntype[0] = type;
