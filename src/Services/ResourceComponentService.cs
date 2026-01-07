@@ -124,7 +124,8 @@ namespace AzureNamingTool.Services
                         // Set the new id
                         if (item.Id == 0)
                         {
-                            item.Id = items.Count + 1;
+                            // Use max ID + 1 instead of count + 1 to avoid ID collisions after deletions
+                            item.Id = items.Count > 0 ? items.Max(x => x.Id) + 1 : 1;
                         }
 
                         int position = 1;
