@@ -48,7 +48,7 @@ public class ResourceTypeServiceTests
         var returnedItems = result.ResponseObject as List<ResourceType>;
         returnedItems.Should().NotBeNull();
         returnedItems!.Should().HaveCount(2);
-        returnedItems.All(x => x.Enabled).Should().BeTrue();
+        returnedItems!.All(x => x.Enabled).Should().BeTrue();
     }
 
     [Fact]
@@ -105,5 +105,68 @@ public class ResourceTypeServiceTests
         // Assert
         result.Success.Should().BeFalse();
         _mockAdminLogService.Verify(s => s.PostItemAsync(It.Is<AdminLogMessage>(m => m.Title == "ERROR")), Times.Once);
+    }
+
+    [Fact]
+    public async Task PostItemAsync_ShouldAssignCorrectId_WhenItemsHaveBeenDeleted()
+    {
+        // Arrange - Simulate scenario where IDs 1, 2, 3 exist and ID 2 was deleted
+        var existingItems = new List<ResourceType>
+        {
+            new ResourceType { Id = 1, Resource = "Virtual Machine", ShortName = "vm", Enabled = true },
+            new ResourceType { Id = 3, Resource = "Storage Account", ShortName = "st", Enabled = true }
+        };
+
+        var newItem = new ResourceType
+        {
+            Id = 0,
+            Resource = "App Service",
+            ShortName = "app"
+        };
+
+        List<ResourceType>? savedItems = null;
+        _mockRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(existingItems);
+        _mockRepository.Setup(r => r.SaveAllAsync(It.IsAny<IEnumerable<ResourceType>>()))
+            .Callback<IEnumerable<ResourceType>>(items => savedItems = items.ToList())
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _service.PostItemAsync(newItem);
+
+        // Assert
+        result.Success.Should().BeTrue();
+        savedItems.Should().NotBeNull();
+        var addedItem = savedItems!.FirstOrDefault(x => x.Resource == "App Service");
+        addedItem.Should().NotBeNull();
+        addedItem!.Id.Should().Be(4, "because ID should be Max(existing IDs) + 1, not Count + 1");
+        addedItem.Id.Should().NotBe(3, "to avoid collision with existing item");
+    }
+
+    [Fact]
+    public async Task PostItemAsync_ShouldAssignId1_WhenNoItemsExist()
+    {
+        // Arrange
+        var emptyList = new List<ResourceType>();
+        var newItem = new ResourceType
+        {
+            Id = 0,
+            Resource = "FirstResource",
+            ShortName = "first"
+        };
+
+        List<ResourceType>? savedItems = null;
+        _mockRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(emptyList);
+        _mockRepository.Setup(r => r.SaveAllAsync(It.IsAny<IEnumerable<ResourceType>>()))
+            .Callback<IEnumerable<ResourceType>>(items => savedItems = items.ToList())
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _service.PostItemAsync(newItem);
+
+        // Assert
+        result.Success.Should().BeTrue();
+        savedItems.Should().NotBeNull();
+        savedItems!.Should().HaveCount(1);
+        savedItems![0].Id.Should().Be(1);
     }
 }

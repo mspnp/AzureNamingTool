@@ -532,10 +532,10 @@ public class ValidationHelperTests
             Regx = "^[a-z0-9-]+$",
             LengthMin = "3",
             LengthMax = "20",
-            InvalidCharacters = null,
-            InvalidCharactersStart = null,
-            InvalidCharactersEnd = null,
-            InvalidCharactersConsecutive = null
+            InvalidCharacters = string.Empty,
+            InvalidCharactersStart = string.Empty,
+            InvalidCharactersEnd = string.Empty,
+            InvalidCharactersConsecutive = string.Empty
         };
         var name = "test-resource";
         var delimiter = "-";

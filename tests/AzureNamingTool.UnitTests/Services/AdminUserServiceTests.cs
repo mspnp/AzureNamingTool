@@ -41,9 +41,9 @@ public class AdminUserServiceTests
         var returnedUsers = result.ResponseObject as List<AdminUser>;
         returnedUsers.Should().NotBeNull();
         returnedUsers!.Should().HaveCount(3);
-        returnedUsers[0].Name.Should().Be("Alice");
-        returnedUsers[1].Name.Should().Be("Bob");
-        returnedUsers[2].Name.Should().Be("Charlie");
+        returnedUsers![0].Name.Should().Be("Alice");
+        returnedUsers![1].Name.Should().Be("Bob");
+        returnedUsers![2].Name.Should().Be("Charlie");
     }
 
     [Fact]

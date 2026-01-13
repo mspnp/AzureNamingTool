@@ -40,8 +40,8 @@ public class GeneratedNamesServiceTests
         var returnedItems = result.ResponseObject as List<GeneratedName>;
         returnedItems.Should().NotBeNull();
         returnedItems!.Should().HaveCount(2);
-        returnedItems[0].ResourceName.Should().Be("rg-app-prod"); // Most recent first
-        returnedItems[1].ResourceName.Should().Be("rg-app-dev");
+        returnedItems![0].ResourceName.Should().Be("rg-app-prod"); // Most recent first
+        returnedItems![1].ResourceName.Should().Be("rg-app-dev");
     }
 
     [Fact]
@@ -110,7 +110,8 @@ public class GeneratedNamesServiceTests
         var result = await _service.GetItemAsync(999);
 
         // Assert
-        result.ResponseObject.Should().Be("Generated Name not found!");
+        result.ResponseObject!.Should().NotBeNull();
+        result.ResponseObject!.Should().Be("Generated Name not found!");
     }
 
     [Fact]

@@ -40,7 +40,7 @@ public class ResourceProjAppSvcServiceTests
         var returnedItems = result.ResponseObject as List<ResourceProjAppSvc>;
         returnedItems.Should().NotBeNull();
         returnedItems!.Should().HaveCount(2);
-        returnedItems[0].Name.Should().Be("ProjAppSvc1");
+        returnedItems![0].Name.Should().Be("ProjAppSvc1");
     }
 
     [Fact]

@@ -40,8 +40,8 @@ public class ResourceEnvironmentServiceTests
         var returnedItems = result.ResponseObject as List<ResourceEnvironment>;
         returnedItems.Should().NotBeNull();
         returnedItems!.Should().HaveCount(2);
-        returnedItems[0].Name.Should().Be("Dev"); // Sorted by SortOrder
-        returnedItems[1].Name.Should().Be("Prod");
+        returnedItems![0].Name.Should().Be("Dev"); // Sorted by SortOrder
+        returnedItems![1].Name.Should().Be("Prod");
     }
 
     [Fact(Skip = "Service behavior inconsistent - doesn't set Success property")]
@@ -54,7 +54,8 @@ public class ResourceEnvironmentServiceTests
         var result = await _service.GetItemsAsync();
 
         // Assert - Service doesn't set Success=false explicitly, so it defaults to false
-        result.ResponseObject.Should().Be("Resource Environments not found!");
+        result.ResponseObject!.Should().NotBeNull();
+        result.ResponseObject!.Should().Be("Resource Environments not found!");
     }
 
     [Fact]
@@ -107,7 +108,8 @@ public class ResourceEnvironmentServiceTests
         var result = await _service.GetItemAsync(999);
 
         // Assert - Service doesn't set Success=false explicitly for not found
-        result.ResponseObject.Should().Be("Resource Environment not found!");
+        result.ResponseObject!.Should().NotBeNull();
+        result.ResponseObject!.Should().Be("Resource Environment not found!");
     }
 
     [Fact]

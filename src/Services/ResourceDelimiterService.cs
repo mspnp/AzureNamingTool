@@ -144,13 +144,20 @@ namespace AzureNamingTool.Services
             try
             {
                 // Get list of items
-                var items = (await _repository.GetAllAsync()).ToList();
+                var itemsEnumerable = await _repository.GetAllAsync();
+                if (itemsEnumerable == null)
+                {
+                    serviceResponse.ResponseObject = "Resource Delimiters not found!";
+                    return serviceResponse;
+                }
+                var items = itemsEnumerable.ToList();
                 if (GeneralHelper.IsNotNull(items))
                 {
                     // Set the new id
                     if (item.Id == 0)
                     {
-                        item.Id = items.Count + 1;
+                        // Use max ID + 1 instead of count + 1 to avoid ID collisions after deletions
+                        item.Id = items.Count > 0 ? items.Max(x => x.Id) + 1 : 1;
                     }
                     item.Enabled = true;
                     int position = 1;
@@ -199,23 +206,40 @@ namespace AzureNamingTool.Services
                         }
                         else
                         {
-                            item.Id = 1;
-                            item.SortOrder = 1;
+                            // Add new item - ID was already set above
+                            item.SortOrder = items.Count + 1;
+                            
+                            // Disable other items if this new item is enabled
+                            if (item.Enabled)
+                            {
+                                foreach (var existingItem in items)
+                                {
+                                    existingItem.Enabled = false;
+                                }
+                            }
+                            
                             items.Add(item);
                         }
-
-                        position = 1;
-                        foreach (ResourceDelimiter thisitem in items.OrderBy(x => x.SortOrder).ToList())
-                        {
-                            thisitem.SortOrder = position;
-                            position += 1;
-                        }
-
-                        // Write items to file
-                        await _repository.SaveAllAsync(items);
-                        serviceResponse.ResponseObject = "Resource Delimiter added/updated!";
-                        serviceResponse.Success = true;
                     }
+                    else
+                    {
+                        // Add first item to empty list
+                        item.SortOrder = 1;
+                        items.Add(item);
+                    }
+
+                    // Normalize sort order
+                    position = 1;
+                    foreach (ResourceDelimiter thisitem in items.OrderBy(x => x.SortOrder).ToList())
+                    {
+                        thisitem.SortOrder = position;
+                        position += 1;
+                    }
+
+                    // Write items to file
+                    await _repository.SaveAllAsync(items);
+                    serviceResponse.ResponseObject = "Resource Delimiter added/updated!";
+                    serviceResponse.Success = true;
                 }
                 else
                 {

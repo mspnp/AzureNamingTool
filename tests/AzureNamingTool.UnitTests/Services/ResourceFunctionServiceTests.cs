@@ -40,7 +40,7 @@ public class ResourceFunctionServiceTests
         var returnedItems = result.ResponseObject as List<ResourceFunction>;
         returnedItems.Should().NotBeNull();
         returnedItems!.Should().HaveCount(2);
-        returnedItems[0].Name.Should().Be("Web");
+        returnedItems![0].Name.Should().Be("Web");
     }
 
     [Fact]
@@ -74,6 +74,7 @@ public class ResourceFunctionServiceTests
         var result = await _service.GetItemAsync(999);
 
         // Assert
-        result.ResponseObject.Should().Be("Resource Function not found!");
+        result.ResponseObject!.Should().NotBeNull();
+        result.ResponseObject!.Should().Be("Resource Function not found!");
     }
 }
