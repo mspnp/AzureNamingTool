@@ -2966,7 +2966,7 @@ h3.blazored-modal-title,
     padding: 16px 24px;
     border-top: 1px solid var(--color-border);
     background-color: var(--color-bg-secondary);
-    margin-top: auto; /* Push footer to bottom when content is short */
+    flex-shrink: 0; /* Prevent footer from shrinking */
 }
 
 /* Modal Animations */
@@ -2996,7 +2996,6 @@ h3.blazored-modal-title,
     display: flex;
     flex-direction: column;
     max-height: 85vh;
-    overflow-y: auto; /* Enable scrolling on the modal content */
     line-height: 1.6; /* Consistent line height for readability */
     font-size: 14px; /* Consistent font size */
 }
@@ -3015,7 +3014,6 @@ h3.blazored-modal-title,
     flex: 1;
     overflow-y: auto;
     padding: 1.5rem;
-    max-height: calc(85vh - 120px); /* Account for header and footer */
     line-height: 1.6; /* Consistent line height for readability */
     font-size: 14px; /* Consistent font size */
 }

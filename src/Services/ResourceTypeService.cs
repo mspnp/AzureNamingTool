@@ -139,7 +139,8 @@ namespace AzureNamingTool.Services
                     // Set the new id
                     if (item.Id == 0)
                     {
-                        item.Id = items.Count + 1;
+                        // Use max ID + 1 instead of count + 1 to avoid ID collisions after deletions
+                        item.Id = items.Count > 0 ? items.Max(x => x.Id) + 1 : 1;
                     }
 
                     // Determine new item id
@@ -567,12 +568,12 @@ namespace AzureNamingTool.Services
                             ResourceType? resourceType = null;
                             if (GeneralHelper.IsNotNull(validateNameRequest.ResourceTypeId))
                             {
-                                // Get the specified resoure type by id
+                                // Get the specified Resource type by id
                                 resourceType = resourceTypes.FirstOrDefault(x => x.Id == validateNameRequest.ResourceTypeId)!;
                             }
                             else
                             {
-                                // Get the specified resoure type by short name
+                                // Get the specified Resource type by short name
                                 resourceType = resourceTypes.FirstOrDefault(x => x.ShortName == validateNameRequest.ResourceType)!;
                             }
                             if (GeneralHelper.IsNotNull(resourceType))

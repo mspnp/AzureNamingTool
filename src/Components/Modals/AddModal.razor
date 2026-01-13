@@ -167,12 +167,10 @@
                                     </div>
                                 </div>
                                 <div id="typemetdadatacontainer" class="modern-card" style="margin-bottom: 1rem;">
-                                    <div class="modern-card-header">
-                                        <a id="typemetdadatalink" class="link-dark text-decoration-none" data-bs-toggle="collapse" href="#typemetdadata" role="button" aria-expanded="false" aria-controls="typemetdadata">
-                                            <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Resoure Type Metadata
-                                        </a>
+                                    <div class="modern-card-header collapsible @(GetCollapseClass("typemetdadata"))" @onclick="@(() => ToggleCollapse("typemetdadata"))">
+                                        <span class="oi oi-chevron-bottom" aria-hidden="true"></span> Resource Type Metadata
                                     </div>
-                                    <div class="collapse modern-card-body" id="typemetdadata">
+                                    <div class="modern-card-body @(GetCollapseClass("typemetdadata"))" id="typemetdadata">
                                         <div style="margin-bottom: 1rem;">
                                             <p>
                                             This section allows you to edit the Resouce Type metadata.
@@ -274,11 +272,11 @@
                 </div>
             </div>
         </div>
-    </div>
 
-<div class="modern-modal-footer">
-    <button title="Add" @onclick="Save" class="modern-btn-success">Add</button>
-    <button title="Cancel" @onclick="Cancel" class="modern-btn-secondary">Cancel</button>
+    <div class="modern-modal-footer">
+        <button title="Add" @onclick="Save" class="modern-btn-success">Add</button>
+        <button title="Cancel" @onclick="Cancel" class="modern-btn-secondary">Cancel</button>
+    </div>
 </div>
 
 @code {
@@ -716,5 +714,25 @@
 
 
     async Task Cancel() => await ModalInstance.CancelAsync();
+    
+    // Collapse management for sections
+    private HashSet<string> collapsedSections = new HashSet<string> { "typemetdadata" };
+    
+    private void ToggleCollapse(string section)
+    {
+        if (collapsedSections.Contains(section))
+        {
+            collapsedSections.Remove(section);
+        }
+        else
+        {
+            collapsedSections.Add(section);
+        }
+    }
+
+    private string GetCollapseClass(string section)
+    {
+        return collapsedSections.Contains(section) ? "collapsed" : "";
+    }
 }
 

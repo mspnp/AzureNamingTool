@@ -24,6 +24,7 @@ Version 5.0.0 is a major release featuring .NET 10.0 framework upgrade, modern d
 - Improved visual hierarchy and card-based design
 
 ### SQLite Database Support
+- **Optional upgrade** - SQLite available for enhanced performance (not default)
 - **Enhanced performance** with faster data access and queries
 - **Better scalability** for larger configurations
 - **Improved reliability** with transactional support and data integrity
@@ -31,7 +32,8 @@ Version 5.0.0 is a major release featuring .NET 10.0 framework upgrade, modern d
 - **One-click migration** with automatic backup creation
 - **Rollback support** if migration issues occur
 - Admin UI for easy storage provider management
-- Maintains backward compatibility with file-based JSON storage
+- **Default remains JSON file-based storage** for maximum compatibility
+- ⚠️ **IMPORTANT**: SQLite not recommended for Azure Container Apps with File Share mounts (use FileSystem storage instead)
 
 ### Azure Tenant Name Validation
 - **Validate generated names against your Azure tenant** before deployment
