@@ -40,7 +40,7 @@ public class ResourceUnitDeptServiceTests
         var returnedItems = result.ResponseObject as List<ResourceUnitDept>;
         returnedItems.Should().NotBeNull();
         returnedItems!.Should().HaveCount(2);
-        returnedItems[0].Name.Should().Be("UnitDept1");
+        returnedItems![0].Name.Should().Be("UnitDept1");
     }
 
     [Fact]

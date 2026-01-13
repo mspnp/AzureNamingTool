@@ -82,7 +82,7 @@ namespace AzureNamingTool.UnitTests.Services
 
             // Assert
             result.Success.Should().BeTrue();
-            result.ResponseObject.Should().NotBeNull();
+            ((object?)result.ResponseObject).Should().NotBeNull();
             var policy = result.ResponseObject as PolicyDefinition;
             policy.Should().NotBeNull();
         }

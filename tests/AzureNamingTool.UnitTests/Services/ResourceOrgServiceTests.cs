@@ -40,7 +40,7 @@ public class ResourceOrgServiceTests
         var returnedItems = result.ResponseObject as List<ResourceOrg>;
         returnedItems.Should().NotBeNull();
         returnedItems!.Should().HaveCount(2);
-        returnedItems[0].Name.Should().Be("Contoso");
+        returnedItems![0].Name.Should().Be("Contoso");
     }
 
     [Fact]
@@ -74,6 +74,7 @@ public class ResourceOrgServiceTests
         var result = await _service.GetItemAsync(999);
 
         // Assert
-        result.ResponseObject.Should().Be("Resource Org not found!");
+        result.ResponseObject!.Should().NotBeNull();
+        result.ResponseObject!.Should().Be("Resource Org not found!");
     }
 }

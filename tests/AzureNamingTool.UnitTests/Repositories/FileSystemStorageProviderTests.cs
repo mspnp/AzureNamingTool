@@ -63,9 +63,10 @@ public class FileSystemStorageProviderTests
 
         // Assert
         health.Metadata.Should().NotBeNull("metadata should be provided");
+        health.Metadata!.Should().NotBeNull("metadata should be provided");
         
         // If there was a file locking error (e.g., from concurrent test runs), skip the rest
-        if (health.Metadata.ContainsKey("Error"))
+        if (health.Metadata!.ContainsKey("Error"))
         {
             // File locking can occur in test scenarios - this is acceptable
             health.Metadata.Should().ContainKey("SettingsPath", "error metadata should include settings path");
@@ -127,9 +128,9 @@ public class FileSystemStorageProviderTests
 
         // Assert
         health.Metadata.Should().ContainKey("FileCount");
-        var fileCount = health.Metadata["FileCount"];
+        var fileCount = health.Metadata!["FileCount"];
         fileCount.Should().BeOfType<int>("file count should be an integer");
-        ((int)fileCount).Should().BeGreaterThanOrEqualTo(0, "file count should not be negative");
+        ((int)fileCount!).Should().BeGreaterThanOrEqualTo(0, "file count should not be negative");
     }
 
     /// <summary>
@@ -149,12 +150,12 @@ public class FileSystemStorageProviderTests
 
         // Assert
         health.IsHealthy.Should().BeTrue("production environment should be healthy");
-        var fileCount = (int)health.Metadata["FileCount"];
+        var fileCount = (int)health.Metadata!["FileCount"]!;
         fileCount.Should().BeGreaterThan(0, "settings directory should contain configuration files");
         
         // Validate typical configuration files exist
         health.Metadata.Should().ContainKey("LastModified");
-        health.Metadata["LastModified"].Should().NotBeNull("should report last modification time");
+        health.Metadata!["LastModified"].Should().NotBeNull("should report last modification time");
     }
 
     [Fact]

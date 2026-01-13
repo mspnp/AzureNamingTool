@@ -38,7 +38,7 @@ public class AdminLogServiceTests
         var returnedItems = result.ResponseObject as List<AdminLogMessage>;
         returnedItems.Should().NotBeNull();
         returnedItems!.Should().HaveCount(3);
-        returnedItems[0].Id.Should().Be(2); // Most recent first
+        returnedItems![0].Id.Should().Be(2); // Most recent first
     }
 
     [Fact]
