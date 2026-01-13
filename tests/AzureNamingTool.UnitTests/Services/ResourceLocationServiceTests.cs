@@ -52,7 +52,8 @@ public class ResourceLocationServiceTests
         var result = await _service.GetItemsAsync();
 
         // Assert
-        result.ResponseObject.Should().Be("Resource Locations not found!");
+        result.ResponseObject!.Should().NotBeNull();
+        result.ResponseObject!.Should().Be("Resource Locations not found!");
     }
 
     [Fact]
@@ -86,6 +87,7 @@ public class ResourceLocationServiceTests
         var result = await _service.GetItemAsync(999);
 
         // Assert
-        result.ResponseObject.Should().Be("Resource Location not found!");
+        result.ResponseObject!.Should().NotBeNull();
+        result.ResponseObject!.Should().Be("Resource Location not found!");
     }
 }
